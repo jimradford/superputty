@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E03FA8D9-555B-4AD6-A310-6A72B20024D1}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SuperPutty</RootNamespace>
+    <AssemblyName>SuperPutty</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutBox1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutBox1.Designer.cs">
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Component1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component1.Designer.cs">
+      <DependentUpon>Component1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ctlApplicationPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dlgMouseFeedback.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgMouseFeedback.Designer.cs">
+      <DependentUpon>dlgMouseFeedback.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTransferStatus.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTransferStatus.Designer.cs">
+      <DependentUpon>frmTransferStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RemoteFileListPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RemoteFileListPanel.Designer.cs">
+      <DependentUpon>RemoteFileListPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="dlgFindPutty.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgFindPutty.Designer.cs">
+      <DependentUpon>dlgFindPutty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="dlgLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgLogin.Designer.cs">
+      <DependentUpon>dlgLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSuperPutty.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSuperPutty.Designer.cs">
+      <DependentUpon>frmSuperPutty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="dlgEditSession.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgEditSession.Designer.cs">
+      <DependentUpon>dlgEditSession.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AboutBox1.resx">
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ctlApplicationPanel.resx">
+      <DependentUpon>ctlApplicationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgMouseFeedback.resx">
+      <DependentUpon>dlgMouseFeedback.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTransferStatus.resx">
+      <DependentUpon>frmTransferStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RemoteFileListPanel.resx">
+      <DependentUpon>RemoteFileListPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgFindPutty.resx">
+      <DependentUpon>dlgFindPutty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgLogin.resx">
+      <DependentUpon>dlgLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSuperPutty.resx">
+      <DependentUpon>frmSuperPutty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgEditSession.resx">
+      <DependentUpon>dlgEditSession.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SessionTreeview.resx">
+      <DependentUpon>SessionTreeview.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ctlPuttyPanel.resx">
+      <DependentUpon>ctlPuttyPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindow.resx">
+      <DependentUpon>ToolWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="PscpTransfer.cs" />
+    <Compile Include="SessionData.cs" />
+    <Compile Include="SessionTreeview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SessionTreeview.Designer.cs">
+      <DependentUpon>SessionTreeview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ctlPuttyPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ctlPuttyPanel.Designer.cs">
+      <DependentUpon>ctlPuttyPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ToolWindow.Designer.cs">
+      <DependentUpon>ToolWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Win32\EnumWindows.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DockPanel\Src\WinFormsUI\WinFormsUI.csproj">
+      <Project>{C75532C4-765B-418E-B09B-46D36B2ABDB1}</Project>
+      <Name>WinFormsUI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="License.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
