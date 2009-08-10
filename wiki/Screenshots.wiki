@@ -6,4 +6,5 @@ Some Screen shots
 
 
 = Details =
+http://superputty.googlecode.com/svn/wiki/superputty2.png
 http://superputty.googlecode.com/svn/wiki/SuperPuttyFileWin.png
