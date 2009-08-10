@@ -58,6 +58,13 @@ namespace SuperPutty
                 switch (result)
                 {
                     case RequestResult.RetryAuthentication:
+                        dlgLogin m_Login = new dlgLogin(m_Session);
+                        if (m_Login.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        {
+                            m_Session.Username = m_Login.Username;
+                            m_Session.Password = m_Login.Password;
+                            LoadDirectory(path);
+                        }
                         break;
                     case RequestResult.ListingFollows:
                         RefreshListView(files);
@@ -239,7 +246,7 @@ namespace SuperPutty
                 }
             };
             frmStatus.m_callback = callback;
-            m_Transfer.CopyFiles(files, target, callback);            
+            m_Transfer.BeginCopyFiles(files, target, callback);            
         }
 
         public static void RecurseDir(string sourceDir, ref long bytes, ref int count)
