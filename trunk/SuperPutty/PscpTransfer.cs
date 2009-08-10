@@ -214,13 +214,14 @@ namespace SuperPutty
             Thread threadListFiles = new Thread(delegate()
             {
                 m_processDir = new Process();
-                m_processDir.StartInfo.RedirectStandardError = true;
+                
                 m_processDir.EnableRaisingEvents = true;
-                m_processDir.StartInfo.RedirectStandardInput = true;
+                m_processDir.StartInfo.UseShellExecute = false;
+                m_processDir.StartInfo.RedirectStandardError = true;
+                //m_processDir.StartInfo.RedirectStandardInput = true;
                 m_processDir.StartInfo.RedirectStandardOutput = true;
-                //processDir.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                m_processDir.StartInfo.FileName = frmSuperPutty.PscpExe;
                 m_processDir.StartInfo.CreateNoWindow = true;
+                m_processDir.StartInfo.FileName = frmSuperPutty.PscpExe;                
                 // process the various options from the session object and convert them into arguments pscp can understand
                 string args = "-ls "; // default arguments
                 args += (!String.IsNullOrEmpty(m_Session.PuttySession)) ? "-load \"" + m_Session.PuttySession + "\" " : "";
@@ -229,9 +230,12 @@ namespace SuperPutty
                 args += (!String.IsNullOrEmpty(m_Session.Username)) ? m_Session.Username + "@" : "";
                 args += m_Session.Host + ":" + path;
                 Console.WriteLine("Args: '{0} {1}'", m_processDir.StartInfo.FileName, args);
-                m_processDir.StartInfo.Arguments = args;
-                m_processDir.StartInfo.UseShellExecute = false;
+                m_processDir.StartInfo.Arguments = args;                
 
+                /*
+                 * Handle output from spawned pscp.exe process, handle any data received and parse
+                 * any lines that look like a directory listing.
+                 */
                 m_processDir.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
                 {
                     if (!String.IsNullOrEmpty(e.Data))
@@ -244,18 +248,17 @@ namespace SuperPutty
                         }
                         else if (e.Data.StartsWith("Listing directory "))
                         {
-                            //Console.WriteLine("# Current Directory: {0}", e.Data.Replace("Listing directory ", "").TrimEnd());
-                        }                        
-                        else if (e.Data.Equals(PUTTY_INTERACTIVE_AUTH))
+                            // This just tells us the current directory, however since we're the ones that requested it
+                            // we already have this information. But this traps it so its not sent through the directory
+                            // entry parser.                            
+                        }
+                        else if (e.Data.Equals(PUTTY_INTERACTIVE_AUTH) || e.Data.Contains("password: "))
                         {
                             m_processDir.CancelOutputRead();
-                            m_processDir.Kill();
+                            if(!m_processDir.HasExited)
+                                m_processDir.Kill();
 
-                            if (m_Login.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                            {
-                                m_Session.Username = m_Login.Username;
-                                m_Session.Password = m_Login.Password;                                
-                            }
+                            callback(RequestResult.RetryAuthentication, null);
                         }
                         else
                         {
@@ -267,6 +270,7 @@ namespace SuperPutty
                                 {
                                     files.Add(f);
                                 }
+
                                 if (files.Count > 0)
                                 {
                                     callback(RequestResult.ListingFollows, files);
@@ -328,8 +332,8 @@ namespace SuperPutty
                 }
 
                 m_processDir.BeginErrorReadLine();
-                m_processDir.BeginOutputReadLine();
-                m_processDir.WaitForExit();
+                m_processDir.BeginOutputReadLine();                
+                m_processDir.WaitForExit();                
             });
 
             /* Only allow one directory list request at a time */
@@ -349,15 +353,25 @@ namespace SuperPutty
             {
                 while (m_DirIsBusy)
                 {
-                    Thread.Sleep(1000);
-
-                    if (timeoutWatch.Elapsed.Seconds > 45) // if no data received in 5 seconds we'll stop the process
+                    /*
+                     * if no data received in 5 seconds we'll stop the process,
+                     * This allows us to capture any interactive prompts/messages
+                     * sent to us by putty.
+                     */
+                    if (timeoutWatch.Elapsed.Seconds >= 5) 
                     {
                         Console.WriteLine("Timeout after {0}", timeoutWatch.Elapsed.Seconds);                        
+                        
+                        
+                        if (!m_processDir.HasExited)
+                        {
+                            m_processDir.Kill();                            
+                        }
                         m_processDir.CancelErrorRead();
                         m_processDir.CancelOutputRead();
-                        m_processDir.Kill();
+                        return;
                     }
+                    Thread.Sleep(1000);
                 }
             });
             timeoutThread.Name = "Timeout Watcher";
@@ -407,7 +421,13 @@ namespace SuperPutty
             }
         }
 
-        internal void CopyFiles(string[] files, string target, TransferUpdateCallback callback)
+        /// <summary>
+        /// Attempts to copy local files from the local filesystem to the selected remote target path
+        /// </summary>
+        /// <param name="files">An array containing full paths to files and or folders to copy</param>
+        /// <param name="target">The target path on the remote system</param>
+        /// <param name="callback">A callback to fire on success or error. On failure the files parameter will be null</param>
+        public void BeginCopyFiles(string[] files, string target, TransferUpdateCallback callback)
         {
             if (String.IsNullOrEmpty(m_Session.Username))
             {
