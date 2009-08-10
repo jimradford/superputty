@@ -7,4 +7,5 @@ Some Screen shots
 
 = Details =
 
-[superputty2.png] [SuperPuttyFileWin.png]
+http://code.google.com/p/superputty/source/browse/wiki/superputty2.png
+http://code.google.com/p/superputty/source/browse/wiki/SuperPuttyFileWin.png
