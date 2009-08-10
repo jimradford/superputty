@@ -1,9 +1,0 @@
-D:\dev\1OpenMetaverse\SuperPutty\DockPanel\Src\WinFormsUI\bin\Release\license.txt
-D:\dev\1OpenMetaverse\SuperPutty\DockPanel\Src\WinFormsUI\bin\Release\WeifenLuo.WinFormsUI.Docking.dll
-D:\dev\1OpenMetaverse\SuperPutty\DockPanel\Src\WinFormsUI\bin\Release\WeifenLuo.WinFormsUI.Docking.pdb
-D:\dev\1OpenMetaverse\SuperPutty\DockPanel\Src\WinFormsUI\obj\Release\ResolveAssemblyReference.cache
-D:\dev\1OpenMetaverse\SuperPutty\DockPanel\Src\WinFormsUI\obj\Release\WeifenLuo.WinFormsUI.Docking.Resources.resources
-D:\dev\1OpenMetaverse\SuperPutty\DockPanel\Src\WinFormsUI\obj\Release\WeifenLuo.WinFormsUI.Docking.Strings.resources
-D:\dev\1OpenMetaverse\SuperPutty\DockPanel\Src\WinFormsUI\obj\Release\WinFormsUI.csproj.GenerateResource.Cache
-D:\dev\1OpenMetaverse\SuperPutty\DockPanel\Src\WinFormsUI\obj\Release\WeifenLuo.WinFormsUI.Docking.dll
-D:\dev\1OpenMetaverse\SuperPutty\DockPanel\Src\WinFormsUI\obj\Release\WeifenLuo.WinFormsUI.Docking.pdb
