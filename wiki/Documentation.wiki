@@ -1,4 +1,4 @@
 #sidebar TOCArticles
 
-= Introduction =
-SuperPutty Documentation Placeholder
+= Getting Started =
+* [SuperPutty What is SuperPutty?]
