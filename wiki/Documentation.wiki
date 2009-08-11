@@ -1,3 +1,4 @@
+#summary SuperPutty User Manual
 #sidebar TOCArticles
 
   # Introduction to SuperPuTTY
