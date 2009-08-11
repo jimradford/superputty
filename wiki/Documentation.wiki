@@ -1,4 +1,4 @@
 #sidebar TOCArticles
 
-= Getting Started =
+== Getting Started ==
 * [SuperPutty What is SuperPutty?]
