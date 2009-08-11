@@ -28,7 +28,6 @@ using System.Data;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using WeifenLuo.WinFormsUI.Docking;
-using SuperPutty.Win32;
 
 namespace SuperPutty
 {
@@ -1181,11 +1180,10 @@ namespace SuperPutty
                     }
                 }
 
-                Logger.Log("ApplicationPanel Handle: {0}", this.Handle.ToString("X"));                
-                Logger.Log("Process Handle: {0}", m_AppWin.ToString("X"));
+                //Logger.Log("ApplicationPanel Handle: {0}", this.Handle.ToString("X"));              
+                //Logger.Log("Process Handle: {0}", m_AppWin.ToString("X"));
                 // Set the application as a child of the parent form
-                long prevParent = SetParent(m_AppWin, this.Handle);
-                Logger.Log("Old Parent Handle: {0}", prevParent.ToString("X"));
+                SetParent(m_AppWin, this.Handle);
 
                 // Show it! (must be done before we set the windows visibility parameters below                
                 ShowWindow(m_AppWin, WindowShowStyle.Maximize);
@@ -1199,18 +1197,7 @@ namespace SuperPutty
                 MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
          
             }
-
-            //EnumWindows eW = new EnumWindows();
-            //eW.GetWindows();
-            //foreach (EnumWindowsItem item in eW.Items)
-            //{
-            //    if (item.ClassName.Equals("PuTTY"))
-            //    {
-            //        m_PuttyWin = item.Handle;                    
-            //        Logger.Log("WINDOW: '{0}' '{1}' '{2}' '{3}'", item.Text, item.ClassName, item.Handle, m_AppWin.ToInt32());
-            //    }
-            //}
-      
+                  
             base.OnVisibleChanged(e);
         }
         
@@ -1245,14 +1232,7 @@ namespace SuperPutty
             base.OnResize(e);
         }
 
-        #endregion
-
-        private void InitializeComponent()
-        {
-            //this.SuspendLayout();
-            //this.ResumeLayout(false);
-
-        }
+        #endregion        
     }
 
 }

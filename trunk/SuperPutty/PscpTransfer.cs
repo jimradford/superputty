@@ -184,13 +184,13 @@ namespace SuperPutty
         private Process m_processDir;
         public void BeginGetDirectoryListing(string path, DirListingCallback callback)
         {
-            Logger.Log("Requesting remote file listing for '{0}'", path);
+            
             if (m_Session == null)
             {
                 callback(RequestResult.SessionInvalid, null);                
                 return;
             }
-
+            
             List<FileEntry> files = new List<FileEntry>();
             Stopwatch timeoutWatch = new Stopwatch();
 
@@ -229,7 +229,7 @@ namespace SuperPutty
                 args += "-P " + m_Session.Port + " ";
                 args += (!String.IsNullOrEmpty(m_Session.Username)) ? m_Session.Username + "@" : "";
                 args += m_Session.Host + ":" + path;
-                Logger.Log("Args: '{0} {1}'", m_processDir.StartInfo.FileName, args);
+                Logger.Log("Sending Command: '{0} {1}'", m_processDir.StartInfo.FileName, args);
                 m_processDir.StartInfo.Arguments = args;                                
                 /*
                  * Handle output from spawned pscp.exe process, handle any data received and parse
@@ -256,7 +256,7 @@ namespace SuperPutty
                             m_processDir.CancelOutputRead();
                             if(!m_processDir.HasExited)
                                 m_processDir.Kill();
-
+                            Logger.Log("Username/Password invalid or not sent");
                             callback(RequestResult.RetryAuthentication, null);
                         }
                         else
@@ -264,16 +264,16 @@ namespace SuperPutty
                             timeoutWatch.Reset();
                             lock (files)
                             {
-                                FileEntry f;
-                                if (TryParseFileLine(e.Data, out f))
+                                FileEntry file;
+                                if (TryParseFileLine(e.Data, out file))
                                 {
-                                    files.Add(f);
+                                    files.Add(file);
                                 }
 
                                 if (files.Count > 0)
                                 {
-                                    callback(RequestResult.ListingFollows, files);
-                                }
+                                    callback(RequestResult.ListingFollows, files);                                    
+                                }                                
                             }
                         }
                     }
@@ -302,12 +302,14 @@ namespace SuperPutty
                 {
                     if (m_processDir.ExitCode != 0)
                     {
+                        Logger.Log("Process Exited (Failure): {0}", m_processDir.ExitCode);
                         callback(RequestResult.UnknownError, null);
                         if (m_PuttyClosed != null)
                             m_PuttyClosed(true);
                     }
                     else
                     {
+                        Logger.Log("Process Exited: {0}", m_processDir.ExitCode);
                         if (m_PuttyClosed != null)
                             m_PuttyClosed(false);
                     }
@@ -322,11 +324,11 @@ namespace SuperPutty
                 {
                     if (e.NativeErrorCode == 2) // File Not Found
                     {
-
+                        Logger.Log(e);
                     }
                     else if (e.NativeErrorCode == 4) // Acess Denied
                     {
-
+                        Logger.Log(e);
                     }
                 }
 
@@ -359,7 +361,7 @@ namespace SuperPutty
                      */
                     if (timeoutWatch.Elapsed.Seconds >= 5) 
                     {
-                        Logger.Log("Timeout after {0}", timeoutWatch.Elapsed.Seconds);                        
+                        Logger.Log("Timeout after {0} seconds", timeoutWatch.Elapsed.Seconds);                        
                                                 
                         if (!m_processDir.HasExited)
                         {
@@ -413,7 +415,7 @@ namespace SuperPutty
             }
             else
             {
-                Logger.Log("Could not parse directory listing format: \n\t'{0}'", line.TrimEnd());
+                Logger.Log("Could not parse directory listing entry: \n\t'{0}'", line.TrimEnd());
                 FileNode = new FileEntry();
                 return false;
             }
