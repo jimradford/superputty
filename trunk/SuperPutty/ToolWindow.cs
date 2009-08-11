@@ -35,6 +35,7 @@ namespace SuperPutty
         public ToolWindow()
         {
             InitializeComponent();
+            
         }
     }
 }

@@ -1099,7 +1099,7 @@ namespace SuperPutty
         #endregion
 
         #region Base Overrides
-        
+       
         /// <summary>
         /// Force redraw of control when size changes
         /// </summary>
@@ -1109,32 +1109,7 @@ namespace SuperPutty
             this.Invalidate();
             base.OnSizeChanged(e);
         }
-       
-        [DllImport("user32.dll")]
-        private static extern
-            int GetWindowText(int hWnd, System.Text.StringBuilder title, int size);
-        [DllImport("user32.dll")]
-        private static extern
-            int GetWindowModuleFileName(int hWnd, System.Text.StringBuilder title, int size);
-
-        protected override void WndProc(ref Message m)
-        {
-            switch ((WM)m.Msg)
-            {
-                case WM.GETTEXT:
-                    Console.WriteLine("[{0}] {1}:{2} -> {3} -> {4}", m.HWnd.ToString("x"), m.Msg, (WM)m.Msg, m.WParam, m.LParam);
-                    ReFocusPuTTY();                    
-                    break;
-                case WM.ACTIVATE:
-                    Console.WriteLine("[{0}] {1}:{2} -> {3} -> {4}", m.HWnd.ToString("x"), m.Msg, (WM)m.Msg, m.WParam, m.LParam);
-                    break;
-                default:
-                    Console.WriteLine("[{0}] {1}:{2} -> {3} -> {4}", m.HWnd.ToString("x"), m.Msg, (WM)m.Msg, m.WParam, m.LParam);
-                    break;
-            }            
-            base.WndProc(ref m);
-        }
-
+             
         [DllImport("user32.dll")]
         static extern IntPtr GetForegroundWindow();
         
@@ -1142,7 +1117,7 @@ namespace SuperPutty
         public static extern bool SetForegroundWindow(IntPtr hWnd);
        
         public bool ReFocusPuTTY()
-        {
+        {           
             return (this.m_AppWin != null 
                 && GetForegroundWindow() != this.m_AppWin 
                 && !SetForegroundWindow(this.m_AppWin));
