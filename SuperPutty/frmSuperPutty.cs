@@ -115,15 +115,26 @@ namespace SuperPutty
             InitializeComponent();
 
 #if DEBUG
+            // Only show the option for the debug log viewer when we're compiled with DEBUG defined.
             debugLogToolStripMenuItem.Visible = true;
 #endif
 
-            dockPanel1.ActiveDocumentChanged += new EventHandler(dockPanel1_ActiveDocumentChanged);
+
+            dockPanel1.ActiveDocumentChanged += dockPanel1_ActiveDocumentChanged;
+
+            /* 
+             * Open the session treeview and dock it on the right
+             */
             m_Sessions = new SessionTreeview(dockPanel1);
             m_Sessions.Show(dockPanel1, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
 
         }
 
+        /// <summary>
+        /// Handles focusing on tabs/windows which host PuTTY
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dockPanel1_ActiveDocumentChanged(object sender, EventArgs e)
         {
             if (dockPanel1.ActiveDocument is ctlPuttyPanel)
@@ -132,6 +143,7 @@ namespace SuperPutty
                 p.SetFocusToChildApplication();
             }
         }
+
 
         private void frmSuperPutty_Activated(object sender, EventArgs e)
         {

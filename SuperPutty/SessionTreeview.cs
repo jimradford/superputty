@@ -38,6 +38,13 @@ namespace SuperPutty
     public partial class SessionTreeview : ToolWindow
     {
         private DockPanel m_DockPanel;
+
+        /// <summary>
+        /// Instantiate the treeview containing the sessions
+        /// </summary>
+        /// <param name="dockPanel">The DockPanel container</param>
+        /// <remarks>Having the dockpanel container is necessary to allow us to
+        /// dock any terminal or file transfer sessions from within the treeview class</remarks>
         public SessionTreeview(DockPanel dockPanel)
         {
             m_DockPanel = dockPanel;
@@ -46,10 +53,13 @@ namespace SuperPutty
             // disable file transfers if pscp isn't configured.
             fileBrowserToolStripMenuItem.Enabled = frmSuperPutty.IsScpEnabled;
 
-            // get sessions!
+            // populat sessions in the treeview from the registry
             LoadSessions();
         }
 
+        /// <summary>
+        /// Load the sessions from the registry and populate the treeview control
+        /// </summary>
         public void LoadSessions()
         {
             treeView1.Nodes.Clear();
@@ -62,7 +72,11 @@ namespace SuperPutty
             treeView1.ExpandAll();
         }
 
-        public static List<SessionData> LoadSessionsFromRegistry()
+        /// <summary>
+        /// Read any existing saved sessions from the registry, decode and populat a list containing the data
+        /// </summary>
+        /// <returns>A list containing the entries retrieved from the registry</returns>
+        private static List<SessionData> LoadSessionsFromRegistry()
         {
             List<SessionData> sessionList = new List<SessionData>();
             RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Jim Radford\SuperPuTTY\Sessions");
@@ -90,6 +104,10 @@ namespace SuperPutty
             return sessionList;
         }
 
+        /// <summary>
+        /// Save sessions from the registry to an XML file for importing later
+        /// </summary>
+        /// <param name="fileName">The path and name of the file to save the entries to</param>
         public static void ExportSessionsToXml(string fileName)
         {
             List<SessionData> sessions = LoadSessionsFromRegistry();
@@ -99,6 +117,10 @@ namespace SuperPutty
             w.Close();
         }
 
+        /// <summary>
+        /// Import saved sessions from an XML file and store them in the registry
+        /// </summary>
+        /// <param name="fileName">The path and name of the file to load the entries from</param>
         public static void ImportSessionsFromXml(string fileName)
         {
             List<SessionData> sessions = new List<SessionData>();
@@ -112,6 +134,11 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>
+        /// Opens the selected session when the node is double clicked in the treeview
+        /// </summary>
+        /// <param name="sender">The treeview control that was double clicked</param>
+        /// <param name="e">An Empty EventArgs object</param>
         private void treeView1_DoubleClick(object sender, EventArgs e)
         {
             if (treeView1.SelectedNode.ImageIndex > 0)
@@ -119,16 +146,17 @@ namespace SuperPutty
                 SessionData sessionData = (SessionData)treeView1.SelectedNode.Tag;
                 ctlPuttyPanel sessionPanel = null;
 
+                // This is the callback fired when the panel containing the terminal is closed
+                // We use this to save the last docking location
                 PuttyClosedCallback callback = delegate(bool closed)
                 {
                     if (sessionPanel != null)
                     {
-                        // save the last dockstate (if its changed)
+                        // save the last dockstate (if it has been changed)
                         if (sessionData.LastDockstate != sessionPanel.DockState
                             && sessionPanel.DockState != DockState.Unknown
                             && sessionPanel.DockState != DockState.Hidden)
                         {
-                            Logger.Log("Last Dock Save: {0}", sessionPanel.DockState);
                             sessionData.LastDockstate = sessionPanel.DockState;
                             sessionData.SaveToRegistry();
                         }
@@ -152,7 +180,12 @@ namespace SuperPutty
             }
         }
 
-        private void newSessionToolStripMenuItem_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Create/Update a session entry
+        /// </summary>
+        /// <param name="sender">The toolstripmenuitem control that was clicked</param>
+        /// <param name="e">An Empty EventArgs object</param>
+        private void CreateOrEditSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SessionData session = null;
             TreeNode node = null;
@@ -174,6 +207,7 @@ namespace SuperPutty
             dlgEditSession form = new dlgEditSession(session);
             if (form.ShowDialog() == DialogResult.OK)
             {
+                /* "node" will only be assigned if we're editing an existing session entry */
                 if (node == null)
                 {
                     node = treeView1.Nodes["root"].Nodes.Add(session.SessionName, session.SessionName, 1, 1);
@@ -189,14 +223,25 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>
+        /// Forces a node to be selected when right clicked, this assures the context menu will be operating
+        /// on the proper session entry.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
                 treeView1.SelectedNode = treeView1.GetNodeAt(e.X, e.Y);
-            }
+            }          
         }
 
+        /// <summary>
+        /// Delete a session entry from the treeview and the registry
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SessionData session = (SessionData)treeView1.SelectedNode.Tag;
@@ -207,6 +252,12 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>
+        /// Open a directory listing on the selected nodes host to allow dropping files
+        /// for drag + drop copy.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void fileBrowserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SessionData session = (SessionData)treeView1.SelectedNode.Tag;
@@ -229,6 +280,11 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>
+        /// Longcut for double clicking an entries node.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             treeView1_DoubleClick(null, EventArgs.Empty);

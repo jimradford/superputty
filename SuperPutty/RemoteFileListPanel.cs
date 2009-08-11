@@ -40,6 +40,7 @@ namespace SuperPutty
         private dlgMouseFeedback m_MouseFollower;
         public RemoteFileListPanel(PscpTransfer transfer, DockPanel dockPanel, SessionData session)
         {
+            Logger.Log("Started new File Transfer Session for {0}", session.SessionName);
             m_Session = session;
             m_DockPanel = dockPanel;
             m_Transfer = transfer;
@@ -52,7 +53,8 @@ namespace SuperPutty
         }
 
         private bool LoadDirectory(string path)
-        {                    
+        {
+            Logger.Log("Request directory listing for '{0}/{1}'", m_Session.SessionName, path);
             DirListingCallback dirCallback = delegate(RequestResult result, List<FileEntry> files)
             {
                 switch (result)
@@ -67,6 +69,7 @@ namespace SuperPutty
                         }
                         break;
                     case RequestResult.ListingFollows:
+                        Console.WriteLine("Remote host returned {0} File entries", files.Count);
                         RefreshListView(files);
                         break;
                     case RequestResult.UnknownError:
@@ -77,6 +80,9 @@ namespace SuperPutty
                         break;
                     case RequestResult.SessionInvalid:
                         Logger.Log("Session is invalid");
+                        break;
+                    default:
+                        Logger.Log("Unknown result '{0}'", result);
                         break;
                 }
             };
@@ -227,7 +233,7 @@ namespace SuperPutty
             {
                 if (cancelTransfer)
                 {
-                    Logger.Log("Requesting Cancel Transfer");
+                    Logger.Log("User requested to Cancel Transfer");
                     m_Transfer.CancelTransfers();
                     frmStatus.Close();
                     LoadDirectory(target);

@@ -52,12 +52,6 @@
     <Compile Include="AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Component1.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Component1.Designer.cs">
-      <DependentUpon>Component1.cs</DependentUpon>
-    </Compile>
     <Compile Include="ctlApplicationPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -193,7 +187,6 @@
     <Compile Include="ToolWindow.Designer.cs">
       <DependentUpon>ToolWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Win32\EnumWindows.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="License.txt">
