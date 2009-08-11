@@ -1,7 +1,8 @@
 #sidebar TOCArticles
 
-  # [SuperPutty Introduction to SuperPutty]
-    # [Requirements Minimum system requirements]
-  # [GettingStarted Getting started with SuperPutty
+  # Introduction to SuperPuTTY
+    # [SuperPutty#Introduction Introduction to SuperPutty]
+    # [SuperPutty#Requrements Minimum system requirements]
+  # Getting started with SuperPutty
     # [CreateNewSession Creating a new session]
     # [TransferringFiles Transferring Files]
