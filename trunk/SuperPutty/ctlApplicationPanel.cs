@@ -1181,11 +1181,11 @@ namespace SuperPutty
                     }
                 }
 
-                Console.WriteLine("ApplicationPanel Handle: {0}", this.Handle.ToString("X"));                
-                Console.WriteLine("Process Handle: {0}", m_AppWin.ToString("X"));
+                Logger.Log("ApplicationPanel Handle: {0}", this.Handle.ToString("X"));                
+                Logger.Log("Process Handle: {0}", m_AppWin.ToString("X"));
                 // Set the application as a child of the parent form
                 long prevParent = SetParent(m_AppWin, this.Handle);
-                Console.WriteLine("Old Parent Handle: {0}", prevParent.ToString("X"));
+                Logger.Log("Old Parent Handle: {0}", prevParent.ToString("X"));
 
                 // Show it! (must be done before we set the windows visibility parameters below                
                 ShowWindow(m_AppWin, WindowShowStyle.Maximize);
@@ -1207,7 +1207,7 @@ namespace SuperPutty
             //    if (item.ClassName.Equals("PuTTY"))
             //    {
             //        m_PuttyWin = item.Handle;                    
-            //        Console.WriteLine("WINDOW: '{0}' '{1}' '{2}' '{3}'", item.Text, item.ClassName, item.Handle, m_AppWin.ToInt32());
+            //        Logger.Log("WINDOW: '{0}' '{1}' '{2}' '{3}'", item.Text, item.ClassName, item.Handle, m_AppWin.ToInt32());
             //    }
             //}
       

@@ -21,36 +21,30 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Threading;
+using System.Text;
 
 namespace SuperPutty
 {
-    static class Program
+    public delegate void LogCallback(string logLine);
+    public static class Logger
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        public static event LogCallback OnLog;
+        
+        public static void Log(string logLine)
         {
-            bool onlyInstance = false;
-            Mutex mutex = new Mutex(true, "SuperPutty", out onlyInstance);
-            if (!onlyInstance)
-            {
+            if (OnLog != null)
+                OnLog(logLine);
+        }
+        public static void Log(Exception e)
+        {
+            if (OnLog != null)
+                OnLog(e.Message);
+        }
 
-            }
-            
-#if DEBUG
-            Logger.OnLog += delegate(string logMessage)
-            {
-                Console.WriteLine(logMessage);
-            };
-#endif
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmSuperPutty());
+        public static void Log(string format, params object[] arg)
+        {
+            if (OnLog != null)
+                OnLog(String.Format(format, arg));
         }
     }
 }

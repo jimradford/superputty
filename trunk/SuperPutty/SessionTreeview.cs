@@ -128,7 +128,7 @@ namespace SuperPutty
                             && sessionPanel.DockState != DockState.Unknown
                             && sessionPanel.DockState != DockState.Hidden)
                         {
-                            Console.WriteLine("Last Dock Save: {0}", sessionPanel.DockState);
+                            Logger.Log("Last Dock Save: {0}", sessionPanel.DockState);
                             sessionData.LastDockstate = sessionPanel.DockState;
                             sessionData.SaveToRegistry();
                         }

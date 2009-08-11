@@ -21,36 +21,28 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
-using System.Threading;
 
 namespace SuperPutty
 {
-    static class Program
+    public partial class DebugLogViewer : ToolWindow
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        public DebugLogViewer()
         {
-            bool onlyInstance = false;
-            Mutex mutex = new Mutex(true, "SuperPutty", out onlyInstance);
-            if (!onlyInstance)
-            {
+            InitializeComponent();
+            Logger.OnLog += new LogCallback(Logger_OnLog);
+        }
 
-            }
-            
-#if DEBUG
-            Logger.OnLog += delegate(string logMessage)
-            {
-                Console.WriteLine(logMessage);
-            };
-#endif
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmSuperPutty());
+        void Logger_OnLog(string logLine)
+        {
+            if (this.InvokeRequired)
+                this.BeginInvoke((MethodInvoker)delegate() { Logger_OnLog(logLine); });
+            else
+                richTextBox1.AppendText(logLine + System.Environment.NewLine);
         }
     }
 }
