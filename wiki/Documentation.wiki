@@ -3,6 +3,8 @@
   # Introduction to SuperPuTTY
     # [SuperPutty#Introduction Introduction to SuperPutty]
     # [SuperPutty#Requrements Minimum system requirements]
+    # [Downloading Downloading SuperPuTTY]
+    # [Installing Installing SuperPuTTY]
   # Getting started with SuperPutty
     # [CreateNewSession Creating a new session]
     # [TransferringFiles Transferring Files]
