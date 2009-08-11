@@ -1,10 +1,7 @@
-#summary One-sentence summary of this page.
-
-= Introduction =
-
-Some Screen shots
-
+#summary Some screenshots of the SuperPutty application running
 
 = Details =
 http://superputty.googlecode.com/svn/wiki/superputty2.png
+
+
 http://superputty.googlecode.com/svn/wiki/SuperPuttyFileWin.png
