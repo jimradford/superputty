@@ -70,13 +70,13 @@ namespace SuperPutty
                         RefreshListView(files);
                         break;
                     case RequestResult.UnknownError:
-                        Console.WriteLine("Unknown Error trying to get file listing");
+                        Logger.Log("Unknown Error trying to get file listing");
                         break;
                     case RequestResult.InvalidArguments:
-                        Console.WriteLine("Invalid Arguments Passed to scp");
+                        Logger.Log("Invalid Arguments Passed to scp");
                         break;
                     case RequestResult.SessionInvalid:
-                        Console.WriteLine("Session is invalid");
+                        Logger.Log("Session is invalid");
                         break;
                 }
             };
@@ -216,9 +216,9 @@ namespace SuperPutty
                     RecurseDir(file, ref totalBytes, ref fileCount);
                 }
                 else
-                    Console.WriteLine("Dropped Unknown {0} on {1}", file, target);
+                    Logger.Log("Dropped Unknown {0} on {1}", file, target);
             }
-            //Console.WriteLine("Total Bytes: {0} Total Files: {1}", totalBytes, fileCount);
+            //Logger.Log("Total Bytes: {0} Total Files: {1}", totalBytes, fileCount);
             frmTransferStatus frmStatus = new frmTransferStatus();
             frmStatus.Text = "Uploading files to " + m_Session.SessionName;
             frmStatus.Show(m_DockPanel, DockState.DockBottom);
@@ -227,7 +227,7 @@ namespace SuperPutty
             {
                 if (cancelTransfer)
                 {
-                    Console.WriteLine("Requesting Cancel Transfer");
+                    Logger.Log("Requesting Cancel Transfer");
                     m_Transfer.CancelTransfers();
                     frmStatus.Close();
                     LoadDirectory(target);
@@ -237,7 +237,7 @@ namespace SuperPutty
                 {
                     currentFileNum++;
                     transferredBytes += status.BytesTransferred;
-                    //Console.WriteLine("Transfered: {0}/{1} kB {2} of {3} files", transferredBytes, totalBytes / 1024, currentFileNum, fileCount);
+                    //Logger.Log("Transfered: {0}/{1} kB {2} of {3} files", transferredBytes, totalBytes / 1024, currentFileNum, fileCount);
                 }
                 frmStatus.UpdateProgress(status, (int)transferredBytes, (int)totalBytes / 1024, currentFileNum, fileCount);
                 if (currentFileNum >= fileCount)
@@ -287,7 +287,7 @@ namespace SuperPutty
             //if (m_MouseFollower.Visible && e.Button == MouseButtons.Left)
             //{
             //    m_MouseFollower.Location = new Point(e.X, e.Y);
-            //    Console.WriteLine("Move Mouse");
+            //    Logger.Log("Move Mouse");
             //}
         }
 

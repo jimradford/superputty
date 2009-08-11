@@ -113,6 +113,11 @@ namespace SuperPutty
             }
 
             InitializeComponent();
+
+#if DEBUG
+            debugLogToolStripMenuItem.Visible = true;
+#endif
+
             dockPanel1.ActiveDocumentChanged += new EventHandler(dockPanel1_ActiveDocumentChanged);
             m_Sessions = new SessionTreeview(dockPanel1);
             m_Sessions.Show(dockPanel1, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
@@ -130,7 +135,7 @@ namespace SuperPutty
 
         private void frmSuperPutty_Activated(object sender, EventArgs e)
         {
-            dockPanel1_ActiveDocumentChanged(null, null);
+            //dockPanel1_ActiveDocumentChanged(null, null);
         }
 
         private void aboutSuperPuttyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -211,6 +216,12 @@ namespace SuperPutty
             Process p = new Process();
             p.StartInfo.FileName = PuttyExe;
             p.Start();
+        }
+
+        private void debugLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DebugLogViewer logView = new DebugLogViewer();
+            logView.Show(dockPanel1, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide);
         }
 
     }

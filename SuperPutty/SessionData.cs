@@ -171,7 +171,7 @@ namespace SuperPutty
                 }
                 else
                 {
-                    Console.WriteLine("Unable to create registry key for " + this.SessionName);
+                    Logger.Log("Unable to create registry key for " + this.SessionName);
                 }
             }
         }
@@ -189,7 +189,7 @@ namespace SuperPutty
                 }
                 catch (UnauthorizedAccessException e)
                 {
-                    Console.WriteLine(e);
+                    Logger.Log(e);
                 }
             }
         }

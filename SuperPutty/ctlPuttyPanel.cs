@@ -49,7 +49,7 @@ namespace SuperPutty
             args += (!String.IsNullOrEmpty(m_Session.PuttySession)) ? "-load \"" + m_Session.PuttySession + "\" " : "";
             args += (!String.IsNullOrEmpty(m_Session.Username) && m_Session.Username.Length > 0) ? m_Session.Username + "@" : "";
             args += m_Session.Host;
-            Console.WriteLine("Args: '{0}'", args);
+            Logger.Log("Args: '{0}'", args);
             this.ApplicationParameters = args;
 
             InitializeComponent();

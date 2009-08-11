@@ -61,6 +61,12 @@
     <Compile Include="ctlApplicationPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DebugLogViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DebugLogViewer.Designer.cs">
+      <DependentUpon>DebugLogViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="dlgMouseFeedback.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,6 +79,7 @@
     <Compile Include="frmTransferStatus.Designer.cs">
       <DependentUpon>frmTransferStatus.cs</DependentUpon>
     </Compile>
+    <Compile Include="Logger.cs" />
     <Compile Include="RemoteFileListPanel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,6 +117,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ctlApplicationPanel.resx">
       <DependentUpon>ctlApplicationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DebugLogViewer.resx">
+      <DependentUpon>DebugLogViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgMouseFeedback.resx">
       <DependentUpon>dlgMouseFeedback.cs</DependentUpon>

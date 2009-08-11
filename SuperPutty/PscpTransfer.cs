@@ -184,7 +184,7 @@ namespace SuperPutty
         private Process m_processDir;
         public void BeginGetDirectoryListing(string path, DirListingCallback callback)
         {
-            Console.WriteLine("Requesting remote file listing for '{0}'", path);
+            Logger.Log("Requesting remote file listing for '{0}'", path);
             if (m_Session == null)
             {
                 callback(RequestResult.SessionInvalid, null);                
@@ -229,9 +229,8 @@ namespace SuperPutty
                 args += "-P " + m_Session.Port + " ";
                 args += (!String.IsNullOrEmpty(m_Session.Username)) ? m_Session.Username + "@" : "";
                 args += m_Session.Host + ":" + path;
-                Console.WriteLine("Args: '{0} {1}'", m_processDir.StartInfo.FileName, args);
-                m_processDir.StartInfo.Arguments = args;                
-
+                Logger.Log("Args: '{0} {1}'", m_processDir.StartInfo.FileName, args);
+                m_processDir.StartInfo.Arguments = args;                                
                 /*
                  * Handle output from spawned pscp.exe process, handle any data received and parse
                  * any lines that look like a directory listing.
@@ -293,7 +292,7 @@ namespace SuperPutty
                         }
                         else
                         {
-                            Console.WriteLine("Error Data:\n\t'{0}'", e.Data.TrimEnd());
+                            Logger.Log("Error Data:\n\t'{0}'", e.Data.TrimEnd());
                             // 'ssh_init: Host does not exist'
                         }
                     }
@@ -360,9 +359,8 @@ namespace SuperPutty
                      */
                     if (timeoutWatch.Elapsed.Seconds >= 5) 
                     {
-                        Console.WriteLine("Timeout after {0}", timeoutWatch.Elapsed.Seconds);                        
-                        
-                        
+                        Logger.Log("Timeout after {0}", timeoutWatch.Elapsed.Seconds);                        
+                                                
                         if (!m_processDir.HasExited)
                         {
                             m_processDir.Kill();                            
@@ -415,7 +413,7 @@ namespace SuperPutty
             }
             else
             {
-                Console.WriteLine("Could not parse directory listing format: \n\t'{0}'", line.TrimEnd());
+                Logger.Log("Could not parse directory listing format: \n\t'{0}'", line.TrimEnd());
                 FileNode = new FileEntry();
                 return false;
             }
@@ -459,7 +457,7 @@ namespace SuperPutty
                     args += "\"" + files[0] + "\" ";
                     args += (!String.IsNullOrEmpty(m_Session.Username)) ? m_Session.Username + "@" : "";
                     args += m_Session.Host + ":" + target;
-                    Console.WriteLine("Args: '{0} {1}'", processCopyToRemote.StartInfo.FileName, args);
+                    Logger.Log("Args: '{0} {1}'", processCopyToRemote.StartInfo.FileName, args);
                     processCopyToRemote.StartInfo.Arguments = args;
                     processCopyToRemote.StartInfo.UseShellExecute = false;
 
@@ -479,13 +477,13 @@ namespace SuperPutty
                                     status.TransferRate = float.Parse(update[2].Replace("kB/s", "").Trim());
                                     status.TimeLeft = update[3].Replace("ETA:", "").Trim();
                                     status.PercentComplete = int.Parse(update[4].Replace("%", "").Trim());
-                                    //Console.WriteLine("File Transfer Data: " + e.Data);
+                                    //Logger.Log("File Transfer Data: " + e.Data);
                                     callback(status.PercentComplete.Equals(100), false, status);
                                 }
                             }
                             else
                             {
-                                Console.WriteLine("Unable to parse OutputData: {0}", e.Data.TrimEnd());
+                                Logger.Log("Unable to parse OutputData: {0}", e.Data.TrimEnd());
                             }
                         }
                     };
@@ -508,7 +506,7 @@ namespace SuperPutty
 
         internal void CancelTransfers()
         {
-            Console.WriteLine("Aborting Transfer in CancelTransfer");
+            Logger.Log("Aborting Transfer in CancelTransfer");
             m_PscpThread.Abort();
 
         }
