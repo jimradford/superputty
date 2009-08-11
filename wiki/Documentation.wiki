@@ -1,4 +1,7 @@
 #sidebar TOCArticles
 
-== Getting Started ==
-* [SuperPutty What is SuperPutty?]
+  # [SuperPutty Introduction to SuperPutty]
+    # [Requirements Minimum system requirements]
+  # [GettingStarted Getting started with SuperPutty
+    # [CreateNewSession Creating a new session]
+    # [TransferringFiles Transferring Files]
