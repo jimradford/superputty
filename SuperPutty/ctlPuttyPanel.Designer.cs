@@ -56,7 +56,7 @@
             this.aboutPuttyToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.ShowImageMargin = false;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(142, 176);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(142, 154);
             // 
             // newSessionToolStripMenuItem
             // 

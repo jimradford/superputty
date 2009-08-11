@@ -53,14 +53,14 @@
             this.importSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.puTTYConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutSuperPuTTYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dockPanel1 = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.puTTYConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -138,6 +138,21 @@
             this.toolStripMenuItem2.Size = new System.Drawing.Size(157, 22);
             this.toolStripMenuItem2.Text = "Exit";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+            // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.puTTYConfigurationToolStripMenuItem});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Text = "Tools";
+            // 
+            // puTTYConfigurationToolStripMenuItem
+            // 
+            this.puTTYConfigurationToolStripMenuItem.Name = "puTTYConfigurationToolStripMenuItem";
+            this.puTTYConfigurationToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.puTTYConfigurationToolStripMenuItem.Text = "PuTTY Configuration";
+            this.puTTYConfigurationToolStripMenuItem.Click += new System.EventHandler(this.puTTYConfigurationToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -248,21 +263,6 @@
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
             this.toolStripContainer1.TopToolStripPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
-            // toolsToolStripMenuItem
-            // 
-            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.puTTYConfigurationToolStripMenuItem});
-            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.toolsToolStripMenuItem.Text = "Tools";
-            // 
-            // puTTYConfigurationToolStripMenuItem
-            // 
-            this.puTTYConfigurationToolStripMenuItem.Name = "puTTYConfigurationToolStripMenuItem";
-            this.puTTYConfigurationToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.puTTYConfigurationToolStripMenuItem.Text = "PuTTY Configuration";
-            this.puTTYConfigurationToolStripMenuItem.Click += new System.EventHandler(this.puTTYConfigurationToolStripMenuItem_Click);
-            // 
             // frmSuperPutty
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -273,6 +273,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmSuperPutty";
             this.Text = "SuperPuTTY";
+            this.Activated += new System.EventHandler(this.frmSuperPutty_Activated);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);

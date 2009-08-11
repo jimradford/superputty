@@ -39,7 +39,7 @@ namespace SuperPutty
         public static string PuttyExe
         {
             get { return _PuttyExe; }
-            set 
+            set
             {
                 _PuttyExe = value;
 
@@ -47,7 +47,7 @@ namespace SuperPutty
                 {
                     RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Jim Radford\SuperPuTTY\Settings");
                     key.SetValue("PuTTYExe", value);
-                }            
+                }
             }
         }
 
@@ -67,7 +67,7 @@ namespace SuperPutty
                 }
             }
         }
-        
+
         public static bool IsScpEnabled
         {
             get { return File.Exists(PscpExe); }
@@ -76,7 +76,7 @@ namespace SuperPutty
         private SessionTreeview m_Sessions;
 
         public frmSuperPutty()
-        {         
+        {
             // Get Registry Entry for Putty Exe
             RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Jim Radford\SuperPuTTY\Settings");
             if (key != null)
@@ -101,21 +101,36 @@ namespace SuperPutty
                 {
                     PuttyExe = dialog.PuttyLocation;
                     PscpExe = dialog.PscpLocation;
-                }                
+                }
             }
 
             if (String.IsNullOrEmpty(PuttyExe))
             {
-                MessageBox.Show("Cannot find PuTTY installation. Please visit http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html to download a copy", 
+                MessageBox.Show("Cannot find PuTTY installation. Please visit http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html to download a copy",
                     "PuTTY Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
                 System.Environment.Exit(1);
             }
-   
-            InitializeComponent();
 
+            InitializeComponent();
+            dockPanel1.ActiveDocumentChanged += new EventHandler(dockPanel1_ActiveDocumentChanged);
             m_Sessions = new SessionTreeview(dockPanel1);
-            m_Sessions.Show(dockPanel1, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);            
+            m_Sessions.Show(dockPanel1, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
+
+        }
+
+        private void dockPanel1_ActiveDocumentChanged(object sender, EventArgs e)
+        {
+            if (dockPanel1.ActiveDocument is ctlPuttyPanel)
+            {
+                ctlPuttyPanel p = (ctlPuttyPanel)dockPanel1.ActiveDocument;
+                p.SetFocusToChildApplication();
+            }
+        }
+
+        private void frmSuperPutty_Activated(object sender, EventArgs e)
+        {
+            dockPanel1_ActiveDocumentChanged(null, null);
         }
 
         private void aboutSuperPuttyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -143,18 +158,18 @@ namespace SuperPutty
                 {
                     Process.Start("http://code.google.com/p/superputty/wiki/Documentation");
                 }
-            }            
+            }
         }
 
         private void puTTYScpLocationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             dlgFindPutty dialog = new dlgFindPutty();
-            
+
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 PuttyExe = dialog.PuttyLocation;
                 PscpExe = dialog.PscpLocation;
-            }  
+            }
         }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
@@ -196,6 +211,7 @@ namespace SuperPutty
             Process p = new Process();
             p.StartInfo.FileName = PuttyExe;
             p.Start();
-        }        
+        }
+
     }
 }

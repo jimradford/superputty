@@ -79,6 +79,14 @@ namespace SuperPutty
         private void closeSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
-        }       
+        }
+
+        /// <summary>
+        /// Reset the focus to the child application window
+        /// </summary>
+        internal void SetFocusToChildApplication()
+        {
+            this.applicationwrapper1.ReFocusPuTTY();         
+        }
     }
 }
