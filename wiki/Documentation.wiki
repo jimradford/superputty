@@ -1,13 +1,4 @@
-#summary Online Documentation for the SuperPuTTY Application
+#sidebar TOCArticles
 
 = Introduction =
-
 SuperPutty Documentation Placeholder
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
