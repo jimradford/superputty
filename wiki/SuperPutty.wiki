@@ -1,4 +1,4 @@
-#summary SuperPutty Introduction
+﻿#summary SuperPutty Introduction
 
 = Introduction =
 SuperPutty is a Windows application used primarily as a window manager for the PuTTY SSH Client. It allows you to embed PuTTY terminal instances inside of a windows form providing a better tabbed interface when multiple connections are used.
@@ -6,7 +6,7 @@ SuperPutty is a Windows application used primarily as a window manager for the P
 SuperPutty does not do any ssh or terminal management itself since PuTTY does an excellent job of this.
 
 == Requirements ==
-  * A PC running Windows
+  * A PC running Windows (XP, Vista and Windows 7)
   * The Microsoft .NET Framework 2.0 or newer
   * 32 and 64 bit operating systems are supported
   * The [http://www.chiark.greenend.org.uk/~sgtatham/putty/ PuTTY] SSH Client
