@@ -5,6 +5,9 @@ SuperPutty is a Windows application used primarily as a window manager for the P
 
 SuperPutty does not do any ssh or terminal management itself since PuTTY does an excellent job of this.
 
+== License ==
+Licensed under a liberal MIT/X11 License, which allows this program and source code to be used in both commercial and non-commercial applications
+
 == Requirements ==
   * A PC running Windows (XP, Vista and Windows 7)
   * The Microsoft .NET Framework 2.0 or newer
