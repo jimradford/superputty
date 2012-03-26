@@ -56,19 +56,22 @@
             this.aboutPuttyToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.ShowImageMargin = false;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(142, 154);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(142, 176);
             // 
             // newSessionToolStripMenuItem
             // 
+            this.newSessionToolStripMenuItem.Enabled = false;
             this.newSessionToolStripMenuItem.Name = "newSessionToolStripMenuItem";
             this.newSessionToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.newSessionToolStripMenuItem.Text = "New Session";
+            this.newSessionToolStripMenuItem.Click += new System.EventHandler(this.newSessionToolStripMenuItem_Click);
             // 
             // duplicateSessionToolStripMenuItem
             // 
             this.duplicateSessionToolStripMenuItem.Name = "duplicateSessionToolStripMenuItem";
             this.duplicateSessionToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.duplicateSessionToolStripMenuItem.Text = "Duplicate Session";
+            this.duplicateSessionToolStripMenuItem.Click += new System.EventHandler(this.duplicateSessionToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -77,12 +80,14 @@
             // 
             // clearScrollbackToolStripMenuItem
             // 
+            this.clearScrollbackToolStripMenuItem.Enabled = false;
             this.clearScrollbackToolStripMenuItem.Name = "clearScrollbackToolStripMenuItem";
             this.clearScrollbackToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.clearScrollbackToolStripMenuItem.Text = "Clear Scrollback";
             // 
             // resetTerminalToolStripMenuItem
             // 
+            this.resetTerminalToolStripMenuItem.Enabled = false;
             this.resetTerminalToolStripMenuItem.Name = "resetTerminalToolStripMenuItem";
             this.resetTerminalToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.resetTerminalToolStripMenuItem.Text = "Reset Terminal";
@@ -109,6 +114,7 @@
             this.aboutPuttyToolStripMenuItem.Name = "aboutPuttyToolStripMenuItem";
             this.aboutPuttyToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.aboutPuttyToolStripMenuItem.Text = "About Putty";
+            this.aboutPuttyToolStripMenuItem.Click += new System.EventHandler(this.aboutPuttyToolStripMenuItem_Click);
             // 
             // ctlPuttyPanel
             // 

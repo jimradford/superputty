@@ -26,14 +26,19 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using log4net;
+using System.Diagnostics;
 
 
 namespace SuperPutty
 {
     public partial class ctlPuttyPanel : ToolWindow
-    {        
+    {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ctlPuttyPanel));
+
         private string ApplicationName = String.Empty;
         private string ApplicationParameters = String.Empty;
+        private string ApplicationWorkingDirectory = null;
 
         private ApplicationPanel applicationwrapper1;
         private SessionData m_Session;
@@ -43,13 +48,23 @@ namespace SuperPutty
             m_Session = session;
             m_ApplicationExit = callback;
 
-            string args = "-" + session.Proto.ToString().ToLower() + " ";            
-            args += (!String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0) ? "-pw " + m_Session.Password + " " : "";
-            args += "-P " + m_Session.Port + " ";
-            args += (!String.IsNullOrEmpty(m_Session.PuttySession)) ? "-load \"" + m_Session.PuttySession + "\" " : "";
-            args += (!String.IsNullOrEmpty(m_Session.Username) && m_Session.Username.Length > 0) ? m_Session.Username + "@" : "";
-            args += m_Session.Host;
-            Logger.Log("Args: '{0}'", args);
+            string args;
+            if (session.Proto == ConnectionProtocol.Cygterm)
+            {
+                CygtermInfo cyg = new CygtermInfo(m_Session);
+                args = cyg.Args;
+                ApplicationWorkingDirectory = cyg.StartingDir;
+            }
+            else
+            {
+                args = "-" + session.Proto.ToString().ToLower() + " ";
+                args += (!String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0) ? "-pw " + m_Session.Password + " " : "";
+                args += "-P " + m_Session.Port + " ";
+                args += (!String.IsNullOrEmpty(m_Session.PuttySession)) ? "-load \"" + m_Session.PuttySession + "\" " : "";
+                args += (!String.IsNullOrEmpty(m_Session.Username) && m_Session.Username.Length > 0) ? m_Session.Username + "@" : "";
+                args += m_Session.Host;
+            } 
+            Log.InfoFormat("Putty Args: '{0}'", args);
             this.ApplicationParameters = args;
 
             InitializeComponent();
@@ -66,6 +81,7 @@ namespace SuperPutty
             this.applicationwrapper1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.applicationwrapper1.ApplicationName = frmSuperPutty.PuttyExe;
             this.applicationwrapper1.ApplicationParameters = this.ApplicationParameters;
+            this.applicationwrapper1.ApplicationWorkingDirectory = this.ApplicationWorkingDirectory;
             this.applicationwrapper1.Location = new System.Drawing.Point(0, 0);
             this.applicationwrapper1.Name = "applicationControl1";
             this.applicationwrapper1.Size = new System.Drawing.Size(284, 264);
@@ -87,6 +103,25 @@ namespace SuperPutty
         internal void SetFocusToChildApplication()
         {
             this.applicationwrapper1.ReFocusPuTTY();         
+        }
+
+        protected override string GetPersistString()
+        {
+            return String.Format("{0}:{1}", base.GetPersistString(), m_Session.SessionName);
+        }
+
+        private void aboutPuttyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://www.chiark.greenend.org.uk/~sgtatham/putty/");
+        }
+
+        private void newSessionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void duplicateSessionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

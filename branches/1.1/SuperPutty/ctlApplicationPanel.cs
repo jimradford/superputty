@@ -28,6 +28,7 @@ using System.Data;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using WeifenLuo.WinFormsUI.Docking;
+using System.IO;
 
 namespace SuperPutty
 {
@@ -46,6 +47,7 @@ namespace SuperPutty
         private IntPtr m_AppWin;
         private string m_ApplicationName = "";
         private string m_ApplicationParameters = "";
+        private string m_ApplicationWorkingDirectory = "";
 
         internal PuttyClosedCallback m_CloseCallback;
 
@@ -63,6 +65,13 @@ namespace SuperPutty
         {
             get { return m_ApplicationParameters; }
             set { m_ApplicationParameters = value; }
+        }
+        [Category("Data"), Description("The starting directory for the putty shell.  Relevant only to cygterm sessions"),
+DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string ApplicationWorkingDirectory
+        {
+            get { return m_ApplicationWorkingDirectory; }
+            set { m_ApplicationWorkingDirectory = value; }
         }
         #endregion
 
@@ -1140,6 +1149,12 @@ namespace SuperPutty
                     //m_Process.Exited += new EventHandler(p_Exited);
                     m_Process.StartInfo.FileName = ApplicationName;
                     m_Process.StartInfo.Arguments = ApplicationParameters;
+
+                    if (!string.IsNullOrEmpty(this.ApplicationWorkingDirectory) &&
+                        Directory.Exists(this.ApplicationWorkingDirectory))
+                    {
+                        m_Process.StartInfo.WorkingDirectory = this.ApplicationWorkingDirectory;
+                    }
 
                     m_Process.Exited += delegate(object sender, EventArgs ev)
                     {

@@ -23,11 +23,14 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Threading;
+using log4net;
 
 namespace SuperPutty
 {
     static class Program
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -40,17 +43,55 @@ namespace SuperPutty
             {
 
             }
-            
+
 #if DEBUG
             Logger.OnLog += delegate(string logMessage)
             {
-                Console.WriteLine(logMessage);
+                //Console.WriteLine(logMessage);
+                Log.Info(logMessage);
             };
 #endif
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmSuperPutty());
+            // logging
+            log4net.Config.XmlConfigurator.Configure();
+
+            try
+            {
+                Log.Info("Starting");
+                SuperPuTTY.Initialize();
+
+                AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+                Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(SuperPuTTY.MainForm = new frmSuperPutty());
+
+                SuperPuTTY.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error in Main", ex);
+            }
+            finally
+            {
+                Log.Info("Shutdown");
+            }
         }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            String msg = String.Format("CurrentDomain_UnhandledException: IsTerminating={0}, ex={1}", e.IsTerminating, e.ExceptionObject);
+            MessageBox.Show(msg, "Unhandled Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Log.Error(msg);
+        }
+
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            MessageBox.Show(e.Exception.ToString(), "Application_ThreadException", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Log.ErrorFormat("Application_ThreadException", e.Exception);
+        }
+
+
+
     }
 }
