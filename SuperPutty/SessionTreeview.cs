@@ -38,6 +38,7 @@ namespace SuperPutty
     public partial class SessionTreeview : ToolWindow
     {
         private DockPanel m_DockPanel;
+        private Dictionary<string, SessionData> m_Sessions = new Dictionary<string, SessionData>();
 
         /// <summary>
         /// Instantiate the treeview containing the sessions
@@ -53,7 +54,7 @@ namespace SuperPutty
             // disable file transfers if pscp isn't configured.
             fileBrowserToolStripMenuItem.Enabled = frmSuperPutty.IsScpEnabled;
 
-            // populat sessions in the treeview from the registry
+            // populate sessions in the treeview from the registry
             LoadSessions();
         }
 
@@ -68,6 +69,7 @@ namespace SuperPutty
             {
                 TreeNode addedNode = treeView1.Nodes["root"].Nodes.Add(session.SessionName, session.SessionName, 1, 1);
                 addedNode.Tag = session;
+                m_Sessions[session.SessionName] = session;
             }
             treeView1.ExpandAll();
         }
@@ -144,8 +146,9 @@ namespace SuperPutty
             if (treeView1.SelectedNode.ImageIndex > 0)
             {
                 SessionData sessionData = (SessionData)treeView1.SelectedNode.Tag;
+                
                 ctlPuttyPanel sessionPanel = null;
-
+                /*
                 // This is the callback fired when the panel containing the terminal is closed
                 // We use this to save the last docking location
                 PuttyClosedCallback callback = delegate(bool closed)
@@ -175,9 +178,51 @@ namespace SuperPutty
                     }
                 };
 
-                sessionPanel = new ctlPuttyPanel(sessionData, callback);
+                sessionPanel = new ctlPuttyPanel(sessionData, callback);*/
+                sessionPanel = NewPuttyPanel(sessionData);
                 sessionPanel.Show(m_DockPanel, sessionData.LastDockstate);
             }
+        }
+
+        public ctlPuttyPanel NewPuttyPanel(string sessionName)
+        {
+            SessionData session;
+            m_Sessions.TryGetValue(sessionName, out session);
+            return session == null ? null : NewPuttyPanel(session);
+        }
+        public ctlPuttyPanel NewPuttyPanel(SessionData sessionData)
+        {
+            ctlPuttyPanel sessionPanel = null;
+            // This is the callback fired when the panel containing the terminal is closed
+            // We use this to save the last docking location
+            PuttyClosedCallback callback = delegate(bool closed)
+            {
+                if (sessionPanel != null)
+                {
+                    // save the last dockstate (if it has been changed)
+                    if (sessionData.LastDockstate != sessionPanel.DockState
+                        && sessionPanel.DockState != DockState.Unknown
+                        && sessionPanel.DockState != DockState.Hidden)
+                    {
+                        sessionData.LastDockstate = sessionPanel.DockState;
+                        sessionData.SaveToRegistry();
+                    }
+
+                    if (sessionPanel.InvokeRequired)
+                    {
+                        this.BeginInvoke((MethodInvoker)delegate()
+                        {
+                            sessionPanel.Close();
+                        });
+                    }
+                    else
+                    {
+                        sessionPanel.Close();
+                    }
+                }
+            };
+            sessionPanel = new ctlPuttyPanel(sessionData, callback);
+            return sessionPanel;
         }
 
         /// <summary>
@@ -216,6 +261,8 @@ namespace SuperPutty
                 {
                     // handle renames
                     node.Text = session.SessionName;
+                    m_Sessions.Remove(session.OldName);
+                    m_Sessions[session.SessionName] = session;
                 }
 
                 node.Tag = session;
@@ -249,6 +296,7 @@ namespace SuperPutty
             {
                 session.RegistryRemove(session.SessionName);
                 treeView1.SelectedNode.Remove();
+                m_Sessions.Remove(session.SessionName);
             }
         }
 

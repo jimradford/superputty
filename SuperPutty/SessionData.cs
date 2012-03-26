@@ -34,7 +34,8 @@ namespace SuperPutty
         Telnet,
         Rlogin,
         Raw,
-        Serial
+        Serial,
+        Cygterm
     }
 
     public class SessionData

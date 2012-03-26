@@ -68,6 +68,9 @@ namespace SuperPutty
                     case ConnectionProtocol.Telnet:
                         radioButtonTelnet.Checked = true;
                         break;
+                    case ConnectionProtocol.Cygterm:
+                        radioButtonCygterm.Checked = true;
+                        break;
                     default:
                         radioButtonSSH.Checked = true;
                         break;
@@ -125,6 +128,28 @@ namespace SuperPutty
             Session.SaveToRegistry();
 
             DialogResult = DialogResult.OK;
+        }
+
+        /// <summary>
+        /// Special UI handling for cygterm sessions
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void radioButtonCygterm_CheckedChanged(object sender, EventArgs e)
+        {
+            string host = this.textBoxHostname.Text;
+            bool isCygterm = this.radioButtonCygterm.Checked;
+            this.textBoxPort.Enabled = !isCygterm;
+            this.textBoxUsername.Enabled = !isCygterm;
+
+            if (isCygterm)
+            {
+                if (String.IsNullOrEmpty(host) || !host.StartsWith(CygtermInfo.LocalHost))
+                {
+                    this.textBoxHostname.Text = CygtermInfo.LocalHost;
+                }
+            }
+
         }
     }
 }
