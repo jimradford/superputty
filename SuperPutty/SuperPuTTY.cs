@@ -139,7 +139,12 @@ namespace SuperPutty
         {
             if (CurrentLayoutChanged != null)
             {
-                LayoutChangedEventArgs args = new LayoutChangedEventArgs { New = layout, Old = CurrentLayout };
+                LayoutChangedEventArgs args = new LayoutChangedEventArgs 
+                { 
+                    New = layout, 
+                    Old = CurrentLayout, 
+                    IsNewLayoutAlreadyActive = isNewLayoutAlreadyActive 
+                };
                 CurrentLayout = layout;
                 CurrentLayoutChanged(args);
             }
