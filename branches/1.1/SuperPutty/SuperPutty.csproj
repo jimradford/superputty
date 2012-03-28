@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SuperPutty</RootNamespace>
     <AssemblyName>SuperPutty</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -50,6 +50,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>SuperPutty.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
@@ -165,21 +168,25 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LayoutsList.resx">
       <DependentUpon>LayoutsList.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Log4netDebugLogForm.resx">
       <DependentUpon>Log4netDebugLogForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="RemoteFileListPanel.resx">
       <DependentUpon>RemoteFileListPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgFindPutty.resx">
       <DependentUpon>dlgFindPutty.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgLogin.resx">
       <DependentUpon>dlgLogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSuperPutty.resx">
       <DependentUpon>frmSuperPutty.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgEditSession.resx">
       <DependentUpon>dlgEditSession.cs</DependentUpon>
