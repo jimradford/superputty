@@ -99,7 +99,7 @@ namespace SuperPutty
                 {
                     this.memoryAppender.Layout.Format(this.msgWriter, logEvent);
                     this.richTextBoxLogMessages.AppendText(this.msgWriter.GetStringBuilder().ToString());
-                    this.msgWriter.GetStringBuilder().Clear(); // Remove(0, this.msgWriter.GetStringBuilder().Length);
+                    this.msgWriter.GetStringBuilder().Remove(0, this.msgWriter.GetStringBuilder().Length);
                     //this.richTextBoxLogMessages.AppendText(Environment.NewLine);
                 }
             }

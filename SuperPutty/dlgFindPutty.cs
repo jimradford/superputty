@@ -102,7 +102,7 @@ namespace SuperPutty
             if (string.IsNullOrEmpty(SuperPuTTY.Settings.SettingsFolder))
             {
                 // Set a default
-                String dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SuperPuTTY");
+                String dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SuperPuTTY");
                 if (!Directory.Exists(dir))
                 {
                     Log.InfoFormat("Creating default settings dir: {0}", dir);
