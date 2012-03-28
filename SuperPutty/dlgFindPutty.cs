@@ -103,7 +103,7 @@ namespace SuperPutty
             {
                 // Set a default
                 String dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SuperPuTTY");
-                if (Directory.Exists(dir))
+                if (!Directory.Exists(dir))
                 {
                     Log.InfoFormat("Creating default settings dir: {0}", dir);
                     Directory.CreateDirectory(dir);
