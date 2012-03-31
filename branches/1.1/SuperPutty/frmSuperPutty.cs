@@ -31,6 +31,7 @@ using System.IO;
 using Microsoft.Win32;
 using WeifenLuo.WinFormsUI.Docking;
 using SuperPutty.Properties;
+using SuperPutty.Data;
 using log4net;
 
 namespace SuperPutty

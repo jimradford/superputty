@@ -27,6 +27,8 @@ using System.Text;
 using System.Diagnostics;
 using System.Threading;
 using System.Text.RegularExpressions;
+using SuperPutty.Data;
+
 
 namespace SuperPutty
 {

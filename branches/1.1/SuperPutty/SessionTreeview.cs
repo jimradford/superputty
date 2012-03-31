@@ -32,6 +32,8 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using Microsoft.Win32;
 using System.Xml.Serialization;
+using SuperPutty.Data;
+
 
 namespace SuperPutty
 {

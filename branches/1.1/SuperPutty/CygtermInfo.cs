@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
 using log4net;
+using SuperPutty.Data;
 
 namespace SuperPutty
 {

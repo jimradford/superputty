@@ -8,6 +8,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
+using SuperPutty.Data;
 
 namespace SuperPutty
 {

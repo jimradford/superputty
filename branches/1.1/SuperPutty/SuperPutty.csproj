@@ -82,6 +82,8 @@
     <Compile Include="ctlApplicationPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Data\LayoutData.cs" />
+    <Compile Include="Data\SessionData.cs" />
     <Compile Include="DebugLogViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,7 +108,6 @@
     <Compile Include="frmTransferStatus.Designer.cs">
       <DependentUpon>frmTransferStatus.cs</DependentUpon>
     </Compile>
-    <Compile Include="LayoutData.cs" />
     <Compile Include="LayoutsList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -224,7 +225,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="PscpTransfer.cs" />
-    <Compile Include="SessionData.cs" />
     <Compile Include="SessionTreeview.cs">
       <SubType>Form</SubType>
     </Compile>
