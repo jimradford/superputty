@@ -50,6 +50,7 @@
             this.importSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.saveLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveLayoutAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,7 +60,6 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutSuperPuTTYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dockPanel1 = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
@@ -68,7 +68,7 @@
             this.toolStripStatusLabelLayout = new System.Windows.Forms.ToolStripStatusLabel();
             this.openFileDialogLayout = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogLayout = new System.Windows.Forms.SaveFileDialog();
-            this.saveLayoutAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -85,7 +85,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(784, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1008, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -129,6 +129,13 @@
             this.saveLayoutToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.saveLayoutToolStripMenuItem.Text = "Save Layout";
             this.saveLayoutToolStripMenuItem.Click += new System.EventHandler(this.saveLayoutToolStripMenuItem_Click);
+            // 
+            // saveLayoutAsToolStripMenuItem
+            // 
+            this.saveLayoutAsToolStripMenuItem.Name = "saveLayoutAsToolStripMenuItem";
+            this.saveLayoutAsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.saveLayoutAsToolStripMenuItem.Text = "Save Layout As";
+            this.saveLayoutAsToolStripMenuItem.Click += new System.EventHandler(this.saveLayoutAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -184,7 +191,7 @@
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.documentationToolStripMenuItem,
-            this.toolStripSeparator1,
+            this.toolStripMenuItem5,
             this.aboutSuperPuTTYToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -196,11 +203,6 @@
             this.documentationToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.documentationToolStripMenuItem.Text = "Documentation";
             this.documentationToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
             // 
             // aboutSuperPuTTYToolStripMenuItem
             // 
@@ -220,7 +222,7 @@
             this.dockPanel1.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
             this.dockPanel1.Location = new System.Drawing.Point(0, 0);
             this.dockPanel1.Name = "dockPanel1";
-            this.dockPanel1.Size = new System.Drawing.Size(784, 518);
+            this.dockPanel1.Size = new System.Drawing.Size(1008, 684);
             dockPanelGradient1.EndColor = System.Drawing.Color.MidnightBlue;
             dockPanelGradient1.StartColor = System.Drawing.Color.Black;
             autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
@@ -276,13 +278,13 @@
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.dockPanel1);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.statusStrip1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(784, 540);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1008, 706);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.LeftToolStripPanelVisible = false;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
             this.toolStripContainer1.RightToolStripPanelVisible = false;
-            this.toolStripContainer1.Size = new System.Drawing.Size(784, 564);
+            this.toolStripContainer1.Size = new System.Drawing.Size(1008, 730);
             this.toolStripContainer1.TabIndex = 5;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -296,16 +298,16 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabelMessage,
             this.toolStripStatusLabelLayout});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 518);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 684);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(784, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip";
             // 
             // toolStripStatusLabelMessage
             // 
             this.toolStripStatusLabelMessage.Name = "toolStripStatusLabelMessage";
-            this.toolStripStatusLabelMessage.Size = new System.Drawing.Size(678, 17);
+            this.toolStripStatusLabelMessage.Size = new System.Drawing.Size(902, 17);
             this.toolStripStatusLabelMessage.Spring = true;
             this.toolStripStatusLabelMessage.Text = "<Status Message>";
             this.toolStripStatusLabelMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -325,19 +327,17 @@
             // 
             this.saveFileDialogLayout.Filter = "SuperPuTTY layout files|*.xml|All files|*.*";
             // 
-            // saveLayoutAsToolStripMenuItem
+            // toolStripMenuItem5
             // 
-            this.saveLayoutAsToolStripMenuItem.Name = "saveLayoutAsToolStripMenuItem";
-            this.saveLayoutAsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.saveLayoutAsToolStripMenuItem.Text = "Save Layout As";
-            this.saveLayoutAsToolStripMenuItem.Click += new System.EventHandler(this.saveLayoutAsToolStripMenuItem_Click);
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(172, 6);
             // 
             // frmSuperPutty
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.ClientSize = new System.Drawing.Size(784, 564);
+            this.ClientSize = new System.Drawing.Size(1008, 730);
             this.Controls.Add(this.toolStripContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmSuperPutty";
@@ -366,7 +366,6 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem documentationToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem aboutSuperPuTTYToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem importSettingsToolStripMenuItem;
@@ -386,6 +385,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelLayout;
         private System.Windows.Forms.ToolStripMenuItem logViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveLayoutAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
     }
 }
 

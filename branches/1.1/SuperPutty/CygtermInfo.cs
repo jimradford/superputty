@@ -34,7 +34,7 @@ namespace SuperPutty
             if (dir != null && exists)
             {
                 // start bash...will start in process start dir
-                this.Args = "-cygterm bash";
+                this.Args = "-cygterm bash -i";
                 this.StartingDir = dir;
             }
             else 

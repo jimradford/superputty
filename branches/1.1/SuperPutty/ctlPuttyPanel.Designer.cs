@@ -33,30 +33,28 @@
             this.newSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.clearScrollbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.resetTerminalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.closeSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.renameTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutPuttyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.renameTabToolStripMenuItem,
+            this.toolStripSeparator2,
             this.newSessionToolStripMenuItem,
             this.duplicateSessionToolStripMenuItem,
             this.toolStripSeparator3,
-            this.clearScrollbackToolStripMenuItem,
-            this.resetTerminalToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.closeSessionToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.aboutPuttyToolStripMenuItem});
+            this.aboutPuttyToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.closeSessionToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.ShowImageMargin = false;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(142, 176);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(142, 154);
             // 
             // newSessionToolStripMenuItem
             // 
@@ -78,20 +76,6 @@
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(138, 6);
             // 
-            // clearScrollbackToolStripMenuItem
-            // 
-            this.clearScrollbackToolStripMenuItem.Enabled = false;
-            this.clearScrollbackToolStripMenuItem.Name = "clearScrollbackToolStripMenuItem";
-            this.clearScrollbackToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
-            this.clearScrollbackToolStripMenuItem.Text = "Clear Scrollback";
-            // 
-            // resetTerminalToolStripMenuItem
-            // 
-            this.resetTerminalToolStripMenuItem.Enabled = false;
-            this.resetTerminalToolStripMenuItem.Name = "resetTerminalToolStripMenuItem";
-            this.resetTerminalToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
-            this.resetTerminalToolStripMenuItem.Text = "Reset Terminal";
-            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -104,10 +88,12 @@
             this.closeSessionToolStripMenuItem.Text = "Close";
             this.closeSessionToolStripMenuItem.Click += new System.EventHandler(this.closeSessionToolStripMenuItem_Click);
             // 
-            // toolStripSeparator1
+            // renameTabToolStripMenuItem
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(138, 6);
+            this.renameTabToolStripMenuItem.Name = "renameTabToolStripMenuItem";
+            this.renameTabToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.renameTabToolStripMenuItem.Text = "Rename";
+            this.renameTabToolStripMenuItem.Click += new System.EventHandler(this.renameTabToolStripMenuItem_Click);
             // 
             // aboutPuttyToolStripMenuItem
             // 
@@ -116,11 +102,16 @@
             this.aboutPuttyToolStripMenuItem.Text = "About Putty";
             this.aboutPuttyToolStripMenuItem.Click += new System.EventHandler(this.aboutPuttyToolStripMenuItem_Click);
             // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(138, 6);
+            // 
             // ctlPuttyPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 264);
+            this.ClientSize = new System.Drawing.Size(1339, 203);
             this.Name = "ctlPuttyPanel";
             this.TabPageContextMenuStrip = this.contextMenuStrip1;
             this.Text = "PuTTY Session";
@@ -134,13 +125,12 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem newSessionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem duplicateSessionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem clearScrollbackToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem resetTerminalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeSessionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutPuttyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem renameTabToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutPuttyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
 
     }
 }

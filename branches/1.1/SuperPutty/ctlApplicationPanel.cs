@@ -29,6 +29,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using WeifenLuo.WinFormsUI.Docking;
 using System.IO;
+using log4net;
 
 namespace SuperPutty
 {
@@ -36,6 +37,7 @@ namespace SuperPutty
 
     public class ApplicationPanel : System.Windows.Forms.Panel
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ApplicationPanel));
         
         // Win32 Exceptions which might occur trying to start the process
         const int ERROR_FILE_NOT_FOUND = 2;
@@ -1137,7 +1139,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         /// <param name="e">Not used</param>
         protected override void OnVisibleChanged(EventArgs e)
         {
-            if (!m_Created && !String.IsNullOrEmpty(ApplicationName)) // only allow one instance of the child
+            //Log.Debug("OnVisibleChanged");
+            if (!m_Created && !String.IsNullOrEmpty(ApplicationName) && this.Visible) // only allow one instance of the child
             {
                 m_Created = true;
                 m_AppWin = IntPtr.Zero;
@@ -1240,9 +1243,15 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         /// <param name="e"></param>
         protected override void OnResize(EventArgs e)
         {
+            // if valid
             if (this.m_AppWin != IntPtr.Zero)
             {
-                MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
+                // if not minimizing
+                if (this.Height > 0 && this.Width > 0)
+                {
+                    //Log.DebugFormat("MoveWindow: w={0}, h={1}, visible={2}", this.Width, this.Height, this.Visible);
+                    MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
+                }
             }
             base.OnResize(e);
         }
