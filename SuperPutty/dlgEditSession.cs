@@ -28,6 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Web;
+using SuperPutty.Data;
 
 namespace SuperPutty
 {

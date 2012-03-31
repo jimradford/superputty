@@ -26,7 +26,7 @@ using System.Net;
 using Microsoft.Win32;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace SuperPutty
+namespace SuperPutty.Data
 {
     public enum ConnectionProtocol
     {

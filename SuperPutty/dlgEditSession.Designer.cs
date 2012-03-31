@@ -139,7 +139,7 @@
             this.radioButtonCygterm.Name = "radioButtonCygterm";
             this.radioButtonCygterm.Size = new System.Drawing.Size(71, 19);
             this.radioButtonCygterm.TabIndex = 5;
-            this.radioButtonCygterm.Tag = SuperPutty.ConnectionProtocol.Cygterm;
+            this.radioButtonCygterm.Tag = SuperPutty.Data.ConnectionProtocol.Cygterm;
             this.radioButtonCygterm.Text = "Cygterm";
             this.radioButtonCygterm.UseVisualStyleBackColor = true;
             this.radioButtonCygterm.CheckedChanged += new System.EventHandler(this.radioButtonCygterm_CheckedChanged);
@@ -152,7 +152,7 @@
             this.radioButtonSerial.Name = "radioButtonSerial";
             this.radioButtonSerial.Size = new System.Drawing.Size(53, 19);
             this.radioButtonSerial.TabIndex = 4;
-            this.radioButtonSerial.Tag = SuperPutty.ConnectionProtocol.Serial;
+            this.radioButtonSerial.Tag = SuperPutty.Data.ConnectionProtocol.Serial;
             this.radioButtonSerial.Text = "Serial";
             this.radioButtonSerial.UseVisualStyleBackColor = true;
             // 
@@ -166,7 +166,7 @@
             this.radioButtonSSH.Size = new System.Drawing.Size(46, 19);
             this.radioButtonSSH.TabIndex = 3;
             this.radioButtonSSH.TabStop = true;
-            this.radioButtonSSH.Tag = SuperPutty.ConnectionProtocol.SSH;
+            this.radioButtonSSH.Tag = SuperPutty.Data.ConnectionProtocol.SSH;
             this.radioButtonSSH.Text = "SSH";
             this.radioButtonSSH.UseVisualStyleBackColor = true;
             // 
@@ -178,7 +178,7 @@
             this.radioButtonRlogin.Name = "radioButtonRlogin";
             this.radioButtonRlogin.Size = new System.Drawing.Size(62, 19);
             this.radioButtonRlogin.TabIndex = 2;
-            this.radioButtonRlogin.Tag = SuperPutty.ConnectionProtocol.Rlogin;
+            this.radioButtonRlogin.Tag = SuperPutty.Data.ConnectionProtocol.Rlogin;
             this.radioButtonRlogin.Text = "RLogin";
             this.radioButtonRlogin.UseVisualStyleBackColor = true;
             // 
@@ -190,7 +190,7 @@
             this.radioButtonTelnet.Name = "radioButtonTelnet";
             this.radioButtonTelnet.Size = new System.Drawing.Size(58, 19);
             this.radioButtonTelnet.TabIndex = 1;
-            this.radioButtonTelnet.Tag = SuperPutty.ConnectionProtocol.Telnet;
+            this.radioButtonTelnet.Tag = SuperPutty.Data.ConnectionProtocol.Telnet;
             this.radioButtonTelnet.Text = "Telnet";
             this.radioButtonTelnet.UseVisualStyleBackColor = true;
             // 
@@ -202,7 +202,7 @@
             this.radioButtonRaw.Name = "radioButtonRaw";
             this.radioButtonRaw.Size = new System.Drawing.Size(47, 19);
             this.radioButtonRaw.TabIndex = 3;
-            this.radioButtonRaw.Tag = SuperPutty.ConnectionProtocol.Raw;
+            this.radioButtonRaw.Tag = SuperPutty.Data.ConnectionProtocol.Raw;
             this.radioButtonRaw.Text = "Raw";
             this.radioButtonRaw.UseVisualStyleBackColor = true;
             // 

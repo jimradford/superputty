@@ -28,6 +28,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
+using SuperPutty.Data;
 
 namespace SuperPutty
 {
