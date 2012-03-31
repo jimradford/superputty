@@ -28,6 +28,8 @@ using System.Text;
 using System.Windows.Forms;
 using log4net;
 using System.Diagnostics;
+using System.Web;
+using System.Collections.Specialized;
 
 
 namespace SuperPutty
@@ -84,7 +86,7 @@ namespace SuperPutty
             this.applicationwrapper1.ApplicationWorkingDirectory = this.ApplicationWorkingDirectory;
             this.applicationwrapper1.Location = new System.Drawing.Point(0, 0);
             this.applicationwrapper1.Name = "applicationControl1";
-            this.applicationwrapper1.Size = new System.Drawing.Size(284, 264);
+            this.applicationwrapper1.Size = new System.Drawing.Size(this.Width, this.Height);
             this.applicationwrapper1.TabIndex = 0;            
             this.applicationwrapper1.m_CloseCallback = this.m_ApplicationExit;
             this.Controls.Add(this.applicationwrapper1);
@@ -107,7 +109,42 @@ namespace SuperPutty
 
         protected override string GetPersistString()
         {
-            return String.Format("{0}:{1}", base.GetPersistString(), m_Session.SessionName);
+            string str = String.Format("{0}?SessionName={1}&TabName={2}", 
+                this.GetType().FullName, 
+                HttpUtility.UrlEncodeUnicode(this.m_Session.SessionName), 
+                HttpUtility.UrlEncodeUnicode(this.Text));
+            return str;
+        }
+
+        public static ctlPuttyPanel FromPersistString(SessionTreeview view, String persistString)
+        {
+            ctlPuttyPanel panel = null;
+            if (persistString.StartsWith(typeof(ctlPuttyPanel).FullName))
+            {
+                int idx = persistString.IndexOf("?");
+                if (idx != -1)
+                {
+                    NameValueCollection data = HttpUtility.ParseQueryString(persistString.Substring(idx + 1));
+                    string sessionName = data["SessionName"];
+                    string tabName = data["TabName"];
+
+                    Log.InfoFormat("Restoring putty session, sessionName={0}, tabName={1}", sessionName, tabName);
+
+                    panel = view.NewPuttyPanel(sessionName);
+                    panel.Text = tabName;
+                }
+                else
+                {
+                    idx = persistString.IndexOf(":");
+                    if (idx != -1)
+                    {
+                        string sessionName = persistString.Substring(idx + 1);
+                        Log.InfoFormat("Restoring putty session, sessionName={0}", sessionName);
+                        panel = view.NewPuttyPanel(sessionName);
+                    }
+                }
+            }
+            return panel;
         }
 
         private void aboutPuttyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -122,6 +159,18 @@ namespace SuperPutty
         private void duplicateSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void renameTabToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dlgRenameTab dialog = new dlgRenameTab();
+            dialog.TabName = this.Text;
+            dialog.SessionName = this.m_Session.SessionName;
+
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                this.Text = dialog.TabName;
+            }
         }
     }
 }

@@ -87,7 +87,7 @@ namespace SuperPutty
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
         {
-            this.LoadLayout();
+            this.BeginInvoke(new Action(this.LoadLayout));
         }
 
         /// <summary>
@@ -216,6 +216,8 @@ namespace SuperPutty
                     toolStripStatusLabelLayout.Text = eventArgs.New.Name;
                     SuperPuTTY.ReportStatus("Loaded layout: {0}", eventArgs.New.FilePath);
                 }
+
+                // after all is done, cause a repaint to 
             }
         }
 
@@ -261,9 +263,16 @@ namespace SuperPutty
                 InitLogViewer();
                 return this.m_logViewer;
             }
-            else if (persistString.StartsWith(typeof(ctlPuttyPanel).FullName))
+            else
             {
                 // putty session
+                ctlPuttyPanel puttyPanel = ctlPuttyPanel.FromPersistString(m_Sessions, persistString);
+                if (puttyPanel != null)
+                {
+                    return puttyPanel;
+                }
+
+                /*
                 int idx = persistString.IndexOf(":");
                 if (idx != -1)
                 {
@@ -272,6 +281,7 @@ namespace SuperPutty
                     ctlPuttyPanel puttyPanel = m_Sessions.NewPuttyPanel(sessionName);
                     return puttyPanel;
                 }
+                 */
             }
             return null;
         }

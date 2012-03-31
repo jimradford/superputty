@@ -94,6 +94,12 @@
     <Compile Include="dlgMouseFeedback.Designer.cs">
       <DependentUpon>dlgMouseFeedback.cs</DependentUpon>
     </Compile>
+    <Compile Include="dlgRenameTab.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgRenameTab.Designer.cs">
+      <DependentUpon>dlgRenameTab.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmTransferStatus.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +168,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="dlgMouseFeedback.resx">
       <DependentUpon>dlgMouseFeedback.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgRenameTab.resx">
+      <DependentUpon>dlgRenameTab.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmTransferStatus.resx">
       <DependentUpon>frmTransferStatus.cs</DependentUpon>
