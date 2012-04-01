@@ -88,7 +88,7 @@ namespace SuperPutty
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
             MessageBox.Show(e.Exception.ToString(), "Application_ThreadException", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Log.ErrorFormat("Application_ThreadException", e.Exception);
+            Log.Error("Application_ThreadException", e.Exception);
         }
 
 
