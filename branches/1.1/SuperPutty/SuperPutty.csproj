@@ -96,11 +96,11 @@
     <Compile Include="dlgMouseFeedback.Designer.cs">
       <DependentUpon>dlgMouseFeedback.cs</DependentUpon>
     </Compile>
-    <Compile Include="dlgRenameTab.cs">
+    <Compile Include="dlgRenameItem.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgRenameTab.Designer.cs">
-      <DependentUpon>dlgRenameTab.cs</DependentUpon>
+    <Compile Include="dlgRenameItem.Designer.cs">
+      <DependentUpon>dlgRenameItem.cs</DependentUpon>
     </Compile>
     <Compile Include="frmTransferStatus.cs">
       <SubType>Form</SubType>
@@ -170,8 +170,8 @@
     <EmbeddedResource Include="dlgMouseFeedback.resx">
       <DependentUpon>dlgMouseFeedback.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgRenameTab.resx">
-      <DependentUpon>dlgRenameTab.cs</DependentUpon>
+    <EmbeddedResource Include="dlgRenameItem.resx">
+      <DependentUpon>dlgRenameItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmTransferStatus.resx">
       <DependentUpon>frmTransferStatus.cs</DependentUpon>
@@ -275,7 +275,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Lib\log4net.dll" />
   </ItemGroup>

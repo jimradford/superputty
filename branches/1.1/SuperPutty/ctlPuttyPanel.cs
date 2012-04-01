@@ -110,9 +110,9 @@ namespace SuperPutty
 
         protected override string GetPersistString()
         {
-            string str = String.Format("{0}?SessionName={1}&TabName={2}", 
+            string str = String.Format("{0}?SessionId={1}&TabName={2}", 
                 this.GetType().FullName, 
-                HttpUtility.UrlEncodeUnicode(this.m_Session.SessionName), 
+                HttpUtility.UrlEncodeUnicode(this.m_Session.SessionId), 
                 HttpUtility.UrlEncodeUnicode(this.Text));
             return str;
         }
@@ -126,12 +126,12 @@ namespace SuperPutty
                 if (idx != -1)
                 {
                     NameValueCollection data = HttpUtility.ParseQueryString(persistString.Substring(idx + 1));
-                    string sessionName = data["SessionName"];
+                    string sessionId = data["SessionId"] ?? data["SessionName"];
                     string tabName = data["TabName"];
 
-                    Log.InfoFormat("Restoring putty session, sessionName={0}, tabName={1}", sessionName, tabName);
+                    Log.InfoFormat("Restoring putty session, sessionId={0}, tabName={1}", sessionId, tabName);
 
-                    panel = view.NewPuttyPanel(sessionName);
+                    panel = view.NewPuttyPanel(sessionId);
                     panel.Text = tabName;
                 }
                 else
@@ -139,9 +139,9 @@ namespace SuperPutty
                     idx = persistString.IndexOf(":");
                     if (idx != -1)
                     {
-                        string sessionName = persistString.Substring(idx + 1);
-                        Log.InfoFormat("Restoring putty session, sessionName={0}", sessionName);
-                        panel = view.NewPuttyPanel(sessionName);
+                        string sessionId = persistString.Substring(idx + 1);
+                        Log.InfoFormat("Restoring putty session, sessionId={0}", sessionId);
+                        panel = view.NewPuttyPanel(sessionId);
                     }
                 }
             }
@@ -164,13 +164,13 @@ namespace SuperPutty
 
         private void renameTabToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            dlgRenameTab dialog = new dlgRenameTab();
-            dialog.TabName = this.Text;
-            dialog.SessionName = this.m_Session.SessionName;
+            dlgRenameItem dialog = new dlgRenameItem();
+            dialog.ItemName = this.Text;
+            dialog.DetailName = this.m_Session.SessionId;
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                this.Text = dialog.TabName;
+                this.Text = dialog.ItemName;
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace SuperPutty
 {
-    partial class dlgRenameTab
+    partial class dlgRenameItem
     {
         /// <summary>
         /// Required designer variable.
@@ -28,16 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.txtTabName = new System.Windows.Forms.TextBox();
-            this.labelSessionName = new System.Windows.Forms.Label();
+            this.txtItemName = new System.Windows.Forms.TextBox();
+            this.labelDetailName = new System.Windows.Forms.Label();
+            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(199, 44);
+            this.btnOK.Location = new System.Drawing.Point(202, 44);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 1;
@@ -49,7 +52,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(280, 44);
+            this.btnCancel.Location = new System.Drawing.Point(283, 44);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 2;
@@ -57,40 +60,49 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // txtTabName
+            // txtItemName
             // 
-            this.txtTabName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtItemName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtTabName.Location = new System.Drawing.Point(12, 12);
-            this.txtTabName.Name = "txtTabName";
-            this.txtTabName.Size = new System.Drawing.Size(343, 20);
-            this.txtTabName.TabIndex = 0;
+            this.txtItemName.Location = new System.Drawing.Point(17, 12);
+            this.txtItemName.Name = "txtItemName";
+            this.txtItemName.Size = new System.Drawing.Size(341, 20);
+            this.txtItemName.TabIndex = 0;
+            this.txtItemName.Validating += new System.ComponentModel.CancelEventHandler(this.txtItemName_Validating);
             // 
-            // labelSessionName
+            // labelDetailName
             // 
-            this.labelSessionName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.labelSessionName.AutoSize = true;
-            this.labelSessionName.Location = new System.Drawing.Point(12, 49);
-            this.labelSessionName.Name = "labelSessionName";
-            this.labelSessionName.Size = new System.Drawing.Size(84, 13);
-            this.labelSessionName.TabIndex = 4;
-            this.labelSessionName.Text = "<SessionName>";
+            this.labelDetailName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelDetailName.AutoSize = true;
+            this.labelDetailName.Enabled = false;
+            this.labelDetailName.Location = new System.Drawing.Point(14, 49);
+            this.labelDetailName.Name = "labelDetailName";
+            this.labelDetailName.Size = new System.Drawing.Size(84, 13);
+            this.labelDetailName.TabIndex = 4;
+            this.labelDetailName.Text = "<SessionName>";
             // 
-            // dlgRenameTab
+            // errorProvider
+            // 
+            this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+            this.errorProvider.ContainerControl = this;
+            // 
+            // dlgRenameItem
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(367, 79);
-            this.Controls.Add(this.labelSessionName);
-            this.Controls.Add(this.txtTabName);
+            this.ClientSize = new System.Drawing.Size(377, 79);
+            this.Controls.Add(this.labelDetailName);
+            this.Controls.Add(this.txtItemName);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "dlgRenameTab";
+            this.Name = "dlgRenameItem";
             this.Text = "Rename Tab";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.dlgRenameItem_FormClosing);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -100,7 +112,8 @@
 
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.TextBox txtTabName;
-        private System.Windows.Forms.Label labelSessionName;
+        private System.Windows.Forms.TextBox txtItemName;
+        private System.Windows.Forms.Label labelDetailName;
+        private System.Windows.Forms.ErrorProvider errorProvider;
     }
 }
