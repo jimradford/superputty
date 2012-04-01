@@ -25,6 +25,7 @@ using System.Text;
 using System.Net;
 using Microsoft.Win32;
 using WeifenLuo.WinFormsUI.Docking;
+using log4net;
 
 namespace SuperPutty.Data
 {
@@ -40,6 +41,8 @@ namespace SuperPutty.Data
 
     public class SessionData
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(SessionData));
+
         private string _OldName;
 
         public string OldName
@@ -53,8 +56,27 @@ namespace SuperPutty.Data
         {
             get { return _SessionName; }
             set { OldName = _SessionName; 
-                _SessionName = value; }
+                _SessionName = value;
+                if (SessionId == null)
+                {
+                    SessionId = value;
+                }
+            }
         }
+
+        /// <summary>
+        /// Full session id (includes path for session tree)
+        /// </summary>
+        private string _SessionId;
+        public string SessionId
+        {
+            get { return this._SessionId; }
+            set {
+                this.OldSessionId = SessionId;
+                this._SessionId = value;
+            }
+        }
+        public string OldSessionId { get; set; }
 
         private string _Host;
         public string Host
@@ -168,6 +190,11 @@ namespace SuperPutty.Data
                         key.SetValue("Last Dock", (int)this.LastDockstate);                    
 
                     key.SetValue("Auto Start", this.AutoStartSession);
+
+                    if (this.SessionId != null)
+                    {
+                        key.SetValue("SessionId", this.SessionId);
+                    }
                     key.Close();
                 }
                 else
@@ -181,18 +208,54 @@ namespace SuperPutty.Data
         {
             if (!String.IsNullOrEmpty(sessionName))
             {
+                Log.DebugFormat("Removing session, name={0}", sessionName);
                 RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Jim Radford\SuperPuTTY\Sessions", true);
                 try
                 {
-                    key.OpenSubKey(sessionName);
-                    key.DeleteSubKeyTree(sessionName);                    
-                    key.Close();
+                    if (key.OpenSubKey(sessionName) != null)
+                    {
+                        key.DeleteSubKeyTree(sessionName);
+                        key.Close();
+                    }
                 }
                 catch (UnauthorizedAccessException e)
                 {
                     Logger.Log(e);
                 }
             }
+        }
+
+        /// <summary>
+        /// Read any existing saved sessions from the registry, decode and populat a list containing the data
+        /// </summary>
+        /// <returns>A list containing the entries retrieved from the registry</returns>
+        public static List<SessionData> LoadSessionsFromRegistry()
+        {
+            List<SessionData> sessionList = new List<SessionData>();
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Jim Radford\SuperPuTTY\Sessions");
+            if (key != null)
+            {
+                string[] sessionKeys = key.GetSubKeyNames();
+                foreach (string session in sessionKeys)
+                {
+                    SessionData sessionData = new SessionData();
+                    RegistryKey itemKey = key.OpenSubKey(session);
+                    if (itemKey != null)
+                    {
+                        sessionData.Host = (string)itemKey.GetValue("Host", "");
+                        sessionData.Port = (int)itemKey.GetValue("Port", 22);
+                        sessionData.Proto = (ConnectionProtocol)Enum.Parse(typeof(ConnectionProtocol), (string)itemKey.GetValue("Proto", "SSH"));
+                        sessionData.PuttySession = (string)itemKey.GetValue("PuttySession", "Default Session");
+                        sessionData.SessionName = session;
+                        sessionData.SessionId = (string)itemKey.GetValue("SessionId", session);
+                        sessionData.Username = (string)itemKey.GetValue("Login", "");
+                        sessionData.LastDockstate = (DockState)itemKey.GetValue("Last Dock", DockState.Document);
+                        sessionData.AutoStartSession = bool.Parse((string)itemKey.GetValue("Auto Start", "False"));
+                        sessionList.Add(sessionData);
+                    }
+                }
+            }
+            return sessionList;
         }
     }
 }

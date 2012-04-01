@@ -33,14 +33,21 @@ using WeifenLuo.WinFormsUI.Docking;
 using Microsoft.Win32;
 using System.Xml.Serialization;
 using SuperPutty.Data;
+using log4net;
 
 
 namespace SuperPutty
 {
-    public partial class SessionTreeview : ToolWindow
+    public partial class SessionTreeview : ToolWindow, IComparer
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(SessionTreeview));
+
+        public const string SessionIdDelim = "/";
+
         private DockPanel m_DockPanel;
-        private Dictionary<string, SessionData> m_Sessions = new Dictionary<string, SessionData>();
+        private Dictionary<string, SessionData> m_SessionsById = new Dictionary<string, SessionData>();
+
+        TreeNode nodeRoot;
 
         /// <summary>
         /// Instantiate the treeview containing the sessions
@@ -52,6 +59,7 @@ namespace SuperPutty
         {
             m_DockPanel = dockPanel;
             InitializeComponent();
+            this.treeView1.TreeViewNodeSorter = this;
 
             // disable file transfers if pscp isn't configured.
             fileBrowserToolStripMenuItem.Enabled = frmSuperPutty.IsScpEnabled;
@@ -66,47 +74,24 @@ namespace SuperPutty
         public void LoadSessions()
         {
             treeView1.Nodes.Clear();
-            treeView1.Nodes.Add("root", "PuTTY Sessions", 0);
-            foreach (SessionData session in LoadSessionsFromRegistry())
+
+            this.nodeRoot = treeView1.Nodes.Add("root", "PuTTY Sessions", 0);
+            this.nodeRoot.ContextMenuStrip = this.contextMenuStripFolder;
+
+            foreach (SessionData session in SessionData.LoadSessionsFromRegistry())
             {
-                TreeNode addedNode = treeView1.Nodes["root"].Nodes.Add(session.SessionName, session.SessionName, 1, 1);
-                addedNode.Tag = session;
-                m_Sessions[session.SessionName] = session;
+                TreeNode nodeParent = this.nodeRoot;
+                if (session.SessionId != null && session.SessionId != session.SessionName)
+                {
+                    // take session id and create folder nodes
+                    nodeParent = FindOrCreateParentNode(session.SessionId);
+                }
+                AddSessionNode(nodeParent, session);
             }
             treeView1.ExpandAll();
         }
 
-        /// <summary>
-        /// Read any existing saved sessions from the registry, decode and populat a list containing the data
-        /// </summary>
-        /// <returns>A list containing the entries retrieved from the registry</returns>
-        private static List<SessionData> LoadSessionsFromRegistry()
-        {
-            List<SessionData> sessionList = new List<SessionData>();
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Jim Radford\SuperPuTTY\Sessions");
-            if (key != null)
-            {
-                string[] sessionKeys = key.GetSubKeyNames();
-                foreach (string session in sessionKeys)
-                {
-                    SessionData sessionData = new SessionData();
-                    RegistryKey itemKey = key.OpenSubKey(session);
-                    if (itemKey != null)
-                    {
-                        sessionData.Host = (string)itemKey.GetValue("Host", "");
-                        sessionData.Port = (int)itemKey.GetValue("Port", 22);
-                        sessionData.Proto = (ConnectionProtocol)Enum.Parse(typeof(ConnectionProtocol), (string)itemKey.GetValue("Proto", "SSH"));
-                        sessionData.PuttySession = (string)itemKey.GetValue("PuttySession", "Default Session");
-                        sessionData.SessionName = session;
-                        sessionData.Username = (string)itemKey.GetValue("Login", "");
-                        sessionData.LastDockstate = (DockState)itemKey.GetValue("Last Dock", DockState.Document);
-                        sessionData.AutoStartSession = bool.Parse((string)itemKey.GetValue("Auto Start", "False"));
-                        sessionList.Add(sessionData);
-                    }
-                }
-            }
-            return sessionList;
-        }
+
 
         /// <summary>
         /// Save sessions from the registry to an XML file for importing later
@@ -114,7 +99,7 @@ namespace SuperPutty
         /// <param name="fileName">The path and name of the file to save the entries to</param>
         public static void ExportSessionsToXml(string fileName)
         {
-            List<SessionData> sessions = LoadSessionsFromRegistry();
+            List<SessionData> sessions = SessionData.LoadSessionsFromRegistry();
             XmlSerializer s = new XmlSerializer(sessions.GetType());
             TextWriter w = new StreamWriter(fileName);
             s.Serialize(w, sessions);
@@ -145,53 +130,24 @@ namespace SuperPutty
         /// <param name="e">An Empty EventArgs object</param>
         private void treeView1_DoubleClick(object sender, EventArgs e)
         {
-            if (treeView1.SelectedNode.ImageIndex > 0)
+            TreeNode node = this.treeView1.SelectedNode;
+            if (IsSessionNode(node))
             {
-                SessionData sessionData = (SessionData)treeView1.SelectedNode.Tag;
+                SessionData sessionData = (SessionData) node.Tag;
                 
                 ctlPuttyPanel sessionPanel = null;
-                /*
-                // This is the callback fired when the panel containing the terminal is closed
-                // We use this to save the last docking location
-                PuttyClosedCallback callback = delegate(bool closed)
-                {
-                    if (sessionPanel != null)
-                    {
-                        // save the last dockstate (if it has been changed)
-                        if (sessionData.LastDockstate != sessionPanel.DockState
-                            && sessionPanel.DockState != DockState.Unknown
-                            && sessionPanel.DockState != DockState.Hidden)
-                        {
-                            sessionData.LastDockstate = sessionPanel.DockState;
-                            sessionData.SaveToRegistry();
-                        }
-
-                        if (sessionPanel.InvokeRequired)
-                        {
-                            this.BeginInvoke((MethodInvoker)delegate()
-                            {
-                                sessionPanel.Close();
-                            });
-                        }
-                        else
-                        {
-                            sessionPanel.Close();
-                        }
-                    }
-                };
-
-                sessionPanel = new ctlPuttyPanel(sessionData, callback);*/
                 sessionPanel = NewPuttyPanel(sessionData);
                 sessionPanel.Show(m_DockPanel, sessionData.LastDockstate);
             }
         }
 
-        public ctlPuttyPanel NewPuttyPanel(string sessionName)
+        public ctlPuttyPanel NewPuttyPanel(string sessionId)
         {
             SessionData session;
-            m_Sessions.TryGetValue(sessionName, out session);
+            m_SessionsById.TryGetValue(sessionId, out session);
             return session == null ? null : NewPuttyPanel(session);
         }
+
         public ctlPuttyPanel NewPuttyPanel(SessionData sessionData)
         {
             ctlPuttyPanel sessionPanel = null;
@@ -257,17 +213,25 @@ namespace SuperPutty
                 /* "node" will only be assigned if we're editing an existing session entry */
                 if (node == null)
                 {
-                    node = treeView1.Nodes["root"].Nodes.Add(session.SessionName, session.SessionName, 1, 1);
+                    node = AddSessionNode(treeView1.SelectedNode, session);
+                    //node = treeView1.Nodes["root"].Nodes.Add(session.SessionName, session.SessionName, 1, 1);
+                    if (node != null)
+                    {
+                        node.Tag = session;
+                    }
                 }
                 else
                 {
                     // handle renames
                     node.Text = session.SessionName;
-                    m_Sessions.Remove(session.OldName);
-                    m_Sessions[session.SessionName] = session;
+                    m_SessionsById.Remove(session.OldSessionId);
+                    m_SessionsById[session.SessionId] = session;
+
+                    UpdateSessionId(node, session);
+                    ResortNodes();
                 }
 
-                node.Tag = session;
+                //node.Tag = session;
                 treeView1.ExpandAll();
             }
         }
@@ -298,7 +262,7 @@ namespace SuperPutty
             {
                 session.RegistryRemove(session.SessionName);
                 treeView1.SelectedNode.Remove();
-                m_Sessions.Remove(session.SessionName);
+                m_SessionsById.Remove(session.SessionId);
             }
         }
 
@@ -331,7 +295,7 @@ namespace SuperPutty
         }
 
         /// <summary>
-        /// Longcut for double clicking an entries node.
+        /// Shortcut for double clicking an entries node.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -340,6 +304,299 @@ namespace SuperPutty
             treeView1_DoubleClick(null, EventArgs.Empty);
         }
 
+        private void newFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = this.treeView1.SelectedNode;
+            if (node != null)
+            {
+                dlgRenameItem dialog = new dlgRenameItem();
+                dialog.Text = "New Folder";
+                dialog.ItemName = "New Folder";
+                dialog.DetailName = "";
+                dialog.ItemNameValidator = delegate(string txt, out string error)
+                {
+                    error = String.Empty;
+                    if (node.Nodes.ContainsKey(txt))
+                    {
+                        error = "Node with same name exists";
+                    }
+                    else if (txt.Contains(SessionIdDelim))
+                    {
+                        error = "Invalid character ( " + SessionIdDelim + " ) in name";
+                    }
+
+                    return string.IsNullOrEmpty(error);
+                };
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    AddFolderNode(node, dialog.ItemName);
+                }
+            }
+        }
+
+        private void renameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = this.treeView1.SelectedNode;
+            if (node != null)
+            {
+                dlgRenameItem dialog = new dlgRenameItem();
+                dialog.Text = "Rename Folder";
+                dialog.ItemName = node.Text;
+                dialog.DetailName = "";
+                dialog.ItemNameValidator = delegate(string txt, out string error)
+                {
+                    error = String.Empty;
+                    if (node.Parent.Nodes.ContainsKey(txt) && txt != node.Text)
+                    {
+                        error = "Node with same name exists";
+                    }
+                    else if (txt.Contains(SessionIdDelim))
+                    {
+                        error = "Invalid character ( " + SessionIdDelim + " ) in name";
+                    }
+                    return string.IsNullOrEmpty(error);
+                };
+                if (dialog.ShowDialog(this) == DialogResult.OK && node.Text != dialog.ItemName)
+                {
+                    node.Text = dialog.ItemName;
+                    UpdateSessionId(node);
+                    ResortNodes();
+                }
+            }
+        }
+
+        private void removeFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = this.treeView1.SelectedNode;
+            if (node != null && node.Nodes.Count == 0)
+            {
+                node.Remove();
+                SuperPuTTY.ReportStatus("Removed Folder, {0}", node.Text);
+
+            }
+        }
+
+        private void contextMenuStripFolder_Opening(object sender, CancelEventArgs e)
+        {
+            bool isRootNode = this.treeView1.SelectedNode != this.nodeRoot;
+            this.renameToolStripMenuItem.Enabled = isRootNode;
+            // TODO: handle removing folder and nodes in it recursively
+            this.removeFolderToolStripMenuItem.Enabled = isRootNode && this.treeView1.SelectedNode.Nodes.Count == 0;
+        }
+
+        #region Node helpers
+
+        TreeNode AddSessionNode(TreeNode parentNode, SessionData session)
+        {
+            TreeNode addedNode = null;
+            if (parentNode.Nodes.ContainsKey(session.SessionName))
+            {
+                SuperPuTTY.ReportStatus("Node with the same name exists.  New node ({0}) NOT added", session.SessionName);
+            }
+            else
+            {
+                SuperPuTTY.ReportStatus("Adding new session, {1}.  parent={0}", parentNode.Text, session.SessionName);
+                addedNode = parentNode.Nodes.Add(session.SessionName, session.SessionName, 1, 1);
+                addedNode.Tag = session;
+                addedNode.ContextMenuStrip = this.contextMenuStripAddTreeItem;
+                parentNode.Expand();
+
+                m_SessionsById[session.SessionId] = session;
+
+                UpdateSessionId(addedNode, session);
+            }
+
+            return addedNode;
+        }
+
+        TreeNode AddFolderNode(TreeNode parentNode, String nodeName)
+        {
+            TreeNode nodeNew = null;
+            if (parentNode.Nodes.ContainsKey(nodeName))
+            {
+                SuperPuTTY.ReportStatus("Node with the same name exists.  New node ({0}) NOT added", nodeName);
+            }
+            else
+            {
+                SuperPuTTY.ReportStatus("Adding new folder, {1}.  parent={0}", parentNode.Text, nodeName);
+                nodeNew = parentNode.Nodes.Add(nodeName, nodeName, 0);
+                nodeNew.ContextMenuStrip = this.contextMenuStripFolder;
+                parentNode.Expand();
+            }
+            return nodeNew;
+        }
+
+        bool IsSessionNode(TreeNode node)
+        {
+            return node != null && node.Tag is SessionData;
+        }
+
+        bool IsFolderNode(TreeNode node)
+        {
+            return !IsSessionNode(node);
+        }
+
+        private void UpdateSessionId(TreeNode parentNode)
+        {
+            foreach (TreeNode node in parentNode.Nodes)
+            {
+                if (IsSessionNode(node))
+                {
+                    UpdateSessionId(node, (SessionData)node.Tag);
+                }
+                else
+                {
+                    UpdateSessionId(node);
+                }
+            }
+        }
+        private void UpdateSessionId(TreeNode addedNode, SessionData session)
+        {
+            // set session id as node path
+            List<string> parentNodeNames = new List<string>();
+            for (TreeNode node = addedNode; node.Parent != null; node = node.Parent)
+            {
+                parentNodeNames.Add(node.Text);
+            }
+            parentNodeNames.Reverse();
+            String sessionId = String.Join(SessionIdDelim, parentNodeNames.ToArray());
+            //Log.InfoFormat("sessionId={0}", sessionId);
+            session.SessionId = sessionId;
+            session.SaveToRegistry();
+        }
+
+        TreeNode FindOrCreateParentNode(string sessionId)
+        {
+            Log.InfoFormat("Finding Node for sessionId ({0})", sessionId);
+            TreeNode nodeParent = this.nodeRoot;
+
+            string[] parts = sessionId.Split(SessionIdDelim.ToCharArray());
+            if (parts.Length > 1)
+            {
+                for (int i = 0; i < parts.Length - 1; i++)
+                {
+                    string part = parts[i];
+                    TreeNode node = nodeParent.Nodes[part];
+                    if (node == null)
+                    {
+                        nodeParent = this.AddFolderNode(nodeParent, part);
+                    }
+                    else if (IsFolderNode(node))
+                    {
+                        nodeParent = node;
+                    }
+                }
+            }
+
+            Log.InfoFormat("Returning node ({0})", nodeParent.Text);
+            return nodeParent;
+        }
+
+        public int Compare(object x, object y)
+        {
+            TreeNode tx = x as TreeNode;
+            TreeNode ty = y as TreeNode;
+
+            return string.Compare(tx.Text, ty.Text);
+
+        }
+
+        void ResortNodes()
+        {
+            this.treeView1.TreeViewNodeSorter = null;
+            this.treeView1.TreeViewNodeSorter = this;
+        }
+
+        #endregion
+
+        #region Drag Drop
+
+        private void treeView1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && Control.ModifierKeys == Keys.Shift)
+            {
+                // Get the tree.
+                TreeView tree = (TreeView)sender;
+
+                // Get the node underneath the mouse.
+                TreeNode node = tree.GetNodeAt(e.X, e.Y);
+                tree.SelectedNode = node;
+
+                // Start the drag-and-drop operation with a cloned copy of the node.
+                if (node != null && IsSessionNode(node))
+                {
+                    this.treeView1.DoDragDrop(node, DragDropEffects.Copy);
+                }
+            }
+        }
+
+        private void treeView1_DragOver(object sender, DragEventArgs e)
+        {
+            // Get the tree.
+            TreeView tree = (TreeView)sender;
+
+            // Drag and drop denied by default.
+            e.Effect = DragDropEffects.None;
+
+            // Is it a valid format?
+            TreeNode nodePayload = (TreeNode) e.Data.GetData(typeof(TreeNode));
+            if (nodePayload != null)
+            {
+                // Get the screen point.
+                Point pt = new Point(e.X, e.Y);
+
+                // Convert to a point in the TreeView's coordinate system.
+                pt = tree.PointToClient(pt);
+
+                TreeNode node = tree.GetNodeAt(pt);
+                // Is the mouse over a valid node?
+                if (node != null)
+                {
+                    tree.SelectedNode = node;
+                    // folder that is not the same parent and new node name is not already present
+                    if (IsFolderNode(node) && node != nodePayload.Parent && !node.Nodes.ContainsKey(nodePayload.Text))
+                    {
+                        e.Effect = DragDropEffects.Copy;
+                    }
+                }
+            }
+        }
+
+        private void treeView1_DragDrop(object sender, DragEventArgs e)
+        {
+            // Get the tree.
+            TreeView tree = (TreeView)sender;
+
+            // Get the screen point.
+            Point pt = new Point(e.X, e.Y);
+
+            // Convert to a point in the TreeView's coordinate system.
+            pt = tree.PointToClient(pt);
+
+            // Get the node underneath the mouse.
+            TreeNode node = tree.GetNodeAt(pt);
+
+            if (IsFolderNode(node))
+            {
+                Log.DebugFormat("Drag drop");
+
+                TreeNode nodePayload = (TreeNode)e.Data.GetData(typeof(TreeNode));
+                TreeNode nodeNew = (TreeNode)nodePayload.Clone();
+
+                // add new
+                node.Nodes.Add(nodeNew);
+                UpdateSessionId(nodeNew, (SessionData)nodeNew.Tag);
+
+                // remove old
+                nodePayload.Remove();
+
+                // Show the newly added node if it is not already visible.
+                node.Expand();
+            }
+        }
+
+        #endregion
 
     }
+
 }
