@@ -33,6 +33,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using SuperPutty.Properties;
 using SuperPutty.Data;
 using log4net;
+using System.Reflection;
 
 namespace SuperPutty
 {
@@ -83,6 +84,8 @@ namespace SuperPutty
 
             // Hook into LayoutChanged
             SuperPuTTY.CurrentLayoutChanged += new Action<LayoutChangedEventArgs>(SuperPuTTY_CurrentLayoutChanged);
+
+            this.toolStripStatusLabelVersion.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
 
