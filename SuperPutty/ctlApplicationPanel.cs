@@ -1249,7 +1249,10 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 // if not minimizing
                 if (this.Height > 0 && this.Width > 0)
                 {
-                    //Log.DebugFormat("MoveWindow: w={0}, h={1}, visible={2}", this.Width, this.Height, this.Visible);
+                    if (Log.IsDebugEnabled)
+                    {
+                        Log.DebugFormat("MoveWindow: w={0}, h={1}, visible={2}", this.Width, this.Height, this.Visible);
+                    }
                     MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
                 }
             }
