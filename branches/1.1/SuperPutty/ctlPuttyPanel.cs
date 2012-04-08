@@ -86,7 +86,7 @@ namespace SuperPutty
             this.applicationwrapper1.ApplicationParameters = this.ApplicationParameters;
             this.applicationwrapper1.ApplicationWorkingDirectory = this.ApplicationWorkingDirectory;
             this.applicationwrapper1.Location = new System.Drawing.Point(0, 0);
-            this.applicationwrapper1.Name = "applicationControl1";
+            this.applicationwrapper1.Name = this.m_Session.SessionId; // "applicationControl1";
             this.applicationwrapper1.Size = new System.Drawing.Size(this.Width, this.Height);
             this.applicationwrapper1.TabIndex = 0;            
             this.applicationwrapper1.m_CloseCallback = this.m_ApplicationExit;
@@ -132,7 +132,14 @@ namespace SuperPutty
                     Log.InfoFormat("Restoring putty session, sessionId={0}, tabName={1}", sessionId, tabName);
 
                     panel = view.NewPuttyPanel(sessionId);
-                    panel.Text = tabName;
+                    if (panel == null)
+                    {
+                        Log.WarnFormat("Could not restore putty session, sessionId={0}", sessionId);
+                    }
+                    else
+                    {
+                        panel.Text = tabName;
+                    }
                 }
                 else
                 {
