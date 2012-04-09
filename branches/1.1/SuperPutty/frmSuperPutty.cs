@@ -82,8 +82,8 @@ namespace SuperPutty
             SuperPuTTY.StatusEvent += new Action<string>(delegate(String msg) { this.toolStripStatusLabelMessage.Text = msg; });
             SuperPuTTY.ReportStatus("Ready");
 
-            // Hook into LayoutChanged
-            SuperPuTTY.CurrentLayoutChanged += new Action<LayoutChangedEventArgs>(SuperPuTTY_CurrentLayoutChanged);
+            // Hook into LayoutChanging/Changed
+            SuperPuTTY.LayoutChanging += new EventHandler<LayoutChangedEventArgs>(SuperPuTTY_LayoutChanging);
 
             this.toolStripStatusLabelVersion.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
@@ -167,7 +167,7 @@ namespace SuperPutty
             SuperPuTTY.LoadLayout(SuperPuTTY.StartingLayout);
         }
 
-        void SuperPuTTY_CurrentLayoutChanged(LayoutChangedEventArgs eventArgs)
+        void SuperPuTTY_LayoutChanging(object sender, LayoutChangedEventArgs eventArgs)
         {
             if (eventArgs.IsNewLayoutAlreadyActive)
             {
