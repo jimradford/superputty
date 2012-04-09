@@ -26,6 +26,7 @@ using System.Net;
 using Microsoft.Win32;
 using WeifenLuo.WinFormsUI.Docking;
 using log4net;
+using System.Xml.Serialization;
 
 namespace SuperPutty.Data
 {
@@ -43,8 +44,25 @@ namespace SuperPutty.Data
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SessionData));
 
-        private string _OldName;
 
+        /// <summary>
+        /// Full session id (includes path for session tree)
+        /// </summary>
+        private string _SessionId;
+        [XmlAttribute]
+        public string SessionId
+        {
+            get { return this._SessionId; }
+            set
+            {
+                this.OldSessionId = SessionId;
+                this._SessionId = value;
+            }
+        }
+        internal string OldSessionId { get; set; }
+
+        private string _OldName;
+        [XmlIgnore]
         public string OldName
         {
             get { return _OldName; }
@@ -52,6 +70,7 @@ namespace SuperPutty.Data
         }
 
         private string _SessionName;
+        [XmlAttribute]
         public string SessionName
         {
             get { return _SessionName; }
@@ -64,21 +83,9 @@ namespace SuperPutty.Data
             }
         }
 
-        /// <summary>
-        /// Full session id (includes path for session tree)
-        /// </summary>
-        private string _SessionId;
-        public string SessionId
-        {
-            get { return this._SessionId; }
-            set {
-                this.OldSessionId = SessionId;
-                this._SessionId = value;
-            }
-        }
-        public string OldSessionId { get; set; }
 
         private string _Host;
+        [XmlAttribute]
         public string Host
         {
             get { return _Host; }
@@ -86,6 +93,7 @@ namespace SuperPutty.Data
         }
 
         private int _Port;
+        [XmlAttribute]
         public int Port
         {
             get { return _Port; }
@@ -93,6 +101,7 @@ namespace SuperPutty.Data
         }
 
         private ConnectionProtocol _Proto;
+        [XmlAttribute]
         public ConnectionProtocol Proto
         {
             get { return _Proto; }
@@ -100,6 +109,7 @@ namespace SuperPutty.Data
         }
 
         private string _PuttySession;
+        [XmlAttribute]
         public string PuttySession
         {
             get { return _PuttySession; }
@@ -107,6 +117,7 @@ namespace SuperPutty.Data
         }
 
         private string _Username;
+        [XmlAttribute]
         public string Username
         {
             get { return _Username; }
@@ -114,20 +125,23 @@ namespace SuperPutty.Data
         }
 
         private string _Password;
+        [XmlIgnore]
         public string Password
         {
             get { return _Password; }
             set { _Password = value; }
         }
 
+        /* Unused...ignore for now
         private string _LastPath = ".";
         public string LastPath
         {
             get { return _LastPath; }
             set { _LastPath = value; }
-        }
+        }*/
 
         private DockState m_LastDockstate = DockState.Document;
+        [XmlIgnore]
         public DockState LastDockstate
         {
             get { return m_LastDockstate; }
@@ -135,6 +149,7 @@ namespace SuperPutty.Data
         }
 
         private bool m_AutoStartSession = false;
+        [XmlIgnore]
         public bool AutoStartSession
         {
             get { return m_AutoStartSession; }
@@ -184,7 +199,7 @@ namespace SuperPutty.Data
                     if(!String.IsNullOrEmpty(this.Username))
                         key.SetValue("Login", this.Username);
 
-                    key.SetValue("Last Path", this.LastPath);
+                    //key.SetValue("Last Path", this.LastPath);
 
                     if(this.LastDockstate != DockState.Hidden && this.LastDockstate != DockState.Unknown)
                         key.SetValue("Last Dock", (int)this.LastDockstate);                    
@@ -226,7 +241,7 @@ namespace SuperPutty.Data
         }
 
         /// <summary>
-        /// Read any existing saved sessions from the registry, decode and populat a list containing the data
+        /// Read any existing saved sessions from the registry, decode and populate a list containing the data
         /// </summary>
         /// <returns>A list containing the entries retrieved from the registry</returns>
         public static List<SessionData> LoadSessionsFromRegistry()
@@ -256,6 +271,11 @@ namespace SuperPutty.Data
                 }
             }
             return sessionList;
+        }
+
+        public static void SaveAsXml(IEnumerable<SessionData> sessions, string filePath)
+        {
+            // use datatable to create a compact xml
         }
     }
 }
