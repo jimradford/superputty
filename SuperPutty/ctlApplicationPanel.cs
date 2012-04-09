@@ -1108,6 +1108,24 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
         #endregion
 
+        public ApplicationPanel()
+        {
+            this.Disposed += new EventHandler(ApplicationPanel_Disposed);
+            SuperPuTTY.LayoutChanged += new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
+        }
+
+        void ApplicationPanel_Disposed(object sender, EventArgs e)
+        {
+            this.Disposed -= new EventHandler(ApplicationPanel_Disposed);
+            SuperPuTTY.LayoutChanged -= new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
+        }
+
+        void SuperPuTTY_LayoutChanged(object sender, Data.LayoutChangedEventArgs e)
+        {
+            // move 1x after we're done loading
+            this.MoveWindow("LayoutChanged");
+        }
+
         #region Base Overrides
        
         /// <summary>
@@ -1140,7 +1158,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         protected override void OnVisibleChanged(EventArgs e)
         {
             //Log.Debug("OnVisibleChanged");
-            if (!m_Created && !String.IsNullOrEmpty(ApplicationName) && this.Visible) // only allow one instance of the child
+            if (!m_Created && !String.IsNullOrEmpty(ApplicationName)) // only allow one instance of the child
             {
                 m_Created = true;
                 m_AppWin = IntPtr.Zero;
@@ -1167,8 +1185,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     m_Process.Start();
 
                     // Wait for application to start and become idle
-                    m_Process.WaitForInputIdle();                    
-                    m_AppWin = m_Process.MainWindowHandle;                   
+                    m_Process.WaitForInputIdle();
+                    m_AppWin = m_Process.MainWindowHandle;
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -1208,16 +1226,19 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
                 // set window parameters (how it's displayed)
                 long lStyle = GetWindowLong(m_AppWin, GWL_STYLE);
-                lStyle &= ~(WS_BORDER | WS_THICKFRAME); 
+                lStyle &= ~(WS_BORDER | WS_THICKFRAME);
                 SetWindowLong(m_AppWin, GWL_STYLE, lStyle);
-
+            }
+            if (this.Visible && this.m_Created)
+            {
                 // Move the child so it's located over the parent
-                MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
-         
+                this.MoveWindow("OnVisChanged");
+                //MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
             }
                   
             base.OnVisibleChanged(e);
         }
+
         
         /// <summary>
         /// Send a close message to the hosted application window when the parent is destroyed
@@ -1246,17 +1267,27 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             // if valid
             if (this.m_AppWin != IntPtr.Zero)
             {
-                // if not minimizing
-                if (this.Height > 0 && this.Width > 0)
+                // if not minimizing && visible
+                if (this.Height > 0 && this.Width > 0 && this.Visible)
                 {
-                    if (Log.IsDebugEnabled)
-                    {
-                        Log.DebugFormat("MoveWindow: w={0}, h={1}, visible={2}", this.Width, this.Height, this.Visible);
-                    }
-                    MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
+                    MoveWindow("OnResize");
                 }
             }
             base.OnResize(e);
+        }
+
+        private void MoveWindow(string src)
+        {
+
+            if (!SuperPuTTY.IsLayoutChanging)
+            {
+                if (Log.IsDebugEnabled)
+                {
+                    Log.DebugFormat("MoveWindow [{3,-15}{4,20}] w={0,4}, h={1,4}, visible={2}", this.Width, this.Height, this.Visible, src, this.Name);
+                }
+
+                MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, this.Visible);
+            }
         }
 
         #endregion        

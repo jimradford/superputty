@@ -19,10 +19,13 @@ namespace SuperPutty
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SuperPuTTY));
 
-        public static event Action<LayoutChangedEventArgs> CurrentLayoutChanged;
+        public static event EventHandler<LayoutChangedEventArgs> LayoutChanging;
+        public static event EventHandler<LayoutChangedEventArgs> LayoutChanged;
+
         public static event Action<String> StatusEvent;
 
         static BindingList<LayoutData> layouts = new BindingList<LayoutData>();
+        static SortedList<string, SessionData> sessions = new SortedList<string, SessionData>();
 
         public static void Initialize()
         {
@@ -31,6 +34,7 @@ namespace SuperPutty
             SuperPuTTY.IsFirstRun = String.IsNullOrEmpty(Settings.PuttyExe);
             CommandLine = new CommandLineOptions();
             LoadLayouts();
+            //LoadSessions();
 
             Log.Info("Initialized");
         }
@@ -38,6 +42,7 @@ namespace SuperPutty
         public static void Shutdown()
         {
             Log.Info("Shutting down...");
+            //SaveSessions();
         }
 
         public static void ReportStatus(String status, params Object[] args)
@@ -52,6 +57,8 @@ namespace SuperPutty
         }
 
         #region Layouts
+
+        public static bool IsLayoutChanging { get; private set; }
 
         public static void AddLayout(String file)
         {
@@ -134,20 +141,39 @@ namespace SuperPutty
         public static void LoadLayout(LayoutData layout)
         {
             LoadLayout(layout, false);
+
         }
 
         public static void LoadLayout(LayoutData layout, bool isNewLayoutAlreadyActive)
         {
-            if (CurrentLayoutChanged != null)
+            Log.InfoFormat("LoadLayout: layout={0}, isNewLayoutAlreadyActive={1}", layout.Name, isNewLayoutAlreadyActive);
+            LayoutChangedEventArgs args = new LayoutChangedEventArgs
             {
-                LayoutChangedEventArgs args = new LayoutChangedEventArgs 
-                { 
-                    New = layout, 
-                    Old = CurrentLayout, 
-                    IsNewLayoutAlreadyActive = isNewLayoutAlreadyActive 
-                };
+                New = layout,
+                Old = CurrentLayout,
+                IsNewLayoutAlreadyActive = isNewLayoutAlreadyActive
+            };
+
+            try
+            {
+                IsLayoutChanging = true;
+
+                if (LayoutChanging != null)
+                {
+                    LayoutChanging(typeof(SuperPuTTY), args);
+                }
+
+            }
+            finally
+            {
+                IsLayoutChanging = false;
+            }
+
+
+            if (LayoutChanged != null)
+            {
                 CurrentLayout = layout;
-                CurrentLayoutChanged(args);
+                LayoutChanged(typeof(SuperPuTTY), args);
             }
         }
 
@@ -157,6 +183,63 @@ namespace SuperPutty
             Process.Start(Assembly.GetExecutingAssembly().Location, "-layout \"" + layout + "\"");
         }
 
+
+        #endregion
+
+        #region Sessions
+
+        public static void LoadSessions()
+        {
+            Log.InfoFormat("Loading all sessions");
+            foreach (SessionData session in SessionData.LoadSessionsFromRegistry())
+            {
+                AddSession(session);
+            }
+        }
+
+        public static void SaveSessions()
+        {
+            Log.InfoFormat("Saving all sessions");
+            foreach (SessionData session in sessions.Values)
+            {
+                session.SaveToRegistry();
+            }
+        }
+
+        public static SessionData RemoveSession(string sessionId)
+        {
+            SessionData session = GetSessionById(sessionId);
+            sessions.Remove(sessionId);
+            return session;
+        }
+
+        public static SessionData GetSessionById(string sessionId)
+        {
+            SessionData session;
+            sessions.TryGetValue(sessionId, out session);
+            return session;
+        }
+
+        public static bool AddSession(SessionData session)
+        {
+            bool success = false;
+            if (GetSessionById(session.SessionId) == null)
+            {
+                Log.InfoFormat("Added Session, id={0}", session.SessionId);
+                sessions.Add(session.SessionId, session);
+                success = true;
+            }
+            else
+            {
+                Log.InfoFormat("Failed to Add Session, id={0}.  Session already exists", session.SessionId);
+            }
+            return success;
+        }
+
+        public static List<SessionData> GetAllSessions()
+        {
+            return sessions.Values.ToList();
+        }
 
         #endregion
 
