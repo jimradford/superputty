@@ -45,7 +45,7 @@ namespace SuperPutty
         public const string SessionIdDelim = "/";
 
         private DockPanel m_DockPanel;
-        private Dictionary<string, SessionData> m_SessionsById = new Dictionary<string, SessionData>();
+        //private Dictionary<string, SessionData> m_SessionsById = new Dictionary<string, SessionData>();
 
         TreeNode nodeRoot;
 
@@ -78,7 +78,7 @@ namespace SuperPutty
             this.nodeRoot = treeView1.Nodes.Add("root", "PuTTY Sessions", 0);
             this.nodeRoot.ContextMenuStrip = this.contextMenuStripFolder;
 
-            foreach (SessionData session in SessionData.LoadSessionsFromRegistry())
+            foreach (SessionData session in SuperPuTTY.GetAllSessions())
             {
                 TreeNode nodeParent = this.nodeRoot;
                 if (session.SessionId != null && session.SessionId != session.SessionName)
@@ -86,7 +86,7 @@ namespace SuperPutty
                     // take session id and create folder nodes
                     nodeParent = FindOrCreateParentNode(session.SessionId);
                 }
-                AddSessionNode(nodeParent, session);
+                AddSessionNode(nodeParent, session, true);
             }
             treeView1.ExpandAll();
         }
@@ -143,44 +143,45 @@ namespace SuperPutty
 
         public ctlPuttyPanel NewPuttyPanel(string sessionId)
         {
-            SessionData session;
-            m_SessionsById.TryGetValue(sessionId, out session);
+            SessionData session = SuperPuTTY.GetSessionById(sessionId);
+            //m_SessionsById.TryGetValue(sessionId, out session);
             return session == null ? null : NewPuttyPanel(session);
         }
 
         public ctlPuttyPanel NewPuttyPanel(SessionData sessionData)
         {
-            ctlPuttyPanel sessionPanel = null;
+            ctlPuttyPanel puttyPanel = null;
             // This is the callback fired when the panel containing the terminal is closed
             // We use this to save the last docking location
             PuttyClosedCallback callback = delegate(bool closed)
             {
-                if (sessionPanel != null)
+                if (puttyPanel != null)
                 {
                     // save the last dockstate (if it has been changed)
-                    if (sessionData.LastDockstate != sessionPanel.DockState
-                        && sessionPanel.DockState != DockState.Unknown
-                        && sessionPanel.DockState != DockState.Hidden)
+                    if (sessionData.LastDockstate != puttyPanel.DockState
+                        && puttyPanel.DockState != DockState.Unknown
+                        && puttyPanel.DockState != DockState.Hidden)
                     {
-                        sessionData.LastDockstate = sessionPanel.DockState;
-                        sessionData.SaveToRegistry();
+                        sessionData.LastDockstate = puttyPanel.DockState;
+                        SuperPuTTY.SaveSessions();
+                        //sessionData.SaveToRegistry();
                     }
 
-                    if (sessionPanel.InvokeRequired)
+                    if (puttyPanel.InvokeRequired)
                     {
                         this.BeginInvoke((MethodInvoker)delegate()
                         {
-                            sessionPanel.Close();
+                            puttyPanel.Close();
                         });
                     }
                     else
                     {
-                        sessionPanel.Close();
+                        puttyPanel.Close();
                     }
                 }
             };
-            sessionPanel = new ctlPuttyPanel(sessionData, callback);
-            return sessionPanel;
+            puttyPanel = new ctlPuttyPanel(sessionData, callback);
+            return puttyPanel;
         }
 
         /// <summary>
@@ -213,7 +214,7 @@ namespace SuperPutty
                 /* "node" will only be assigned if we're editing an existing session entry */
                 if (node == null)
                 {
-                    node = AddSessionNode(treeView1.SelectedNode, session);
+                    node = AddSessionNode(treeView1.SelectedNode, session, false);
                     //node = treeView1.Nodes["root"].Nodes.Add(session.SessionName, session.SessionName, 1, 1);
                     if (node != null)
                     {
@@ -224,8 +225,10 @@ namespace SuperPutty
                 {
                     // handle renames
                     node.Text = session.SessionName;
-                    m_SessionsById.Remove(session.OldSessionId);
-                    m_SessionsById[session.SessionId] = session;
+                    SuperPuTTY.RemoveSession(session.OldSessionId);
+                    SuperPuTTY.AddSession(session);
+                    //m_SessionsById.Remove(session.OldSessionId);
+                    //m_SessionsById[session.SessionId] = session;
 
                     UpdateSessionId(node, session);
                     ResortNodes();
@@ -260,9 +263,11 @@ namespace SuperPutty
             SessionData session = (SessionData)treeView1.SelectedNode.Tag;
             if (MessageBox.Show("Are you sure you want to delete " + session.SessionName + "?", "Delete Session?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                session.RegistryRemove(session.SessionName);
+                //session.RegistryRemove(session.SessionName);
                 treeView1.SelectedNode.Remove();
-                m_SessionsById.Remove(session.SessionId);
+                SuperPuTTY.RemoveSession(session.SessionId);
+                SuperPuTTY.SaveSessions();
+                //m_SessionsById.Remove(session.SessionId);
             }
         }
 
@@ -386,7 +391,7 @@ namespace SuperPutty
 
         #region Node helpers
 
-        TreeNode AddSessionNode(TreeNode parentNode, SessionData session)
+        TreeNode AddSessionNode(TreeNode parentNode, SessionData session, bool isInitializing)
         {
             TreeNode addedNode = null;
             if (parentNode.Nodes.ContainsKey(session.SessionName))
@@ -395,15 +400,19 @@ namespace SuperPutty
             }
             else
             {
-                SuperPuTTY.ReportStatus("Adding new session, {1}.  parent={0}", parentNode.Text, session.SessionName);
                 addedNode = parentNode.Nodes.Add(session.SessionName, session.SessionName, 1, 1);
                 addedNode.Tag = session;
                 addedNode.ContextMenuStrip = this.contextMenuStripAddTreeItem;
                 parentNode.Expand();
 
-                m_SessionsById[session.SessionId] = session;
+                if (!isInitializing)
+                {
+                    SuperPuTTY.ReportStatus("Adding new session, {1}.  parent={0}", parentNode.Text, session.SessionName);
+                    SuperPuTTY.AddSession(session);
+                    //m_SessionsById[session.SessionId] = session;
 
-                UpdateSessionId(addedNode, session);
+                    UpdateSessionId(addedNode, session);
+                }
             }
 
             return addedNode;
@@ -462,12 +471,13 @@ namespace SuperPutty
             String sessionId = String.Join(SessionIdDelim, parentNodeNames.ToArray());
             //Log.InfoFormat("sessionId={0}", sessionId);
             session.SessionId = sessionId;
-            session.SaveToRegistry();
+            SuperPuTTY.SaveSessions();
+            //session.SaveToRegistry();
         }
 
         TreeNode FindOrCreateParentNode(string sessionId)
         {
-            Log.InfoFormat("Finding Node for sessionId ({0})", sessionId);
+            Log.DebugFormat("Finding Node for sessionId ({0})", sessionId);
             TreeNode nodeParent = this.nodeRoot;
 
             string[] parts = sessionId.Split(SessionIdDelim.ToCharArray());
@@ -488,7 +498,7 @@ namespace SuperPutty
                 }
             }
 
-            Log.InfoFormat("Returning node ({0})", nodeParent.Text);
+            Log.DebugFormat("Returning node ({0})", nodeParent.Text);
             return nodeParent;
         }
 

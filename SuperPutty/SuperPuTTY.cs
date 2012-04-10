@@ -34,7 +34,7 @@ namespace SuperPutty
             SuperPuTTY.IsFirstRun = String.IsNullOrEmpty(Settings.PuttyExe);
             CommandLine = new CommandLineOptions();
             LoadLayouts();
-            //LoadSessions();
+            LoadSessions();
 
             Log.Info("Initialized");
         }
@@ -188,10 +188,37 @@ namespace SuperPutty
 
         #region Sessions
 
+        public static string SessionsFileName
+        {
+            get
+            {
+                return Path.Combine(Settings.SettingsFolder, "Sessions.XML");
+            }
+        }
         public static void LoadSessions()
         {
-            Log.InfoFormat("Loading all sessions");
-            foreach (SessionData session in SessionData.LoadSessionsFromRegistry())
+            string fileName = SessionsFileName;
+            Log.InfoFormat("Loading all sessions.  file={0}", fileName);
+
+            List<SessionData> sessions;
+            if (!File.Exists(fileName))
+            {
+                Log.InfoFormat("Sessions file does not exist.  Attempting import from registry");
+                sessions = SessionData.LoadSessionsFromRegistry();
+
+                if (sessions != null)
+                {
+                    // create default
+                    Log.InfoFormat("Imported {0} sessions.  Saving default file.", sessions.Count);
+                    SessionData.SaveSessionsToFile(sessions, fileName);
+                }
+            }
+            else
+            {
+                sessions = SessionData.LoadSessionsFromFile(fileName);
+            }
+
+            foreach (SessionData session in sessions)
             {
                 AddSession(session);
             }
@@ -200,10 +227,7 @@ namespace SuperPutty
         public static void SaveSessions()
         {
             Log.InfoFormat("Saving all sessions");
-            foreach (SessionData session in sessions.Values)
-            {
-                session.SaveToRegistry();
-            }
+            SessionData.SaveSessionsToFile(GetAllSessions(), SessionsFileName);
         }
 
         public static SessionData RemoveSession(string sessionId)
@@ -239,6 +263,15 @@ namespace SuperPutty
         public static List<SessionData> GetAllSessions()
         {
             return sessions.Values.ToList();
+        }
+
+        public static void OpenSession(string sessionId)
+        {
+            Log.InfoFormat("Opening session, id={0}", sessionId);
+            SessionData session = GetSessionById(sessionId);
+            if (session != null)
+            {
+            }
         }
 
         #endregion

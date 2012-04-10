@@ -126,7 +126,8 @@ namespace SuperPutty
                 }
             }
             
-            Session.SaveToRegistry();
+            //Session.SaveToRegistry();
+            SuperPuTTY.SaveSessions();
 
             DialogResult = DialogResult.OK;
         }

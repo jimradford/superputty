@@ -160,13 +160,10 @@ namespace SuperPutty
             Process.Start("http://www.chiark.greenend.org.uk/~sgtatham/putty/");
         }
 
-        private void newSessionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
+ 
         private void duplicateSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            SuperPuTTY.OpenSession(this.m_Session.SessionId);
         }
 
         private void renameTabToolStripMenuItem_Click(object sender, EventArgs e)
@@ -178,6 +175,14 @@ namespace SuperPutty
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 this.Text = dialog.ItemName;
+            }
+        }
+
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.applicationwrapper1 != null)
+            {
+                this.applicationwrapper1.RefreshAppWindow();
             }
         }
     }

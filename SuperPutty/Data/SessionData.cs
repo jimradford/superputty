@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using WeifenLuo.WinFormsUI.Docking;
 using log4net;
 using System.Xml.Serialization;
+using System.IO;
 
 namespace SuperPutty.Data
 {
@@ -40,7 +41,7 @@ namespace SuperPutty.Data
         Cygterm
     }
 
-    public class SessionData
+    public class SessionData : IComparable
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SessionData));
 
@@ -170,7 +171,7 @@ namespace SuperPutty.Data
 
         }
 
-        public void SaveToRegistry()
+        internal void SaveToRegistry()
         {
             if (!String.IsNullOrEmpty(this.SessionName)
                 && !String.IsNullOrEmpty(this.Host)
@@ -219,7 +220,7 @@ namespace SuperPutty.Data
             }
         }
 
-        internal void RegistryRemove(string sessionName)
+        void RegistryRemove(string sessionName)
         {
             if (!String.IsNullOrEmpty(sessionName))
             {
@@ -273,9 +274,65 @@ namespace SuperPutty.Data
             return sessionList;
         }
 
-        public static void SaveAsXml(IEnumerable<SessionData> sessions, string filePath)
+        public static List<SessionData> LoadSessionsFromFile(string fileName)
         {
-            // use datatable to create a compact xml
+            List<SessionData> sessions = new List<SessionData>();
+            if (File.Exists(fileName))
+            {
+                XmlSerializer s = new XmlSerializer(sessions.GetType());
+                using (TextReader r = new StreamReader(fileName))
+                {
+                    sessions = (List<SessionData>)s.Deserialize(r);
+                }
+                Log.WarnFormat("Loaded {0} session from {1}", sessions.Count, fileName);
+            }
+            else
+            {
+                Log.WarnFormat("Could not load sessions, file doesn't exist.  file={0}", fileName);
+            }
+            return sessions;
+        }
+
+
+        public static void SaveSessionsToFile(List<SessionData> sessions, string fileName)
+        {
+            Log.InfoFormat("Saving {0} sessions to {1}", sessions.Count, fileName);
+
+            if (File.Exists(fileName))
+            {
+                // backup
+                string fileBaseName = Path.GetFileNameWithoutExtension(fileName);
+                string dirName = Path.GetDirectoryName(fileName);
+                string backupName = Path.Combine(dirName, string.Format("{0}.{1:yyyyMMdd_hhmmss}.XML", fileBaseName, DateTime.Now));
+                File.Copy(fileName, backupName, true);
+
+                // limit last 20 saves
+                List<string> oldFiles = new List<string>(Directory.GetFiles(dirName, fileBaseName + ".*.XML"));
+                oldFiles.Sort();
+                oldFiles.Reverse();
+                if (oldFiles.Count > 20)
+                {
+                    for (int i = 20; i < oldFiles.Count; i++)
+                    {
+                        Log.InfoFormat("Cleaning up old file, {0}", oldFiles[i]);
+                        File.Delete(oldFiles[i]);
+                    }
+                }
+            }
+
+            // sort and save file
+            sessions.Sort();
+            XmlSerializer s = new XmlSerializer(sessions.GetType());
+            using (TextWriter w = new StreamWriter(fileName))
+            {
+                s.Serialize(w, sessions);
+            }
+        }
+
+        public int CompareTo(object obj)
+        {
+            SessionData s = obj as SessionData;
+            return s == null ? 1 : this.SessionId.CompareTo(s.SessionId);
         }
     }
 }
