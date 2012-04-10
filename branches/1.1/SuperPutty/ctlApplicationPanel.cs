@@ -1126,6 +1126,11 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             this.MoveWindow("LayoutChanged");
         }
 
+        public void RefreshAppWindow()
+        {
+            this.MoveWindow("RefreshWindow");
+        }
+
         #region Base Overrides
        
         /// <summary>
