@@ -193,22 +193,41 @@ namespace SuperPutty
         {
             SessionData session = null;
             TreeNode node = null;
+            TreeNode nodeRef = this.nodeRoot;
 
             if (sender is ToolStripMenuItem)
             {
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-                if (menuItem.Text.ToLower().Equals("new") || treeView1.SelectedNode.Tag == null)
+                bool isFolderNode = IsFolderNode(treeView1.SelectedNode);
+                if (menuItem.Text.ToLower().Equals("new") || isFolderNode)
                 {
                     session = new SessionData();
+                    nodeRef = isFolderNode ? treeView1.SelectedNode : treeView1.SelectedNode.Parent;
                 }
                 else
                 {
+                    // edit, session node selected
                     session = (SessionData)treeView1.SelectedNode.Tag;
                     node = treeView1.SelectedNode;
+                    nodeRef = node.Parent;
                 }
             }
 
             dlgEditSession form = new dlgEditSession(session);
+            form.SessionNameValidator += delegate(string txt, out string error)
+            {
+                error = String.Empty;
+                if (nodeRef.Nodes.ContainsKey(txt))
+                {
+                    error = "Session with same name exists";
+                }
+                else if (txt.Contains(SessionIdDelim))
+                {
+                    error = "Invalid character ( " + SessionIdDelim + " ) in name";
+                }
+                return string.IsNullOrEmpty(error);
+            };
+            
             if (form.ShowDialog() == DialogResult.OK)
             {
                 /* "node" will only be assigned if we're editing an existing session entry */

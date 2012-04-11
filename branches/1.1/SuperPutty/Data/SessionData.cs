@@ -298,27 +298,7 @@ namespace SuperPutty.Data
         {
             Log.InfoFormat("Saving {0} sessions to {1}", sessions.Count, fileName);
 
-            if (File.Exists(fileName))
-            {
-                // backup
-                string fileBaseName = Path.GetFileNameWithoutExtension(fileName);
-                string dirName = Path.GetDirectoryName(fileName);
-                string backupName = Path.Combine(dirName, string.Format("{0}.{1:yyyyMMdd_hhmmss}.XML", fileBaseName, DateTime.Now));
-                File.Copy(fileName, backupName, true);
-
-                // limit last 20 saves
-                List<string> oldFiles = new List<string>(Directory.GetFiles(dirName, fileBaseName + ".*.XML"));
-                oldFiles.Sort();
-                oldFiles.Reverse();
-                if (oldFiles.Count > 20)
-                {
-                    for (int i = 20; i < oldFiles.Count; i++)
-                    {
-                        Log.InfoFormat("Cleaning up old file, {0}", oldFiles[i]);
-                        File.Delete(oldFiles[i]);
-                    }
-                }
-            }
+            BackUpFiles(fileName, 20);
 
             // sort and save file
             sessions.Sort();
@@ -326,6 +306,38 @@ namespace SuperPutty.Data
             using (TextWriter w = new StreamWriter(fileName))
             {
                 s.Serialize(w, sessions);
+            }
+        }
+
+        private static void BackUpFiles(string fileName, int count)
+        {
+            if (File.Exists(fileName) && count > 0)
+            {
+                try
+                {
+                    // backup
+                    string fileBaseName = Path.GetFileNameWithoutExtension(fileName);
+                    string dirName = Path.GetDirectoryName(fileName);
+                    string backupName = Path.Combine(dirName, string.Format("{0}.{1:yyyyMMdd_hhmmss}.XML", fileBaseName, DateTime.Now));
+                    File.Copy(fileName, backupName, true);
+
+                    // limit last count saves
+                    List<string> oldFiles = new List<string>(Directory.GetFiles(dirName, fileBaseName + ".*.XML"));
+                    oldFiles.Sort();
+                    oldFiles.Reverse();
+                    if (oldFiles.Count > count)
+                    {
+                        for (int i = 20; i < oldFiles.Count; i++)
+                        {
+                            Log.InfoFormat("Cleaning up old file, {0}", oldFiles[i]);
+                            File.Delete(oldFiles[i]);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Error backing up files", ex);
+                }
             }
         }
 

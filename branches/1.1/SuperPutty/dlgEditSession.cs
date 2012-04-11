@@ -34,6 +34,8 @@ namespace SuperPutty
 {
     public partial class dlgEditSession : Form
     {
+        public delegate bool SessionNameValidationHandler(string name, out string error);
+
         private SessionData Session;
         public dlgEditSession(SessionData session)
         {
@@ -153,5 +155,25 @@ namespace SuperPutty
             }
 
         }
+
+        private void textBoxSessionName_Validating(object sender, CancelEventArgs e)
+        {
+            if (this.SessionNameValidator != null)
+            {
+                string error;
+                if (!this.SessionNameValidator(this.textBoxSessionName.Text, out error))
+                {
+                    this.errorProvider.SetError(this.textBoxSessionName, error ?? "Invalid Session Name");
+                    this.buttonSave.Enabled = false;
+                }
+                else
+                {
+                    this.errorProvider.SetError(this.textBoxSessionName, String.Empty);
+                    this.buttonSave.Enabled = true;
+                }
+            }
+        }
+
+        public SessionNameValidationHandler SessionNameValidator { get; set; }
     }
 }
