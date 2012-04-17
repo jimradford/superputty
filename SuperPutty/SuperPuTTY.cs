@@ -146,7 +146,7 @@ namespace SuperPutty
 
         public static void LoadLayout(LayoutData layout, bool isNewLayoutAlreadyActive)
         {
-            Log.InfoFormat("LoadLayout: layout={0}, isNewLayoutAlreadyActive={1}", layout.Name, isNewLayoutAlreadyActive);
+            Log.InfoFormat("LoadLayout: layout={0}, isNewLayoutAlreadyActive={1}", layout == null ? "NULL" : layout.Name, isNewLayoutAlreadyActive);
             LayoutChangedEventArgs args = new LayoutChangedEventArgs
             {
                 New = layout,
