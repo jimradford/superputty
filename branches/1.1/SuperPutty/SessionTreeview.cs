@@ -233,7 +233,7 @@ namespace SuperPutty
                 /* "node" will only be assigned if we're editing an existing session entry */
                 if (node == null)
                 {
-                    node = AddSessionNode(treeView1.SelectedNode, session, false);
+                    node = AddSessionNode(nodeRef, session, false);
                     //node = treeView1.Nodes["root"].Nodes.Add(session.SessionName, session.SessionName, 1, 1);
                     if (node != null)
                     {
