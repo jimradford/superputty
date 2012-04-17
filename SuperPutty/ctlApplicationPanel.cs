@@ -30,6 +30,7 @@ using System.Runtime.InteropServices;
 using WeifenLuo.WinFormsUI.Docking;
 using System.IO;
 using log4net;
+using System.Configuration;
 
 namespace SuperPutty
 {
@@ -38,7 +39,8 @@ namespace SuperPutty
     public class ApplicationPanel : System.Windows.Forms.Panel
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ApplicationPanel));
-        
+
+        private static bool RefocusOnVisChanged = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.RefocusOnVisChanged"] ?? "False");
         // Win32 Exceptions which might occur trying to start the process
         const int ERROR_FILE_NOT_FOUND = 2;
         const int ERROR_ACCESS_DENIED = 5;
@@ -1150,7 +1152,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
        
         public bool ReFocusPuTTY()
-        {           
+        {
+            Log.InfoFormat("ReFocusPuTTY - {0}", this.m_AppWin);
             return (this.m_AppWin != null 
                 && GetForegroundWindow() != this.m_AppWin 
                 && !SetForegroundWindow(this.m_AppWin));
@@ -1239,6 +1242,10 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 // Move the child so it's located over the parent
                 this.MoveWindow("OnVisChanged");
                 //MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
+                if (RefocusOnVisChanged && GetForegroundWindow() != this.m_AppWin)
+                {
+                    this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY(); }));
+                }
             }
                   
             base.OnVisibleChanged(e);
