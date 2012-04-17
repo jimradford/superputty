@@ -162,6 +162,7 @@ namespace SuperPutty
             if (errors.Count == 0)
             {
                 SuperPuTTY.Settings.Save();
+                SuperPuTTY.LoadLayouts();
                 DialogResult = DialogResult.OK;
             }
             else

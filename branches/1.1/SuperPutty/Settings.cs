@@ -1,6 +1,7 @@
 ﻿using log4net;
 using Microsoft.Win32;
 using System.IO;
+
 namespace SuperPutty.Properties {
     
     
@@ -39,8 +40,6 @@ namespace SuperPutty.Properties {
         private void SettingsSavingEventHandler(object sender, System.ComponentModel.CancelEventArgs e) {
             // Add code to handle the SettingsSaving event here.
             Log.InfoFormat("Settings Saved");
-
-            SuperPuTTY.LoadLayouts();
         }
 
         /// <summary>

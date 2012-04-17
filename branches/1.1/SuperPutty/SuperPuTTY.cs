@@ -31,8 +31,23 @@ namespace SuperPutty
         {
             Log.Info("Initializing...");
 
-            SuperPuTTY.IsFirstRun = String.IsNullOrEmpty(Settings.PuttyExe);
+            // parse command line args
             CommandLine = new CommandLineOptions();
+
+            // handle settings upgrade
+            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            if (Settings.ApplicationVersion != version)
+            {
+                Log.InfoFormat("Upgrading Settings to {0}", version);
+                Settings.Upgrade();
+                Settings.ApplicationVersion = version;
+                Settings.Save();
+            }
+
+            // check first load
+            SuperPuTTY.IsFirstRun = string.IsNullOrEmpty(Settings.PuttyExe);
+
+            // load data
             LoadLayouts();
             LoadSessions();
 
