@@ -164,7 +164,10 @@ namespace SuperPutty
                 this.saveFileDialogLayout.InitialDirectory = dir;
             }
 
-            SuperPuTTY.LoadLayout(SuperPuTTY.StartingLayout);
+            if (SuperPuTTY.StartingLayout != null)
+            {
+                SuperPuTTY.LoadLayout(SuperPuTTY.StartingLayout);
+            }
         }
 
         void SuperPuTTY_LayoutChanging(object sender, LayoutChangedEventArgs eventArgs)
