@@ -284,7 +284,7 @@ namespace SuperPutty.Data
                 {
                     sessions = (List<SessionData>)s.Deserialize(r);
                 }
-                Log.WarnFormat("Loaded {0} session from {1}", sessions.Count, fileName);
+                Log.InfoFormat("Loaded {0} sessions from {1}", sessions.Count, fileName);
             }
             else
             {
