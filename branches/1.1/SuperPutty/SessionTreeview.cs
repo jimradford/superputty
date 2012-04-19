@@ -154,6 +154,7 @@ namespace SuperPutty
                 ctlPuttyPanel sessionPanel = null;
                 sessionPanel = NewPuttyPanel(sessionData);
                 sessionPanel.Show(m_DockPanel, sessionData.LastDockstate);
+                SuperPuTTY.ReportStatus("Opened session: {0} [{1}]", sessionData.SessionId, sessionData.Proto);
             }
         }
 
