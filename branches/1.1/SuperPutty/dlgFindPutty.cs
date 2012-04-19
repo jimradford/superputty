@@ -181,8 +181,14 @@ namespace SuperPutty
 
         private void buttonBrowse_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "PuTTY|putty.exe";
+            openFileDialog1.Filter = "PuTTY|putty.exe|KiTTY|kitty*.exe";
             openFileDialog1.FileName = "putty.exe";
+            if (File.Exists(textBoxPuttyLocation.Text))
+            {
+                openFileDialog1.FileName = Path.GetFileName(textBoxPuttyLocation.Text);
+                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxPuttyLocation.Text);
+                openFileDialog1.FilterIndex = openFileDialog1.FileName.ToLower().StartsWith("putty") ? 1 : 2;
+            }
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 if (!String.IsNullOrEmpty(openFileDialog1.FileName))
@@ -194,6 +200,11 @@ namespace SuperPutty
         {
             openFileDialog1.Filter = "PScp|pscp.exe";
             openFileDialog1.FileName = "pscp.exe";
+
+            if (File.Exists(textBoxPscpLocation.Text))
+            {
+                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxPscpLocation.Text);
+            }
             openFileDialog1.ShowDialog();
             if (!String.IsNullOrEmpty(openFileDialog1.FileName))
                 textBoxPscpLocation.Text = openFileDialog1.FileName;

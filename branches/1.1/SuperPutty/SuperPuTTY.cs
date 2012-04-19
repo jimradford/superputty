@@ -371,6 +371,19 @@ namespace SuperPutty
 
         public static CommandLineOptions CommandLine { get; private set; }
 
+        public static bool IsKiTTY
+        {
+            get
+            {
+                bool isKitty = false;
+                if (File.Exists(Settings.PuttyExe))
+                {
+                    string exe = Path.GetFileName(Settings.PuttyExe);
+                    isKitty = exe != null && exe.ToLower().StartsWith("kitty");
+                }
+                return isKitty;
+            }
+        }
         #endregion
     }
 
