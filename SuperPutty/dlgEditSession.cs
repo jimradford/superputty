@@ -96,7 +96,9 @@ namespace SuperPutty
 
         private void PopulatePuttySettings()
         {
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\SimonTatham\PuTTY\Sessions");
+            RegistryKey key = SuperPuTTY.IsKiTTY 
+                ? Registry.CurrentUser.OpenSubKey(@"Software\9bis.com\KiTTY\Sessions")
+                : Registry.CurrentUser.OpenSubKey(@"Software\SimonTatham\PuTTY\Sessions");
             if (key != null)
             {
                 string[] savedSessionNames = key.GetSubKeyNames();
