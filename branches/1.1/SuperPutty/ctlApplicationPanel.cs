@@ -41,6 +41,8 @@ namespace SuperPutty
         private static readonly ILog Log = LogManager.GetLogger(typeof(ApplicationPanel));
 
         private static bool RefocusOnVisChanged = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.RefocusOnVisChanged"] ?? "False");
+        private static bool LoopWaitForHandle = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.LoopWaitForHandle"] ?? "False");
+
         // Win32 Exceptions which might occur trying to start the process
         const int ERROR_FILE_NOT_FOUND = 2;
         const int ERROR_ACCESS_DENIED = 5;
@@ -1195,6 +1197,25 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     // Wait for application to start and become idle
                     m_Process.WaitForInputIdle();
                     m_AppWin = m_Process.MainWindowHandle;
+
+                    if (IntPtr.Zero == m_AppWin)
+                    {
+                        Log.WarnFormat("Unable to get handle for process on first try.{0}", LoopWaitForHandle ? "  Polling 10 s for handle." : "");
+                        if (LoopWaitForHandle)
+                        {
+                            DateTime startTime = DateTime.Now;
+                            while ((DateTime.Now - startTime).TotalSeconds < 10)
+                            {
+                                System.Threading.Thread.Sleep(100);
+                                m_AppWin = m_Process.MainWindowHandle;
+                                if (IntPtr.Zero != m_AppWin)
+                                {
+                                    Log.Info("Successfully found handle via polling");
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
                 catch (InvalidOperationException ex)
                 {
