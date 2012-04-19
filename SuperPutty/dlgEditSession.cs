@@ -78,6 +78,14 @@ namespace SuperPutty
                         radioButtonSSH.Checked = true;
                         break;
                 }
+
+                foreach(String settings in this.comboBoxPuttyProfile.Items){
+                    if (settings == session.PuttySession)
+                    {
+                        this.comboBoxPuttyProfile.SelectedItem = settings;
+                        break;
+                    }
+                }
             }
             else
             {
