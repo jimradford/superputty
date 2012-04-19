@@ -66,6 +66,8 @@ namespace SuperPutty
 
             // populate sessions in the treeview from the registry
             LoadSessions();
+
+            SuperPuTTY.Sessions.ListChanged += new ListChangedEventHandler(Sessions_ListChanged);
         }
 
         /// <summary>
@@ -89,10 +91,23 @@ namespace SuperPutty
                 AddSessionNode(nodeParent, session, true);
             }
             treeView1.ExpandAll();
+
+        }
+
+        void Sessions_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            BindingList<SessionData> sessions = (BindingList<SessionData>) sender;
+            if (e.ListChangedType == ListChangedType.ItemAdded)
+            {
+                SessionData session = sessions[e.NewIndex];
+                TreeNode nodeParent = FindOrCreateParentNode(session.SessionId);
+                AddSessionNode(nodeParent, session, false);
+            }
+            // @TODO: implement more later
         }
 
 
-
+        /*
         /// <summary>
         /// Save sessions from the registry to an XML file for importing later
         /// </summary>
@@ -122,6 +137,7 @@ namespace SuperPutty
                 session.SaveToRegistry();
             }
         }
+        */
 
         /// <summary>
         /// Opens the selected session when the node is double clicked in the treeview

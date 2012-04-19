@@ -105,6 +105,8 @@ namespace SuperPutty
             {
                 ctlPuttyPanel p = (ctlPuttyPanel)dockPanel1.ActiveDocument;
                 p.SetFocusToChildApplication();
+
+                this.Text = string.Format("SuperPuTTY - {0}", p.Text);
             }
         }
 
@@ -122,7 +124,8 @@ namespace SuperPutty
             saveDialog.InitialDirectory = Application.StartupPath;
             if (saveDialog.ShowDialog() == DialogResult.OK)
             {
-                SessionTreeview.ExportSessionsToXml(saveDialog.FileName);
+                SessionData.SaveSessionsToFile(SuperPuTTY.GetAllSessions(), saveDialog.FileName);
+                //SessionTreeview.ExportSessionsToXml(saveDialog.FileName);
             }
         }
 
@@ -135,8 +138,9 @@ namespace SuperPutty
             openDialog.InitialDirectory = Application.StartupPath;
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
-                SessionTreeview.ImportSessionsFromXml(openDialog.FileName);
-                m_Sessions.LoadSessions();
+                SuperPuTTY.ImportSessionsFromFile(openDialog.FileName);
+                //SessionTreeview.ImportSessionsFromXml(openDialog.FileName);
+                //m_Sessions.LoadSessions();
             }
         }
 

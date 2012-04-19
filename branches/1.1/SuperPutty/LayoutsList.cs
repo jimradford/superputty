@@ -60,8 +60,7 @@ namespace SuperPutty
             LayoutData layout = (LayoutData)this.listBoxLayouts.SelectedItem;
             if (layout != null)
             {
-                SuperPuTTY.Settings.DefaultLayoutName = layout.Name;
-                SuperPuTTY.Settings.Save();
+                SuperPuTTY.SetLayoutAsDefault(layout.Name);
             }
         }
 
