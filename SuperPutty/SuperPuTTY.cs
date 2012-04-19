@@ -25,7 +25,8 @@ namespace SuperPutty
         public static event Action<String> StatusEvent;
 
         static BindingList<LayoutData> layouts = new BindingList<LayoutData>();
-        static SortedList<string, SessionData> sessions = new SortedList<string, SessionData>();
+        static Dictionary<string, SessionData> sessions = new Dictionary<string, SessionData>();
+        static BindingList<SessionData> sessionsList = new BindingList<SessionData>();
 
         public static void Initialize()
         {
@@ -198,6 +199,22 @@ namespace SuperPutty
             Process.Start(Assembly.GetExecutingAssembly().Location, "-layout \"" + layout + "\"");
         }
 
+        public static void SetLayoutAsDefault(string layoutName)
+        {
+            if (!string.IsNullOrEmpty(layoutName))
+            {
+                LayoutData layout = FindLayout(layoutName);
+                if (layout != null)
+                {
+                    ReportStatus("Setting {0} as default layout", layoutName);
+                    SuperPuTTY.Settings.DefaultLayoutName = layoutName;
+                    SuperPuTTY.Settings.Save();
+
+                    // so gui change is propagated via events
+                    LoadLayouts();
+                }
+            }
+        }
 
         #endregion
 
@@ -248,7 +265,13 @@ namespace SuperPutty
         public static SessionData RemoveSession(string sessionId)
         {
             SessionData session = GetSessionById(sessionId);
-            sessions.Remove(sessionId);
+            if (session != null)
+            {
+                sessions.Remove(sessionId);
+                sessionsList.Remove(session);
+            }
+
+
             return session;
         }
 
@@ -266,6 +289,7 @@ namespace SuperPutty
             {
                 Log.InfoFormat("Added Session, id={0}", session.SessionId);
                 sessions.Add(session.SessionId, session);
+                sessionsList.Add(session);
                 success = true;
             }
             else
@@ -289,6 +313,41 @@ namespace SuperPutty
             }
         }
 
+        public static void ImportSessionsFromFile(string fileName)
+        {
+            if (fileName == null) { return; }
+            if (File.Exists(fileName))
+            {
+                Log.InfoFormat("Importing sessions from file, path={0}", fileName);
+                List<SessionData> sessions = SessionData.LoadSessionsFromFile(fileName);
+                foreach (SessionData session in sessions)
+                {
+                    // pre-pend session id with "Imported" to put them into an imported folder
+                    session.SessionId = MakeUniqueSessionId(SessionData.CombineSessionIds("Imported", session.SessionId));
+                    session.SessionName = SessionData.GetSessionNameFromId(session.SessionId);
+                    AddSession(session);
+                }
+            }
+
+        }
+
+        static string MakeUniqueSessionId(string sessionId)
+        {
+            String newSessionId = sessionId;
+
+            for (int i = 1; i < 1000; i++)
+            {
+                SessionData sessionExisting = GetSessionById(newSessionId);
+                if (sessionExisting == null)
+                {
+                    break;
+                }                
+                newSessionId = String.Format("{0}-{1}", sessionId, i);
+            }
+
+            return newSessionId;
+        }
+
         #endregion
 
         #region Properties
@@ -307,6 +366,8 @@ namespace SuperPutty
         public static LayoutData StartingLayout { get; private set; }
 
         public static BindingList<LayoutData> Layouts { get { return layouts; } }
+
+        public static BindingList<SessionData> Sessions { get { return sessionsList; } }
 
         public static CommandLineOptions CommandLine { get; private set; }
 

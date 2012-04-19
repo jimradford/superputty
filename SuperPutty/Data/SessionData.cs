@@ -346,5 +346,17 @@ namespace SuperPutty.Data
             SessionData s = obj as SessionData;
             return s == null ? 1 : this.SessionId.CompareTo(s.SessionId);
         }
+
+        public static string CombineSessionIds(params string[] ids)
+        {
+            return String.Join("/", ids);
+        }
+
+        public static string GetSessionNameFromId(string sessionId)
+        {
+            string[] parts = sessionId.Split('/');
+            return parts.Length > 0 ? parts[parts.Length - 1] : sessionId;
+        }
+
     }
 }
