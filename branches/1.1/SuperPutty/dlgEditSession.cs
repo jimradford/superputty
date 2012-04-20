@@ -135,6 +135,7 @@ namespace SuperPutty
             Session.Host = textBoxHostname.Text.Trim();
             Session.Port = int.Parse(textBoxPort.Text.Trim());
             Session.Username = textBoxUsername.Text.Trim();
+            Session.SessionId = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
 
             for (int i = 0; i < groupBox1.Controls.Count; i++)
             {
@@ -146,7 +147,7 @@ namespace SuperPutty
             }
             
             //Session.SaveToRegistry();
-            SuperPuTTY.SaveSessions();
+            //SuperPuTTY.SaveSessions();
 
             DialogResult = DialogResult.OK;
         }

@@ -48,6 +48,7 @@ namespace SuperPutty
         //private Dictionary<string, SessionData> m_SessionsById = new Dictionary<string, SessionData>();
 
         TreeNode nodeRoot;
+        bool isAdding;
 
         /// <summary>
         /// Instantiate the treeview containing the sessions
@@ -97,7 +98,7 @@ namespace SuperPutty
         void Sessions_ListChanged(object sender, ListChangedEventArgs e)
         {
             BindingList<SessionData> sessions = (BindingList<SessionData>) sender;
-            if (e.ListChangedType == ListChangedType.ItemAdded)
+            if (e.ListChangedType == ListChangedType.ItemAdded && !this.isAdding)
             {
                 SessionData session = sessions[e.NewIndex];
                 TreeNode nodeParent = FindOrCreateParentNode(session.SessionId);
@@ -247,31 +248,39 @@ namespace SuperPutty
             
             if (form.ShowDialog() == DialogResult.OK)
             {
-                /* "node" will only be assigned if we're editing an existing session entry */
-                if (node == null)
+                isAdding = true;
+                try
                 {
-                    node = AddSessionNode(nodeRef, session, false);
-                    //node = treeView1.Nodes["root"].Nodes.Add(session.SessionName, session.SessionName, 1, 1);
-                    if (node != null)
+                    /* "node" will only be assigned if we're editing an existing session entry */
+                    if (node == null)
                     {
-                        node.Tag = session;
+                        node = AddSessionNode(nodeRef, session, false);
+                        //node = treeView1.Nodes["root"].Nodes.Add(session.SessionName, session.SessionName, 1, 1);
+                        if (node != null)
+                        {
+                            node.Tag = session;
+                        }
                     }
+                    else
+                    {
+                        // handle renames
+                        node.Text = session.SessionName;
+                        SuperPuTTY.RemoveSession(session.OldSessionId);
+                        SuperPuTTY.AddSession(session);
+                        //m_SessionsById.Remove(session.OldSessionId);
+                        //m_SessionsById[session.SessionId] = session
+                        //UpdateSessionId(node, session);
+                        ResortNodes();
+                    }
+
+                    //node.Tag = session;
+                    treeView1.ExpandAll();
+                    SuperPuTTY.SaveSessions();
                 }
-                else
+                finally
                 {
-                    // handle renames
-                    node.Text = session.SessionName;
-                    SuperPuTTY.RemoveSession(session.OldSessionId);
-                    SuperPuTTY.AddSession(session);
-                    //m_SessionsById.Remove(session.OldSessionId);
-                    //m_SessionsById[session.SessionId] = session;
-
-                    UpdateSessionId(node, session);
-                    ResortNodes();
+                    isAdding = false;
                 }
-
-                //node.Tag = session;
-                treeView1.ExpandAll();
             }
         }
 
@@ -401,6 +410,7 @@ namespace SuperPutty
                 {
                     node.Text = dialog.ItemName;
                     UpdateSessionId(node);
+                    SuperPuTTY.SaveSessions();
                     ResortNodes();
                 }
             }
@@ -413,7 +423,6 @@ namespace SuperPutty
             {
                 node.Remove();
                 SuperPuTTY.ReportStatus("Removed Folder, {0}", node.Text);
-
             }
         }
 
@@ -444,10 +453,10 @@ namespace SuperPutty
                 if (!isInitializing)
                 {
                     SuperPuTTY.ReportStatus("Adding new session, {1}.  parent={0}", parentNode.Text, session.SessionName);
+                    UpdateSessionId(addedNode, session);
                     SuperPuTTY.AddSession(session);
                     //m_SessionsById[session.SessionId] = session;
 
-                    UpdateSessionId(addedNode, session);
                 }
             }
 
@@ -507,7 +516,7 @@ namespace SuperPutty
             String sessionId = String.Join(SessionIdDelim, parentNodeNames.ToArray());
             //Log.InfoFormat("sessionId={0}", sessionId);
             session.SessionId = sessionId;
-            SuperPuTTY.SaveSessions();
+            //SuperPuTTY.SaveSessions();
             //session.SaveToRegistry();
         }
 
