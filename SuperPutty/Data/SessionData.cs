@@ -358,5 +358,19 @@ namespace SuperPutty.Data
             return parts.Length > 0 ? parts[parts.Length - 1] : sessionId;
         }
 
+        public static string GetSessionParentId(string sessionId)
+        {
+            string parentPath = null;
+            if (sessionId != null)
+            {
+                int idx = sessionId.LastIndexOf('/');
+                if (idx != -1)
+                {
+                    parentPath = sessionId.Substring(0, idx);
+                }
+            }
+            return parentPath;
+        }
+
     }
 }

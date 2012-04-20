@@ -271,14 +271,16 @@ namespace SuperPutty
                 sessionsList.Remove(session);
             }
 
-
             return session;
         }
 
         public static SessionData GetSessionById(string sessionId)
         {
-            SessionData session;
-            sessions.TryGetValue(sessionId, out session);
+            SessionData session = null;
+            if (sessionId != null)
+            {
+                sessions.TryGetValue(sessionId, out session);
+            }
             return session;
         }
 
