@@ -126,6 +126,13 @@ namespace SuperPutty
             this.comboBoxLayouts.DataSource = layouts;
             this.comboBoxLayouts.SelectedItem = SuperPuTTY.Settings.DefaultLayoutName;
         }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            this.BeginInvoke(new MethodInvoker(delegate { this.textBoxPuttyLocation.Focus(); }));
+        }
        
         private void buttonOk_Click(object sender, EventArgs e)
         {

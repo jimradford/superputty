@@ -53,7 +53,7 @@
             this.buttonOk.Location = new System.Drawing.Point(388, 266);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 0;
+            this.buttonOk.TabIndex = 20;
             this.buttonOk.Text = "Ok";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
@@ -102,21 +102,21 @@
             // 
             // textBoxPuttyLocation
             // 
-            this.textBoxPuttyLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPuttyLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPuttyLocation.Location = new System.Drawing.Point(180, 113);
             this.textBoxPuttyLocation.Name = "textBoxPuttyLocation";
             this.textBoxPuttyLocation.Size = new System.Drawing.Size(283, 20);
-            this.textBoxPuttyLocation.TabIndex = 6;
+            this.textBoxPuttyLocation.TabIndex = 0;
             // 
             // textBoxPscpLocation
             // 
-            this.textBoxPscpLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPscpLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPscpLocation.Location = new System.Drawing.Point(180, 142);
             this.textBoxPscpLocation.Name = "textBoxPscpLocation";
             this.textBoxPscpLocation.Size = new System.Drawing.Size(283, 20);
-            this.textBoxPscpLocation.TabIndex = 7;
+            this.textBoxPscpLocation.TabIndex = 2;
             // 
             // openFileDialog1
             // 
@@ -132,16 +132,17 @@
             this.richTextBox1.ReadOnly = true;
             this.richTextBox1.Size = new System.Drawing.Size(485, 95);
             this.richTextBox1.TabIndex = 8;
+            this.richTextBox1.TabStop = false;
             this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
             // 
             // textBoxSettingsFolder
             // 
-            this.textBoxSettingsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSettingsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSettingsFolder.Location = new System.Drawing.Point(180, 172);
             this.textBoxSettingsFolder.Name = "textBoxSettingsFolder";
             this.textBoxSettingsFolder.Size = new System.Drawing.Size(283, 20);
-            this.textBoxSettingsFolder.TabIndex = 10;
+            this.textBoxSettingsFolder.TabIndex = 4;
             // 
             // label3
             // 
@@ -159,7 +160,7 @@
             this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(469, 169);
             this.buttonBrowseLayoutsFolder.Name = "buttonBrowseLayoutsFolder";
             this.buttonBrowseLayoutsFolder.Size = new System.Drawing.Size(75, 23);
-            this.buttonBrowseLayoutsFolder.TabIndex = 11;
+            this.buttonBrowseLayoutsFolder.TabIndex = 5;
             this.buttonBrowseLayoutsFolder.Text = "Browse";
             this.buttonBrowseLayoutsFolder.UseVisualStyleBackColor = true;
             this.buttonBrowseLayoutsFolder.Click += new System.EventHandler(this.buttonBrowseLayoutsFolder_Click);
@@ -176,22 +177,23 @@
             // 
             // comboBoxLayouts
             // 
-            this.comboBoxLayouts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxLayouts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxLayouts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLayouts.FormattingEnabled = true;
             this.comboBoxLayouts.Location = new System.Drawing.Point(180, 199);
             this.comboBoxLayouts.Name = "comboBoxLayouts";
             this.comboBoxLayouts.Size = new System.Drawing.Size(283, 21);
-            this.comboBoxLayouts.TabIndex = 13;
+            this.comboBoxLayouts.TabIndex = 6;
             // 
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(469, 266);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 14;
+            this.buttonCancel.TabIndex = 21;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);

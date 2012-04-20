@@ -94,6 +94,13 @@ namespace SuperPutty
             }
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            this.BeginInvoke(new MethodInvoker(delegate { this.textBoxSessionName.Focus(); }));
+        }
+
         private void PopulatePuttySettings()
         {
             RegistryKey key = SuperPuTTY.IsKiTTY 
@@ -183,6 +190,8 @@ namespace SuperPutty
                 }
             }
         }
+
+
 
         public SessionNameValidationHandler SessionNameValidator { get; set; }
     }
