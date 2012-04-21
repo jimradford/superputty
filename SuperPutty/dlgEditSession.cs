@@ -28,11 +28,14 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Web;
+using SuperPutty.Data;
 
 namespace SuperPutty
 {
     public partial class dlgEditSession : Form
     {
+        public delegate bool SessionNameValidationHandler(string name, out string error);
+
         private SessionData Session;
         public dlgEditSession(SessionData session)
         {
@@ -68,9 +71,20 @@ namespace SuperPutty
                     case ConnectionProtocol.Telnet:
                         radioButtonTelnet.Checked = true;
                         break;
+                    case ConnectionProtocol.Cygterm:
+                        radioButtonCygterm.Checked = true;
+                        break;
                     default:
                         radioButtonSSH.Checked = true;
                         break;
+                }
+
+                foreach(String settings in this.comboBoxPuttyProfile.Items){
+                    if (settings == session.PuttySession)
+                    {
+                        this.comboBoxPuttyProfile.SelectedItem = settings;
+                        break;
+                    }
                 }
             }
             else
@@ -80,9 +94,18 @@ namespace SuperPutty
             }
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            this.BeginInvoke(new MethodInvoker(delegate { this.textBoxSessionName.Focus(); }));
+        }
+
         private void PopulatePuttySettings()
         {
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\SimonTatham\PuTTY\Sessions");
+            RegistryKey key = SuperPuTTY.IsKiTTY 
+                ? Registry.CurrentUser.OpenSubKey(@"Software\9bis.com\KiTTY\Sessions")
+                : Registry.CurrentUser.OpenSubKey(@"Software\SimonTatham\PuTTY\Sessions");
             if (key != null)
             {
                 string[] savedSessionNames = key.GetSubKeyNames();
@@ -112,6 +135,7 @@ namespace SuperPutty
             Session.Host = textBoxHostname.Text.Trim();
             Session.Port = int.Parse(textBoxPort.Text.Trim());
             Session.Username = textBoxUsername.Text.Trim();
+            Session.SessionId = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
 
             for (int i = 0; i < groupBox1.Controls.Count; i++)
             {
@@ -122,9 +146,54 @@ namespace SuperPutty
                 }
             }
             
-            Session.SaveToRegistry();
+            //Session.SaveToRegistry();
+            //SuperPuTTY.SaveSessions();
 
             DialogResult = DialogResult.OK;
         }
+
+        /// <summary>
+        /// Special UI handling for cygterm sessions
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void radioButtonCygterm_CheckedChanged(object sender, EventArgs e)
+        {
+            string host = this.textBoxHostname.Text;
+            bool isCygterm = this.radioButtonCygterm.Checked;
+            this.textBoxPort.Enabled = !isCygterm;
+            this.textBoxUsername.Enabled = !isCygterm;
+
+            if (isCygterm)
+            {
+                if (String.IsNullOrEmpty(host) || !host.StartsWith(CygtermInfo.LocalHost))
+                {
+                    this.textBoxHostname.Text = CygtermInfo.LocalHost;
+                }
+            }
+
+        }
+
+        private void textBoxSessionName_Validating(object sender, CancelEventArgs e)
+        {
+            if (this.SessionNameValidator != null)
+            {
+                string error;
+                if (!this.SessionNameValidator(this.textBoxSessionName.Text, out error))
+                {
+                    this.errorProvider.SetError(this.textBoxSessionName, error ?? "Invalid Session Name");
+                    this.buttonSave.Enabled = false;
+                }
+                else
+                {
+                    this.errorProvider.SetError(this.textBoxSessionName, String.Empty);
+                    this.buttonSave.Enabled = true;
+                }
+            }
+        }
+
+
+
+        public SessionNameValidationHandler SessionNameValidator { get; set; }
     }
 }

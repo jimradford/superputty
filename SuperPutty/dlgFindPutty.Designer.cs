@@ -38,21 +38,30 @@
             this.textBoxPscpLocation = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.textBoxSettingsFolder = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.buttonBrowseLayoutsFolder = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comboBoxLayouts = new System.Windows.Forms.ComboBox();
+            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.buttonCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
-            this.buttonOk.Location = new System.Drawing.Point(422, 169);
+            this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOk.Location = new System.Drawing.Point(388, 266);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 0;
+            this.buttonOk.TabIndex = 20;
             this.buttonOk.Text = "Ok";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
             // buttonBrowsePutty
             // 
-            this.buttonBrowsePutty.Location = new System.Drawing.Point(422, 111);
+            this.buttonBrowsePutty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBrowsePutty.Location = new System.Drawing.Point(469, 111);
             this.buttonBrowsePutty.Name = "buttonBrowsePutty";
             this.buttonBrowsePutty.Size = new System.Drawing.Size(75, 23);
             this.buttonBrowsePutty.TabIndex = 1;
@@ -62,7 +71,8 @@
             // 
             // buttonBrowsePscp
             // 
-            this.buttonBrowsePscp.Location = new System.Drawing.Point(422, 140);
+            this.buttonBrowsePscp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBrowsePscp.Location = new System.Drawing.Point(469, 140);
             this.buttonBrowsePscp.Name = "buttonBrowsePscp";
             this.buttonBrowsePscp.Size = new System.Drawing.Size(75, 23);
             this.buttonBrowsePscp.TabIndex = 3;
@@ -92,17 +102,21 @@
             // 
             // textBoxPuttyLocation
             // 
+            this.textBoxPuttyLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPuttyLocation.Location = new System.Drawing.Point(180, 113);
             this.textBoxPuttyLocation.Name = "textBoxPuttyLocation";
-            this.textBoxPuttyLocation.Size = new System.Drawing.Size(236, 20);
-            this.textBoxPuttyLocation.TabIndex = 6;
+            this.textBoxPuttyLocation.Size = new System.Drawing.Size(283, 20);
+            this.textBoxPuttyLocation.TabIndex = 0;
             // 
             // textBoxPscpLocation
             // 
+            this.textBoxPscpLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPscpLocation.Location = new System.Drawing.Point(180, 142);
             this.textBoxPscpLocation.Name = "textBoxPscpLocation";
-            this.textBoxPscpLocation.Size = new System.Drawing.Size(236, 20);
-            this.textBoxPscpLocation.TabIndex = 7;
+            this.textBoxPscpLocation.Size = new System.Drawing.Size(283, 20);
+            this.textBoxPscpLocation.TabIndex = 2;
             // 
             // openFileDialog1
             // 
@@ -118,14 +132,85 @@
             this.richTextBox1.ReadOnly = true;
             this.richTextBox1.Size = new System.Drawing.Size(485, 95);
             this.richTextBox1.TabIndex = 8;
+            this.richTextBox1.TabStop = false;
             this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
+            // 
+            // textBoxSettingsFolder
+            // 
+            this.textBoxSettingsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSettingsFolder.Location = new System.Drawing.Point(180, 172);
+            this.textBoxSettingsFolder.Name = "textBoxSettingsFolder";
+            this.textBoxSettingsFolder.Size = new System.Drawing.Size(283, 20);
+            this.textBoxSettingsFolder.TabIndex = 4;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(16, 175);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(143, 15);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "Settings Folder (Required)";
+            // 
+            // buttonBrowseLayoutsFolder
+            // 
+            this.buttonBrowseLayoutsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(469, 169);
+            this.buttonBrowseLayoutsFolder.Name = "buttonBrowseLayoutsFolder";
+            this.buttonBrowseLayoutsFolder.Size = new System.Drawing.Size(75, 23);
+            this.buttonBrowseLayoutsFolder.TabIndex = 5;
+            this.buttonBrowseLayoutsFolder.Text = "Browse";
+            this.buttonBrowseLayoutsFolder.UseVisualStyleBackColor = true;
+            this.buttonBrowseLayoutsFolder.Click += new System.EventHandler(this.buttonBrowseLayoutsFolder_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(16, 204);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(141, 15);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Default Layout (Optional)";
+            // 
+            // comboBoxLayouts
+            // 
+            this.comboBoxLayouts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxLayouts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxLayouts.FormattingEnabled = true;
+            this.comboBoxLayouts.Location = new System.Drawing.Point(180, 199);
+            this.comboBoxLayouts.Name = "comboBoxLayouts";
+            this.comboBoxLayouts.Size = new System.Drawing.Size(283, 21);
+            this.comboBoxLayouts.TabIndex = 6;
+            // 
+            // buttonCancel
+            // 
+            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.buttonCancel.Location = new System.Drawing.Point(469, 266);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancel.TabIndex = 21;
+            this.buttonCancel.Text = "Cancel";
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // dlgFindPutty
             // 
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(509, 204);
+            this.CancelButton = this.buttonCancel;
+            this.ClientSize = new System.Drawing.Size(556, 301);
+            this.Controls.Add(this.buttonCancel);
+            this.Controls.Add(this.comboBoxLayouts);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.buttonBrowseLayoutsFolder);
+            this.Controls.Add(this.textBoxSettingsFolder);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.textBoxPscpLocation);
             this.Controls.Add(this.textBoxPuttyLocation);
@@ -136,7 +221,7 @@
             this.Controls.Add(this.buttonOk);
             this.Name = "dlgFindPutty";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Find PuTTY Executable";
+            this.Text = "SuperPuTTY Options";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -153,5 +238,12 @@
         private System.Windows.Forms.TextBox textBoxPscpLocation;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.TextBox textBoxSettingsFolder;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button buttonBrowseLayoutsFolder;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comboBoxLayouts;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.Button buttonCancel;
     }
 }
