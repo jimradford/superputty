@@ -28,6 +28,9 @@ using System.Data;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using WeifenLuo.WinFormsUI.Docking;
+using System.IO;
+using log4net;
+using System.Configuration;
 
 namespace SuperPutty
 {
@@ -35,7 +38,11 @@ namespace SuperPutty
 
     public class ApplicationPanel : System.Windows.Forms.Panel
     {
-        
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ApplicationPanel));
+
+        private static bool RefocusOnVisChanged = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.RefocusOnVisChanged"] ?? "False");
+        private static bool LoopWaitForHandle = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.LoopWaitForHandle"] ?? "False");
+
         // Win32 Exceptions which might occur trying to start the process
         const int ERROR_FILE_NOT_FOUND = 2;
         const int ERROR_ACCESS_DENIED = 5;
@@ -46,6 +53,7 @@ namespace SuperPutty
         private IntPtr m_AppWin;
         private string m_ApplicationName = "";
         private string m_ApplicationParameters = "";
+        private string m_ApplicationWorkingDirectory = "";
 
         internal PuttyClosedCallback m_CloseCallback;
 
@@ -63,6 +71,13 @@ namespace SuperPutty
         {
             get { return m_ApplicationParameters; }
             set { m_ApplicationParameters = value; }
+        }
+        [Category("Data"), Description("The starting directory for the putty shell.  Relevant only to cygterm sessions"),
+DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string ApplicationWorkingDirectory
+        {
+            get { return m_ApplicationWorkingDirectory; }
+            set { m_ApplicationWorkingDirectory = value; }
         }
         #endregion
 
@@ -1097,6 +1112,29 @@ namespace SuperPutty
 
         #endregion
 
+        public ApplicationPanel()
+        {
+            this.Disposed += new EventHandler(ApplicationPanel_Disposed);
+            SuperPuTTY.LayoutChanged += new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
+        }
+
+        void ApplicationPanel_Disposed(object sender, EventArgs e)
+        {
+            this.Disposed -= new EventHandler(ApplicationPanel_Disposed);
+            SuperPuTTY.LayoutChanged -= new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
+        }
+
+        void SuperPuTTY_LayoutChanged(object sender, Data.LayoutChangedEventArgs e)
+        {
+            // move 1x after we're done loading
+            this.MoveWindow("LayoutChanged");
+        }
+
+        public void RefreshAppWindow()
+        {
+            this.MoveWindow("RefreshWindow");
+        }
+
         #region Base Overrides
        
         /// <summary>
@@ -1116,7 +1154,8 @@ namespace SuperPutty
         public static extern bool SetForegroundWindow(IntPtr hWnd);
        
         public bool ReFocusPuTTY()
-        {           
+        {
+            Log.InfoFormat("ReFocusPuTTY - {0}", this.m_AppWin);
             return (this.m_AppWin != null 
                 && GetForegroundWindow() != this.m_AppWin 
                 && !SetForegroundWindow(this.m_AppWin));
@@ -1128,6 +1167,7 @@ namespace SuperPutty
         /// <param name="e">Not used</param>
         protected override void OnVisibleChanged(EventArgs e)
         {
+            //Log.Debug("OnVisibleChanged");
             if (!m_Created && !String.IsNullOrEmpty(ApplicationName)) // only allow one instance of the child
             {
                 m_Created = true;
@@ -1141,6 +1181,12 @@ namespace SuperPutty
                     m_Process.StartInfo.FileName = ApplicationName;
                     m_Process.StartInfo.Arguments = ApplicationParameters;
 
+                    if (!string.IsNullOrEmpty(this.ApplicationWorkingDirectory) &&
+                        Directory.Exists(this.ApplicationWorkingDirectory))
+                    {
+                        m_Process.StartInfo.WorkingDirectory = this.ApplicationWorkingDirectory;
+                    }
+
                     m_Process.Exited += delegate(object sender, EventArgs ev)
                     {
                         m_CloseCallback(true);
@@ -1149,8 +1195,27 @@ namespace SuperPutty
                     m_Process.Start();
 
                     // Wait for application to start and become idle
-                    m_Process.WaitForInputIdle();                    
-                    m_AppWin = m_Process.MainWindowHandle;                   
+                    m_Process.WaitForInputIdle();
+                    m_AppWin = m_Process.MainWindowHandle;
+
+                    if (IntPtr.Zero == m_AppWin)
+                    {
+                        Log.WarnFormat("Unable to get handle for process on first try.{0}", LoopWaitForHandle ? "  Polling 10 s for handle." : "");
+                        if (LoopWaitForHandle)
+                        {
+                            DateTime startTime = DateTime.Now;
+                            while ((DateTime.Now - startTime).TotalSeconds < 10)
+                            {
+                                System.Threading.Thread.Sleep(100);
+                                m_AppWin = m_Process.MainWindowHandle;
+                                if (IntPtr.Zero != m_AppWin)
+                                {
+                                    Log.Info("Successfully found handle via polling");
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -1190,16 +1255,23 @@ namespace SuperPutty
 
                 // set window parameters (how it's displayed)
                 long lStyle = GetWindowLong(m_AppWin, GWL_STYLE);
-                lStyle &= ~(WS_BORDER | WS_THICKFRAME); 
+                lStyle &= ~(WS_BORDER | WS_THICKFRAME);
                 SetWindowLong(m_AppWin, GWL_STYLE, lStyle);
-
+            }
+            if (this.Visible && this.m_Created)
+            {
                 // Move the child so it's located over the parent
-                MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
-         
+                this.MoveWindow("OnVisChanged");
+                //MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
+                if (RefocusOnVisChanged && GetForegroundWindow() != this.m_AppWin)
+                {
+                    this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY(); }));
+                }
             }
                   
             base.OnVisibleChanged(e);
         }
+
         
         /// <summary>
         /// Send a close message to the hosted application window when the parent is destroyed
@@ -1225,11 +1297,30 @@ namespace SuperPutty
         /// <param name="e"></param>
         protected override void OnResize(EventArgs e)
         {
+            // if valid
             if (this.m_AppWin != IntPtr.Zero)
             {
-                MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
+                // if not minimizing && visible
+                if (this.Height > 0 && this.Width > 0 && this.Visible)
+                {
+                    MoveWindow("OnResize");
+                }
             }
             base.OnResize(e);
+        }
+
+        private void MoveWindow(string src)
+        {
+
+            if (!SuperPuTTY.IsLayoutChanging)
+            {
+                if (Log.IsDebugEnabled)
+                {
+                    Log.DebugFormat("MoveWindow [{3,-15}{4,20}] w={0,4}, h={1,4}, visible={2}", this.Width, this.Height, this.Visible, src, this.Name);
+                }
+
+                MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, this.Visible);
+            }
         }
 
         #endregion        
