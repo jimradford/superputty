@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.Web;
 using System.Collections.Specialized;
 using SuperPutty.Data;
+using WeifenLuo.WinFormsUI.Docking;
 
 
 namespace SuperPutty
@@ -117,7 +118,7 @@ namespace SuperPutty
             return str;
         }
 
-        public static ctlPuttyPanel FromPersistString(SessionTreeview view, String persistString)
+        public static ctlPuttyPanel FromPersistString(String persistString)
         {
             ctlPuttyPanel panel = null;
             if (persistString.StartsWith(typeof(ctlPuttyPanel).FullName))
@@ -131,7 +132,8 @@ namespace SuperPutty
 
                     Log.InfoFormat("Restoring putty session, sessionId={0}, tabName={1}", sessionId, tabName);
 
-                    panel = view.NewPuttyPanel(sessionId);
+                    SessionData session = SuperPuTTY.GetSessionById(sessionId);
+                    panel = ctlPuttyPanel.NewPanel(session);
                     if (panel == null)
                     {
                         Log.WarnFormat("Could not restore putty session, sessionId={0}", sessionId);
@@ -148,7 +150,8 @@ namespace SuperPutty
                     {
                         string sessionId = persistString.Substring(idx + 1);
                         Log.InfoFormat("Restoring putty session, sessionId={0}", sessionId);
-                        panel = view.NewPuttyPanel(sessionId);
+                        SessionData session = SuperPuTTY.GetSessionById(sessionId);
+                        panel = ctlPuttyPanel.NewPanel(session);
                     }
                 }
             }
@@ -163,7 +166,7 @@ namespace SuperPutty
  
         private void duplicateSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SuperPuTTY.OpenSession(this.m_Session.SessionId);
+            SuperPuTTY.OpenPuttySession(this.m_Session);
         }
 
         private void renameTabToolStripMenuItem_Click(object sender, EventArgs e)
@@ -185,5 +188,45 @@ namespace SuperPutty
                 this.applicationwrapper1.RefreshAppWindow();
             }
         }
+
+        public SessionData Session { get { return this.m_Session; } }
+        public ApplicationPanel AppPanel { get { return this.applicationwrapper1; } }
+
+        public static ctlPuttyPanel NewPanel(SessionData sessionData)
+        {
+            ctlPuttyPanel puttyPanel = null;
+            // This is the callback fired when the panel containing the terminal is closed
+            // We use this to save the last docking location
+            PuttyClosedCallback callback = delegate(bool closed)
+            {
+                if (puttyPanel != null)
+                {
+                    // save the last dockstate (if it has been changed)
+                    if (sessionData.LastDockstate != puttyPanel.DockState
+                        && puttyPanel.DockState != DockState.Unknown
+                        && puttyPanel.DockState != DockState.Hidden)
+                    {
+                        sessionData.LastDockstate = puttyPanel.DockState;
+                        SuperPuTTY.SaveSessions();
+                        //sessionData.SaveToRegistry();
+                    }
+
+                    if (puttyPanel.InvokeRequired)
+                    {
+                        puttyPanel.BeginInvoke((MethodInvoker)delegate()
+                        {
+                            puttyPanel.Close();
+                        });
+                    }
+                    else
+                    {
+                        puttyPanel.Close();
+                    }
+                }
+            };
+            puttyPanel = new ctlPuttyPanel(sessionData, callback);
+            return puttyPanel;
+        }
+
     }
 }

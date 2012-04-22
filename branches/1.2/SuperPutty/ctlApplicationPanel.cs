@@ -79,6 +79,9 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             get { return m_ApplicationWorkingDirectory; }
             set { m_ApplicationWorkingDirectory = value; }
         }
+
+        public IntPtr AppWindowHandle { get { return this.m_AppWin; } }
+
         #endregion
 
         #region Pinvoke/Win32 Methods

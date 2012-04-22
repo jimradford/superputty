@@ -2,19 +2,19 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SuperPutty.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="PuttyExe" Type="System.String" Scope="User">
+    <Setting Name="PuttyExe" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="PscpExe" Type="System.String" Scope="User">
+    <Setting Name="PscpExe" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="SettingsFolder" Type="System.String" Scope="User">
+    <Setting Name="SettingsFolder" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="DefaultLayoutName" Type="System.String" Scope="User">
+    <Setting Name="DefaultLayoutName" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="ApplicationVersion" Type="System.String" Scope="User">
+    <Setting Name="ApplicationVersion" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>
