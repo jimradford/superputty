@@ -1,0 +1,27 @@
+#summary One-sentence summary of this page.
+
+= Release Notes =
+
+== v1.2 ==
+
+_in development_
+
+  * Change settings to use custom provider (portability)
+  * Command Line Interface
+  * Single Instance Support 
+  * Connection Toolbar
+  * Send Commands Toolbar
+  * Others items...
+
+== v1.1 ==
+
+_final release soon_
+
+  * Sessions View Folder Support (hold down shift to drag-and-drop)
+  * Persisted Layouts
+  * Persist sessions to flat file
+  * Logging via log4net
+  * Rename Putty Tabs
+  * KiTTY support (pscp issues)
+  * Other GUI enhancements
+  * Other bug fixes
