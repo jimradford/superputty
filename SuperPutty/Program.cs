@@ -24,6 +24,11 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Threading;
 using log4net;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
+using SuperPutty.Data;
+using System.Configuration;
+using SuperPutty.Utils;
 
 namespace SuperPutty
 {
@@ -31,17 +36,54 @@ namespace SuperPutty
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
 
+        private static bool EnforceSingleInstance = Convert.ToBoolean(
+            ConfigurationManager.AppSettings["SuperPuTTY.SingleInstance"] ?? "False");
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            bool onlyInstance = false;
-            Mutex mutex = new Mutex(true, "SuperPutty", out onlyInstance);
-            if (!onlyInstance)
+            if (EnforceSingleInstance)
             {
+                bool onlyInstance = false;
+                Mutex mutex = new Mutex(true, "SuperPutty", out onlyInstance);
+                if (!onlyInstance)
+                {
+                    string strArgs = "";
+                    if (args.Length > 0)
+                    {
+                        strArgs += args[0];
+                        for (int i = 1; i < args.Length; i++)
+                        {
+                            strArgs += " " + args[i];
+                        }
+                    }
 
+                    SuperPutty.Utils.NativeMethods.COPYDATA cd = new SuperPutty.Utils.NativeMethods.COPYDATA();
+                    cd.dwData = 0;
+                    cd.cbData = (uint) strArgs.Length + 1;
+
+                    cd.lpData = Marshal.StringToHGlobalAnsi(strArgs);
+                    IntPtr lpPtr = Marshal.AllocHGlobal(Marshal.SizeOf(cd));
+                    Marshal.StructureToPtr(cd, lpPtr, true);
+
+                    Process[] plist = Debugger.IsAttached
+                        ? Process.GetProcessesByName("SuperPutty")
+                        : Process.GetProcessesByName("SuperPutty.vshost");
+
+                    foreach (Process spProcess in plist)
+                    {
+                        Console.WriteLine(
+                            "Sending command to existing instance: pid={0}, exe={1}, args={2}, msg={3}",
+                            spProcess.MainModule.FileName,
+                            spProcess.Id, strArgs, 0x004A);
+                        NativeMethods.SendMessage(spProcess.MainWindowHandle, 0x004A, 0, lpPtr);
+                    }
+                    Marshal.FreeHGlobal(lpPtr);
+                    Environment.Exit(0);
+                }
             }
 
 #if DEBUG
@@ -57,15 +99,15 @@ namespace SuperPutty
 
             try
             {
+
                 Log.Info("Starting");
-                SuperPuTTY.Initialize();
+                SuperPuTTY.Initialize(args);
 
                 AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
                 Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(SuperPuTTY.MainForm = new frmSuperPutty());
-
                 SuperPuTTY.Shutdown();
             }
             catch (Exception ex)

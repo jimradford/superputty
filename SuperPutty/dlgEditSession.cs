@@ -37,6 +37,8 @@ namespace SuperPutty
         public delegate bool SessionNameValidationHandler(string name, out string error);
 
         private SessionData Session;
+        private String OldHostname;
+
         public dlgEditSession(SessionData session)
         {
             Session = session;
@@ -103,6 +105,11 @@ namespace SuperPutty
 
         private void PopulatePuttySettings()
         {
+            foreach (String sessionName in PuttyDataHelper.GetSessionNames())
+            {
+                comboBoxPuttyProfile.Items.Add(sessionName);
+            }
+            /*
             RegistryKey key = SuperPuTTY.IsKiTTY 
                 ? Registry.CurrentUser.OpenSubKey(@"Software\9bis.com\KiTTY\Sessions")
                 : Registry.CurrentUser.OpenSubKey(@"Software\SimonTatham\PuTTY\Sessions");
@@ -112,7 +119,7 @@ namespace SuperPutty
 
                 for (int i = 0; i < savedSessionNames.Length; i++)
                     comboBoxPuttyProfile.Items.Add(HttpUtility.UrlDecode(savedSessionNames[i]));
-            }
+            }*/
         }
 
         private void sessionForm_TextChanged(object sender, EventArgs e)
@@ -146,9 +153,6 @@ namespace SuperPutty
                 }
             }
             
-            //Session.SaveToRegistry();
-            //SuperPuTTY.SaveSessions();
-
             DialogResult = DialogResult.OK;
         }
 
@@ -168,10 +172,62 @@ namespace SuperPutty
             {
                 if (String.IsNullOrEmpty(host) || !host.StartsWith(CygtermInfo.LocalHost))
                 {
+                    OldHostname = this.textBoxHostname.Text;
                     this.textBoxHostname.Text = CygtermInfo.LocalHost;
                 }
             }
 
+        }
+
+        private void radioButtonRaw_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.radioButtonRaw.Checked)
+            {
+                if (!string.IsNullOrEmpty(OldHostname))
+                {
+                    this.textBoxHostname.Text = OldHostname;
+                    OldHostname = null;
+                }
+            }
+        }
+
+        private void radioButtonTelnet_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.radioButtonTelnet.Checked)
+            {
+                if (!string.IsNullOrEmpty(OldHostname))
+                {
+                    this.textBoxHostname.Text = OldHostname;
+                    OldHostname = null;
+                }
+                this.textBoxPort.Text = "23";
+            }
+        }
+
+        private void radioButtonRlogin_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.radioButtonRlogin.Checked)
+            {
+                if (!string.IsNullOrEmpty(OldHostname))
+                {
+                    this.textBoxHostname.Text = OldHostname;
+                    OldHostname = null;
+                }
+                this.textBoxPort.Text = "513";
+            }
+        }
+
+        private void radioButtonSSH_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.radioButtonSSH.Checked)
+            {
+                if (!string.IsNullOrEmpty(OldHostname))
+                {
+                    this.textBoxHostname.Text = OldHostname;
+                    OldHostname = null;
+                }
+                this.textBoxPort.Text = "22";
+            }
         }
 
         private void textBoxSessionName_Validating(object sender, CancelEventArgs e)
@@ -192,8 +248,25 @@ namespace SuperPutty
             }
         }
 
-
-
         public SessionNameValidationHandler SessionNameValidator { get; set; }
+
+        public static int GetDefaultPort(ConnectionProtocol protocol)
+        {
+            int port = 22;
+            switch (protocol)
+            {
+                case ConnectionProtocol.Raw:
+                    break;
+                case ConnectionProtocol.Rlogin:
+                    port = 513;
+                    break;
+                case ConnectionProtocol.Serial:
+                    break;
+                case ConnectionProtocol.Telnet:
+                    port = 23;
+                    break;
+            }
+            return port;
+        }
     }
 }

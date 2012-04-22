@@ -173,6 +173,7 @@
             this.radioButtonSSH.Tag = SuperPutty.Data.ConnectionProtocol.SSH;
             this.radioButtonSSH.Text = "SSH";
             this.radioButtonSSH.UseVisualStyleBackColor = true;
+            this.radioButtonSSH.CheckedChanged += new System.EventHandler(this.radioButtonSSH_CheckedChanged);
             // 
             // radioButtonRlogin
             // 
@@ -185,6 +186,7 @@
             this.radioButtonRlogin.Tag = SuperPutty.Data.ConnectionProtocol.Rlogin;
             this.radioButtonRlogin.Text = "RLogin";
             this.radioButtonRlogin.UseVisualStyleBackColor = true;
+            this.radioButtonRlogin.CheckedChanged += new System.EventHandler(this.radioButtonRlogin_CheckedChanged);
             // 
             // radioButtonTelnet
             // 
@@ -197,6 +199,7 @@
             this.radioButtonTelnet.Tag = SuperPutty.Data.ConnectionProtocol.Telnet;
             this.radioButtonTelnet.Text = "Telnet";
             this.radioButtonTelnet.UseVisualStyleBackColor = true;
+            this.radioButtonTelnet.CheckedChanged += new System.EventHandler(this.radioButtonTelnet_CheckedChanged);
             // 
             // radioButtonRaw
             // 
@@ -209,6 +212,7 @@
             this.radioButtonRaw.Tag = SuperPutty.Data.ConnectionProtocol.Raw;
             this.radioButtonRaw.Text = "Raw";
             this.radioButtonRaw.UseVisualStyleBackColor = true;
+            this.radioButtonRaw.CheckedChanged += new System.EventHandler(this.radioButtonRaw_CheckedChanged);
             // 
             // buttonSave
             // 

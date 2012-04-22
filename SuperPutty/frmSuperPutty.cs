@@ -26,6 +26,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.Win32;
@@ -34,6 +35,8 @@ using SuperPutty.Properties;
 using SuperPutty.Data;
 using log4net;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using SuperPutty.Utils;
 
 namespace SuperPutty
 {
@@ -56,6 +59,8 @@ namespace SuperPutty
             get { return File.Exists(PscpExe); }
         }
 
+        internal DockPanel DockPanel { get { return this.dockPanel1; } }
+
         private SessionTreeview m_Sessions;
         private LayoutsList m_Layouts;
         private Log4netLogViewer m_logViewer = null;
@@ -66,6 +71,8 @@ namespace SuperPutty
             dlgFindPutty.PuttyCheck();
             
             InitializeComponent();
+            this.tbTxtBoxPassword.TextBox.PasswordChar = '*';
+            this.RefreshConnectionToolbarData();
 
             /* 
              * Open the session treeview and dock it on the right
@@ -86,6 +93,7 @@ namespace SuperPutty
             SuperPuTTY.LayoutChanging += new EventHandler<LayoutChangedEventArgs>(SuperPuTTY_LayoutChanging);
 
             this.toolStripStatusLabelVersion.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
         }
 
 
@@ -125,7 +133,6 @@ namespace SuperPutty
             if (saveDialog.ShowDialog() == DialogResult.OK)
             {
                 SessionData.SaveSessionsToFile(SuperPuTTY.GetAllSessions(), saveDialog.FileName);
-                //SessionTreeview.ExportSessionsToXml(saveDialog.FileName);
             }
         }
 
@@ -139,8 +146,6 @@ namespace SuperPutty
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 SuperPuTTY.ImportSessionsFromFile(openDialog.FileName);
-                //SessionTreeview.ImportSessionsFromXml(openDialog.FileName);
-                //m_Sessions.LoadSessions();
             }
         }
 
@@ -157,6 +162,32 @@ namespace SuperPutty
             }
         }
 
+        #region CmdLine 
+
+        protected override void WndProc(ref Message m)
+        {
+            //Log.Info("## - " + m.Msg);
+            if (m.Msg == 0x004A)
+            {
+                NativeMethods.COPYDATA cd = (NativeMethods.COPYDATA)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.COPYDATA));
+                string strArgs = Marshal.PtrToStringAnsi(cd.lpData);
+                string[] args = strArgs.Split(' ');
+
+                CommandLineOptions opts = new CommandLineOptions(args);
+                if (opts.IsValid)
+                {
+                    SessionDataStartInfo ssi = opts.ToSessionStartInfo();
+                    if (ssi != null)
+                    {
+                        SuperPuTTY.OpenSession(ssi);
+                    }
+                }
+            }
+            base.WndProc(ref m);
+        }
+
+        #endregion
+
         #region Layout
 
         void LoadLayout()
@@ -168,7 +199,17 @@ namespace SuperPutty
                 this.saveFileDialogLayout.InitialDirectory = dir;
             }
 
-            SuperPuTTY.LoadLayout(SuperPuTTY.StartingLayout);
+            if (SuperPuTTY.StartingSession != null)
+            {
+                // load empty layout then open session
+                SuperPuTTY.LoadLayout(null);
+                SuperPuTTY.OpenSession(SuperPuTTY.StartingSession);
+            }
+            else
+            {
+                // default layout or null for hard-coded default
+                SuperPuTTY.LoadLayout(SuperPuTTY.StartingLayout);
+            }
         }
 
         void SuperPuTTY_LayoutChanging(object sender, LayoutChangedEventArgs eventArgs)
@@ -274,22 +315,19 @@ namespace SuperPutty
             else
             {
                 // putty session
-                ctlPuttyPanel puttyPanel = ctlPuttyPanel.FromPersistString(m_Sessions, persistString);
+                ctlPuttyPanel puttyPanel = ctlPuttyPanel.FromPersistString(persistString);
                 if (puttyPanel != null)
                 {
                     return puttyPanel;
                 }
 
-                /*
-                int idx = persistString.IndexOf(":");
-                if (idx != -1)
-                {
-                    string sessionName = persistString.Substring(idx + 1);
-                    Log.InfoFormat("Restoring putty session, {0}", sessionName);
-                    ctlPuttyPanel puttyPanel = m_Sessions.NewPuttyPanel(sessionName);
-                    return puttyPanel;
-                }
-                 */
+                // pscp session (is this possible...prompt is a dialog...make inline?)
+                //ctlPuttyPanel puttyPanel = ctlPuttyPanel.FromPersistString(m_Sessions, persistString);
+                //if (puttyPanel != null)
+                //{
+                //    return puttyPanel;
+                //}
+
             }
             return null;
         }
@@ -382,6 +420,135 @@ namespace SuperPutty
             dialog.ShowDialog();
         }
         #endregion
+
+
+        #region Toolbar
+
+
+        private string oldHostName;
+
+        private void tbBtnConnect_Click(object sender, EventArgs e)
+        {
+
+            TryConnectFromToolbar();
+        }
+
+        private void tbItemConnect_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char) Keys.Enter)
+            {
+                TryConnectFromToolbar();
+                e.Handled = true;
+            }
+        }
+
+        void TryConnectFromToolbar()
+        {
+            String host = this.tbTxtBoxHost.Text;
+            String protoString = (string)this.tbComboProtocol.SelectedItem;
+
+            if (!String.IsNullOrEmpty(host))
+            {
+                bool isScp = "SCP" == protoString;
+                ConnectionProtocol proto = isScp ? ConnectionProtocol.SSH : (ConnectionProtocol) Enum.Parse(typeof(ConnectionProtocol), protoString);
+                SessionData session = new SessionData
+                {
+                    Host = host,
+                    SessionName = this.tbTxtBoxHost.Text,
+                    SessionId = SuperPuTTY.MakeUniqueSessionId(SessionData.CombineSessionIds("ConnectBar", this.tbTxtBoxHost.Text)),
+                    Proto = proto,
+                    Port = dlgEditSession.GetDefaultPort(proto),
+                    Username = this.tbTxtBoxLogin.Text,
+                    Password = this.tbTxtBoxPassword.Text,
+                    PuttySession = (string)this.tbComboSession.SelectedItem
+                };
+                SuperPuTTY.OpenSession(new SessionDataStartInfo { Session = session, UseScp = isScp });
+
+                RefreshConnectionToolbarData();
+            }
+        }
+
+        void RefreshConnectionToolbarData()
+        {
+            String prevProto = (string) this.tbComboProtocol.SelectedItem;
+            this.tbComboProtocol.Items.Clear();
+            foreach (ConnectionProtocol protocol in Enum.GetValues(typeof(ConnectionProtocol)))
+            {
+                this.tbComboProtocol.Items.Add(protocol.ToString());
+            }
+            this.tbComboProtocol.Items.Add("SCP");
+            this.tbComboProtocol.SelectedItem = prevProto ?? ConnectionProtocol.SSH.ToString();
+
+            String prevSession = (string)this.tbComboSession.SelectedItem;
+            this.tbComboSession.Items.Clear();
+            foreach (string sessionName in PuttyDataHelper.GetSessionNames())
+            {
+                this.tbComboSession.Items.Add(sessionName);
+            }
+            this.tbComboSession.SelectedItem = prevSession ?? "Default Settings";
+        }
+
+        private void tbComboProtocol_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((string)this.tbComboProtocol.SelectedItem == ConnectionProtocol.Cygterm.ToString())
+            {
+                oldHostName = this.tbTxtBoxHost.Text;
+                this.tbTxtBoxHost.Text = oldHostName.StartsWith(CygtermInfo.LocalHost) ? oldHostName : CygtermInfo.LocalHost;
+            }
+            else
+            {
+                this.tbTxtBoxHost.Text = oldHostName;
+            }
+        }
+
+        private void tbTextCommand_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                TrySendCommandsFromToolbar();
+                e.Handled = true;
+            }
+        }
+
+        private void tbBtnSendCommand_Click(object sender, EventArgs e)
+        {
+            TrySendCommandsFromToolbar();
+        }
+
+        int TrySendCommandsFromToolbar()
+        {
+            int sent = 0;
+            String command = this.tbTextCommand.Text;
+            if (!string.IsNullOrEmpty(command) && this.dockPanel1.DocumentsCount > 0)
+            {
+                foreach (DockContent content in this.dockPanel1.Documents)
+                {
+                    ctlPuttyPanel puttyPanel = content as ctlPuttyPanel;
+                    int handle = puttyPanel.AppPanel.AppWindowHandle.ToInt32();
+                    if (puttyPanel != null)
+                    {
+                        Log.InfoFormat("SendCommand: session={0}, command=[{1}]", puttyPanel.Session.SessionId, command);
+                        foreach (char c in command)
+                        {
+                            NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)c, 0);
+                        }
+
+                        NativeMethods.SendMessage(handle, NativeMethods.WM_KEYUP, (int)Keys.Enter, 0);
+                        sent++;
+                    }
+                }
+                if (sent > 0)
+                {
+                    // success...so select the text so you change command (like a prompt)
+                    this.BeginInvoke(new MethodInvoker(this.tbTextCommand.SelectAll));
+                }
+            }
+            return sent;
+        }
+
+        #endregion
+
+
 
     }
 }

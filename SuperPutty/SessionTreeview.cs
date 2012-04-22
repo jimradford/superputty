@@ -104,41 +104,8 @@ namespace SuperPutty
                 TreeNode nodeParent = FindOrCreateParentNode(session.SessionId);
                 AddSessionNode(nodeParent, session, false);
             }
-            // @TODO: implement more later
+            // @TODO: implement more later, note delete will be tricky...need a copy of the list
         }
-
-
-        /*
-        /// <summary>
-        /// Save sessions from the registry to an XML file for importing later
-        /// </summary>
-        /// <param name="fileName">The path and name of the file to save the entries to</param>
-        public static void ExportSessionsToXml(string fileName)
-        {
-            List<SessionData> sessions = SessionData.LoadSessionsFromRegistry();
-            XmlSerializer s = new XmlSerializer(sessions.GetType());
-            TextWriter w = new StreamWriter(fileName);
-            s.Serialize(w, sessions);
-            w.Close();
-        }
-
-        /// <summary>
-        /// Import saved sessions from an XML file and store them in the registry
-        /// </summary>
-        /// <param name="fileName">The path and name of the file to load the entries from</param>
-        public static void ImportSessionsFromXml(string fileName)
-        {
-            List<SessionData> sessions = new List<SessionData>();
-            XmlSerializer s = new XmlSerializer(sessions.GetType());
-            TextReader r = new StreamReader(fileName);
-            sessions = (List<SessionData>)s.Deserialize(r);
-            r.Close();
-            foreach (SessionData session in sessions)
-            {
-                session.SaveToRegistry();
-            }
-        }
-        */
 
         /// <summary>
         /// Opens the selected session when the node is double clicked in the treeview
@@ -150,56 +117,9 @@ namespace SuperPutty
             TreeNode node = this.treeView1.SelectedNode;
             if (IsSessionNode(node))
             {
-                SessionData sessionData = (SessionData) node.Tag;
-                
-                ctlPuttyPanel sessionPanel = null;
-                sessionPanel = NewPuttyPanel(sessionData);
-                sessionPanel.Show(m_DockPanel, sessionData.LastDockstate);
-                SuperPuTTY.ReportStatus("Opened session: {0} [{1}]", sessionData.SessionId, sessionData.Proto);
+                SessionData sessionData = (SessionData)node.Tag;
+                SuperPuTTY.OpenPuttySession(sessionData);
             }
-        }
-
-        public ctlPuttyPanel NewPuttyPanel(string sessionId)
-        {
-            SessionData session = SuperPuTTY.GetSessionById(sessionId);
-            //m_SessionsById.TryGetValue(sessionId, out session);
-            return session == null ? null : NewPuttyPanel(session);
-        }
-
-        public ctlPuttyPanel NewPuttyPanel(SessionData sessionData)
-        {
-            ctlPuttyPanel puttyPanel = null;
-            // This is the callback fired when the panel containing the terminal is closed
-            // We use this to save the last docking location
-            PuttyClosedCallback callback = delegate(bool closed)
-            {
-                if (puttyPanel != null)
-                {
-                    // save the last dockstate (if it has been changed)
-                    if (sessionData.LastDockstate != puttyPanel.DockState
-                        && puttyPanel.DockState != DockState.Unknown
-                        && puttyPanel.DockState != DockState.Hidden)
-                    {
-                        sessionData.LastDockstate = puttyPanel.DockState;
-                        SuperPuTTY.SaveSessions();
-                        //sessionData.SaveToRegistry();
-                    }
-
-                    if (puttyPanel.InvokeRequired)
-                    {
-                        this.BeginInvoke((MethodInvoker)delegate()
-                        {
-                            puttyPanel.Close();
-                        });
-                    }
-                    else
-                    {
-                        puttyPanel.Close();
-                    }
-                }
-            };
-            puttyPanel = new ctlPuttyPanel(sessionData, callback);
-            return puttyPanel;
         }
 
         /// <summary>
@@ -255,7 +175,6 @@ namespace SuperPutty
                     if (node == null)
                     {
                         node = AddSessionNode(nodeRef, session, false);
-                        //node = treeView1.Nodes["root"].Nodes.Add(session.SessionName, session.SessionName, 1, 1);
                         if (node != null)
                         {
                             node.Tag = session;
@@ -267,13 +186,9 @@ namespace SuperPutty
                         node.Text = session.SessionName;
                         SuperPuTTY.RemoveSession(session.OldSessionId);
                         SuperPuTTY.AddSession(session);
-                        //m_SessionsById.Remove(session.OldSessionId);
-                        //m_SessionsById[session.SessionId] = session
-                        //UpdateSessionId(node, session);
                         ResortNodes();
                     }
 
-                    //node.Tag = session;
                     treeView1.ExpandAll();
                     SuperPuTTY.SaveSessions();
                 }
@@ -325,23 +240,7 @@ namespace SuperPutty
         private void fileBrowserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SessionData session = (SessionData)treeView1.SelectedNode.Tag;
-            RemoteFileListPanel dir = null;
-            bool cancelShow = false;
-            if (session != null)
-            {
-                PuttyClosedCallback callback = delegate(bool error)
-                {
-                    cancelShow = error;
-                };
-                PscpTransfer xfer = new PscpTransfer(session);
-                xfer.PuttyClosed = callback;
-
-                dir = new RemoteFileListPanel(xfer, m_DockPanel, session);
-                if (!cancelShow)
-                {
-                    dir.Show(m_DockPanel);
-                }
-            }
+            SuperPuTTY.OpenScpSession(session);
         }
 
         /// <summary>

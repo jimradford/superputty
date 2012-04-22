@@ -9,6 +9,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using SuperPutty.Data;
+using System.Collections;
+using SuperPutty.Utils;
 
 namespace SuperPutty
 {
@@ -28,12 +30,12 @@ namespace SuperPutty
         static Dictionary<string, SessionData> sessions = new Dictionary<string, SessionData>();
         static BindingList<SessionData> sessionsList = new BindingList<SessionData>();
 
-        public static void Initialize()
+        public static void Initialize(string[] args)
         {
             Log.Info("Initializing...");
 
             // parse command line args
-            CommandLine = new CommandLineOptions();
+            CommandLine = new CommandLineOptions(args);
 
             // handle settings upgrade
             string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -51,6 +53,53 @@ namespace SuperPutty
             // load data
             LoadLayouts();
             LoadSessions();
+
+            // determine starting layout, if any.  CLI has priority
+            if (CommandLine.IsValid)
+            {
+                if (CommandLine.Layout != null)
+                {
+                    StartingLayout = FindLayout(CommandLine.Layout);
+                    if (StartingLayout != null)
+                    {
+                        Log.InfoFormat("Starting with layout from command line, {0}", CommandLine.Layout);
+                    }
+                }
+                else if (CommandLine.SessionId != null)
+                {
+                    SessionData session = GetSessionById(CommandLine.SessionId);
+                    if (session != null)
+                    {
+                        StartingSession = new SessionDataStartInfo{ Session = session };
+                        Log.InfoFormat("Starting Session from command line, {0}", CommandLine.SessionId);
+                    }
+                    else
+                    {
+                        Log.WarnFormat("Unknown session provided by cmdline, {0}", CommandLine.SessionId);
+                    }
+                }
+                else
+                {
+                    // ad-hoc session specified
+                    SessionDataStartInfo sessionStartInfo = CommandLine.ToSessionStartInfo();
+                    if (sessionStartInfo != null)
+                    {
+                        StartingSession = sessionStartInfo;
+                        Log.InfoFormat("Starting adhoc Session from command line, {0}", StartingSession.Session.SessionId);
+                    }
+                }
+
+            }
+
+            // if nothing specified, then try the default layout
+            if (StartingLayout == null && StartingSession == null)
+            {
+                StartingLayout = FindLayout(Settings.DefaultLayoutName);
+                if (StartingLayout != null)
+                {
+                    Log.InfoFormat("Starting with default layout, {0}", Settings.DefaultLayoutName);
+                }
+            }
 
             Log.Info("Initialized");
         }
@@ -132,26 +181,7 @@ namespace SuperPutty
                     Log.InfoFormat("Creating layouts dir: " + SuperPuTTY.LayoutsDir);
                     Directory.CreateDirectory(SuperPuTTY.LayoutsDir);
                 }
-            }
-
-            // determine starting layout, if any.  CLI has priority
-            if (CommandLine.Layout != null)
-            {
-                StartingLayout = FindLayout(CommandLine.Layout);
-                if (StartingLayout != null)
-                {
-                    Log.InfoFormat("Starting with layout from command line, {0}", CommandLine.Layout);
-                }
-            }
-            if (StartingLayout == null)
-            {
-                StartingLayout = FindLayout(Settings.DefaultLayoutName);
-                if (StartingLayout != null)
-                {
-                    Log.InfoFormat("Starting with default layout, {0}", Settings.DefaultLayoutName);
-                }
-            }
-            
+            }            
         }
 
         public static void LoadLayout(LayoutData layout)
@@ -306,12 +336,66 @@ namespace SuperPutty
             return sessions.Values.ToList();
         }
 
-        public static void OpenSession(string sessionId)
+        public static void OpenPuttySession(string sessionId)
         {
-            Log.InfoFormat("Opening session, id={0}", sessionId);
-            SessionData session = GetSessionById(sessionId);
+            OpenPuttySession(GetSessionById(sessionId));
+        }
+
+        public static void OpenPuttySession(SessionData session)
+        {
+            Log.InfoFormat("Opening putty session, id={0}", session == null ? "" : session.SessionId);
             if (session != null)
             {
+                ctlPuttyPanel sessionPanel = ctlPuttyPanel.NewPanel(session);
+                sessionPanel.Show(MainForm.DockPanel, session.LastDockstate);
+                SuperPuTTY.ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
+            }
+        }
+
+        public static void OpenScpSession(string sessionId)
+        {
+            OpenScpSession(GetSessionById(sessionId));
+        }
+
+        public static void OpenScpSession(SessionData session)
+        {
+            Log.InfoFormat("Opening scp session, id={0}", session == null ? "" : session.SessionId);
+            if (session != null)
+            {
+                RemoteFileListPanel panel = null;
+                bool cancelShow = false;
+                if (session != null)
+                {
+                    PuttyClosedCallback callback = delegate(bool error)
+                    {
+                        cancelShow = error;
+                    };
+                    PscpTransfer xfer = new PscpTransfer(session);
+                    xfer.PuttyClosed = callback;
+
+                    panel = new RemoteFileListPanel(xfer, SuperPuTTY.MainForm.DockPanel, session);
+                    if (!cancelShow)
+                    {
+                        panel.Show(MainForm.DockPanel, session.LastDockstate);
+                    }
+                }
+
+                SuperPuTTY.ReportStatus("Opened session: {0} [SCP]", session.SessionId);
+            }
+        }
+
+        public static void OpenSession(SessionDataStartInfo ssi)
+        {
+            if (ssi != null)
+            {
+                if (ssi.UseScp)
+                {
+                    SuperPuTTY.OpenScpSession(ssi.Session);
+                }
+                else
+                {
+                    SuperPuTTY.OpenPuttySession(ssi.Session);
+                }
             }
         }
 
@@ -333,7 +417,7 @@ namespace SuperPutty
 
         }
 
-        static string MakeUniqueSessionId(string sessionId)
+        public static string MakeUniqueSessionId(string sessionId)
         {
             String newSessionId = sessionId;
 
@@ -366,6 +450,7 @@ namespace SuperPutty
         public static LayoutData CurrentLayout { get; private set; }
 
         public static LayoutData StartingLayout { get; private set; }
+        public static SessionDataStartInfo StartingSession { get; private set; }
 
         public static BindingList<LayoutData> Layouts { get { return layouts; } }
 
@@ -389,29 +474,4 @@ namespace SuperPutty
         #endregion
     }
 
-    public class CommandLineOptions
-    {
-        public CommandLineOptions()
-        {
-            Queue<string> queue = new Queue<string>(Environment.GetCommandLineArgs());
-            this.ExePath = queue.Dequeue(); 
-
-            while (queue.Count > 0)
-            {
-                String arg = queue.Dequeue();
-                switch (arg)
-                {
-                    case "-layout":
-                        if (queue.Count > 0)
-                        {
-                            this.Layout = queue.Dequeue();
-                        }
-                        break;
-                }
-            }
-        }
-
-        public string ExePath { get; private set; }
-        public string Layout { get; private set; }
-    }
 }
