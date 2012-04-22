@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Descriptions of changes in each release
 
 = Release Notes =
 
