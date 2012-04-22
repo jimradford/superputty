@@ -247,6 +247,7 @@ namespace SuperPutty.Data
         /// <returns>A list containing the entries retrieved from the registry</returns>
         public static List<SessionData> LoadSessionsFromRegistry()
         {
+            Log.Info("LoadSessionsFromRegistry...");
             List<SessionData> sessionList = new List<SessionData>();
             RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Jim Radford\SuperPuTTY\Sessions");
             if (key != null)
