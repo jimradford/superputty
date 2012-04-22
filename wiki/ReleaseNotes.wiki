@@ -2,19 +2,9 @@
 
 = Release Notes =
 
-== v1.2 ==
+== Released ==
 
-_in development_
-
-  * Change settings to use custom provider (portability)
-  * Command Line Interface
-  * Single Instance Support 
-  * Connection Toolbar
-  * Send Commands Toolbar
-  * Others items...
-
-== v1.1 ==
-
+=== v1.1 ===
 _final release soon_
 
   * Sessions View Folder Support (hold down shift to drag-and-drop)
@@ -25,3 +15,15 @@ _final release soon_
   * KiTTY support (pscp issues)
   * Other GUI enhancements
   * Other bug fixes
+
+== Future ==
+
+=== v1.2 ===
+_in development_
+
+  * Change settings to use custom provider (portability)
+  * Command Line Interface
+  * Single Instance Support 
+  * Connection Toolbar
+  * Send Commands Toolbar
+  * Others items...
