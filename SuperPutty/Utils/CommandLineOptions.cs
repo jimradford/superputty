@@ -106,9 +106,9 @@ namespace SuperPutty.Utils
         public SessionDataStartInfo ToSessionStartInfo()
         {
             SessionDataStartInfo ssi = null;
-            if (this.Host == null)
+            if (this.Host == null && this.SessionId == null)
             {
-                Log.Warn("Host not provided, cannot create session");
+                Log.Warn("Host or SessionId not provided, cannot create session");
             }
             else if (this.SessionId != null)
             {
