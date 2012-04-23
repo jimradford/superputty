@@ -51,37 +51,10 @@ namespace SuperPutty
                 Mutex mutex = new Mutex(true, "SuperPutty", out onlyInstance);
                 if (!onlyInstance)
                 {
-                    string strArgs = "";
-                    if (args.Length > 0)
-                    {
-                        strArgs += args[0];
-                        for (int i = 1; i < args.Length; i++)
-                        {
-                            strArgs += " " + args[i];
-                        }
-                    }
-
-                    SuperPutty.Utils.NativeMethods.COPYDATA cd = new SuperPutty.Utils.NativeMethods.COPYDATA();
-                    cd.dwData = 0;
-                    cd.cbData = (uint) strArgs.Length + 1;
-
-                    cd.lpData = Marshal.StringToHGlobalAnsi(strArgs);
-                    IntPtr lpPtr = Marshal.AllocHGlobal(Marshal.SizeOf(cd));
-                    Marshal.StructureToPtr(cd, lpPtr, true);
-
-                    Process[] plist = Debugger.IsAttached
-                        ? Process.GetProcessesByName("SuperPutty")
-                        : Process.GetProcessesByName("SuperPutty.vshost");
-
-                    foreach (Process spProcess in plist)
-                    {
-                        Console.WriteLine(
-                            "Sending command to existing instance: pid={0}, exe={1}, args={2}, msg={3}",
-                            spProcess.MainModule.FileName,
-                            spProcess.Id, strArgs, 0x004A);
-                        NativeMethods.SendMessage(spProcess.MainWindowHandle, 0x004A, 0, lpPtr);
-                    }
-                    Marshal.FreeHGlobal(lpPtr);
+                    log4net.Config.BasicConfigurator.Configure();
+                    
+                    SingleInstanceHelper.LaunchInExistingInstance(args);
+                    Console.WriteLine("Sent Command to Existing Instance: [{0}]", String.Join(" ", args));
                     Environment.Exit(0);
                 }
             }

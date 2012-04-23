@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using log4net;
-using SuperPutty.Properties;
-using System.IO;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using log4net;
 using SuperPutty.Data;
-using System.Collections;
+using SuperPutty.Properties;
 using SuperPutty.Utils;
 
 namespace SuperPutty
@@ -65,19 +63,6 @@ namespace SuperPutty
                         Log.InfoFormat("Starting with layout from command line, {0}", CommandLine.Layout);
                     }
                 }
-                else if (CommandLine.SessionId != null)
-                {
-                    SessionData session = GetSessionById(CommandLine.SessionId);
-                    if (session != null)
-                    {
-                        StartingSession = new SessionDataStartInfo{ Session = session };
-                        Log.InfoFormat("Starting Session from command line, {0}", CommandLine.SessionId);
-                    }
-                    else
-                    {
-                        Log.WarnFormat("Unknown session provided by cmdline, {0}", CommandLine.SessionId);
-                    }
-                }
                 else
                 {
                     // ad-hoc session specified
@@ -101,8 +86,13 @@ namespace SuperPutty
                 }
             }
 
+            // Register IpcChanncel for single instance support
+            SingleInstanceHelper.RegisterRemotingService();
+
             Log.Info("Initialized");
         }
+
+
 
         public static void Shutdown()
         {
@@ -386,6 +376,12 @@ namespace SuperPutty
 
         public static void OpenSession(SessionDataStartInfo ssi)
         {
+            if (MainForm.InvokeRequired)
+            {
+                MainForm.BeginInvoke(new Action<SessionDataStartInfo>(OpenSession), ssi);
+                return;
+            }
+
             if (ssi != null)
             {
                 if (ssi.UseScp)
