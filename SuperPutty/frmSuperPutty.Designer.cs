@@ -246,7 +246,7 @@
             this.dockPanel1.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
             this.dockPanel1.Location = new System.Drawing.Point(0, 0);
             this.dockPanel1.Name = "dockPanel1";
-            this.dockPanel1.Size = new System.Drawing.Size(1008, 656);
+            this.dockPanel1.Size = new System.Drawing.Size(1008, 634);
             dockPanelGradient1.EndColor = System.Drawing.Color.MidnightBlue;
             dockPanelGradient1.StartColor = System.Drawing.Color.Black;
             autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
@@ -300,8 +300,8 @@
             // 
             // toolStripContainer1.ContentPanel
             // 
-            this.toolStripContainer1.ContentPanel.Controls.Add(this.statusStrip1);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.dockPanel1);
+            this.toolStripContainer1.ContentPanel.Controls.Add(this.statusStrip1);
             this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1008, 656);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.LeftToolStripPanelVisible = false;
@@ -458,7 +458,7 @@
             this.tbBtnSendCommand});
             this.toolStrip1.Location = new System.Drawing.Point(3, 49);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(653, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(622, 25);
             this.toolStrip1.TabIndex = 6;
             // 
             // tbTextSendCommands
