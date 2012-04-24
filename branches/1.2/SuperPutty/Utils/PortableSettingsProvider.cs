@@ -223,12 +223,14 @@ namespace SuperPutty.Utils
                 {
                     // Its machine specific, store as an element of the machine name node,
                     // creating a new machine name node if one doesnt exist.
+                    string nodePath = SettingsRoot + "/" + Environment.MachineName;
                     try
                     {
-                        machineNode = (XmlElement)SettingsXML.SelectSingleNode(SettingsRoot + "/" + Environment.MachineName);
+                        machineNode = (XmlElement)SettingsXML.SelectSingleNode(nodePath);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        Log.Error("Error selecting node, " + nodePath, ex);
                         machineNode = SettingsXML.CreateElement(Environment.MachineName);
                         SettingsXML.SelectSingleNode(SettingsRoot).AppendChild(machineNode);
                     }
