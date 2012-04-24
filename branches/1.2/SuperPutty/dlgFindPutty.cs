@@ -170,6 +170,7 @@ namespace SuperPutty
             {
                 SuperPuTTY.Settings.Save();
                 SuperPuTTY.LoadLayouts();
+                SuperPuTTY.LoadSessions();
                 DialogResult = DialogResult.OK;
             }
             else
