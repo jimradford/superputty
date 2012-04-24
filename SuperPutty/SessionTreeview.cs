@@ -104,6 +104,19 @@ namespace SuperPutty
                 TreeNode nodeParent = FindOrCreateParentNode(session.SessionId);
                 AddSessionNode(nodeParent, session, false);
             }
+            else if (e.ListChangedType == ListChangedType.Reset)
+            {
+                // clear
+                List<TreeNode> nodesToRemove = new List<TreeNode>();
+                foreach(TreeNode node in nodeRoot.Nodes)
+                {
+                    nodesToRemove.Add(node);
+                }
+                foreach (TreeNode node in nodesToRemove)
+                {
+                    node.Remove();
+                }
+            }
             // @TODO: implement more later, note delete will be tricky...need a copy of the list
         }
 

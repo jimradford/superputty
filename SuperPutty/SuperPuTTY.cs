@@ -25,7 +25,7 @@ namespace SuperPutty
         public static event Action<String> StatusEvent;
 
         static BindingList<LayoutData> layouts = new BindingList<LayoutData>();
-        static Dictionary<string, SessionData> sessions = new Dictionary<string, SessionData>();
+        static Dictionary<string, SessionData> sessionsMap = new Dictionary<string, SessionData>();
         static BindingList<SessionData> sessionsList = new BindingList<SessionData>();
 
         public static void Initialize(string[] args)
@@ -270,6 +270,10 @@ namespace SuperPutty
                 sessions = SessionData.LoadSessionsFromFile(fileName);
             }
 
+            // remove old
+            sessionsMap.Clear();
+            sessionsList.Clear();
+
             foreach (SessionData session in sessions)
             {
                 AddSession(session);
@@ -287,7 +291,7 @@ namespace SuperPutty
             SessionData session = GetSessionById(sessionId);
             if (session != null)
             {
-                sessions.Remove(sessionId);
+                sessionsMap.Remove(sessionId);
                 sessionsList.Remove(session);
             }
 
@@ -299,7 +303,7 @@ namespace SuperPutty
             SessionData session = null;
             if (sessionId != null)
             {
-                sessions.TryGetValue(sessionId, out session);
+                sessionsMap.TryGetValue(sessionId, out session);
             }
             return session;
         }
@@ -310,7 +314,7 @@ namespace SuperPutty
             if (GetSessionById(session.SessionId) == null)
             {
                 Log.InfoFormat("Added Session, id={0}", session.SessionId);
-                sessions.Add(session.SessionId, session);
+                sessionsMap.Add(session.SessionId, session);
                 sessionsList.Add(session);
                 success = true;
             }
@@ -323,7 +327,7 @@ namespace SuperPutty
 
         public static List<SessionData> GetAllSessions()
         {
-            return sessions.Values.ToList();
+            return sessionsMap.Values.ToList();
         }
 
         public static void OpenPuttySession(string sessionId)
