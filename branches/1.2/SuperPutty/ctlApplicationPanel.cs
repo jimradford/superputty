@@ -42,6 +42,7 @@ namespace SuperPutty
 
         private static bool RefocusOnVisChanged = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.RefocusOnVisChanged"] ?? "False");
         private static bool LoopWaitForHandle = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.LoopWaitForHandle"] ?? "False");
+        private static int ClosePuttyWaitTimeMs = Convert.ToInt32(ConfigurationManager.AppSettings["SuperPuTTY.ClosePuttyWaitTimeMs"] ?? "100");
 
         // Win32 Exceptions which might occur trying to start the process
         const int ERROR_FILE_NOT_FOUND = 2;
@@ -112,11 +113,12 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         private const int GWL_STYLE = (-16);
 
         private const int WM_CLOSE = 0x10;
+        private const int WM_DESTROY = 0x02;
+
         public const uint WS_CAPTION = 0x00C00000;
         public const uint WS_BORDER = 0x00800000;
         public const uint WS_VSCROLL = 0x00200000;
         public const uint WS_THICKFRAME = 0x00040000;
-
         [Flags]
         public enum AnimateWindowFlags
         {
@@ -1284,9 +1286,12 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         {
             if (m_AppWin != IntPtr.Zero)
             {
-                PostMessage(m_AppWin, WM_CLOSE, 0, 0);
+                // Send WM_DESTROY instead of WM_CLOSE, so that the Client doesn't
+                // ask in the Background whether the session shall be closed.
+                // Otherwise an annoying beep is generated everytime a terminal session is closed.
+                PostMessage(m_AppWin, WM_DESTROY, 0, 0);
 
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(ClosePuttyWaitTimeMs);
 
                 m_AppWin = IntPtr.Zero;
             }
