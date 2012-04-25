@@ -21,6 +21,8 @@ namespace SuperPutty.Utils
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(PortableSettingsProvider));
 
+        private static bool ForceRoamingSettings = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.ForceRoamingSettings"] ?? "True");
+
         public const string SettingsRoot = "Settings";
 
         private XmlDocument settingsXML;
@@ -160,13 +162,19 @@ namespace SuperPutty.Utils
 
             try
             {
-                if (IsRoaming(setting))
+                if (UseRoamingSettings(setting))
                 {
-                    value = SettingsXML.SelectSingleNode(SettingsRoot + "/" + setting.Name).InnerText;
+                    XmlNode node = SettingsXML.SelectSingleNode(SettingsRoot + "/" + setting.Name);
+                    if (node == null)
+                    {
+                        // try go by host...backwards compatibility
+                        node = SettingsXML.SelectSingleNode(SettingsRoot + "/" + GetHostName() + "/" + setting.Name);
+                    }
+                    value = node.InnerText;
                 }
                 else
                 {
-                    value = SettingsXML.SelectSingleNode(SettingsRoot + "/" + Environment.MachineName + "/" + setting.Name).InnerText;
+                    value = SettingsXML.SelectSingleNode(SettingsRoot + "/" + GetHostName() + "/" + setting.Name).InnerText;
                 }
             }
             catch (Exception)
@@ -194,10 +202,10 @@ namespace SuperPutty.Utils
             // Otherwise it is stored under a machine name node 
             try
             {
-                if (IsRoaming(propVal.Property))
+                if (UseRoamingSettings(propVal.Property))
                     settingNode = (XmlElement)SettingsXML.SelectSingleNode(SettingsRoot + "/" + propVal.Name);
                 else
-                    settingNode = (XmlElement)SettingsXML.SelectSingleNode(SettingsRoot + "/" + Environment.MachineName + "/" + propVal.Name);
+                    settingNode = (XmlElement)SettingsXML.SelectSingleNode(SettingsRoot + "/" + GetHostName() + "/" + propVal.Name);
             }
             catch (Exception)
             {
@@ -212,7 +220,7 @@ namespace SuperPutty.Utils
             }
             else
             {
-                if (IsRoaming(propVal.Property))
+                if (UseRoamingSettings(propVal.Property))
                 {
                     // Store the value as an element of the Settings Root Node
                     settingNode = SettingsXML.CreateElement(propVal.Name);
@@ -223,7 +231,7 @@ namespace SuperPutty.Utils
                 {
                     // Its machine specific, store as an element of the machine name node,
                     // creating a new machine name node if one doesnt exist.
-                    string nodePath = SettingsRoot + "/" + Environment.MachineName;
+                    string nodePath = SettingsRoot + "/" + GetHostName();
                     try
                     {
                         machineNode = (XmlElement)SettingsXML.SelectSingleNode(nodePath);
@@ -231,13 +239,13 @@ namespace SuperPutty.Utils
                     catch (Exception ex)
                     {
                         Log.Error("Error selecting node, " + nodePath, ex);
-                        machineNode = SettingsXML.CreateElement(Environment.MachineName);
+                        machineNode = SettingsXML.CreateElement(GetHostName());
                         SettingsXML.SelectSingleNode(SettingsRoot).AppendChild(machineNode);
                     }
 
                     if (machineNode == null)
                     {
-                        machineNode = SettingsXML.CreateElement(Environment.MachineName);
+                        machineNode = SettingsXML.CreateElement(GetHostName());
                         SettingsXML.SelectSingleNode(SettingsRoot).AppendChild(machineNode);
                     }
 
@@ -248,8 +256,18 @@ namespace SuperPutty.Utils
             }
         }
 
-        private bool IsRoaming(SettingsProperty prop)
+        private static string GetHostName()
         {
+            return Environment.MachineName;
+        }
+
+        private bool UseRoamingSettings(SettingsProperty prop)
+        {
+            if (ForceRoamingSettings || string.IsNullOrEmpty(Environment.MachineName) || Char.IsDigit(Environment.MachineName[0]))
+            {
+                return true;
+            }
+
             // Determine if the setting is marked as Roaming
             foreach (DictionaryEntry de in prop.Attributes)
             {
