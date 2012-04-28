@@ -35,14 +35,14 @@ namespace SuperPutty
             if (dir != null && exists)
             {
                 // start bash...will start in process start dir
-                this.Args = "-cygterm bash -i";
+                this.Args = "-load \"" + session.PuttySession + "\" -cygterm bash -i ";
                 this.StartingDir = dir;
             }
             else 
             {
                 // login shell
                 // http://code.google.com/p/puttycyg/wiki/FAQ
-                this.Args = "-cygterm -";
+                this.Args = "-load \"" + session.PuttySession + "\" -cygterm -";
             }
         }
 
