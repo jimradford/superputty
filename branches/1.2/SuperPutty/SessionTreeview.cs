@@ -145,7 +145,7 @@ namespace SuperPutty
             SessionData session = null;
             TreeNode node = null;
             TreeNode nodeRef = this.nodeRoot;
-
+            bool isEdit = false;
             if (sender is ToolStripMenuItem)
             {
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
@@ -161,6 +161,7 @@ namespace SuperPutty
                     session = (SessionData)treeView1.SelectedNode.Tag;
                     node = treeView1.SelectedNode;
                     nodeRef = node.Parent;
+                    isEdit = true;
                 }
             }
 
@@ -168,13 +169,18 @@ namespace SuperPutty
             form.SessionNameValidator += delegate(string txt, out string error)
             {
                 error = String.Empty;
-                if (nodeRef.Nodes.ContainsKey(txt))
+                bool isDupeNode = isEdit ? txt != node.Text && nodeRef.Nodes.ContainsKey(txt) : nodeRef.Nodes.ContainsKey(txt);
+                if (isDupeNode)
                 {
                     error = "Session with same name exists";
                 }
                 else if (txt.Contains(SessionIdDelim))
                 {
                     error = "Invalid character ( " + SessionIdDelim + " ) in name";
+                }
+                else if (string.IsNullOrEmpty(txt) || txt.Trim() == String.Empty)
+                {
+                    error = "Empty name";
                 }
                 return string.IsNullOrEmpty(error);
             };
@@ -285,6 +291,10 @@ namespace SuperPutty
                     else if (txt.Contains(SessionIdDelim))
                     {
                         error = "Invalid character ( " + SessionIdDelim + " ) in name";
+                    }
+                    else if (string.IsNullOrEmpty(txt) || txt.Trim() == String.Empty)
+                    {
+                        error = "Empty folder name";
                     }
 
                     return string.IsNullOrEmpty(error);
