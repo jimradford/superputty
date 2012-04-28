@@ -1,5 +1,6 @@
 ﻿/*
  * Copyright (c) 2009 Jim Radford http://www.jimradford.com
+ * Copyright (c) 2012 John Peterson
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -32,6 +33,7 @@ using System.Web;
 using System.Collections.Specialized;
 using SuperPutty.Data;
 using WeifenLuo.WinFormsUI.Docking;
+using SuperPutty.Utils;
 
 
 namespace SuperPutty
@@ -44,7 +46,7 @@ namespace SuperPutty
         private string ApplicationParameters = String.Empty;
         private string ApplicationWorkingDirectory = null;
 
-        private ApplicationPanel applicationwrapper1;
+        private ApplicationPanel m_AppPanel;
         private SessionData m_Session;
         private PuttyClosedCallback m_ApplicationExit;
         public ctlPuttyPanel(SessionData session, PuttyClosedCallback callback)
@@ -80,20 +82,33 @@ namespace SuperPutty
 
         private void CreatePanel()
         {
-            this.applicationwrapper1 = new ApplicationPanel();
+            this.m_AppPanel = new ApplicationPanel();
             this.SuspendLayout();            
-            this.applicationwrapper1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.applicationwrapper1.ApplicationName = frmSuperPutty.PuttyExe;
-            this.applicationwrapper1.ApplicationParameters = this.ApplicationParameters;
-            this.applicationwrapper1.ApplicationWorkingDirectory = this.ApplicationWorkingDirectory;
-            this.applicationwrapper1.Location = new System.Drawing.Point(0, 0);
-            this.applicationwrapper1.Name = this.m_Session.SessionId; // "applicationControl1";
-            this.applicationwrapper1.Size = new System.Drawing.Size(this.Width, this.Height);
-            this.applicationwrapper1.TabIndex = 0;            
-            this.applicationwrapper1.m_CloseCallback = this.m_ApplicationExit;
-            this.Controls.Add(this.applicationwrapper1);
+            this.m_AppPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m_AppPanel.ApplicationName = frmSuperPutty.PuttyExe;
+            this.m_AppPanel.ApplicationParameters = this.ApplicationParameters;
+            this.m_AppPanel.ApplicationWorkingDirectory = this.ApplicationWorkingDirectory;
+            this.m_AppPanel.Location = new System.Drawing.Point(0, 0);
+            this.m_AppPanel.Name = this.m_Session.SessionId; // "applicationControl1";
+            this.m_AppPanel.Size = new System.Drawing.Size(this.Width, this.Height);
+            this.m_AppPanel.TabIndex = 0;            
+            this.m_AppPanel.m_CloseCallback = this.m_ApplicationExit;
+            this.Controls.Add(this.m_AppPanel);
 
             this.ResumeLayout();
+        }
+
+        void CreateMenu()
+        {
+            newSessionToolStripMenuItem.DropDownItems.Clear();
+            foreach (SessionData session in SuperPuTTY.Sessions)
+            {
+                ToolStripMenuItem newSessionTSMI = new ToolStripMenuItem();
+                newSessionTSMI.Tag = session;
+                newSessionTSMI.Text = session.SessionId;
+                newSessionTSMI.Click += new System.EventHandler(newSessionTSMI_Click);
+                newSessionToolStripMenuItem.DropDownItems.Add(newSessionTSMI);
+            }
         }
 
         private void closeSessionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -106,7 +121,7 @@ namespace SuperPutty
         /// </summary>
         internal void SetFocusToChildApplication()
         {
-            this.applicationwrapper1.ReFocusPuTTY();         
+            this.m_AppPanel.ReFocusPuTTY();         
         }
 
         protected override string GetPersistString()
@@ -183,14 +198,14 @@ namespace SuperPutty
 
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.applicationwrapper1 != null)
+            if (this.m_AppPanel != null)
             {
-                this.applicationwrapper1.RefreshAppWindow();
+                this.m_AppPanel.RefreshAppWindow();
             }
         }
 
         public SessionData Session { get { return this.m_Session; } }
-        public ApplicationPanel AppPanel { get { return this.applicationwrapper1; } }
+        public ApplicationPanel AppPanel { get { return this.m_AppPanel; } }
 
         public static ctlPuttyPanel NewPanel(SessionData sessionData)
         {
@@ -226,6 +241,27 @@ namespace SuperPutty
             };
             puttyPanel = new ctlPuttyPanel(sessionData, callback);
             return puttyPanel;
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+            CreateMenu();
+        }
+
+        private void newSessionTSMI_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem) sender;
+            SessionData session = menuItem.Tag as SessionData;
+            if (session != null)
+            {
+                SuperPuTTY.OpenPuttySession(session);
+            }
+        }
+
+        private void puTTYMenuTSMI_Click(object sender, EventArgs e)
+        {
+            NativeMethods.SendMessage(m_AppPanel.AppWindowHandle, (uint) NativeMethods.WM.SYSCOMMAND, Convert.ToUInt32(((ToolStripMenuItem)sender).Tag.ToString(), 16), 0);
+            SuperPuTTY.MainForm.BringToFront();
         }
 
     }
