@@ -64,6 +64,10 @@ namespace SuperPutty
         private SessionTreeview m_Sessions;
         private LayoutsList m_Layouts;
         private Log4netLogViewer m_logViewer = null;
+        private NativeMethods.LowLevelKMProc llkp;
+        private NativeMethods.LowLevelKMProc llmp;
+        private static IntPtr kbHookID = IntPtr.Zero;
+        private static IntPtr mHookID = IntPtr.Zero;
 
         public frmSuperPutty()
         {
@@ -77,7 +81,7 @@ namespace SuperPutty
             /* 
              * Open the session treeview and dock it on the right
              */
-            m_Sessions = new SessionTreeview(dockPanel1);
+            m_Sessions = new SessionTreeview(DockPanel);
             m_Sessions.CloseButtonVisible = false;
 
             m_Layouts = new LayoutsList();
@@ -94,12 +98,25 @@ namespace SuperPutty
 
             this.toolStripStatusLabelVersion.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
+            // Low-Level Mouse and Keyboard hooks
+            //llkp = KBHookCallback;
+            //kbHookID = SetKBHook(llkp);
+            llmp = MHookCallback;
+            mHookID = SetMHook(llmp);
         }
 
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
         {
             this.BeginInvoke(new Action(this.LoadLayout));
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            // free hooks
+            //NativeMethods.UnhookWindowsHookEx(kbHookID);
+            NativeMethods.UnhookWindowsHookEx(mHookID);
+            base.OnFormClosing(e);
         }
 
         /// <summary>
@@ -109,9 +126,9 @@ namespace SuperPutty
         /// <param name="e"></param>
         private void dockPanel1_ActiveDocumentChanged(object sender, EventArgs e)
         {
-            if (dockPanel1.ActiveDocument is ctlPuttyPanel)
+            if (DockPanel.ActiveDocument is ctlPuttyPanel)
             {
-                ctlPuttyPanel p = (ctlPuttyPanel)dockPanel1.ActiveDocument;
+                ctlPuttyPanel p = (ctlPuttyPanel)DockPanel.ActiveDocument;
                 p.SetFocusToChildApplication();
 
                 this.Text = string.Format("SuperPuTTY - {0}", p.Text);
@@ -221,7 +238,7 @@ namespace SuperPutty
             else
             {
                 // reset old layout (close old putty instances)
-                foreach (DockContent dockContent in this.dockPanel1.DocumentsToArray())
+                foreach (DockContent dockContent in this.DockPanel.DocumentsToArray())
                 {
                     Log.Debug("Unhooking document: " + dockContent);
                     dockContent.DockPanel = null;
@@ -232,7 +249,7 @@ namespace SuperPutty
                     }
                 }
                 List<DockContent> contents = new List<DockContent>();
-                foreach (DockContent dockContent in this.dockPanel1.Contents)
+                foreach (DockContent dockContent in this.DockPanel.Contents)
                 {
                     contents.Add(dockContent);
                 }
@@ -252,7 +269,7 @@ namespace SuperPutty
                 {
                     // 1st time or reset
                     Log.Debug("Initializing default layout");
-                    m_Sessions.Show(dockPanel1, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
+                    m_Sessions.Show(this.DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
                     m_Layouts.Show(m_Sessions.DockHandler.Pane, DockAlignment.Bottom, 0.5);
                     toolStripStatusLabelLayout.Text = "";
                     SuperPuTTY.ReportStatus("Initialized default layout");
@@ -261,7 +278,7 @@ namespace SuperPutty
                 {
                     // load new one
                     Log.DebugFormat("Loading layout: {0}", eventArgs.New.FilePath);
-                    this.dockPanel1.LoadFromXml(eventArgs.New.FilePath, RestoreLayoutFromPersistString);
+                    this.DockPanel.LoadFromXml(eventArgs.New.FilePath, RestoreLayoutFromPersistString);
                     toolStripStatusLabelLayout.Text = eventArgs.New.Name;
                     SuperPuTTY.ReportStatus("Loaded layout: {0}", eventArgs.New.FilePath);
                 }
@@ -276,7 +293,7 @@ namespace SuperPutty
             {
                 String file = SuperPuTTY.CurrentLayout.FilePath;
                 SuperPuTTY.ReportStatus("Saving layout: {0}", file);
-                this.dockPanel1.SaveAsXml(file);
+                this.DockPanel.SaveAsXml(file);
             }
             else
             {
@@ -290,7 +307,7 @@ namespace SuperPutty
             {
                 String file = this.saveFileDialogLayout.FileName;
                 SuperPuTTY.ReportStatus("Saving layout as: {0}", file);
-                this.dockPanel1.SaveAsXml(file);
+                this.DockPanel.SaveAsXml(file);
                 SuperPuTTY.AddLayout(file);
             } 
         }
@@ -353,12 +370,12 @@ namespace SuperPutty
             if (this.m_logViewer == null)
             {
                 InitLogViewer();
-                this.m_logViewer.Show(dockPanel1, WeifenLuo.WinFormsUI.Docking.DockState.DockBottom);
+                this.m_logViewer.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockBottom);
                 SuperPuTTY.ReportStatus("Showing Log Viewer");
             }
             else
             {
-                this.m_logViewer.Show(dockPanel1);
+                this.m_logViewer.Show(DockPanel);
                 SuperPuTTY.ReportStatus("Bringing Log Viewer to Front");
             }
 
@@ -519,9 +536,9 @@ namespace SuperPutty
         {
             int sent = 0;
             String command = this.tbTextCommand.Text;
-            if (!string.IsNullOrEmpty(command) && this.dockPanel1.DocumentsCount > 0)
+            if (!string.IsNullOrEmpty(command) && this.DockPanel.DocumentsCount > 0)
             {
-                foreach (DockContent content in this.dockPanel1.Documents)
+                foreach (DockContent content in this.DockPanel.Documents)
                 {
                     ctlPuttyPanel puttyPanel = content as ctlPuttyPanel;
                     int handle = puttyPanel.AppPanel.AppWindowHandle.ToInt32();
@@ -548,7 +565,79 @@ namespace SuperPutty
 
         #endregion
 
+        #region Mouse Hooks
 
+        private static IntPtr SetKBHook(NativeMethods.LowLevelKMProc proc)
+        {
+            using (Process curProcess = Process.GetCurrentProcess())
+            using (ProcessModule curModule = curProcess.MainModule)
+            {
+                return NativeMethods.SetWindowsHookEx(NativeMethods.WH_KEYBOARD_LL, proc, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
+            }
+        }
+
+        private IntPtr KBHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode >= 0 && wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN && IsForegroundWindow(this.Handle))
+            {
+                int vkCode = Marshal.ReadInt32(lParam);
+
+                Log.InfoFormat("VK={0}, Keys={1}", vkCode, (Keys) vkCode);
+                if ((Keys)vkCode == Keys.Menu || (Keys)vkCode == Keys.LMenu || (Keys)vkCode == Keys.RMenu)
+                {
+                    //menuStrip.Visible = true;
+                    //menuStrip.Focus();
+                }
+            }
+            return NativeMethods.CallNextHookEx(kbHookID, nCode, wParam, lParam);
+        }
+
+        private static IntPtr SetMHook(NativeMethods.LowLevelKMProc proc)
+        {
+            using (Process curProcess = Process.GetCurrentProcess())
+            using (ProcessModule curModule = curProcess.MainModule)
+            {
+                return NativeMethods.SetWindowsHookEx(NativeMethods.WH_MOUSE_LL, proc, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
+            }
+        }
+
+        private IntPtr MHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode >= 0 && (wParam == (IntPtr)NativeMethods.WM.LBUTTONUP || wParam == (IntPtr)NativeMethods.WM.RBUTTONUP) && IsForegroundWindow(this.Handle))
+            {
+                this.BringToFront();
+                //if (!Menu_IsMouseOver()) dockPanel.Focus();
+            }
+            return NativeMethods.CallNextHookEx(mHookID, nCode, wParam, lParam);
+        }
+
+        private static bool IsForegroundWindow(IntPtr parent)
+        {
+            if (parent == NativeMethods.GetForegroundWindow()) return true;
+            List<IntPtr> result = new List<IntPtr>();
+            GCHandle listHandle = GCHandle.Alloc(result);
+            try
+            {
+                NativeMethods.EnumWindowProc childProc = new NativeMethods.EnumWindowProc(EnumWindow);
+                NativeMethods.EnumChildWindows(parent, childProc, GCHandle.ToIntPtr(listHandle));
+            }
+            finally
+            {
+                if (listHandle.IsAllocated)
+                    listHandle.Free();
+            }
+            return result.Count > 0;
+        }
+
+        private static bool EnumWindow(IntPtr handle, IntPtr pointer)
+        {
+            GCHandle gch = GCHandle.FromIntPtr(pointer);
+            List<IntPtr> list = gch.Target as List<IntPtr>;
+            if (handle == NativeMethods.GetForegroundWindow()) list.Add(handle);
+            if (list.Count == 0) return true; else return false;
+        }
+
+        #endregion
 
     }
 }

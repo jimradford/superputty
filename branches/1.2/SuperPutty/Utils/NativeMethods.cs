@@ -10,23 +10,29 @@ namespace SuperPutty.Utils
     {
 
         #region Win32 Constants/Enums
-        public const int GWL_STYLE = (-16);
 
         public const int WM_CLOSE = 0x10;
         public const int WM_DESTROY = 0x02;
         public const short WM_COPYDATA = 74;
 
-        public const int WH_KEYBOARD_LL = 13;
         public const int WM_KEYDOWN = 0x100;
         public const int WM_KEYUP = 0x101;
         public const int WM_CHAR = 0x102;
         public const int WM_SYSKEYDOWN = 0x104;
         public const int WM_SYSKEYUP = 0x105;
 
-        public const uint WS_CAPTION = 0x00C00000;
-        public const uint WS_BORDER = 0x00800000;
-        public const uint WS_VSCROLL = 0x00200000;
-        public const uint WS_THICKFRAME = 0x00040000;
+        public const int
+            ERROR_FILE_NOT_FOUND = 2,
+            ERROR_ACCESS_DENIED = 5,
+            GWL_STYLE = (-16);
+        public const uint
+            WH_KEYBOARD_LL = 0x000d,
+            WH_MOUSE_LL = 0x000e,
+            WS_CAPTION = 0x00C00000,
+            WS_BORDER = 0x00800000,
+            WS_VSCROLL = 0x00200000,
+            WS_THICKFRAME = 0x00040000;
+
         [Flags]
         public enum AnimateWindowFlags
         {
@@ -1073,6 +1079,60 @@ namespace SuperPutty.Utils
 
         [DllImport("user32.dll")]
         public static extern short VkKeyScan(char ch);
+
+        public delegate bool CallBackPtr(int hwnd, int lParam);
+        public delegate IntPtr LowLevelKMProc(int nCode, IntPtr wParam, IntPtr lParam);
+        public delegate bool EnumWindowProc(IntPtr hWnd, IntPtr parameter);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr GetModuleHandle(string lpModuleName);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool EnumChildWindows(IntPtr window, EnumWindowProc callback, IntPtr i);
+
+        [DllImport("user32.dll")]
+        public static extern int EnumWindows(CallBackPtr callPtr, int lPar);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetActiveWindow();
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int GetWindowTextLength(IntPtr hWnd);
+
+        //[DllImport("user32.dll")]
+        //public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr SetWindowsHookEx(uint idHook, LowLevelKMProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SetActiveWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, uint nCmdShow);
 
         #endregion
 
