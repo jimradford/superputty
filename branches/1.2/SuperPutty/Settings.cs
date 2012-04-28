@@ -1,6 +1,7 @@
 ﻿using log4net;
 using Microsoft.Win32;
 using System.IO;
+using SuperPutty.Utils;
 
 namespace SuperPutty.Properties {
     
@@ -19,11 +20,18 @@ namespace SuperPutty.Properties {
             this.SettingsSaving += this.SettingsSavingEventHandler;
         }
 
+        public string SettingsFilePath { get; private set; }
+
         protected override void OnSettingsLoaded(object sender, System.Configuration.SettingsLoadedEventArgs e)
         {
             Log.InfoFormat("Settings Loaded");
             base.OnSettingsLoaded(sender, e);
-            //Log.Info("Settings Folder=" + this.SettingsFolder);
+
+            PortableSettingsProvider provider = e.Provider as PortableSettingsProvider;
+            if (provider != null)
+            {
+                SettingsFilePath = provider.SettingsFilePath;
+            }
 
             if (SuperPuTTY.IsFirstRun)
             {

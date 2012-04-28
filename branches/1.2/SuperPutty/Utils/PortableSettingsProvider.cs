@@ -90,6 +90,8 @@ namespace SuperPutty.Utils
             return path;
         }
 
+        public string SettingsFilePath { get; private set; }
+
         public override void SetPropertyValues(SettingsContext context, SettingsPropertyValueCollection collection)
         {
             foreach (SettingsPropertyValue propVal in collection)
@@ -135,6 +137,7 @@ namespace SuperPutty.Utils
                     this.settingsXML = new XmlDocument();
                     //string settingsFile = Path.Combine(GetAppSettingsPath(), GetAppSettingsFileName());
                     string settingsFile = GetAppSettingsFilePath();
+                    this.SettingsFilePath = settingsFile;
                     try
                     {
                         this.settingsXML.Load( settingsFile );

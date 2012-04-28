@@ -45,12 +45,16 @@
             this.comboBoxLayouts = new System.Windows.Forms.ComboBox();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.checkRestoreWindow = new System.Windows.Forms.CheckBox();
+            this.checkConstrainPuttyDocking = new System.Windows.Forms.CheckBox();
+            this.checkSingleInstanceMode = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(388, 266);
+            this.buttonOk.Location = new System.Drawing.Point(388, 314);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 20;
@@ -94,11 +98,11 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(16, 145);
+            this.label2.Location = new System.Drawing.Point(12, 144);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(158, 15);
+            this.label2.Size = new System.Drawing.Size(101, 15);
             this.label2.TabIndex = 5;
-            this.label2.Text = "pscp.exe Location (Optional)";
+            this.label2.Text = "pscp.exe Location";
             // 
             // textBoxPuttyLocation
             // 
@@ -148,7 +152,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(16, 175);
+            this.label3.Location = new System.Drawing.Point(12, 173);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(143, 15);
             this.label3.TabIndex = 9;
@@ -169,11 +173,11 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(16, 204);
+            this.label4.Location = new System.Drawing.Point(12, 201);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(141, 15);
+            this.label4.Size = new System.Drawing.Size(84, 15);
             this.label4.TabIndex = 12;
-            this.label4.Text = "Default Layout (Optional)";
+            this.label4.Text = "Default Layout";
             // 
             // comboBoxLayouts
             // 
@@ -190,7 +194,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(469, 266);
+            this.buttonCancel.Location = new System.Drawing.Point(469, 314);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 21;
@@ -198,13 +202,57 @@
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(12, 232);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(94, 15);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "User Preferences";
+            // 
+            // checkRestoreWindow
+            // 
+            this.checkRestoreWindow.AutoSize = true;
+            this.checkRestoreWindow.Location = new System.Drawing.Point(180, 278);
+            this.checkRestoreWindow.Name = "checkRestoreWindow";
+            this.checkRestoreWindow.Size = new System.Drawing.Size(193, 17);
+            this.checkRestoreWindow.TabIndex = 26;
+            this.checkRestoreWindow.Text = "Restore Window Size and Location";
+            this.checkRestoreWindow.UseVisualStyleBackColor = true;
+            // 
+            // checkConstrainPuttyDocking
+            // 
+            this.checkConstrainPuttyDocking.AutoSize = true;
+            this.checkConstrainPuttyDocking.Location = new System.Drawing.Point(180, 255);
+            this.checkConstrainPuttyDocking.Name = "checkConstrainPuttyDocking";
+            this.checkConstrainPuttyDocking.Size = new System.Drawing.Size(187, 17);
+            this.checkConstrainPuttyDocking.TabIndex = 25;
+            this.checkConstrainPuttyDocking.Text = "Constrain PuTTY docking to Tabs";
+            this.checkConstrainPuttyDocking.UseVisualStyleBackColor = true;
+            // 
+            // checkSingleInstanceMode
+            // 
+            this.checkSingleInstanceMode.AutoSize = true;
+            this.checkSingleInstanceMode.Location = new System.Drawing.Point(180, 232);
+            this.checkSingleInstanceMode.Name = "checkSingleInstanceMode";
+            this.checkSingleInstanceMode.Size = new System.Drawing.Size(231, 17);
+            this.checkSingleInstanceMode.TabIndex = 24;
+            this.checkSingleInstanceMode.Text = "Allow single instance of SuperPuTTY to run";
+            this.checkSingleInstanceMode.UseVisualStyleBackColor = true;
+            // 
             // dlgFindPutty
             // 
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(556, 301);
+            this.ClientSize = new System.Drawing.Size(556, 349);
+            this.Controls.Add(this.checkRestoreWindow);
+            this.Controls.Add(this.checkConstrainPuttyDocking);
+            this.Controls.Add(this.checkSingleInstanceMode);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.comboBoxLayouts);
             this.Controls.Add(this.label4);
@@ -245,5 +293,9 @@
         private System.Windows.Forms.ComboBox comboBoxLayouts;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox checkRestoreWindow;
+        private System.Windows.Forms.CheckBox checkConstrainPuttyDocking;
+        private System.Windows.Forms.CheckBox checkSingleInstanceMode;
     }
 }

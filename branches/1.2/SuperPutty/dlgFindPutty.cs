@@ -51,6 +51,8 @@ namespace SuperPutty
             private set { m_PscpLocation = value; }
         }
 
+        private string OrigSettingsFolder { get; set; }
+
         public dlgFindPutty()
         {
             InitializeComponent();
@@ -115,6 +117,7 @@ namespace SuperPutty
             {
                 this.textBoxSettingsFolder.Text = SuperPuTTY.Settings.SettingsFolder;
             }
+            this.OrigSettingsFolder = SuperPuTTY.Settings.SettingsFolder;
 
             // default layouts
             List<String> layouts = new List<string>();
@@ -125,6 +128,7 @@ namespace SuperPutty
             }
             this.comboBoxLayouts.DataSource = layouts;
             this.comboBoxLayouts.SelectedItem = SuperPuTTY.Settings.DefaultLayoutName;
+
         }
 
         protected override void OnLoad(EventArgs e)
@@ -166,11 +170,20 @@ namespace SuperPutty
                 errors.Insert(0, "PuTTY is required to properly use this application.");
             }
 
+            SuperPuTTY.Settings.SingleInstanceMode = this.checkSingleInstanceMode.Checked;
+            SuperPuTTY.Settings.RestrictPuttyTabDocking = this.checkConstrainPuttyDocking.Checked;
+            SuperPuTTY.Settings.RestoreWindowLocation = this.checkRestoreWindow.Checked;
+
             if (errors.Count == 0)
             {
                 SuperPuTTY.Settings.Save();
-                SuperPuTTY.LoadLayouts();
-                SuperPuTTY.LoadSessions();
+
+                // @TODO - move this to a better place...maybe event handler after opening
+                if (OrigSettingsFolder != SuperPuTTY.Settings.SettingsFolder)
+                {
+                    SuperPuTTY.LoadLayouts();
+                    SuperPuTTY.LoadSessions();
+                }
                 DialogResult = DialogResult.OK;
             }
             else
