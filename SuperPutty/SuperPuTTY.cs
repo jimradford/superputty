@@ -30,7 +30,7 @@ namespace SuperPutty
 
         public static void Initialize(string[] args)
         {
-            Log.Info("Initializing...");
+            Log.InfoFormat("Initializing.  UserSettings={0}, ={1}", Settings.SettingsFilePath, Settings.SettingsFolder);
 
             // parse command line args
             CommandLine = new CommandLineOptions(args);
@@ -44,9 +44,6 @@ namespace SuperPutty
                 Settings.ApplicationVersion = version;
                 Settings.Save();
             }
-
-            // check first load
-            SuperPuTTY.IsFirstRun = string.IsNullOrEmpty(Settings.PuttyExe);
 
             // load data
             LoadLayouts();
@@ -438,7 +435,14 @@ namespace SuperPutty
 
         #region Properties
 
-        public static bool IsFirstRun { get; private set; }
+        public static bool IsFirstRun
+        {
+            get
+            {
+                // check first load
+                return string.IsNullOrEmpty(Settings.PuttyExe);
+            }
+        }
 
         public static frmSuperPutty MainForm { get; set; }
 

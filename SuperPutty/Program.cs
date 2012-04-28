@@ -45,19 +45,23 @@ namespace SuperPutty
         [STAThread]
         static void Main(string[] args)
         {
-            if (EnforceSingleInstance)
+            // send log to console
+            log4net.Config.BasicConfigurator.Configure();
+
+            if ((EnforceSingleInstance  || SuperPuTTY.Settings.SingleInstanceMode) && !SuperPuTTY.IsFirstRun)
             {
                 bool onlyInstance = false;
                 Mutex mutex = new Mutex(true, "SuperPutty", out onlyInstance);
                 if (!onlyInstance)
                 {
-                    log4net.Config.BasicConfigurator.Configure();
-                    
                     SingleInstanceHelper.LaunchInExistingInstance(args);
                     Console.WriteLine("Sent Command to Existing Instance: [{0}]", String.Join(" ", args));
                     Environment.Exit(0);
                 }
             }
+
+            // open full file
+            log4net.Config.XmlConfigurator.Configure();
 
 #if DEBUG
             Logger.OnLog += delegate(string logMessage)
@@ -66,9 +70,6 @@ namespace SuperPutty
                 Log.Info(logMessage);
             };
 #endif
-
-            // logging
-            log4net.Config.XmlConfigurator.Configure();
 
             try
             {
