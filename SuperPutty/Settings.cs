@@ -32,12 +32,6 @@ namespace SuperPutty.Properties {
             {
                 SettingsFilePath = provider.SettingsFilePath;
             }
-
-            if (SuperPuTTY.IsFirstRun)
-            {
-                Log.Info("PuttyExe empty in settings.  Attempting import from registry");
-                LoadFromRegistry();
-            }
         }
         
         private void SettingChangingEventHandler(object sender, System.Configuration.SettingChangingEventArgs e) {
@@ -53,7 +47,7 @@ namespace SuperPutty.Properties {
         /// <summary>
         /// Load old settings from registry into Settings
         /// </summary>
-        private void LoadFromRegistry()
+        public void ImportFromRegistry()
         {
             // Get Registry Entry for Putty Exe
             RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Jim Radford\SuperPuTTY\Settings");

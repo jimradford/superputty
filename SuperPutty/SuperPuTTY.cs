@@ -28,14 +28,15 @@ namespace SuperPutty
         static BindingList<LayoutData> layouts = new BindingList<LayoutData>();
         static Dictionary<string, SessionData> sessionsMap = new Dictionary<string, SessionData>();
         static BindingList<SessionData> sessionsList = new BindingList<SessionData>();
+        static bool? isFirstRun;
 
         public static void Initialize(string[] args)
         {
-            Log.InfoFormat("Initializing.  UserSettings={0}, SettingsFolder={1}", Settings.SettingsFilePath, Settings.SettingsFolder);
+            Log.InfoFormat(
+                "Initializing.  Version={0}, UserSettings={1}, SettingsFolder={2}", 
+                Version, Settings.SettingsFilePath, Settings.SettingsFolder);
 
-            // parse command line args
-            CommandLine = new CommandLineOptions(args);
-
+            /* no longer needed b/c of portable settings!
             // handle settings upgrade
             string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             if (Settings.ApplicationVersion != version)
@@ -45,42 +46,49 @@ namespace SuperPutty
                 Settings.ApplicationVersion = version;
                 Settings.Save();
             }
+             */
 
-            // load data
-            LoadLayouts();
-            LoadSessions();
-
-            // determine starting layout, if any.  CLI has priority
-            if (CommandLine.IsValid)
+            if (!SuperPuTTY.IsFirstRun)
             {
-                if (CommandLine.Layout != null)
+                // parse command line args
+                CommandLine = new CommandLineOptions(args);
+
+                // load data
+                LoadLayouts();
+                LoadSessions();
+
+                // determine starting layout, if any.  CLI has priority
+                if (CommandLine.IsValid)
                 {
-                    StartingLayout = FindLayout(CommandLine.Layout);
+                    if (CommandLine.Layout != null)
+                    {
+                        StartingLayout = FindLayout(CommandLine.Layout);
+                        if (StartingLayout != null)
+                        {
+                            Log.InfoFormat("Starting with layout from command line, {0}", CommandLine.Layout);
+                        }
+                    }
+                    else
+                    {
+                        // ad-hoc session specified
+                        SessionDataStartInfo sessionStartInfo = CommandLine.ToSessionStartInfo();
+                        if (sessionStartInfo != null)
+                        {
+                            StartingSession = sessionStartInfo;
+                            Log.InfoFormat("Starting adhoc Session from command line, {0}", StartingSession.Session.SessionId);
+                        }
+                    }
+
+                }
+
+                // if nothing specified, then try the default layout
+                if (StartingLayout == null && StartingSession == null)
+                {
+                    StartingLayout = FindLayout(Settings.DefaultLayoutName);
                     if (StartingLayout != null)
                     {
-                        Log.InfoFormat("Starting with layout from command line, {0}", CommandLine.Layout);
+                        Log.InfoFormat("Starting with default layout, {0}", Settings.DefaultLayoutName);
                     }
-                }
-                else
-                {
-                    // ad-hoc session specified
-                    SessionDataStartInfo sessionStartInfo = CommandLine.ToSessionStartInfo();
-                    if (sessionStartInfo != null)
-                    {
-                        StartingSession = sessionStartInfo;
-                        Log.InfoFormat("Starting adhoc Session from command line, {0}", StartingSession.Session.SessionId);
-                    }
-                }
-
-            }
-
-            // if nothing specified, then try the default layout
-            if (StartingLayout == null && StartingSession == null)
-            {
-                StartingLayout = FindLayout(Settings.DefaultLayoutName);
-                if (StartingLayout != null)
-                {
-                    Log.InfoFormat("Starting with default layout, {0}", Settings.DefaultLayoutName);
                 }
             }
 
@@ -250,31 +258,21 @@ namespace SuperPutty
             string fileName = SessionsFileName;
             Log.InfoFormat("Loading all sessions.  file={0}", fileName);
 
-            List<SessionData> sessions;
-            if (!File.Exists(fileName))
+            if (File.Exists(fileName))
             {
-                Log.InfoFormat("Sessions file does not exist.  Attempting import from registry");
-                sessions = SessionData.LoadSessionsFromRegistry();
+                List<SessionData> sessions = SessionData.LoadSessionsFromFile(fileName);
+                // remove old
+                sessionsMap.Clear();
+                sessionsList.Clear();
 
-                if (sessions != null)
+                foreach (SessionData session in sessions)
                 {
-                    // create default
-                    Log.InfoFormat("Imported {0} sessions.  Saving default file.", sessions.Count);
-                    SessionData.SaveSessionsToFile(sessions, fileName);
+                    AddSession(session);
                 }
             }
             else
             {
-                sessions = SessionData.LoadSessionsFromFile(fileName);
-            }
-
-            // remove old
-            sessionsMap.Clear();
-            sessionsList.Clear();
-
-            foreach (SessionData session in sessions)
-            {
-                AddSession(session);
+                Log.WarnFormat("Sessions file does not exist, nothing loaded.  file={0}", fileName);
             }
         }
 
@@ -422,7 +420,28 @@ namespace SuperPutty
                     AddSession(session);
                 }
             }
+        }
 
+        public static void ImportSessionsFromSuperPutty1030()
+        {
+            try
+            {
+                List<SessionData> sessions = SessionData.LoadSessionsFromRegistry();
+                if (sessions != null && sessions.Count > 0)
+                {
+                    foreach (SessionData session in sessions)
+                    {
+                        AddSession(session);
+                    }
+                    SaveSessions();
+
+                    Log.InfoFormat("Imported {0} old sessions from registry.", sessions.Count);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.WarnFormat("Could not import old sessions, msg={0}", ex.Message);
+            }
         }
 
         public static string MakeUniqueSessionId(string sessionId)
@@ -446,15 +465,24 @@ namespace SuperPutty
 
         #region Properties
 
-        public static bool IsFirstRun
-        {
+        public static bool IsFirstRun {
             get
             {
-                // check first load
-                return string.IsNullOrEmpty(Settings.PuttyExe);
+                if (isFirstRun == null)
+                {
+                    isFirstRun = string.IsNullOrEmpty(Settings.PuttyExe);
+                }
+                return isFirstRun.Value;
             }
         }
 
+        public static string Version
+        {
+            get
+            {
+                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            }
+        }
         public static frmSuperPutty MainForm { get; set; }
 
         internal static Settings Settings { get { return Settings.Default; } }

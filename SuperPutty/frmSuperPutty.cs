@@ -96,7 +96,7 @@ namespace SuperPutty
             // Hook into LayoutChanging/Changed
             SuperPuTTY.LayoutChanging += new EventHandler<LayoutChangedEventArgs>(SuperPuTTY_LayoutChanging);
 
-            this.toolStripStatusLabelVersion.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            this.toolStripStatusLabelVersion.Text = SuperPuTTY.Version;
 
             // Low-Level Mouse and Keyboard hooks
             //llkp = KBHookCallback;
