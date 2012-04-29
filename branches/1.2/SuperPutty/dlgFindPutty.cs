@@ -242,6 +242,8 @@ namespace SuperPutty
         {
             if (String.IsNullOrEmpty(SuperPuTTY.Settings.PuttyExe) || SuperPuTTY.IsFirstRun)
             {
+                // first time, try to import old putty settings from registry
+                SuperPuTTY.Settings.ImportFromRegistry();
                 dlgFindPutty dialog = new dlgFindPutty();
                 if (dialog.ShowDialog() == DialogResult.Cancel)
                 {
@@ -255,6 +257,12 @@ namespace SuperPutty
                     "PuTTY Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
                 System.Environment.Exit(1);
+            }
+
+            if (SuperPuTTY.IsFirstRun && SuperPuTTY.Sessions.Count == 0)
+            {
+                // first run, got nothing...try to import from registry
+                SuperPuTTY.ImportSessionsFromSuperPutty1030();
             }
         }
 
