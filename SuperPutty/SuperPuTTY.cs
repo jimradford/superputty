@@ -31,7 +31,7 @@ namespace SuperPutty
 
         public static void Initialize(string[] args)
         {
-            Log.InfoFormat("Initializing.  UserSettings={0}, ={1}", Settings.SettingsFilePath, Settings.SettingsFolder);
+            Log.InfoFormat("Initializing.  UserSettings={0}, SettingsFolder={1}", Settings.SettingsFilePath, Settings.SettingsFolder);
 
             // parse command line args
             CommandLine = new CommandLineOptions(args);

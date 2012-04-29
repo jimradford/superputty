@@ -28,6 +28,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using log4net;
 using System.Xml.Serialization;
 using System.IO;
+using System.Collections;
 
 namespace SuperPutty.Data
 {
@@ -280,6 +281,8 @@ namespace SuperPutty.Data
             List<SessionData> sessions = new List<SessionData>();
             if (File.Exists(fileName))
             {
+                WorkaroundCygwinBug();
+
                 XmlSerializer s = new XmlSerializer(sessions.GetType());
                 using (TextReader r = new StreamReader(fileName))
                 {
@@ -292,6 +295,32 @@ namespace SuperPutty.Data
                 Log.WarnFormat("Could not load sessions, file doesn't exist.  file={0}", fileName);
             }
             return sessions;
+        }
+
+        static void WorkaroundCygwinBug()
+        {
+            try
+            {
+                // work around known bug with cygwin
+                Dictionary<string, string> envVars = new Dictionary<string, string>();
+                foreach (DictionaryEntry de in Environment.GetEnvironmentVariables())
+                {
+                    string envVar = (string) de.Key;
+                    if (envVars.ContainsKey(envVar.ToUpper()))
+                    {
+                        // duplicate found... (e.g. TMP and tmp)
+                        Log.DebugFormat("Clearing duplicate envVariable, {0}", envVar);
+                        Environment.SetEnvironmentVariable(envVar, null);
+                        continue;
+                    }
+                    envVars.Add(envVar.ToUpper(), envVar);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.WarnFormat("Error working around cygwin issue: {0}", ex.Message);
+            }
         }
 
 
