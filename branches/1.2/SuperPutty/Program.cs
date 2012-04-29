@@ -51,13 +51,13 @@ namespace SuperPutty
             bool onlyInstance = false;
             Mutex mutex = new Mutex(true, "SuperPutty", out onlyInstance);
 
-            Console.WriteLine(
+            Log.InfoFormat(
                 "IsFirstRun={0}, SingleInstanceMode={1}, onlyInstance={2}", 
                 SuperPuTTY.IsFirstRun, SuperPuTTY.Settings.SingleInstanceMode, onlyInstance);
             if ((EnforceSingleInstance  || SuperPuTTY.Settings.SingleInstanceMode) && !SuperPuTTY.IsFirstRun && !onlyInstance)
             {
                 SingleInstanceHelper.LaunchInExistingInstance(args);
-                Console.WriteLine("Sent Command to Existing Instance: [{0}]", String.Join(" ", args));
+                Log.InfoFormat("Sent Command to Existing Instance: [{0}]", String.Join(" ", args));
                 Environment.Exit(0);
             }
 
