@@ -48,17 +48,17 @@ namespace SuperPutty
             // send log to console
             log4net.Config.BasicConfigurator.Configure();
 
-            Console.WriteLine("IsFirstRun={0}, SingleInstanceMode={1}", SuperPuTTY.IsFirstRun, SuperPuTTY.Settings.SingleInstanceMode);
-            if ((EnforceSingleInstance  || SuperPuTTY.Settings.SingleInstanceMode) && !SuperPuTTY.IsFirstRun)
+            bool onlyInstance = false;
+            Mutex mutex = new Mutex(true, "SuperPutty", out onlyInstance);
+
+            Console.WriteLine(
+                "IsFirstRun={0}, SingleInstanceMode={1}, onlyInstance={2}", 
+                SuperPuTTY.IsFirstRun, SuperPuTTY.Settings.SingleInstanceMode, onlyInstance);
+            if ((EnforceSingleInstance  || SuperPuTTY.Settings.SingleInstanceMode) && !SuperPuTTY.IsFirstRun && !onlyInstance)
             {
-                bool onlyInstance = false;
-                Mutex mutex = new Mutex(true, "SuperPutty", out onlyInstance);
-                if (!onlyInstance)
-                {
-                    SingleInstanceHelper.LaunchInExistingInstance(args);
-                    Console.WriteLine("Sent Command to Existing Instance: [{0}]", String.Join(" ", args));
-                    Environment.Exit(0);
-                }
+                SingleInstanceHelper.LaunchInExistingInstance(args);
+                Console.WriteLine("Sent Command to Existing Instance: [{0}]", String.Join(" ", args));
+                Environment.Exit(0);
             }
 
             // open full file
