@@ -48,6 +48,7 @@ namespace SuperPutty
             // send log to console
             log4net.Config.BasicConfigurator.Configure();
 
+            Console.WriteLine("IsFirstRun={0}, SingleInstanceMode={1}", SuperPuTTY.IsFirstRun, SuperPuTTY.Settings.SingleInstanceMode);
             if ((EnforceSingleInstance  || SuperPuTTY.Settings.SingleInstanceMode) && !SuperPuTTY.IsFirstRun)
             {
                 bool onlyInstance = false;
