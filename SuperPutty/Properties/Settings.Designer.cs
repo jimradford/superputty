@@ -105,19 +105,19 @@ namespace SuperPutty.Properties {
         [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool RestrictPuttyTabDocking {
+        public bool RestrictContentToDocumentTabs {
             get {
-                return ((bool)(this["RestrictPuttyTabDocking"]));
+                return ((bool)(this["RestrictContentToDocumentTabs"]));
             }
             set {
-                this["RestrictPuttyTabDocking"] = value;
+                this["RestrictContentToDocumentTabs"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool RestoreWindowLocation {
             get {
                 return ((bool)(this["RestoreWindowLocation"]));
@@ -130,26 +130,26 @@ namespace SuperPutty.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
-        public global::System.Drawing.Size FormSize {
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0, 0, 0")]
+        public global::System.Drawing.Rectangle WindowPosition {
             get {
-                return ((global::System.Drawing.Size)(this["FormSize"]));
+                return ((global::System.Drawing.Rectangle)(this["WindowPosition"]));
             }
             set {
-                this["FormSize"] = value;
+                this["WindowPosition"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
-        public global::System.Drawing.Point FormLocation {
+        [global::System.Configuration.DefaultSettingValueAttribute("Normal")]
+        public global::System.Windows.Forms.FormWindowState WindowState {
             get {
-                return ((global::System.Drawing.Point)(this["FormLocation"]));
+                return ((global::System.Windows.Forms.FormWindowState)(this["WindowState"]));
             }
             set {
-                this["FormLocation"] = value;
+                this["WindowState"] = value;
             }
         }
     }

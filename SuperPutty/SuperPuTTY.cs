@@ -9,6 +9,7 @@ using log4net;
 using SuperPutty.Data;
 using SuperPutty.Properties;
 using SuperPutty.Utils;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace SuperPutty
 {
@@ -338,6 +339,7 @@ namespace SuperPutty
             if (session != null)
             {
                 ctlPuttyPanel sessionPanel = ctlPuttyPanel.NewPanel(session);
+                ApplyDockRestrictions(sessionPanel);
                 sessionPanel.Show(MainForm.DockPanel, session.LastDockstate);
                 SuperPuTTY.ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
             }
@@ -365,6 +367,7 @@ namespace SuperPutty
                     xfer.PuttyClosed = callback;
 
                     panel = new RemoteFileListPanel(xfer, SuperPuTTY.MainForm.DockPanel, session);
+                    ApplyDockRestrictions(panel);
                     if (!cancelShow)
                     {
                         panel.Show(MainForm.DockPanel, session.LastDockstate);
@@ -372,6 +375,14 @@ namespace SuperPutty
                 }
 
                 SuperPuTTY.ReportStatus("Opened session: {0} [SCP]", session.SessionId);
+            }
+        }
+
+        public static void ApplyDockRestrictions(DockContent panel)
+        {
+            if (SuperPuTTY.Settings.RestrictContentToDocumentTabs)
+            {
+                panel.DockAreas = DockAreas.Document | DockAreas.Float;
             }
         }
 

@@ -20,17 +20,17 @@
     <Setting Name="SingleInstanceMode" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="RestrictPuttyTabDocking" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
+    <Setting Name="RestrictContentToDocumentTabs" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="RestoreWindowLocation" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="FormSize" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Drawing.Size" Scope="User">
-      <Value Profile="(Default)">0, 0</Value>
+    <Setting Name="WindowPosition" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Drawing.Rectangle" Scope="User">
+      <Value Profile="(Default)">0, 0, 0, 0</Value>
     </Setting>
-    <Setting Name="FormLocation" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Drawing.Point" Scope="User">
-      <Value Profile="(Default)">0, 0</Value>
+    <Setting Name="WindowState" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Windows.Forms.FormWindowState" Scope="User">
+      <Value Profile="(Default)">Normal</Value>
     </Setting>
   </Settings>
 </SettingsFile>

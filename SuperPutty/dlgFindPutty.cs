@@ -129,6 +129,10 @@ namespace SuperPutty
             this.comboBoxLayouts.DataSource = layouts;
             this.comboBoxLayouts.SelectedItem = SuperPuTTY.Settings.DefaultLayoutName;
 
+
+            this.checkSingleInstanceMode.Checked = SuperPuTTY.Settings.SingleInstanceMode;
+            this.checkConstrainPuttyDocking.Checked = SuperPuTTY.Settings.RestrictContentToDocumentTabs;
+            this.checkRestoreWindow.Checked = SuperPuTTY.Settings.RestoreWindowLocation;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -171,7 +175,7 @@ namespace SuperPutty
             }
 
             SuperPuTTY.Settings.SingleInstanceMode = this.checkSingleInstanceMode.Checked;
-            SuperPuTTY.Settings.RestrictPuttyTabDocking = this.checkConstrainPuttyDocking.Checked;
+            SuperPuTTY.Settings.RestrictContentToDocumentTabs = this.checkConstrainPuttyDocking.Checked;
             SuperPuTTY.Settings.RestoreWindowLocation = this.checkRestoreWindow.Checked;
 
             if (errors.Count == 0)
