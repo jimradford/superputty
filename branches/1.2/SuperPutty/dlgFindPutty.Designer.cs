@@ -227,9 +227,9 @@
             this.checkConstrainPuttyDocking.AutoSize = true;
             this.checkConstrainPuttyDocking.Location = new System.Drawing.Point(180, 255);
             this.checkConstrainPuttyDocking.Name = "checkConstrainPuttyDocking";
-            this.checkConstrainPuttyDocking.Size = new System.Drawing.Size(187, 17);
+            this.checkConstrainPuttyDocking.Size = new System.Drawing.Size(193, 17);
             this.checkConstrainPuttyDocking.TabIndex = 25;
-            this.checkConstrainPuttyDocking.Text = "Constrain PuTTY docking to Tabs";
+            this.checkConstrainPuttyDocking.Text = "Restrict Content to Document Tabs";
             this.checkConstrainPuttyDocking.UseVisualStyleBackColor = true;
             // 
             // checkSingleInstanceMode
@@ -237,9 +237,9 @@
             this.checkSingleInstanceMode.AutoSize = true;
             this.checkSingleInstanceMode.Location = new System.Drawing.Point(180, 232);
             this.checkSingleInstanceMode.Name = "checkSingleInstanceMode";
-            this.checkSingleInstanceMode.Size = new System.Drawing.Size(231, 17);
+            this.checkSingleInstanceMode.Size = new System.Drawing.Size(254, 17);
             this.checkSingleInstanceMode.TabIndex = 24;
-            this.checkSingleInstanceMode.Text = "Allow single instance of SuperPuTTY to run";
+            this.checkSingleInstanceMode.Text = "Only allow single instance of SuperPuTTY to run";
             this.checkSingleInstanceMode.UseVisualStyleBackColor = true;
             // 
             // dlgFindPutty

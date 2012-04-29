@@ -103,6 +103,26 @@ namespace SuperPutty
             //kbHookID = SetKBHook(llkp);
             llmp = MHookCallback;
             mHookID = SetMHook(llmp);
+
+            // Restore window location and size
+            if (SuperPuTTY.Settings.RestoreWindowLocation)
+            {
+                FormUtils.RestoreFormPositionAndState(this, SuperPuTTY.Settings.WindowPosition, SuperPuTTY.Settings.WindowState);
+            }
+
+        }
+
+        private bool IsVisibleOnAnyScreen(Rectangle rect)
+        {
+            foreach (Screen screen in Screen.AllScreens)
+            {
+                if (screen.WorkingArea.IntersectsWith(rect))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
 
@@ -111,13 +131,23 @@ namespace SuperPutty
             this.BeginInvoke(new Action(this.LoadLayout));
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
+        protected override void OnFormClosed(FormClosedEventArgs e)
         {
             // free hooks
             //NativeMethods.UnhookWindowsHookEx(kbHookID);
             NativeMethods.UnhookWindowsHookEx(mHookID);
-            base.OnFormClosing(e);
+
+            // save window size and location if not maximized or minimized
+            if (SuperPuTTY.Settings.RestoreWindowLocation && this.WindowState != FormWindowState.Minimized)
+            {
+                SuperPuTTY.Settings.WindowPosition = this.DesktopBounds;
+                SuperPuTTY.Settings.WindowState = this.WindowState;
+                SuperPuTTY.Settings.Save();
+            }
+
+            base.OnFormClosed(e);
         }
+
 
         /// <summary>
         /// Handles focusing on tabs/windows which host PuTTY
@@ -227,6 +257,7 @@ namespace SuperPutty
                 // default layout or null for hard-coded default
                 SuperPuTTY.LoadLayout(SuperPuTTY.StartingLayout);
             }
+
         }
 
         void SuperPuTTY_LayoutChanging(object sender, LayoutChangedEventArgs eventArgs)
@@ -386,7 +417,14 @@ namespace SuperPutty
             SuperPuTTY.ReportStatus("Editing Options");
 
             dlgFindPutty dialog = new dlgFindPutty();
-            dialog.ShowDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                // try to apply settings to existing documents (don't worry about the ones docked on sides)
+                foreach (DockContent dockContent in this.DockPanel.Documents)
+                {
+                    SuperPuTTY.ApplyDockRestrictions(dockContent);
+                }
+            }
 
             SuperPuTTY.ReportStatus("Ready");
         }
