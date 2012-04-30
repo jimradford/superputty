@@ -377,9 +377,24 @@ namespace SuperPutty.Data
             return s == null ? 1 : this.SessionId.CompareTo(s.SessionId);
         }
 
-        public static string CombineSessionIds(params string[] ids)
+        public static string CombineSessionIds(string parent, string child) 
         {
-            return String.Join("/", ids);
+            if (parent == null && child == null)
+            {
+                return null;
+            } 
+            else if (child == null) 
+            {
+                return parent;
+            }
+            else if (parent == null)
+            {
+                return child;
+            }
+            else
+            {
+                return parent + "/" + child;
+            }
         }
 
         public static string GetSessionNameFromId(string sessionId)
