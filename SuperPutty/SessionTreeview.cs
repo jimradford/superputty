@@ -569,6 +569,9 @@ namespace SuperPutty
 
                 // Show the newly added node if it is not already visible.
                 node.Expand();
+
+                // save settings
+                SuperPuTTY.SaveSessions();
             }
         }
 
