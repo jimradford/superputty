@@ -594,6 +594,7 @@ namespace SuperPutty
                     if (commandMRUIndex >= 0)
                     {
                         tsSendCommandCombo.Text = (string) tsSendCommandCombo.Items[commandMRUIndex];
+                        tsSendCommandCombo.SelectionStart = tsSendCommandCombo.Text.Length;
                     }
                 }
                 e.Handled = true;
@@ -610,6 +611,7 @@ namespace SuperPutty
                     if (commandMRUIndex < tsSendCommandCombo.Items.Count)
                     {
                         tsSendCommandCombo.Text = (string)tsSendCommandCombo.Items[commandMRUIndex];
+                        tsSendCommandCombo.SelectionStart = tsSendCommandCombo.Text.Length;
                     }
                 }
                 e.Handled = true;
