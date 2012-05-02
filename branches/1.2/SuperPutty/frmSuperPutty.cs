@@ -577,7 +577,7 @@ namespace SuperPutty
         {
             int sent = 0;
             String command = this.tbTextCommand.Text;
-            if (!string.IsNullOrEmpty(command) && this.DockPanel.DocumentsCount > 0)
+            if (this.DockPanel.DocumentsCount > 0)
             {
                 foreach (DockContent content in this.DockPanel.Documents)
                 {
