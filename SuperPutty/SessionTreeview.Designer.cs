@@ -34,6 +34,7 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.contextMenuStripAddTreeItem = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.newSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createLikeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -48,7 +49,6 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerDelayedSave = new System.Windows.Forms.Timer(this.components);
-            this.copyAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripAddTreeItem.SuspendLayout();
             this.contextMenuStripFolder.SuspendLayout();
             this.SuspendLayout();
@@ -84,7 +84,7 @@
             // 
             this.contextMenuStripAddTreeItem.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newSessionToolStripMenuItem,
-            this.copyAsToolStripMenuItem,
+            this.createLikeToolStripMenuItem,
             this.settingsToolStripMenuItem,
             this.deleteToolStripMenuItem,
             this.toolStripSeparator1,
@@ -101,6 +101,13 @@
             this.newSessionToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.newSessionToolStripMenuItem.Text = "New";
             this.newSessionToolStripMenuItem.Click += new System.EventHandler(this.CreateOrEditSessionToolStripMenuItem_Click);
+            // 
+            // createLikeToolStripMenuItem
+            // 
+            this.createLikeToolStripMenuItem.Name = "createLikeToolStripMenuItem";
+            this.createLikeToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.createLikeToolStripMenuItem.Text = "Copy As";
+            this.createLikeToolStripMenuItem.Click += new System.EventHandler(this.CreateOrEditSessionToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -197,13 +204,6 @@
             this.timerDelayedSave.Interval = 3000;
             this.timerDelayedSave.Tick += new System.EventHandler(this.timerDelayedSave_Tick);
             // 
-            // copyAsToolStripMenuItem
-            // 
-            this.copyAsToolStripMenuItem.Name = "copyAsToolStripMenuItem";
-            this.copyAsToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
-            this.copyAsToolStripMenuItem.Text = "Copy As";
-            this.copyAsToolStripMenuItem.Click += new System.EventHandler(this.CreateOrEditSessionToolStripMenuItem_Click);
-            // 
             // SessionTreeview
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -241,6 +241,6 @@
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeFolderToolStripMenuItem;
         private System.Windows.Forms.Timer timerDelayedSave;
-        private System.Windows.Forms.ToolStripMenuItem copyAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createLikeToolStripMenuItem;
     }
 }
