@@ -152,5 +152,18 @@ namespace SuperPutty.Properties {
                 this["WindowState"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ExitConfirmation {
+            get {
+                return ((bool)(this["ExitConfirmation"]));
+            }
+            set {
+                this["ExitConfirmation"] = value;
+            }
+        }
     }
 }

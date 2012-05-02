@@ -133,6 +133,7 @@ namespace SuperPutty
             this.checkSingleInstanceMode.Checked = SuperPuTTY.Settings.SingleInstanceMode;
             this.checkConstrainPuttyDocking.Checked = SuperPuTTY.Settings.RestrictContentToDocumentTabs;
             this.checkRestoreWindow.Checked = SuperPuTTY.Settings.RestoreWindowLocation;
+            this.checkExitConfirmation.Checked = SuperPuTTY.Settings.ExitConfirmation;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -174,12 +175,14 @@ namespace SuperPutty
                 errors.Insert(0, "PuTTY is required to properly use this application.");
             }
 
-            SuperPuTTY.Settings.SingleInstanceMode = this.checkSingleInstanceMode.Checked;
-            SuperPuTTY.Settings.RestrictContentToDocumentTabs = this.checkConstrainPuttyDocking.Checked;
-            SuperPuTTY.Settings.RestoreWindowLocation = this.checkRestoreWindow.Checked;
 
             if (errors.Count == 0)
             {
+                SuperPuTTY.Settings.SingleInstanceMode = this.checkSingleInstanceMode.Checked;
+                SuperPuTTY.Settings.RestrictContentToDocumentTabs = this.checkConstrainPuttyDocking.Checked;
+                SuperPuTTY.Settings.RestoreWindowLocation = this.checkRestoreWindow.Checked;
+                SuperPuTTY.Settings.ExitConfirmation = this.checkExitConfirmation.Checked;
+
                 SuperPuTTY.Settings.Save();
 
                 // @TODO - move this to a better place...maybe event handler after opening
