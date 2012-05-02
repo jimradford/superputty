@@ -147,6 +147,7 @@ namespace SuperPutty
             TreeNode node = null;
             TreeNode nodeRef = this.nodeRoot;
             bool isEdit = false;
+            string title = null;
             if (sender is ToolStripMenuItem)
             {
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
@@ -155,14 +156,16 @@ namespace SuperPutty
                 {
                     session = new SessionData();
                     nodeRef = isFolderNode ? treeView1.SelectedNode : treeView1.SelectedNode.Parent;
+                    title = "Create New Session";
                 }
-                else if (menuItem == this.copyAsToolStripMenuItem)
+                else if (menuItem == this.createLikeToolStripMenuItem)
                 {
                     // copy as
                     session = (SessionData) ((SessionData) treeView1.SelectedNode.Tag).Clone();
                     session.SessionId = SuperPuTTY.MakeUniqueSessionId(session.SessionId);
                     session.SessionName = SessionData.GetSessionNameFromId(session.SessionId);
                     nodeRef = treeView1.SelectedNode.Parent;
+                    title = "Create New Session Like " + session.OldName;
                 }
                 else
                 {
@@ -171,10 +174,12 @@ namespace SuperPutty
                     node = treeView1.SelectedNode;
                     nodeRef = node.Parent;
                     isEdit = true;
+                    title = "Edit Session: " + session.SessionName;
                 }
             }
 
             dlgEditSession form = new dlgEditSession(session);
+            form.Text = title;
             form.SessionNameValidator += delegate(string txt, out string error)
             {
                 error = String.Empty;
