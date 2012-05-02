@@ -135,6 +135,7 @@ namespace SuperPutty
             }
         }
 
+
         /// <summary>
         /// Create/Update a session entry
         /// </summary>
@@ -154,6 +155,14 @@ namespace SuperPutty
                 {
                     session = new SessionData();
                     nodeRef = isFolderNode ? treeView1.SelectedNode : treeView1.SelectedNode.Parent;
+                }
+                else if (menuItem == this.copyAsToolStripMenuItem)
+                {
+                    // copy as
+                    session = (SessionData) ((SessionData) treeView1.SelectedNode.Tag).Clone();
+                    session.SessionId = SuperPuTTY.MakeUniqueSessionId(session.SessionId);
+                    session.SessionName = SessionData.GetSessionNameFromId(session.SessionId);
+                    nodeRef = treeView1.SelectedNode.Parent;
                 }
                 else
                 {
@@ -584,9 +593,6 @@ namespace SuperPutty
             SuperPuTTY.SaveSessions();
             SuperPuTTY.ReportStatus("Saved Sessions after Drag-Drop @ {0}", DateTime.Now);
         }
-
-
-
     }
 
 }
