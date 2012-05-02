@@ -47,6 +47,7 @@
             this.removeFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timerDelayedSave = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStripAddTreeItem.SuspendLayout();
             this.contextMenuStripFolder.SuspendLayout();
             this.SuspendLayout();
@@ -65,11 +66,11 @@
             this.treeView1.ShowRootLines = false;
             this.treeView1.Size = new System.Drawing.Size(167, 264);
             this.treeView1.TabIndex = 0;
+            this.treeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView1_ItemDrag);
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
             this.treeView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeView1_DragDrop);
             this.treeView1.DragOver += new System.Windows.Forms.DragEventHandler(this.treeView1_DragOver);
             this.treeView1.DoubleClick += new System.EventHandler(this.treeView1_DoubleClick);
-            this.treeView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView1_MouseDown);
             // 
             // imageList1
             // 
@@ -189,6 +190,11 @@
             this.renameToolStripMenuItem.Text = "Rename";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
+            // timerDelayedSave
+            // 
+            this.timerDelayedSave.Interval = 3000;
+            this.timerDelayedSave.Tick += new System.EventHandler(this.timerDelayedSave_Tick);
+            // 
             // SessionTreeview
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -225,5 +231,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeFolderToolStripMenuItem;
+        private System.Windows.Forms.Timer timerDelayedSave;
     }
 }

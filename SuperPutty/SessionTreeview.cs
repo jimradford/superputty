@@ -488,22 +488,18 @@ namespace SuperPutty
 
         #region Drag Drop
 
-        private void treeView1_MouseDown(object sender, MouseEventArgs e)
+        private void treeView1_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && Control.ModifierKeys == Keys.Shift)
+            // Get the tree
+            TreeView tree = (TreeView)sender;
+
+            // Get the node underneath the mouse.
+            TreeNode node = e.Item as TreeNode;
+
+            // Start the drag-and-drop operation with a cloned copy of the node.
+            if (node != null && IsSessionNode(node))
             {
-                // Get the tree.
-                TreeView tree = (TreeView)sender;
-
-                // Get the node underneath the mouse.
-                TreeNode node = tree.GetNodeAt(e.X, e.Y);
-                tree.SelectedNode = node;
-
-                // Start the drag-and-drop operation with a cloned copy of the node.
-                if (node != null && IsSessionNode(node))
-                {
-                    this.treeView1.DoDragDrop(node, DragDropEffects.Copy);
-                }
+                this.treeView1.DoDragDrop(node, DragDropEffects.Copy);
             }
         }
 
@@ -570,12 +566,26 @@ namespace SuperPutty
                 // Show the newly added node if it is not already visible.
                 node.Expand();
 
-                // save settings
-                SuperPuTTY.SaveSessions();
+                // auto save settings...use timer to prevent excessive saves while dragging and dropping nodes
+                timerDelayedSave.Stop();
+                timerDelayedSave.Start();
+                //SuperPuTTY.SaveSessions();
             }
         }
 
         #endregion
+
+        private void timerDelayedSave_Tick(object sender, EventArgs e)
+        {
+            // stop timer
+            timerDelayedSave.Stop();
+
+            // do save
+            SuperPuTTY.SaveSessions();
+            SuperPuTTY.ReportStatus("Saved Sessions after Drag-Drop @ {0}", DateTime.Now);
+        }
+
+
 
     }
 
