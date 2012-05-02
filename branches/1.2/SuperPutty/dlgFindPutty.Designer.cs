@@ -49,12 +49,13 @@
             this.checkRestoreWindow = new System.Windows.Forms.CheckBox();
             this.checkConstrainPuttyDocking = new System.Windows.Forms.CheckBox();
             this.checkSingleInstanceMode = new System.Windows.Forms.CheckBox();
+            this.checkExitConfirmation = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(388, 314);
+            this.buttonOk.Location = new System.Drawing.Point(388, 349);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 20;
@@ -194,7 +195,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(469, 314);
+            this.buttonCancel.Location = new System.Drawing.Point(469, 349);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 21;
@@ -242,13 +243,24 @@
             this.checkSingleInstanceMode.Text = "Only allow single instance of SuperPuTTY to run";
             this.checkSingleInstanceMode.UseVisualStyleBackColor = true;
             // 
+            // checkExitConfirmation
+            // 
+            this.checkExitConfirmation.AutoSize = true;
+            this.checkExitConfirmation.Location = new System.Drawing.Point(180, 301);
+            this.checkExitConfirmation.Name = "checkExitConfirmation";
+            this.checkExitConfirmation.Size = new System.Drawing.Size(104, 17);
+            this.checkExitConfirmation.TabIndex = 27;
+            this.checkExitConfirmation.Text = "Exit Confirmation";
+            this.checkExitConfirmation.UseVisualStyleBackColor = true;
+            // 
             // dlgFindPutty
             // 
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(556, 349);
+            this.ClientSize = new System.Drawing.Size(556, 384);
+            this.Controls.Add(this.checkExitConfirmation);
             this.Controls.Add(this.checkRestoreWindow);
             this.Controls.Add(this.checkConstrainPuttyDocking);
             this.Controls.Add(this.checkSingleInstanceMode);
@@ -297,5 +309,6 @@
         private System.Windows.Forms.CheckBox checkRestoreWindow;
         private System.Windows.Forms.CheckBox checkConstrainPuttyDocking;
         private System.Windows.Forms.CheckBox checkSingleInstanceMode;
+        private System.Windows.Forms.CheckBox checkExitConfirmation;
     }
 }

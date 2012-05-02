@@ -203,9 +203,12 @@ namespace SuperPutty
 
         private void frmSuperPutty_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MessageBox.Show("Exit SuperPuTTY?", "Confirm Exit", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.Cancel)
+            if (SuperPuTTY.Settings.ExitConfirmation)
             {
-                e.Cancel = true;
+                if (MessageBox.Show("Exit SuperPuTTY?", "Confirm Exit", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
             }
         }
 
