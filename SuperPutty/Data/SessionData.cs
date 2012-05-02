@@ -29,6 +29,7 @@ using log4net;
 using System.Xml.Serialization;
 using System.IO;
 using System.Collections;
+using System.Reflection;
 
 namespace SuperPutty.Data
 {
@@ -42,7 +43,7 @@ namespace SuperPutty.Data
         Cygterm
     }
 
-    public class SessionData : IComparable
+    public class SessionData : IComparable, ICloneable
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SessionData));
 
@@ -417,5 +418,18 @@ namespace SuperPutty.Data
             return parentPath;
         }
 
+
+        public object Clone()
+        {
+            SessionData session = new SessionData();
+            foreach (PropertyInfo pi in this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (pi.CanWrite)
+                {
+                    pi.SetValue(session, pi.GetValue(this, null), null);
+                }
+            }
+            return session;
+        }
     }
 }
