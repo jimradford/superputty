@@ -69,6 +69,8 @@ namespace SuperPutty
         private static IntPtr kbHookID = IntPtr.Zero;
         private static IntPtr mHookID = IntPtr.Zero;
 
+        int commandMRUIndex = 0;
+
         public frmSuperPutty()
         {
             // Verify Putty is set; Prompt user if necessary; exit otherwise
@@ -568,6 +570,52 @@ namespace SuperPutty
             }
         }
 
+        private void tsSendCommandCombo_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                TrySendCommandsFromToolbar();
+                e.Handled = true;
+            }
+        }
+
+        private void tsSendCommandCombo_KeyDown(object sender, KeyEventArgs e)
+        {
+            
+            if (e.KeyCode == Keys.Up)
+            {
+                if (tsSendCommandCombo.Items.Count > 0)
+                {
+                    commandMRUIndex--;
+                    if (commandMRUIndex < 0)
+                    {
+                        commandMRUIndex = tsSendCommandCombo.Items.Count - 1;
+                    }
+                    if (commandMRUIndex >= 0)
+                    {
+                        tsSendCommandCombo.Text = (string) tsSendCommandCombo.Items[commandMRUIndex];
+                    }
+                }
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                if (tsSendCommandCombo.Items.Count > 0)
+                {
+                    commandMRUIndex++;
+                    if (commandMRUIndex >= tsSendCommandCombo.Items.Count)
+                    {
+                        commandMRUIndex = 0;
+                    }
+                    if (commandMRUIndex < tsSendCommandCombo.Items.Count)
+                    {
+                        tsSendCommandCombo.Text = (string)tsSendCommandCombo.Items[commandMRUIndex];
+                    }
+                }
+                e.Handled = true;
+            }
+        }
+
         private void tbBtnSendCommand_Click(object sender, EventArgs e)
         {
             TrySendCommandsFromToolbar();
@@ -576,7 +624,7 @@ namespace SuperPutty
         int TrySendCommandsFromToolbar()
         {
             int sent = 0;
-            String command = this.tbTextCommand.Text;
+            String command = this.tsSendCommandCombo.Text; //this.tbTextCommand.Text;
             if (this.DockPanel.DocumentsCount > 0)
             {
                 foreach (DockContent content in this.DockPanel.Documents)
@@ -597,8 +645,12 @@ namespace SuperPutty
                 }
                 if (sent > 0)
                 {
-                    // success...so select the text so you change command (like a prompt)
-                    this.BeginInvoke(new MethodInvoker(this.tbTextCommand.SelectAll));
+                    // success...clear text and save in mru
+                    this.tsSendCommandCombo.Text = string.Empty;
+                    if (!string.IsNullOrEmpty(command))
+                    {
+                        this.tsSendCommandCombo.Items.Add(command);
+                    }
                 }
             }
             return sent;
@@ -679,6 +731,10 @@ namespace SuperPutty
         }
 
         #endregion
+
+
+
+
 
     }
 }
