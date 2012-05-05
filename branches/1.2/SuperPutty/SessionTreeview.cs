@@ -67,8 +67,21 @@ namespace SuperPutty
 
             // populate sessions in the treeview from the registry
             LoadSessions();
-
             SuperPuTTY.Sessions.ListChanged += new ListChangedEventHandler(Sessions_ListChanged);
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            // start with semi-collapsed view
+            foreach (TreeNode node in this.nodeRoot.Nodes)
+            {
+                if (!IsSessionNode(node))
+                {
+                    node.Collapse();
+                }
+            }
         }
 
         /// <summary>
@@ -91,8 +104,6 @@ namespace SuperPutty
                 }
                 AddSessionNode(nodeParent, session, true);
             }
-            treeView1.ExpandAll();
-
         }
 
         void Sessions_ListChanged(object sender, ListChangedEventArgs e)
@@ -211,18 +222,21 @@ namespace SuperPutty
                         if (node != null)
                         {
                             node.Tag = session;
+                            this.treeView1.SelectedNode = node;
                         }
                     }
                     else
                     {
                         // handle renames
                         node.Text = session.SessionName;
+                        node.Name = session.SessionName;
                         SuperPuTTY.RemoveSession(session.OldSessionId);
                         SuperPuTTY.AddSession(session);
                         ResortNodes();
+                        this.treeView1.SelectedNode = node;
                     }
 
-                    treeView1.ExpandAll();
+                    //treeView1.ExpandAll();
                     SuperPuTTY.SaveSessions();
                 }
                 finally
@@ -345,6 +359,7 @@ namespace SuperPutty
                 if (dialog.ShowDialog(this) == DialogResult.OK && node.Text != dialog.ItemName)
                 {
                     node.Text = dialog.ItemName;
+                    node.Name = dialog.ItemName;
                     UpdateSessionId(node);
                     SuperPuTTY.SaveSessions();
                     ResortNodes();
@@ -498,6 +513,29 @@ namespace SuperPutty
             this.treeView1.TreeViewNodeSorter = this;
         }
 
+
+        private void expandAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+              TreeNode node = this.treeView1.SelectedNode;
+              if (node != null)
+              {
+                  node.ExpandAll();
+              }
+        }
+
+        private void collapseAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = this.treeView1.SelectedNode;
+            if (node != null)
+            {
+                node.Collapse();
+                if (node == this.nodeRoot)
+                {
+                    nodeRoot.Expand();
+                }
+            }
+        }
+
         #endregion
 
         #region Drag Drop
@@ -598,6 +636,7 @@ namespace SuperPutty
             SuperPuTTY.SaveSessions();
             SuperPuTTY.ReportStatus("Saved Sessions after Drag-Drop @ {0}", DateTime.Now);
         }
+
     }
 
 }
