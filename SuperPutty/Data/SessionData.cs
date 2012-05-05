@@ -400,8 +400,13 @@ namespace SuperPutty.Data
 
         public static string GetSessionNameFromId(string sessionId)
         {
-            string[] parts = sessionId.Split('/');
+            string[] parts = GetSessionNameParts(sessionId);
             return parts.Length > 0 ? parts[parts.Length - 1] : sessionId;
+        }
+
+        public static string[] GetSessionNameParts(string sessionId)
+        {
+            return sessionId.Split('/');
         }
 
         public static string GetSessionParentId(string sessionId)
