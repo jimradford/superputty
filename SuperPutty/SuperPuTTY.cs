@@ -26,7 +26,7 @@ namespace SuperPutty
         public static event Action<String> StatusEvent;
 
         static BindingList<LayoutData> layouts = new BindingList<LayoutData>();
-        static Dictionary<string, SessionData> sessionsMap = new Dictionary<string, SessionData>();
+        static SortedList<string, SessionData> sessionsMap = new SortedList<string, SessionData>();
         static BindingList<SessionData> sessionsList = new BindingList<SessionData>();
         static bool? isFirstRun;
 
