@@ -101,15 +101,38 @@ namespace SuperPutty
         void CreateMenu()
         {
             newSessionToolStripMenuItem.DropDownItems.Clear();
-            foreach (SessionData session in SuperPuTTY.Sessions)
+            foreach (SessionData session in SuperPuTTY.GetAllSessions())
             {
-                ToolStripMenuItem newSessionTSMI = new ToolStripMenuItem();
-                newSessionTSMI.Tag = session;
-                newSessionTSMI.Text = session.SessionId;
-                newSessionTSMI.Click += new System.EventHandler(newSessionTSMI_Click);
-                newSessionToolStripMenuItem.DropDownItems.Add(newSessionTSMI);
+                ToolStripMenuItem tsmiParent = newSessionToolStripMenuItem;
+                foreach (string part in SessionData.GetSessionNameParts(session.SessionId))
+                {
+                    if (part == session.SessionName)
+                    {
+                        ToolStripMenuItem newSessionTSMI = new ToolStripMenuItem();
+                        newSessionTSMI.Tag = session;
+                        newSessionTSMI.Text = session.SessionName;
+                        newSessionTSMI.Click += new System.EventHandler(newSessionTSMI_Click);
+                        tsmiParent.DropDownItems.Add(newSessionTSMI);
+                    }
+                    else
+                    {
+                        if (tsmiParent.DropDownItems.ContainsKey(part))
+                        {
+                            tsmiParent = (ToolStripMenuItem) tsmiParent.DropDownItems[part];
+                        }
+                        else
+                        {
+                            ToolStripMenuItem newSessionFolder = new ToolStripMenuItem(part);
+                            newSessionFolder.Name = part;
+                            tsmiParent.DropDownItems.Add(newSessionFolder);
+                            tsmiParent = newSessionFolder;
+                        }
+                    }
+                }
             }
         }
+
+
 
         private void closeSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
