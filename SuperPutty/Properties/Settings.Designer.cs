@@ -165,5 +165,44 @@ namespace SuperPutty.Properties {
                 this["ExitConfirmation"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowStatusBar {
+            get {
+                return ((bool)(this["ShowStatusBar"]));
+            }
+            set {
+                this["ShowStatusBar"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowToolBarConnections {
+            get {
+                return ((bool)(this["ShowToolBarConnections"]));
+            }
+            set {
+                this["ShowToolBarConnections"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowToolBarCommands {
+            get {
+                return ((bool)(this["ShowToolBarCommands"]));
+            }
+            set {
+                this["ShowToolBarCommands"] = value;
+            }
+        }
     }
 }
