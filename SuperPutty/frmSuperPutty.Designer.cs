@@ -92,6 +92,9 @@
             this.tbBtnSendCommand = new System.Windows.Forms.ToolStripButton();
             this.openFileDialogLayout = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogLayout = new System.Windows.Forms.SaveFileDialog();
+            this.editSessionsInNotepadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadSessionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -118,8 +121,11 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1,
             this.importSettingsToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.toolStripMenuItem7,
+            this.editSessionsInNotepadToolStripMenuItem,
+            this.reloadSessionsToolStripMenuItem,
             this.toolStripMenuItem3,
             this.saveLayoutToolStripMenuItem,
             this.saveLayoutAsToolStripMenuItem,
@@ -132,46 +138,46 @@
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(203, 22);
             this.toolStripMenuItem1.Text = "Export Sessions";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // importSettingsToolStripMenuItem
             // 
             this.importSettingsToolStripMenuItem.Name = "importSettingsToolStripMenuItem";
-            this.importSettingsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.importSettingsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
             this.importSettingsToolStripMenuItem.Text = "Import Sessions";
             this.importSettingsToolStripMenuItem.Click += new System.EventHandler(this.importSettingsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(174, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(200, 6);
             // 
             // saveLayoutToolStripMenuItem
             // 
             this.saveLayoutToolStripMenuItem.Name = "saveLayoutToolStripMenuItem";
             this.saveLayoutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveLayoutToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.saveLayoutToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
             this.saveLayoutToolStripMenuItem.Text = "Save Layout";
             this.saveLayoutToolStripMenuItem.Click += new System.EventHandler(this.saveLayoutToolStripMenuItem_Click);
             // 
             // saveLayoutAsToolStripMenuItem
             // 
             this.saveLayoutAsToolStripMenuItem.Name = "saveLayoutAsToolStripMenuItem";
-            this.saveLayoutAsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.saveLayoutAsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
             this.saveLayoutAsToolStripMenuItem.Text = "Save Layout As";
             this.saveLayoutAsToolStripMenuItem.Click += new System.EventHandler(this.saveLayoutAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(174, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(200, 6);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(177, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(203, 22);
             this.toolStripMenuItem2.Text = "Exit";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
             // 
@@ -556,6 +562,25 @@
             // 
             this.saveFileDialogLayout.Filter = "SuperPuTTY layout files|*.xml|All files|*.*";
             // 
+            // editSessionsInNotepadToolStripMenuItem
+            // 
+            this.editSessionsInNotepadToolStripMenuItem.Name = "editSessionsInNotepadToolStripMenuItem";
+            this.editSessionsInNotepadToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+            this.editSessionsInNotepadToolStripMenuItem.Text = "Edit Sessions in Notepad";
+            this.editSessionsInNotepadToolStripMenuItem.Click += new System.EventHandler(this.editSessionsInNotepadToolStripMenuItem_Click);
+            // 
+            // reloadSessionsToolStripMenuItem
+            // 
+            this.reloadSessionsToolStripMenuItem.Name = "reloadSessionsToolStripMenuItem";
+            this.reloadSessionsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+            this.reloadSessionsToolStripMenuItem.Text = "Reload Sessions";
+            this.reloadSessionsToolStripMenuItem.Click += new System.EventHandler(this.reloadSessionsToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem7
+            // 
+            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(200, 6);
+            // 
             // frmSuperPutty
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -637,6 +662,9 @@
         private System.Windows.Forms.ToolStripMenuItem sendCommandsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem showStatusBarToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem7;
+        private System.Windows.Forms.ToolStripMenuItem editSessionsInNotepadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reloadSessionsToolStripMenuItem;
     }
 }
 
