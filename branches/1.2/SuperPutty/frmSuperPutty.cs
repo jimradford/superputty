@@ -136,6 +136,18 @@ namespace SuperPutty
         }
 
 
+
+        private void frmSuperPutty_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (SuperPuTTY.Settings.ExitConfirmation)
+            {
+                if (MessageBox.Show("Exit SuperPuTTY?", "Confirm Exit", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+
         /// <summary>
         /// Handles focusing on tabs/windows which host PuTTY
         /// </summary>
@@ -152,11 +164,12 @@ namespace SuperPutty
             }
         }
 
-
         private void frmSuperPutty_Activated(object sender, EventArgs e)
         {
             //dockPanel1_ActiveDocumentChanged(null, null);
         }
+
+        #region File
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -183,23 +196,23 @@ namespace SuperPutty
             }
         }
 
+        private void editSessionsInNotepadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("notepad", Path.Combine(SuperPuTTY.Settings.SettingsFolder, "Sessions.XML"));
+        }
+
+        private void reloadSessionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SuperPuTTY.LoadSessions();
+        }
+
         private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+        #endregion 
 
-        private void frmSuperPutty_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (SuperPuTTY.Settings.ExitConfirmation)
-            {
-                if (MessageBox.Show("Exit SuperPuTTY?", "Confirm Exit", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.Cancel)
-                {
-                    e.Cancel = true;
-                }
-            }
-        }
-
-        #region CmdLine 
+        #region CmdLine
 
         protected override void WndProc(ref Message m)
         {
@@ -759,6 +772,7 @@ namespace SuperPutty
         }
 
         #endregion
+
 
     }
 }
