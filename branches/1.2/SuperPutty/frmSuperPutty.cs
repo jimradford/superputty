@@ -89,8 +89,6 @@ namespace SuperPutty
             m_Layouts = new LayoutsList();
             m_Layouts.CloseButtonVisible = false;
 
-            //m_Sessions.Show(dockPanel1, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
-
             // Hook into status
             SuperPuTTY.StatusEvent += new Action<string>(delegate(String msg) { this.toolStripStatusLabelMessage.Text = msg; });
             SuperPuTTY.ReportStatus("Ready");
@@ -101,7 +99,7 @@ namespace SuperPutty
             this.toolStripStatusLabelVersion.Text = SuperPuTTY.Version;
 
             // Low-Level Mouse and Keyboard hooks
-            //llkp = KBHookCallback;
+            llkp = KBHookCallback;
             //kbHookID = SetKBHook(llkp);
             llmp = MHookCallback;
             mHookID = SetMHook(llmp);
@@ -112,21 +110,8 @@ namespace SuperPutty
                 FormUtils.RestoreFormPositionAndState(this, SuperPuTTY.Settings.WindowPosition, SuperPuTTY.Settings.WindowState);
             }
 
+            ApplySettingsToToolbars();
         }
-
-        private bool IsVisibleOnAnyScreen(Rectangle rect)
-        {
-            foreach (Screen screen in Screen.AllScreens)
-            {
-                if (screen.WorkingArea.IntersectsWith(rect))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
         {
@@ -236,6 +221,39 @@ namespace SuperPutty
                 }
             }
             base.WndProc(ref m);
+        }
+
+        #endregion
+
+        #region View Menu
+
+        private void toggleCheckedState(object sender, EventArgs e)
+        {
+            // toggle
+            ToolStripMenuItem mi = (ToolStripMenuItem)sender;
+            mi.Checked = !mi.Checked;
+
+            // save
+            SuperPuTTY.Settings.ShowStatusBar = this.showStatusBarToolStripMenuItem.Checked;
+            SuperPuTTY.Settings.ShowToolBarConnections = this.quickConnectionToolStripMenuItem.Checked;
+            SuperPuTTY.Settings.ShowToolBarCommands = this.sendCommandsToolStripMenuItem.Checked;
+
+            SuperPuTTY.Settings.Save();
+
+            // apply
+            ApplySettingsToToolbars();
+        }
+
+        void ApplySettingsToToolbars()
+        {
+            this.statusStrip1.Visible = SuperPuTTY.Settings.ShowStatusBar;
+            this.showStatusBarToolStripMenuItem.Checked = SuperPuTTY.Settings.ShowStatusBar;
+
+            this.tsConnect.Visible = SuperPuTTY.Settings.ShowToolBarConnections;
+            this.quickConnectionToolStripMenuItem.Checked = SuperPuTTY.Settings.ShowToolBarConnections;
+
+            this.tsCommands.Visible = SuperPuTTY.Settings.ShowToolBarCommands;
+            this.sendCommandsToolStripMenuItem.Checked = SuperPuTTY.Settings.ShowToolBarCommands;
         }
 
         #endregion
@@ -680,6 +698,7 @@ namespace SuperPutty
 
         private IntPtr KBHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
+            Log.InfoFormat("KBHook={0}, Keys={1}", nCode, wParam);
             if (nCode >= 0 && wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN && IsForegroundWindow(this.Handle))
             {
                 int vkCode = Marshal.ReadInt32(lParam);
@@ -740,10 +759,6 @@ namespace SuperPutty
         }
 
         #endregion
-
-
-
-
 
     }
 }

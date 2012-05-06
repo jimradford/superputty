@@ -36,6 +36,7 @@ namespace SuperPutty.Properties {
         
         private void SettingChangingEventHandler(object sender, System.Configuration.SettingChangingEventArgs e) {
             // Add code to handle the SettingChangingEvent event here.
+            Log.DebugFormat("SettingChanging: name={0}, oldVal={1}, newVal={2}", e.SettingName, this[e.SettingName], e.NewValue);
 
         }
         

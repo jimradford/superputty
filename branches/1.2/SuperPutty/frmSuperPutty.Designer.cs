@@ -53,6 +53,12 @@
             this.saveLayoutAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolbarsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quickConnectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sendCommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
+            this.showStatusBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.puTTYConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,6 +106,7 @@
             this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.viewToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -167,6 +174,57 @@
             this.toolStripMenuItem2.Size = new System.Drawing.Size(177, 22);
             this.toolStripMenuItem2.Text = "Exit";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolbarsToolStripMenuItem,
+            this.toolStripMenuItem6,
+            this.showStatusBarToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Text = "View";
+            // 
+            // toolbarsToolStripMenuItem
+            // 
+            this.toolbarsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.quickConnectionToolStripMenuItem,
+            this.sendCommandsToolStripMenuItem});
+            this.toolbarsToolStripMenuItem.Name = "toolbarsToolStripMenuItem";
+            this.toolbarsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.toolbarsToolStripMenuItem.Text = "Toolbars";
+            // 
+            // quickConnectionToolStripMenuItem
+            // 
+            this.quickConnectionToolStripMenuItem.Checked = global::SuperPutty.Properties.Settings.Default.ShowToolBarConnections;
+            this.quickConnectionToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.quickConnectionToolStripMenuItem.Name = "quickConnectionToolStripMenuItem";
+            this.quickConnectionToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.quickConnectionToolStripMenuItem.Text = "Quick Connection";
+            this.quickConnectionToolStripMenuItem.Click += new System.EventHandler(this.toggleCheckedState);
+            // 
+            // sendCommandsToolStripMenuItem
+            // 
+            this.sendCommandsToolStripMenuItem.Checked = global::SuperPutty.Properties.Settings.Default.ShowToolBarCommands;
+            this.sendCommandsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.sendCommandsToolStripMenuItem.Name = "sendCommandsToolStripMenuItem";
+            this.sendCommandsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.sendCommandsToolStripMenuItem.Text = "Send Commands";
+            this.sendCommandsToolStripMenuItem.Click += new System.EventHandler(this.toggleCheckedState);
+            // 
+            // toolStripMenuItem6
+            // 
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(149, 6);
+            // 
+            // showStatusBarToolStripMenuItem
+            // 
+            this.showStatusBarToolStripMenuItem.Checked = global::SuperPutty.Properties.Settings.Default.ShowStatusBar;
+            this.showStatusBarToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showStatusBarToolStripMenuItem.Name = "showStatusBarToolStripMenuItem";
+            this.showStatusBarToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.showStatusBarToolStripMenuItem.Text = "Status Bar";
+            this.showStatusBarToolStripMenuItem.Click += new System.EventHandler(this.toggleCheckedState);
             // 
             // toolsToolStripMenuItem
             // 
@@ -573,6 +631,12 @@
         private System.Windows.Forms.ToolStripLabel tbTextSendCommands;
         private System.Windows.Forms.ToolStripButton tbBtnSendCommand;
         private System.Windows.Forms.ToolStripComboBox tsSendCommandCombo;
+        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolbarsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem quickConnectionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sendCommandsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
+        private System.Windows.Forms.ToolStripMenuItem showStatusBarToolStripMenuItem;
     }
 }
 
