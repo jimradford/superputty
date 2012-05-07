@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2009 Jim Radford http://www.jimradford.com
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -133,6 +133,14 @@ namespace SuperPutty.Data
         {
             get { return _Password; }
             set { _Password = value; }
+        }
+
+        private string _ExtraArgs;
+        [XmlAttribute]
+        public string ExtraArgs
+        {
+            get { return _ExtraArgs; }
+            set { _ExtraArgs = value; }
         }
 
         /* Unused...ignore for now

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2009 Jim Radford http://www.jimradford.com
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,6 +54,7 @@ namespace SuperPutty
                 this.textBoxSessionName.Text = Session.SessionName;
                 this.textBoxHostname.Text = Session.Host;
                 this.textBoxPort.Text = Session.Port.ToString();
+                this.textBoxExtraArgs.Text = Session.ExtraArgs;
                 this.textBoxUsername.Text = Session.Username;
 
                 switch (Session.Proto)
@@ -140,6 +141,7 @@ namespace SuperPutty
             Session.SessionName = textBoxSessionName.Text.Trim();
             Session.PuttySession = comboBoxPuttyProfile.Text.Trim();
             Session.Host = textBoxHostname.Text.Trim();
+            Session.ExtraArgs = textBoxExtraArgs.Text.Trim();
             Session.Port = int.Parse(textBoxPort.Text.Trim());
             Session.Username = textBoxUsername.Text.Trim();
             Session.SessionId = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
@@ -166,6 +168,7 @@ namespace SuperPutty
             string host = this.textBoxHostname.Text;
             bool isCygterm = this.radioButtonCygterm.Checked;
             this.textBoxPort.Enabled = !isCygterm;
+            this.textBoxExtraArgs.Enabled = !isCygterm;
             this.textBoxUsername.Enabled = !isCygterm;
 
             if (isCygterm)
