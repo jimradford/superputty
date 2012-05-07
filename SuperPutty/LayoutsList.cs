@@ -22,6 +22,8 @@ namespace SuperPutty
         private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
         {
             e.Cancel = IndexAtCursor() == -1;
+
+            loadInNewInstanceToolStripMenuItem.Enabled = !SuperPuTTY.Settings.SingleInstanceMode;
         }
 
         private void listBoxLayouts_MouseDown(object sender, MouseEventArgs e)
