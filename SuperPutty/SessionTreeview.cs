@@ -48,8 +48,6 @@ namespace SuperPutty
         //private Dictionary<string, SessionData> m_SessionsById = new Dictionary<string, SessionData>();
 
         TreeNode nodeRoot;
-        bool isAdding;
-
         /// <summary>
         /// Instantiate the treeview containing the sessions
         /// </summary>
@@ -75,6 +73,7 @@ namespace SuperPutty
             base.OnLoad(e);
 
             // start with semi-collapsed view
+            nodeRoot.Expand();
             foreach (TreeNode node in this.nodeRoot.Nodes)
             {
                 if (!IsSessionNode(node))
@@ -109,7 +108,7 @@ namespace SuperPutty
         void Sessions_ListChanged(object sender, ListChangedEventArgs e)
         {
             BindingList<SessionData> sessions = (BindingList<SessionData>) sender;
-            if (e.ListChangedType == ListChangedType.ItemAdded && !this.isAdding)
+            if (e.ListChangedType == ListChangedType.ItemAdded)
             {
                 SessionData session = sessions[e.NewIndex];
                 TreeNode nodeParent = FindOrCreateParentNode(session.SessionId);
@@ -212,38 +211,40 @@ namespace SuperPutty
             
             if (form.ShowDialog() == DialogResult.OK)
             {
-                isAdding = true;
-                try
+                /* "node" will only be assigned if we're editing an existing session entry */
+                if (node == null)
                 {
-                    /* "node" will only be assigned if we're editing an existing session entry */
-                    if (node == null)
-                    {
-                        node = AddSessionNode(nodeRef, session, false);
-                        if (node != null)
-                        {
-                            node.Tag = session;
-                            this.treeView1.SelectedNode = node;
-                        }
-                    }
-                    else
-                    {
-                        // handle renames
-                        node.Text = session.SessionName;
-                        node.Name = session.SessionName;
-                        SuperPuTTY.RemoveSession(session.OldSessionId);
-                        SuperPuTTY.AddSession(session);
-                        ResortNodes();
-                        this.treeView1.SelectedNode = node;
-                    }
 
-                    //treeView1.ExpandAll();
-                    SuperPuTTY.SaveSessions();
+                    // get the path up to the ref (parent) node
+                    if (nodeRoot != nodeRef)
+                    {
+                        UpdateSessionId(nodeRef, session);
+                        session.SessionId = SessionData.CombineSessionIds(session.SessionId, session.SessionName);
+                    }
+                    SuperPuTTY.AddSession(session);
+
+                    // find new node and select it
+                    TreeNode nodeNew = nodeRef.Nodes[session.SessionName];
+                    if (nodeNew != null)
+                    {
+                        this.treeView1.SelectedNode = nodeNew;
+                    }
                 }
-                finally
+                else
                 {
-                    isAdding = false;
+                    // handle renames
+                    node.Text = session.SessionName;
+                    node.Name = session.SessionName;
+                    SuperPuTTY.RemoveSession(session.OldSessionId);
+                    SuperPuTTY.AddSession(session);
+                    ResortNodes();
+                    this.treeView1.SelectedNode = node;
                 }
+
+                //treeView1.ExpandAll();
+                SuperPuTTY.SaveSessions();
             }
+            
         }
 
         /// <summary>
@@ -399,16 +400,6 @@ namespace SuperPutty
                 addedNode = parentNode.Nodes.Add(session.SessionName, session.SessionName, 1, 1);
                 addedNode.Tag = session;
                 addedNode.ContextMenuStrip = this.contextMenuStripAddTreeItem;
-                parentNode.Expand();
-
-                if (!isInitializing)
-                {
-                    SuperPuTTY.ReportStatus("Adding new session, {1}.  parent={0}", parentNode.Text, session.SessionName);
-                    UpdateSessionId(addedNode, session);
-                    SuperPuTTY.AddSession(session);
-                    //m_SessionsById[session.SessionId] = session;
-
-                }
             }
 
             return addedNode;
@@ -426,7 +417,6 @@ namespace SuperPutty
                 SuperPuTTY.ReportStatus("Adding new folder, {1}.  parent={0}", parentNode.Text, nodeName);
                 nodeNew = parentNode.Nodes.Add(nodeName, nodeName, 0);
                 nodeNew.ContextMenuStrip = this.contextMenuStripFolder;
-                parentNode.Expand();
             }
             return nodeNew;
         }
