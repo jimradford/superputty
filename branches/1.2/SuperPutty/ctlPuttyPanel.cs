@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2009 Jim Radford http://www.jimradford.com
  * Copyright (c) 2012 John Peterson
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -67,6 +67,7 @@ namespace SuperPutty
                 args += (!String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0) ? "-pw " + m_Session.Password + " " : "";
                 args += "-P " + m_Session.Port + " ";
                 args += (!String.IsNullOrEmpty(m_Session.PuttySession)) ? "-load \"" + m_Session.PuttySession + "\" " : "";
+                args += (!String.IsNullOrEmpty(m_Session.ExtraArgs) ? m_Session.ExtraArgs + " " : "");
                 args += (!String.IsNullOrEmpty(m_Session.Username) && m_Session.Username.Length > 0) ? m_Session.Username + "@" : "";
                 args += m_Session.Host;
             } 
