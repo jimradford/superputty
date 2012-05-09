@@ -180,11 +180,14 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                             DateTime startTime = DateTime.Now;
                             while ((DateTime.Now - startTime).TotalSeconds < 10)
                             {
-                                System.Threading.Thread.Sleep(100);
+                                System.Threading.Thread.Sleep(50);
+
+                                // Refresh Process object's view of real process
+                                m_Process.Refresh();
                                 m_AppWin = m_Process.MainWindowHandle;
                                 if (IntPtr.Zero != m_AppWin)
                                 {
-                                    Log.Info("Successfully found handle via polling");
+                                    Log.Info("Successfully found handle via polling " + (DateTime.Now - startTime).TotalMilliseconds + " ms");
                                     break;
                                 }
                             }
