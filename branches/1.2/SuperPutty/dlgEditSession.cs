@@ -38,6 +38,7 @@ namespace SuperPutty
 
         private SessionData Session;
         private String OldHostname;
+        private bool isInitialized = false;
 
         public dlgEditSession(SessionData session)
         {
@@ -95,6 +96,7 @@ namespace SuperPutty
                 this.Text = "Create new session";
                 radioButtonSSH.Checked = true;
             }
+            this.isInitialized = true;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -184,7 +186,7 @@ namespace SuperPutty
 
         private void radioButtonRaw_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.radioButtonRaw.Checked)
+            if (this.radioButtonRaw.Checked && this.isInitialized)
             {
                 if (!string.IsNullOrEmpty(OldHostname))
                 {
@@ -196,7 +198,7 @@ namespace SuperPutty
 
         private void radioButtonTelnet_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.radioButtonTelnet.Checked)
+            if (this.radioButtonTelnet.Checked && this.isInitialized)
             {
                 if (!string.IsNullOrEmpty(OldHostname))
                 {
@@ -209,7 +211,7 @@ namespace SuperPutty
 
         private void radioButtonRlogin_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.radioButtonRlogin.Checked)
+            if (this.radioButtonRlogin.Checked && this.isInitialized)
             {
                 if (!string.IsNullOrEmpty(OldHostname))
                 {
@@ -222,7 +224,7 @@ namespace SuperPutty
 
         private void radioButtonSSH_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.radioButtonSSH.Checked)
+            if (this.radioButtonSSH.Checked && this.isInitialized)
             {
                 if (!string.IsNullOrEmpty(OldHostname))
                 {
