@@ -169,6 +169,7 @@
     <Compile Include="Utils\FormUtils.cs" />
     <Compile Include="Utils\NativeMethods.cs" />
     <Compile Include="Utils\PortableSettingsProvider.cs" />
+    <Compile Include="Utils\PuttyStartInfo.cs" />
     <Compile Include="Utils\SingleInstanceHelper.cs" />
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
