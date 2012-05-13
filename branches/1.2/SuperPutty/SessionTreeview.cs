@@ -34,6 +34,8 @@ using Microsoft.Win32;
 using System.Xml.Serialization;
 using SuperPutty.Data;
 using log4net;
+using System.Diagnostics;
+using SuperPutty.Utils;
 
 
 namespace SuperPutty
@@ -300,6 +302,23 @@ namespace SuperPutty
         {
             treeView1_DoubleClick(null, EventArgs.Empty);
         }
+
+        /// <summary>
+        /// Open putty with args but as external process
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void openInPuTTYToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = this.treeView1.SelectedNode;
+            if (IsSessionNode(node))
+            {
+                SessionData sessionData = (SessionData)node.Tag;
+                PuttyStartInfo startInfo = new PuttyStartInfo(sessionData);
+                startInfo.StartStandalone();
+            }
+        }
+
 
         private void newFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -626,6 +645,7 @@ namespace SuperPutty
             SuperPuTTY.SaveSessions();
             SuperPuTTY.ReportStatus("Saved Sessions after Drag-Drop @ {0}", DateTime.Now);
         }
+
 
     }
 

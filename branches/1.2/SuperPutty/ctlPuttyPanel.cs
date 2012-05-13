@@ -42,10 +42,7 @@ namespace SuperPutty
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ctlPuttyPanel));
 
-        private string ApplicationName = String.Empty;
-        private string ApplicationParameters = String.Empty;
-        private string ApplicationWorkingDirectory = null;
-
+        private PuttyStartInfo m_puttyStartInfo;
         private ApplicationPanel m_AppPanel;
         private SessionData m_Session;
         private PuttyClosedCallback m_ApplicationExit;
@@ -53,7 +50,9 @@ namespace SuperPutty
         {
             m_Session = session;
             m_ApplicationExit = callback;
+            m_puttyStartInfo = new PuttyStartInfo(session);
 
+            /*
             string args;
             if (session.Proto == ConnectionProtocol.Cygterm)
             {
@@ -73,7 +72,7 @@ namespace SuperPutty
             } 
             Log.InfoFormat("Putty Args: '{0}'", args);
             this.ApplicationParameters = args;
-
+            */
             InitializeComponent();
 
             this.Text = session.SessionName;
@@ -86,9 +85,9 @@ namespace SuperPutty
             this.m_AppPanel = new ApplicationPanel();
             this.SuspendLayout();            
             this.m_AppPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.m_AppPanel.ApplicationName = frmSuperPutty.PuttyExe;
-            this.m_AppPanel.ApplicationParameters = this.ApplicationParameters;
-            this.m_AppPanel.ApplicationWorkingDirectory = this.ApplicationWorkingDirectory;
+            this.m_AppPanel.ApplicationName = this.m_puttyStartInfo.Executable;
+            this.m_AppPanel.ApplicationParameters = this.m_puttyStartInfo.Args;
+            this.m_AppPanel.ApplicationWorkingDirectory = this.m_puttyStartInfo.WorkingDir;
             this.m_AppPanel.Location = new System.Drawing.Point(0, 0);
             this.m_AppPanel.Name = this.m_Session.SessionId; // "applicationControl1";
             this.m_AppPanel.Size = new System.Drawing.Size(this.Width, this.Height);
