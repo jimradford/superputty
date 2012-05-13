@@ -52,6 +52,7 @@ namespace SuperPutty
         }
 
         private string OrigSettingsFolder { get; set; }
+        private string OrigDefaultLayoutName { get; set; }
 
         public dlgFindPutty()
         {
@@ -128,7 +129,7 @@ namespace SuperPutty
             }
             this.comboBoxLayouts.DataSource = layouts;
             this.comboBoxLayouts.SelectedItem = SuperPuTTY.Settings.DefaultLayoutName;
-
+            this.OrigDefaultLayoutName = SuperPuTTY.Settings.DefaultLayoutName;
 
             this.checkSingleInstanceMode.Checked = SuperPuTTY.Settings.SingleInstanceMode;
             this.checkConstrainPuttyDocking.Checked = SuperPuTTY.Settings.RestrictContentToDocumentTabs;
@@ -190,6 +191,10 @@ namespace SuperPutty
                 {
                     SuperPuTTY.LoadLayouts();
                     SuperPuTTY.LoadSessions();
+                }
+                else if (OrigDefaultLayoutName != SuperPuTTY.Settings.DefaultLayoutName)
+                {
+                    SuperPuTTY.LoadLayouts();
                 }
                 DialogResult = DialogResult.OK;
             }

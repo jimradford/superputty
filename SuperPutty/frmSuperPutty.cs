@@ -132,6 +132,12 @@ namespace SuperPutty
                 SuperPuTTY.Settings.Save();
             }
 
+            // save layout for auto-restore
+            if (SuperPuTTY.Settings.DefaultLayoutName == LayoutData.AutoRestore)
+            {
+                SaveLayout(SuperPuTTY.AutoRestoreLayoutPath, "Saving auto-restore layout");
+            }
+
             base.OnFormClosed(e);
         }
 
@@ -359,8 +365,7 @@ namespace SuperPutty
             if (SuperPuTTY.CurrentLayout != null)
             {
                 String file = SuperPuTTY.CurrentLayout.FilePath;
-                SuperPuTTY.ReportStatus("Saving layout: {0}", file);
-                this.DockPanel.SaveAsXml(file);
+                SaveLayout(file, string.Format("Saving layout: {0}", file));
             }
             else
             {
@@ -373,10 +378,15 @@ namespace SuperPutty
             if (DialogResult.OK == this.saveFileDialogLayout.ShowDialog(this))
             {
                 String file = this.saveFileDialogLayout.FileName;
-                SuperPuTTY.ReportStatus("Saving layout as: {0}", file);
-                this.DockPanel.SaveAsXml(file);
+                SaveLayout(file, string.Format("Saving layout as: {0}", file));
                 SuperPuTTY.AddLayout(file);
             } 
+        }
+
+        void SaveLayout(string file, string statusMsg)
+        {
+            SuperPuTTY.ReportStatus(statusMsg);
+            this.DockPanel.SaveAsXml(file);
         }
 
         private IDockContent RestoreLayoutFromPersistString(String persistString)
