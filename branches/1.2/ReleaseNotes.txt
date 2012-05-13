@@ -1,3 +1,12 @@
+1.2.0.7
+- #13 - cant read all sessions already existed in putty.  (File, Import Sessions, From Putty settings)
+- #44 - Open back previously opened session after crash or close of SuperPutty (Set Default Layout to '<AutoRestore>')
+- #94 - Visual Enhancments (Make main form icon default icon throughout application)
+- Added 'Open in PuTTY' in session tree view - Opens Putty session outside of SuperPuTTY.
+
+1.2.0.6
+- #92 - SuperPutty opens sessions in a new Putty Window
+- #96 - Problems when editing sessions w/non-standard ports
 
 1.2.0.5
 - #78 - To maximize putty screen size, add ability to hide connection & send command toolbar and status bar 
