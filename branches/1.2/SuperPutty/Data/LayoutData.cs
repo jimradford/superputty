@@ -8,6 +8,9 @@ namespace SuperPutty.Data
 {
     public class LayoutData
     {
+        public const string AutoRestore = "<Auto Restore>";
+        public const string AutoRestoreLayoutFileName = "AutoRestoreLayout.XML";
+
         public LayoutData(string filePath)
         {
             this.FilePath = filePath;

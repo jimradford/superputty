@@ -157,6 +157,7 @@ namespace SuperPutty
         {
             if (!String.IsNullOrEmpty(Settings.SettingsFolder))
             {
+                LayoutData autoRestore = new LayoutData(AutoRestoreLayoutPath) { Name = LayoutData.AutoRestore };
                 if (Directory.Exists(LayoutsDir))
                 {
                     List<LayoutData> newLayouts = new List<LayoutData>();
@@ -166,6 +167,7 @@ namespace SuperPutty
                     }
 
                     layouts.Clear();
+                    layouts.Add(autoRestore);
                     foreach (LayoutData layout in newLayouts)
                     {
                         layouts.Add(layout);
@@ -176,6 +178,7 @@ namespace SuperPutty
                 {
                     Log.InfoFormat("Creating layouts dir: " + SuperPuTTY.LayoutsDir);
                     Directory.CreateDirectory(SuperPuTTY.LayoutsDir);
+                    layouts.Add(autoRestore);
                 }
             }            
         }
@@ -512,6 +515,14 @@ namespace SuperPutty
                     isKitty = exe != null && exe.ToLower().StartsWith("kitty");
                 }
                 return isKitty;
+            }
+        }
+
+        public static string AutoRestoreLayoutPath
+        {
+            get
+            {
+                return Path.Combine(Settings.SettingsFolder, LayoutData.AutoRestoreLayoutFileName);
             }
         }
         #endregion
