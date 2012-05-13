@@ -415,13 +415,25 @@ namespace SuperPutty
             {
                 Log.InfoFormat("Importing sessions from file, path={0}", fileName);
                 List<SessionData> sessions = SessionData.LoadSessionsFromFile(fileName);
-                foreach (SessionData session in sessions)
-                {
-                    // pre-pend session id with "Imported" to put them into an imported folder
-                    session.SessionId = MakeUniqueSessionId(SessionData.CombineSessionIds("Imported", session.SessionId));
-                    session.SessionName = SessionData.GetSessionNameFromId(session.SessionId);
-                    AddSession(session);
-                }
+                ImportSessions(sessions, "Imported");
+            }
+        }
+
+        public static void ImportSessionsFromPuTTY()
+        {
+            Log.InfoFormat("Importing sessions from PuTTY/KiTTY");
+            List<SessionData> sessions = PuttyDataHelper.GetAllSessionsFromPuTTY();
+            ImportSessions(sessions, "ImportedFromPuTTY");
+        }
+
+        public static void ImportSessions(List<SessionData> sessions, string folder)
+        {
+            foreach (SessionData session in sessions)
+            {
+                // pre-pend session id with the provided folder to put them
+                session.SessionId = MakeUniqueSessionId(SessionData.CombineSessionIds(folder, session.SessionId));
+                session.SessionName = SessionData.GetSessionNameFromId(session.SessionId);
+                AddSession(session);
             }
         }
 

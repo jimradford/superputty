@@ -189,7 +189,7 @@ namespace SuperPutty
             }
         }
 
-        private void importSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void fromFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openDialog = new OpenFileDialog();
             openDialog.Filter = "XML Files|*.xml";
@@ -199,6 +199,18 @@ namespace SuperPutty
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 SuperPuTTY.ImportSessionsFromFile(openDialog.FileName);
+            }
+        }
+
+        private void fromPuTTYSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult res = MessageBox.Show(
+                "Do you want to copy all sessions from PuTTY/KiTTY?  Duplicates will be ignored.",
+                "SuperPuTTY",
+                MessageBoxButtons.YesNo);
+            if (res == DialogResult.Yes)
+            {
+                SuperPuTTY.ImportSessionsFromPuTTY();
             }
         }
 
@@ -782,7 +794,6 @@ namespace SuperPutty
         }
 
         #endregion
-
 
     }
 }
