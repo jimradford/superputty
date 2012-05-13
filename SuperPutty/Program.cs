@@ -29,6 +29,7 @@ using System.Diagnostics;
 using SuperPutty.Data;
 using System.Configuration;
 using SuperPutty.Utils;
+using System.Reflection;
 
 namespace SuperPutty
 {
@@ -82,7 +83,10 @@ namespace SuperPutty
                 Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(SuperPuTTY.MainForm = new frmSuperPutty());
+
+                frmSuperPutty mainForm = new frmSuperPutty();
+                SetDefaultIcon(mainForm);
+                Application.Run(SuperPuTTY.MainForm = mainForm);
                 SuperPuTTY.Shutdown();
             }
             catch (Exception ex)
@@ -92,6 +96,20 @@ namespace SuperPutty
             finally
             {
                 Log.Info("Shutdown");
+            }
+        }
+
+        static void SetDefaultIcon(Form form)
+        {
+            // pure evil
+            try
+            {
+                FieldInfo field = typeof(Form).GetField("defaultIcon", BindingFlags.NonPublic | BindingFlags.Static);
+                field.SetValue(null, form.Icon);
+            }
+            catch (Exception ex)
+            {
+                Log.WarnFormat("Could not set default icon: error={0}", ex.Message);
             }
         }
 
