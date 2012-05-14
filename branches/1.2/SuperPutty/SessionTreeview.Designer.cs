@@ -39,7 +39,7 @@
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openInPuttyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.connectExternalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.fileBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripFolder = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -93,69 +93,69 @@
             this.deleteToolStripMenuItem,
             this.toolStripSeparator1,
             this.connectToolStripMenuItem,
-            this.openInPuttyToolStripMenuItem,
+            this.connectExternalToolStripMenuItem,
             this.toolStripSeparator2,
             this.fileBrowserToolStripMenuItem});
             this.contextMenuStripAddTreeItem.Name = "contextMenuStripAddTreeItem";
             this.contextMenuStripAddTreeItem.ShowImageMargin = false;
-            this.contextMenuStripAddTreeItem.Size = new System.Drawing.Size(130, 192);
+            this.contextMenuStripAddTreeItem.Size = new System.Drawing.Size(139, 192);
             // 
             // newSessionToolStripMenuItem
             // 
             this.newSessionToolStripMenuItem.Name = "newSessionToolStripMenuItem";
-            this.newSessionToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.newSessionToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.newSessionToolStripMenuItem.Text = "New";
             this.newSessionToolStripMenuItem.Click += new System.EventHandler(this.CreateOrEditSessionToolStripMenuItem_Click);
             // 
             // createLikeToolStripMenuItem
             // 
             this.createLikeToolStripMenuItem.Name = "createLikeToolStripMenuItem";
-            this.createLikeToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.createLikeToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.createLikeToolStripMenuItem.Text = "Copy As";
             this.createLikeToolStripMenuItem.Click += new System.EventHandler(this.CreateOrEditSessionToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.settingsToolStripMenuItem.Text = "Edit";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.CreateOrEditSessionToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(126, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(135, 6);
             // 
             // connectToolStripMenuItem
             // 
             this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            this.connectToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.connectToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.connectToolStripMenuItem.Text = "Connect";
             this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
             // 
-            // openInPuttyToolStripMenuItem
+            // connectExternalToolStripMenuItem
             // 
-            this.openInPuttyToolStripMenuItem.Name = "openInPuttyToolStripMenuItem";
-            this.openInPuttyToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
-            this.openInPuttyToolStripMenuItem.Text = "Open in PuTTY";
-            this.openInPuttyToolStripMenuItem.Click += new System.EventHandler(this.openInPuTTYToolStripMenuItem_Click);
+            this.connectExternalToolStripMenuItem.Name = "connectExternalToolStripMenuItem";
+            this.connectExternalToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.connectExternalToolStripMenuItem.Text = "Connect External";
+            this.connectExternalToolStripMenuItem.Click += new System.EventHandler(this.connectExternalToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(126, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(135, 6);
             // 
             // fileBrowserToolStripMenuItem
             // 
             this.fileBrowserToolStripMenuItem.Name = "fileBrowserToolStripMenuItem";
-            this.fileBrowserToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.fileBrowserToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.fileBrowserToolStripMenuItem.Text = "File Transfer";
             this.fileBrowserToolStripMenuItem.Click += new System.EventHandler(this.fileBrowserToolStripMenuItem_Click);
             // 
@@ -279,6 +279,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem expandAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseAllToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openInPuttyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem connectExternalToolStripMenuItem;
     }
 }
