@@ -202,10 +202,25 @@ namespace SuperPutty
             }
         }
 
+
+        private void fromPuTTYCMExportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openDialog = new OpenFileDialog();
+            openDialog.Filter = "XML Files|*.xml";
+            openDialog.FileName = "export.xml";
+            openDialog.CheckFileExists = true;
+            openDialog.InitialDirectory = Application.StartupPath;
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                SuperPuTTY.ImportSessionsFromPuttyCM(openDialog.FileName);
+            }
+        }
+
+
         private void fromPuTTYSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DialogResult res = MessageBox.Show(
-                "Do you want to copy all sessions from PuTTY/KiTTY?  Duplicates will be ignored.",
+                "Do you want to copy all sessions from PuTTY/KiTTY?  Duplicates may be created.",
                 "SuperPuTTY",
                 MessageBoxButtons.YesNo);
             if (res == DialogResult.Yes)

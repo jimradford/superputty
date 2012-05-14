@@ -426,6 +426,13 @@ namespace SuperPutty
             ImportSessions(sessions, "ImportedFromPuTTY");
         }
 
+        public static void ImportSessionsFromPuttyCM(string fileExport)
+        {
+            Log.InfoFormat("Importing sessions from PuttyCM");
+            List<SessionData> sessions = PuttyDataHelper.GetAllSessionsFromPuTTYCM(fileExport);
+            ImportSessions(sessions, "ImportedFromPuTTYCM");
+        }
+
         public static void ImportSessions(List<SessionData> sessions, string folder)
         {
             foreach (SessionData session in sessions)
@@ -435,6 +442,9 @@ namespace SuperPutty
                 session.SessionName = SessionData.GetSessionNameFromId(session.SessionId);
                 AddSession(session);
             }
+            Log.InfoFormat("Imported {0} sessions into {1}", sessions.Count, folder);
+
+            SaveSessions();
         }
 
         public static void ImportSessionsFromSuperPutty1030()
