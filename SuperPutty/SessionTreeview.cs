@@ -308,7 +308,7 @@ namespace SuperPutty
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void openInPuTTYToolStripMenuItem_Click(object sender, EventArgs e)
+        private void connectExternalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TreeNode node = this.treeView1.SelectedNode;
             if (IsSessionNode(node))
@@ -645,7 +645,6 @@ namespace SuperPutty
             SuperPuTTY.SaveSessions();
             SuperPuTTY.ReportStatus("Saved Sessions after Drag-Drop @ {0}", DateTime.Now);
         }
-
 
     }
 
