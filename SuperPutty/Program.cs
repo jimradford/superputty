@@ -30,6 +30,8 @@ using SuperPutty.Data;
 using System.Configuration;
 using SuperPutty.Utils;
 using System.Reflection;
+using System.IO;
+using System.Drawing;
 
 namespace SuperPutty
 {
@@ -104,6 +106,12 @@ namespace SuperPutty
             // pure evil
             try
             {
+                string iconFile = Path.Combine(Application.StartupPath, "SuperPutty.ico");
+                if (File.Exists(iconFile))
+                {
+                    form.Icon = new Icon(iconFile);
+                }
+
                 FieldInfo field = typeof(Form).GetField("defaultIcon", BindingFlags.NonPublic | BindingFlags.Static);
                 field.SetValue(null, form.Icon);
             }
