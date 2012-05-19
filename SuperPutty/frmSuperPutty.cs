@@ -37,12 +37,15 @@ using log4net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using SuperPutty.Utils;
+using System.Configuration;
 
 namespace SuperPutty
 {
     public partial class frmSuperPutty : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(frmSuperPutty));
+
+        private static string XmlEditor = ConfigurationManager.AppSettings["SuperPuTTY.XmlEditor"];
 
         public static string PuttyExe
         {
@@ -231,7 +234,7 @@ namespace SuperPutty
 
         private void editSessionsInNotepadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("notepad", Path.Combine(SuperPuTTY.Settings.SettingsFolder, "Sessions.XML"));
+            Process.Start(XmlEditor ?? "notepad", Path.Combine(SuperPuTTY.Settings.SettingsFolder, "Sessions.XML"));
         }
 
         private void reloadSessionsToolStripMenuItem_Click(object sender, EventArgs e)
