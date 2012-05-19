@@ -50,6 +50,7 @@ namespace SuperPutty.Utils
 
         void Parse(string[] args)
         {
+            Log.InfoFormat("CommandLine: [{0}]", String.Join(" ", args));
             Queue<string> queue = new Queue<string>(args);
             string arg = null;
             while(queue.Count > 0)
