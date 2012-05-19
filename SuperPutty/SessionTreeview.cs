@@ -62,9 +62,6 @@ namespace SuperPutty
             InitializeComponent();
             this.treeView1.TreeViewNodeSorter = this;
 
-            // disable file transfers if pscp isn't configured.
-            fileBrowserToolStripMenuItem.Enabled = frmSuperPutty.IsScpEnabled;
-
             // populate sessions in the treeview from the registry
             LoadSessions();
             SuperPuTTY.Sessions.ListChanged += new ListChangedEventHandler(Sessions_ListChanged);
@@ -403,6 +400,12 @@ namespace SuperPutty
             this.renameToolStripMenuItem.Enabled = isRootNode;
             // TODO: handle removing folder and nodes in it recursively
             this.removeFolderToolStripMenuItem.Enabled = isRootNode && this.treeView1.SelectedNode.Nodes.Count == 0;
+        }
+
+        private void contextMenuStripAddTreeItem_Opening(object sender, CancelEventArgs e)
+        {
+            // disable file transfers if pscp isn't configured.
+            fileBrowserToolStripMenuItem.Enabled = frmSuperPutty.IsScpEnabled;
         }
 
         #region Node helpers
