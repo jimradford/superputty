@@ -216,6 +216,13 @@ namespace SuperPutty
             this.radioButtonRaw.UseVisualStyleBackColor = true;
             this.radioButtonRaw.CheckedChanged += new System.EventHandler(this.radioButtonRaw_CheckedChanged);
             // 
+            // textBoxExtraArgs
+            // 
+            this.textBoxExtraArgs.Location = new System.Drawing.Point(150, 222);
+            this.textBoxExtraArgs.Name = "textBoxExtraArgs";
+            this.textBoxExtraArgs.Size = new System.Drawing.Size(249, 20);
+            this.textBoxExtraArgs.TabIndex = 6;
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -225,13 +232,6 @@ namespace SuperPutty
             this.label6.Size = new System.Drawing.Size(132, 15);
             this.label6.TabIndex = 14;
             this.label6.Text = "Extra PuTTY Arguments";
-            // 
-            // textBoxExtraArgs
-            // 
-            this.textBoxExtraArgs.Location = new System.Drawing.Point(150, 222);
-            this.textBoxExtraArgs.Name = "textBoxExtraArgs";
-            this.textBoxExtraArgs.Size = new System.Drawing.Size(249, 20);
-            this.textBoxExtraArgs.TabIndex = 6;
             // 
             // buttonSave
             // 
@@ -337,6 +337,7 @@ namespace SuperPutty
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSave);
             this.Name = "dlgEditSession";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Create New Session";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
