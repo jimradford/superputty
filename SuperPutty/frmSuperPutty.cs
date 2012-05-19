@@ -573,26 +573,22 @@ namespace SuperPutty
         void TryConnectFromToolbar()
         {
             String host = this.tbTxtBoxHost.Text;
-            String port = null;
-            int idx = this.tbTxtBoxHost.Text.LastIndexOf(":");
-            if (idx != -1)
-            {
-                host = this.tbTxtBoxHost.Text.Substring(0, idx);
-                port = this.tbTxtBoxHost.Text.Substring(idx + 1);
-            }
             String protoString = (string)this.tbComboProtocol.SelectedItem;
 
             if (!String.IsNullOrEmpty(host))
             {
+                HostConnectionString connStr = new HostConnectionString(host);
                 bool isScp = "SCP" == protoString;
-                ConnectionProtocol proto = isScp ? ConnectionProtocol.SSH : (ConnectionProtocol) Enum.Parse(typeof(ConnectionProtocol), protoString);
+                ConnectionProtocol proto = isScp 
+                    ? ConnectionProtocol.SSH 
+                    : connStr.Protocol.GetValueOrDefault((ConnectionProtocol) Enum.Parse(typeof(ConnectionProtocol), protoString));
                 SessionData session = new SessionData
                 {
-                    Host = host,
-                    SessionName = this.tbTxtBoxHost.Text,
-                    SessionId = SuperPuTTY.MakeUniqueSessionId(SessionData.CombineSessionIds("ConnectBar", this.tbTxtBoxHost.Text)),
+                    Host = connStr.Host,
+                    SessionName = connStr.Host,
+                    SessionId = SuperPuTTY.MakeUniqueSessionId(SessionData.CombineSessionIds("ConnectBar", connStr.Host)),
                     Proto = proto,
-                    Port = port == null ? dlgEditSession.GetDefaultPort(proto) : int.Parse(port),
+                    Port = connStr.Port.GetValueOrDefault(dlgEditSession.GetDefaultPort(proto)),
                     Username = this.tbTxtBoxLogin.Text,
                     Password = this.tbTxtBoxPassword.Text,
                     PuttySession = (string)this.tbComboSession.SelectedItem

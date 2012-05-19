@@ -15,6 +15,8 @@ namespace SuperPutty.Utils
     /// SuperPutty.exe -session SESSION_NAME
     /// OR 
     /// SuperPutty.exe -[PROTOCOL] -P PORT -l USER -pw PASSWORD -load SETTINGS HOSTNAME
+    /// OR 
+    /// SuperPutty.exe -l USER -pw PASSWORD -load SETTINGS PROTOCOL://HOSTNAME:port
     /// ------------
     /// Options:
     /// -ssh|-serial|-telnet|-scp|-raw|-rlogin|-cygterm   -Choose Protocol (default: ssh)
@@ -83,7 +85,7 @@ namespace SuperPutty.Utils
                         this.UseScp = true;
                         break;
                     case "-P":
-                        this.Port = int.Parse(arg);
+                        this.Port = int.Parse(queue.Dequeue());
                         break;
                     case "-l":
                         this.UserName = queue.Dequeue();
@@ -126,8 +128,37 @@ namespace SuperPutty.Utils
                     };
                 }
             }
+            else if (this.Host == null)
+            {
+                Log.WarnFormat("Host not provided, cannot create session");
+            }
             else
             {
+                // ssh://localhost:2020
+                HostConnectionString connStr = new HostConnectionString(this.Host);
+                this.Host = connStr.Host;
+                this.Protocol = connStr.Protocol.GetValueOrDefault(this.Protocol.GetValueOrDefault(ConnectionProtocol.SSH));
+                this.Port = connStr.Port.GetValueOrDefault(this.Port.GetValueOrDefault(dlgEditSession.GetDefaultPort(this.Protocol.GetValueOrDefault())));
+
+                /*
+                int idx = this.Host.IndexOf("://");
+                if (idx != -1)
+                {
+                    this.Protocol = (ConnectionProtocol) Enum.Parse(typeof(ConnectionProtocol), this.Host.Substring(0, idx), true);
+                    string hostPort = this.Host.Substring(idx + 3);
+
+                    int idxPort = hostPort.IndexOf(":");
+                    if (idxPort != -1)
+                    {
+                        this.Host = hostPort.Substring(0, idxPort);
+                        this.Port = Convert.ToInt32(hostPort.Substring(idxPort + 1));
+                    }
+                    else
+                    {
+                        this.Host = hostPort;
+                    }
+                }*/
+
                 ssi = new SessionDataStartInfo();
                 ssi.Session = new SessionData
                 {
