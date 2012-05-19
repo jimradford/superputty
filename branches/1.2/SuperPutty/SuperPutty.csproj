@@ -167,6 +167,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\CommandLineOptions.cs" />
     <Compile Include="Utils\FormUtils.cs" />
+    <Compile Include="Utils\HostConnectionString.cs" />
     <Compile Include="Utils\NativeMethods.cs" />
     <Compile Include="Utils\PortableSettingsProvider.cs" />
     <Compile Include="Utils\PuttyStartInfo.cs" />
