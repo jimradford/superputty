@@ -26,6 +26,8 @@ namespace SuperPutty.Utils
                 hostPort = hostString.Substring(idx + 3);
             }
 
+            // Firefox addes a '/'...
+            hostPort = hostPort.TrimEnd('/');
             int idxPort = hostPort.IndexOf(":");
             if (idxPort != -1)
             {
