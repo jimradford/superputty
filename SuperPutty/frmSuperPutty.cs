@@ -105,7 +105,7 @@ namespace SuperPutty
             llkp = KBHookCallback;
             //kbHookID = SetKBHook(llkp);
             llmp = MHookCallback;
-            mHookID = SetMHook(llmp);
+            //mHookID = SetMHook(llmp);
 
             // Restore window location and size
             if (SuperPuTTY.Settings.RestoreWindowLocation)
@@ -125,7 +125,7 @@ namespace SuperPutty
         {
             // free hooks
             //NativeMethods.UnhookWindowsHookEx(kbHookID);
-            NativeMethods.UnhookWindowsHookEx(mHookID);
+            //NativeMethods.UnhookWindowsHookEx(mHookID);
 
             // save window size and location if not maximized or minimized
             if (SuperPuTTY.Settings.RestoreWindowLocation && this.WindowState != FormWindowState.Minimized)
@@ -248,32 +248,6 @@ namespace SuperPutty
         }
         #endregion 
 
-        #region CmdLine
-
-        protected override void WndProc(ref Message m)
-        {
-            //Log.Info("## - " + m.Msg);
-            if (m.Msg == 0x004A)
-            {
-                NativeMethods.COPYDATA cd = (NativeMethods.COPYDATA)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.COPYDATA));
-                string strArgs = Marshal.PtrToStringAnsi(cd.lpData);
-                string[] args = strArgs.Split(' ');
-
-                CommandLineOptions opts = new CommandLineOptions(args);
-                if (opts.IsValid)
-                {
-                    SessionDataStartInfo ssi = opts.ToSessionStartInfo();
-                    if (ssi != null)
-                    {
-                        SuperPuTTY.OpenSession(ssi);
-                    }
-                }
-            }
-            base.WndProc(ref m);
-        }
-
-        #endregion
-
         #region View Menu
 
         private void toggleCheckedState(object sender, EventArgs e)
@@ -376,6 +350,13 @@ namespace SuperPutty
                     m_Layouts.Show(m_Sessions.DockHandler.Pane, DockAlignment.Bottom, 0.5);
                     toolStripStatusLabelLayout.Text = "";
                     SuperPuTTY.ReportStatus("Initialized default layout");
+                }
+                else if (!File.Exists(eventArgs.New.FilePath))
+                {
+                    // file missing
+                    Log.WarnFormat("Layout file doesn't exist, file={0}", eventArgs.New.FilePath);
+                    toolStripStatusLabelLayout.Text = eventArgs.New.Name;
+                    SuperPuTTY.ReportStatus("Could not load layout, file missing: {0}", eventArgs.New.FilePath);
                 }
                 else
                 {
