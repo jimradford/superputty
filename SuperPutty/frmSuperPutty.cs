@@ -178,6 +178,14 @@ namespace SuperPutty
             //dockPanel1_ActiveDocumentChanged(null, null);
         }
 
+        public void SetActiveDocument(ToolWindow toolWindow)
+        {
+            if (this.DockPanel.ActiveDocument != toolWindow)
+            {
+                toolWindow.Show();
+            }
+        }
+
         #region File
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
