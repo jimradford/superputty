@@ -171,14 +171,21 @@ namespace SuperPutty
                     Log.InfoFormat("Restoring putty session, sessionId={0}, tabName={1}", sessionId, tabName);
 
                     SessionData session = SuperPuTTY.GetSessionById(sessionId);
-                    panel = ctlPuttyPanel.NewPanel(session);
-                    if (panel == null)
+                    if (session != null)
                     {
-                        Log.WarnFormat("Could not restore putty session, sessionId={0}", sessionId);
+                        panel = ctlPuttyPanel.NewPanel(session);
+                        if (panel == null)
+                        {
+                            Log.WarnFormat("Could not restore putty session, sessionId={0}", sessionId);
+                        }
+                        else
+                        {
+                            panel.Text = tabName;
+                        }
                     }
                     else
                     {
-                        panel.Text = tabName;
+                        Log.WarnFormat("Session not found, sessionId={0}", sessionId);
                     }
                 }
                 else
@@ -189,7 +196,14 @@ namespace SuperPutty
                         string sessionId = persistString.Substring(idx + 1);
                         Log.InfoFormat("Restoring putty session, sessionId={0}", sessionId);
                         SessionData session = SuperPuTTY.GetSessionById(sessionId);
-                        panel = ctlPuttyPanel.NewPanel(session);
+                        if (session != null)
+                        {
+                            panel = ctlPuttyPanel.NewPanel(session);
+                        }
+                        else
+                        {
+                            Log.WarnFormat("Session not found, sessionId={0}", sessionId);
+                        }
                     }
                 }
             }
