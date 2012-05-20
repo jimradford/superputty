@@ -182,10 +182,14 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     // stop flashing...happens occassionally when switching quickly b/c of activate()
                     NativeMethods.FlashWindow(form.Handle, NativeMethods.FLASHW_STOP);
 
+                    // focus back to putty via setting active dock panel
+                    SuperPuTTY.MainForm.SetActiveDocument( (ctlPuttyPanel) this.Parent );
+                    /*
                     // give back focus to putty
                     this.ReFocusPuTTY();
                     //settingForeground = true;
                     //NativeMethods.SetForegroundWindow(m_AppWin);
+                     */
                 }
             }
         }
