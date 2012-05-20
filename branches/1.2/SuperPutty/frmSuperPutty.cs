@@ -346,8 +346,7 @@ namespace SuperPutty
                 {
                     // 1st time or reset
                     Log.Debug("Initializing default layout");
-                    m_Sessions.Show(this.DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
-                    m_Layouts.Show(m_Sessions.DockHandler.Pane, DockAlignment.Bottom, 0.5);
+                    this.InitDefaultLayout();
                     toolStripStatusLabelLayout.Text = "";
                     SuperPuTTY.ReportStatus("Initialized default layout");
                 }
@@ -355,6 +354,7 @@ namespace SuperPutty
                 {
                     // file missing
                     Log.WarnFormat("Layout file doesn't exist, file={0}", eventArgs.New.FilePath);
+                    this.InitDefaultLayout();
                     toolStripStatusLabelLayout.Text = eventArgs.New.Name;
                     SuperPuTTY.ReportStatus("Could not load layout, file missing: {0}", eventArgs.New.FilePath);
                 }
@@ -369,6 +369,12 @@ namespace SuperPutty
 
                 // after all is done, cause a repaint to 
             }
+        }
+
+        void InitDefaultLayout()
+        {
+            m_Sessions.Show(this.DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
+            m_Layouts.Show(m_Sessions.DockHandler.Pane, DockAlignment.Bottom, 0.5);
         }
 
         private void saveLayoutToolStripMenuItem_Click(object sender, EventArgs e)
