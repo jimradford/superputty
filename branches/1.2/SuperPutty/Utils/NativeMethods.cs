@@ -1134,8 +1134,63 @@ namespace SuperPutty.Utils
         [DllImport("user32.dll")]
         public static extern bool ShowWindow(IntPtr hWnd, uint nCmdShow);
 
+        public const uint EVENT_SYSTEM_FOREGROUND = 3;
+        public const uint WINEVENT_OUTOFCONTEXT = 0;
+
+        public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
+
+        [DllImport("user32.dll")]
+        public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+
         #endregion
 
+
+        #region Flashing windows
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct FLASHWINFO
+        {
+            public UInt32 cbSize;
+            public IntPtr hwnd;
+            public UInt32 dwFlags;
+            public UInt32 uCount;
+            public UInt32 dwTimeout;
+        }
+
+        //Stop flashing. The system restores the window to its original state. 
+        public const UInt32 FLASHW_STOP = 0;
+        //Flash the window caption. 
+        public const UInt32 FLASHW_CAPTION = 1;
+        //Flash the taskbar button. 
+        public const UInt32 FLASHW_TRAY = 2;
+        //Flash both the window caption and taskbar button.
+        //This is equivalent to setting the FLASHW_CAPTION | FLASHW_TRAY flags. 
+        public const UInt32 FLASHW_ALL = 3;
+        //Flash continuously, until the FLASHW_STOP flag is set. 
+        public const UInt32 FLASHW_TIMER = 4;
+        //Flash continuously until the window comes to the foreground. 
+        public const UInt32 FLASHW_TIMERNOFG = 12;
+
+        public static bool FlashWindow(IntPtr hWnd, uint mode)
+        {
+            NativeMethods.FLASHWINFO fInfo = new NativeMethods.FLASHWINFO();
+
+            fInfo.cbSize = Convert.ToUInt32(Marshal.SizeOf(fInfo));
+            fInfo.hwnd = hWnd;
+            fInfo.dwFlags = (UInt32)mode;
+            fInfo.uCount = UInt32.MaxValue;
+            fInfo.dwTimeout = 0;
+
+            return NativeMethods.FlashWindowEx(ref fInfo);
+        }
+        #endregion
     }
 
 }

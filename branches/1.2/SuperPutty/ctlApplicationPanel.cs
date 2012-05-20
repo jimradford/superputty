@@ -39,17 +39,14 @@ namespace SuperPutty
 
     public class ApplicationPanel : System.Windows.Forms.Panel
     {
+        #region Private Member Variables
+
         private static readonly ILog Log = LogManager.GetLogger(typeof(ApplicationPanel));
 
         private static bool RefocusOnVisChanged = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.RefocusOnVisChanged"] ?? "False");
         private static bool LoopWaitForHandle = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.LoopWaitForHandle"] ?? "False");
         private static int ClosePuttyWaitTimeMs = Convert.ToInt32(ConfigurationManager.AppSettings["SuperPuTTY.ClosePuttyWaitTimeMs"] ?? "100");
 
-        // Win32 Exceptions which might occur trying to start the process
-        const int ERROR_FILE_NOT_FOUND = 2;
-        const int ERROR_ACCESS_DENIED = 5;
-
-        #region Private Member Variables
         private Process m_Process;
         private bool m_Created = false;
         private IntPtr m_AppWin;
@@ -90,12 +87,22 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         {
             this.Disposed += new EventHandler(ApplicationPanel_Disposed);
             SuperPuTTY.LayoutChanged += new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
+
+            // setup up the hook to watch for all EVENT_SYSTEM_FOREGROUND events system wide
+            this.m_winEventDelegate = new NativeMethods.WinEventDelegate(WinEventProc);
+            this.m_hWinEventHook = NativeMethods.SetWinEventHook(
+                NativeMethods.EVENT_SYSTEM_FOREGROUND, 
+                NativeMethods.EVENT_SYSTEM_FOREGROUND, 
+                IntPtr.Zero, 
+                this.m_winEventDelegate, 0, 0, 
+                NativeMethods.WINEVENT_OUTOFCONTEXT);
         }
 
         void ApplicationPanel_Disposed(object sender, EventArgs e)
         {
             this.Disposed -= new EventHandler(ApplicationPanel_Disposed);
             SuperPuTTY.LayoutChanged -= new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
+            NativeMethods.UnhookWinEvent(m_hWinEventHook);
         }
 
         void SuperPuTTY_LayoutChanged(object sender, Data.LayoutChangedEventArgs e)
@@ -109,6 +116,94 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             this.MoveWindow("RefreshWindow");
         }
 
+        private void MoveWindow(string src)
+        {
+
+            if (!SuperPuTTY.IsLayoutChanging)
+            {
+                if (Log.IsDebugEnabled)
+                {
+                    Log.DebugFormat("MoveWindow [{3,-15}{4,20}] w={0,4}, h={1,4}, visible={2}", this.Width, this.Height, this.Visible, src, this.Name);
+                }
+
+                NativeMethods.MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, this.Visible);
+            }
+        }
+
+        public bool ReFocusPuTTY()
+        {
+            Log.InfoFormat("ReFocusPuTTY - {0}", this.m_AppWin);
+            settingForeground = true;
+            return (this.m_AppWin != null
+                && NativeMethods.GetForegroundWindow() != this.m_AppWin
+                && !NativeMethods.SetForegroundWindow(this.m_AppWin));
+        }
+
+        #region Focus Change Handling
+        /*************************** Begin Hack to watch for windows focus change events **************************************
+        * This is based on this form post:
+        * http://social.msdn.microsoft.com/Forums/en-US/clr/thread/c04e343f-f2e7-469a-8a54-48ca84f78c28
+        *
+        * The idea is to watch for the EVENT_SYSTEM_FOREGROUND window, and when we see that from the putty terminal window
+        * bring the superputty window to the foreground
+        */
+        NativeMethods.WinEventDelegate m_winEventDelegate;
+        IntPtr m_hWinEventHook;
+        bool settingForeground = false;
+
+        void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+        {
+            // if we got the EVENT_SYSTEM_FOREGROUND, and the hwnd is the putty terminal hwnd (m_AppWin)
+            // then bring the supperputty window to the foreground
+
+            if (eventType == NativeMethods.EVENT_SYSTEM_FOREGROUND && hwnd == m_AppWin)
+            {
+                //Log.DebugFormat("settingFG={0}, type={1}, dwET={2}, time={3}", settingForeground, eventType, dwEventThread, dwmsEventTime);
+                if (settingForeground)
+                {
+                    settingForeground = false;
+                    return;
+                }
+
+                //this.OnInnerApplicationFocused();
+                // This is the easiest way I found to get the superputty window to be brought to the top
+                // if you leave TopMost = true; then the window will always be on top.
+                if (this.TopLevelControl != null)
+                {
+                    Form form = this.TopLevelControl.FindForm();
+
+                    // bring to top
+                    form.TopMost = true;
+                    form.TopMost = false;
+
+                    // set as active form in task bar
+                    form.Activate();
+    
+                    // stop flashing...happens occassionally when switching quickly b/c of activate()
+                    NativeMethods.FlashWindow(form.Handle, NativeMethods.FLASHW_STOP);
+
+                    // give back focus to putty
+                    this.ReFocusPuTTY();
+                    //settingForeground = true;
+                    //NativeMethods.SetForegroundWindow(m_AppWin);
+                }
+            }
+        }
+
+
+        public event EventHandler InnerApplicationFocused;
+
+        void OnInnerApplicationFocused()
+        {
+            if (this.InnerApplicationFocused != null)
+            {
+                this.InnerApplicationFocused(this, EventArgs.Empty);
+            }
+        }
+
+        /*************************** End Hack to watch for windows focus change events ***************************************/
+        #endregion
+
         #region Base Overrides
        
         /// <summary>
@@ -120,21 +215,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             this.Invalidate();
             base.OnSizeChanged(e);
         }
-             
-        [DllImport("user32.dll")]
-        static extern IntPtr GetForegroundWindow();
-        
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
        
-        public bool ReFocusPuTTY()
-        {
-            Log.InfoFormat("ReFocusPuTTY - {0}", this.m_AppWin);
-            return (this.m_AppWin != null 
-                && GetForegroundWindow() != this.m_AppWin 
-                && !SetForegroundWindow(this.m_AppWin));
-        }
-
         /// <summary>
         /// Create (start) the hosted application when the parent becomes visible
         /// </summary>
@@ -212,11 +293,11 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                      * which will hopefully send users kicking and screaming at me to fix this (And hopefully they will include a 
                      * stacktrace!)
                      */
-                    if (ex.NativeErrorCode == ERROR_ACCESS_DENIED)
+                    if (ex.NativeErrorCode == NativeMethods.ERROR_ACCESS_DENIED)
                     {
                         throw;
                     }
-                    else if (ex.NativeErrorCode == ERROR_FILE_NOT_FOUND)
+                    else if (ex.NativeErrorCode == NativeMethods.ERROR_FILE_NOT_FOUND)
                     {
                         throw;
                     }
@@ -240,7 +321,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 // Move the child so it's located over the parent
                 this.MoveWindow("OnVisChanged");
                 //MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
-                if (RefocusOnVisChanged && GetForegroundWindow() != this.m_AppWin)
+                if (RefocusOnVisChanged && NativeMethods.GetForegroundWindow() != this.m_AppWin)
                 {
                     this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY(); }));
                 }
@@ -289,21 +370,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             base.OnResize(e);
         }
 
-        private void MoveWindow(string src)
-        {
-
-            if (!SuperPuTTY.IsLayoutChanging)
-            {
-                if (Log.IsDebugEnabled)
-                {
-                    Log.DebugFormat("MoveWindow [{3,-15}{4,20}] w={0,4}, h={1,4}, visible={2}", this.Width, this.Height, this.Visible, src, this.Name);
-                }
-
-                NativeMethods.MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, this.Visible);
-            }
-        }
-
-        #endregion        
+        #endregion    
+    
     }
 
 }
