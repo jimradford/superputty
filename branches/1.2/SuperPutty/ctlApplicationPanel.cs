@@ -183,7 +183,17 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     NativeMethods.FlashWindow(form.Handle, NativeMethods.FLASHW_STOP);
 
                     // focus back to putty via setting active dock panel
-                    SuperPuTTY.MainForm.SetActiveDocument( (ctlPuttyPanel) this.Parent );
+                    ctlPuttyPanel parent = (ctlPuttyPanel) this.Parent;
+                    if (parent.DockPanel.ActiveDocument != parent)
+                    {
+                        parent.Show();
+                    }
+                    else
+                    {
+                        // give focus back
+                        this.ReFocusPuTTY();
+                    }
+                    //SuperPuTTY.MainForm.SetActiveDocument( (ctlPuttyPanel) this.Parent );
                     /*
                     // give back focus to putty
                     this.ReFocusPuTTY();

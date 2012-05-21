@@ -1,3 +1,10 @@
+1.2.0.8
+- # 1 - When Application is in background, clicking on terminal session should bring application to front, not just focus app (possible fix from patch on issue #1)
+- #80 - Non standard port/telnet-ssh links
+- #99 - Center all windows on the screen
+- #103 - SCP Refresh button incorrect tooltip
+- #105 - Error on Layouts
+
 1.2.0.7
 - #13 - cant read all sessions already existed in putty.  (File, Import Sessions, From Putty settings)
 - #22 - Importing connection list from PuTTY Connection Manager to Superputty (File, Import Sessions, From Putty CM)
