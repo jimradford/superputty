@@ -36,6 +36,7 @@ using SuperPutty.Data;
 using log4net;
 using System.Diagnostics;
 using SuperPutty.Utils;
+using System.Configuration;
 
 
 namespace SuperPutty
@@ -43,6 +44,8 @@ namespace SuperPutty
     public partial class SessionTreeview : ToolWindow, IComparer
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SessionTreeview));
+
+        private static int MaxSessionsToOpen = Convert.ToInt32(ConfigurationManager.AppSettings["SuperPuTTY.MaxSessionsToOpen"] ?? "10");
 
         public const string SessionIdDelim = "/";
 
@@ -421,13 +424,24 @@ namespace SuperPutty
             TreeNode node = this.treeView1.SelectedNode;
             if (node != null && !IsSessionNode(node))
             {
-                foreach (TreeNode child in node.Nodes)
+                List<SessionData> sessions = new List<SessionData>();
+                GetAllSessions(node, sessions);
+                Log.InfoFormat("Found {0} sessions", sessions.Count);
+
+                if (sessions.Count > MaxSessionsToOpen)
                 {
-                    if (IsSessionNode(child))
+                    if (DialogResult.Cancel == MessageBox.Show(
+                        "Open All " + sessions.Count + " sessions?", 
+                        "WARNING", 
+                        MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
                     {
-                        SessionData session = (SessionData) child.Tag;
-                        SuperPuTTY.OpenPuttySession(session);
+                        // bug out...too many sessions to open
+                        return;
                     }
+                }
+                foreach (SessionData session in sessions)
+                {
+                        SuperPuTTY.OpenPuttySession(session);
                 }
             }
         }
@@ -586,6 +600,24 @@ namespace SuperPutty
             }
         }
 
+        void GetAllSessions(TreeNode nodeFolder, List<SessionData> sessions)
+        {
+            if (nodeFolder != null)
+            {
+                foreach (TreeNode child in nodeFolder.Nodes)
+                {
+                    if (IsSessionNode(child))
+                    {
+                        SessionData session = (SessionData) child.Tag;
+                        sessions.Add(session);
+                    }
+                    else
+                    {
+                        GetAllSessions(child, sessions);
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Drag Drop
