@@ -1106,9 +1106,6 @@ namespace SuperPutty.Utils
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
@@ -1145,6 +1142,63 @@ namespace SuperPutty.Utils
         [DllImport("user32.dll")]
         public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetTopWindow(IntPtr hWnd);
+
+        /// <summary>
+        /// check if windows visible
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsWindowVisible(IntPtr hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
+
+        public class GetWindowCmd 
+        {
+            public const uint
+                GW_HWNDFIRST = 0,
+                GW_HWNDLAST = 1,
+                GW_HWNDNEXT = 2,
+                GW_HWNDPREV = 3,
+                GW_OWNER = 4,
+                GW_CHILD = 5,
+                GW_ENABLEDPOPUP = 6;
+        }
+
+        [DllImport("user32.dll", SetLastError = false)]
+        public static extern IntPtr GetDesktopWindow();
+
+        /// <summary>
+        /// filter function
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        public delegate bool EnumDelegate(IntPtr hWnd, int lParam);
+
+        /// <summary>
+        /// enumarator on all desktop windows
+        /// </summary>
+        /// <param name="hDesktop"></param>
+        /// <param name="lpEnumCallbackFunction"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll", EntryPoint = "EnumDesktopWindows",
+        ExactSpelling = false, CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool EnumDesktopWindows(IntPtr hDesktop, EnumDelegate lpEnumCallbackFunction, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool BringWindowToTop(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetFocus(IntPtr hWnd);
         #endregion
 
 

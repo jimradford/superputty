@@ -172,6 +172,8 @@
     <Compile Include="Utils\PortableSettingsProvider.cs" />
     <Compile Include="Utils\PuttyStartInfo.cs" />
     <Compile Include="Utils\SingleInstanceHelper.cs" />
+    <Compile Include="Utils\SingletonToolWindowHelper.cs" />
+    <Compile Include="Utils\DesktopWindowHelper.cs" />
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </EmbeddedResource>
