@@ -175,7 +175,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     DesktopWindow window = DesktopWindow.GetFirstDesktopWindow();
                     if (window == null || window.Handle != form.Handle)
                     {
-                        Log.DebugFormat("[{0}] Activating Main Window - current=({1})", hwnd, window != null ? window.Exe : "?");
+                        Log.InfoFormat("[{0}] Activating Main Window - current=({1})", hwnd, window != null ? window.Exe : "?");
                         // bring to top
                         form.TopMost = true;
                         form.TopMost = false;
@@ -191,7 +191,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     ctlPuttyPanel parent = (ctlPuttyPanel) this.Parent;
                     if (parent.DockPanel.ActiveDocument != parent)
                     {
-                        Log.DebugFormat(
+                        Log.InfoFormat(
                             "[{0}] Setting Active Document: {1} -> {2}", 
                             hwnd, ((ToolWindow)parent.DockPanel.ActiveDocument).Text, parent.Text);
                         parent.Show();
