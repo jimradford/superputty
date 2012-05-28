@@ -330,6 +330,14 @@ namespace SuperPutty
             }
         }
 
+        private void connectInNewSuperPuTTYToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = this.treeView1.SelectedNode;
+            if (IsSessionNode(node))
+            {
+                SuperPuTTY.LoadSessionInNewInstance(((SessionData)node.Tag).SessionId);
+            }
+        }
 
         private void newFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -405,6 +413,22 @@ namespace SuperPutty
             {
                 node.Remove();
                 SuperPuTTY.ReportStatus("Removed Folder, {0}", node.Text);
+            }
+        }
+
+        private void connectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = this.treeView1.SelectedNode;
+            if (node != null && !IsSessionNode(node))
+            {
+                foreach (TreeNode child in node.Nodes)
+                {
+                    if (IsSessionNode(child))
+                    {
+                        SessionData session = (SessionData) child.Tag;
+                        SuperPuTTY.OpenPuttySession(session);
+                    }
+                }
             }
         }
 
