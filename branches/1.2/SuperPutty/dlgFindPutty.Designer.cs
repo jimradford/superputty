@@ -50,12 +50,14 @@
             this.checkConstrainPuttyDocking = new System.Windows.Forms.CheckBox();
             this.checkSingleInstanceMode = new System.Windows.Forms.CheckBox();
             this.checkExitConfirmation = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.checkExpandTree = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(388, 349);
+            this.buttonOk.Location = new System.Drawing.Point(388, 381);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 20;
@@ -195,7 +197,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(469, 349);
+            this.buttonCancel.Location = new System.Drawing.Point(469, 381);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 21;
@@ -216,7 +218,7 @@
             // checkRestoreWindow
             // 
             this.checkRestoreWindow.AutoSize = true;
-            this.checkRestoreWindow.Location = new System.Drawing.Point(180, 278);
+            this.checkRestoreWindow.Location = new System.Drawing.Point(180, 255);
             this.checkRestoreWindow.Name = "checkRestoreWindow";
             this.checkRestoreWindow.Size = new System.Drawing.Size(193, 17);
             this.checkRestoreWindow.TabIndex = 26;
@@ -226,7 +228,7 @@
             // checkConstrainPuttyDocking
             // 
             this.checkConstrainPuttyDocking.AutoSize = true;
-            this.checkConstrainPuttyDocking.Location = new System.Drawing.Point(180, 255);
+            this.checkConstrainPuttyDocking.Location = new System.Drawing.Point(180, 318);
             this.checkConstrainPuttyDocking.Name = "checkConstrainPuttyDocking";
             this.checkConstrainPuttyDocking.Size = new System.Drawing.Size(193, 17);
             this.checkConstrainPuttyDocking.TabIndex = 25;
@@ -246,12 +248,32 @@
             // checkExitConfirmation
             // 
             this.checkExitConfirmation.AutoSize = true;
-            this.checkExitConfirmation.Location = new System.Drawing.Point(180, 301);
+            this.checkExitConfirmation.Location = new System.Drawing.Point(180, 278);
             this.checkExitConfirmation.Name = "checkExitConfirmation";
             this.checkExitConfirmation.Size = new System.Drawing.Size(104, 17);
             this.checkExitConfirmation.TabIndex = 27;
             this.checkExitConfirmation.Text = "Exit Confirmation";
             this.checkExitConfirmation.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(12, 320);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(90, 15);
+            this.label6.TabIndex = 28;
+            this.label6.Text = "GUI Preferences";
+            // 
+            // checkExpandTree
+            // 
+            this.checkExpandTree.AutoSize = true;
+            this.checkExpandTree.Location = new System.Drawing.Point(180, 341);
+            this.checkExpandTree.Name = "checkExpandTree";
+            this.checkExpandTree.Size = new System.Drawing.Size(187, 17);
+            this.checkExpandTree.TabIndex = 29;
+            this.checkExpandTree.Text = "Expand Sessions Tree on Start up";
+            this.checkExpandTree.UseVisualStyleBackColor = true;
             // 
             // dlgFindPutty
             // 
@@ -259,7 +281,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(556, 384);
+            this.ClientSize = new System.Drawing.Size(556, 416);
+            this.Controls.Add(this.checkExpandTree);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.checkExitConfirmation);
             this.Controls.Add(this.checkRestoreWindow);
             this.Controls.Add(this.checkConstrainPuttyDocking);
@@ -310,5 +334,7 @@
         private System.Windows.Forms.CheckBox checkConstrainPuttyDocking;
         private System.Windows.Forms.CheckBox checkSingleInstanceMode;
         private System.Windows.Forms.CheckBox checkExitConfirmation;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox checkExpandTree;
     }
 }
