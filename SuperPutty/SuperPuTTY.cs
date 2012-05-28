@@ -225,7 +225,13 @@ namespace SuperPutty
         public static void LoadLayoutInNewInstance(LayoutData layout)
         {
             ReportStatus("Starting new instance with layout, {0}", layout.Name);
-            Process.Start(Assembly.GetExecutingAssembly().Location, "-layout \"" + layout + "\"");
+            Process.Start(Assembly.GetExecutingAssembly().Location, "-layout \"" + layout.Name + "\"");
+        }
+
+        public static void LoadSessionInNewInstance(string sessionId)
+        {
+            ReportStatus("Starting session in new instance, {0}", sessionId);
+            Process.Start(Assembly.GetExecutingAssembly().Location, "-session \"" + sessionId + "\"");
         }
 
         public static void SetLayoutAsDefault(string layoutName)

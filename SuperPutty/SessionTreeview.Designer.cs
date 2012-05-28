@@ -40,6 +40,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectExternalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.connectInNewSuperPuTTYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.fileBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripFolder = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -53,6 +54,8 @@
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerDelayedSave = new System.Windows.Forms.Timer(this.components);
+            this.connectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.contextMenuStripAddTreeItem.SuspendLayout();
             this.contextMenuStripFolder.SuspendLayout();
             this.SuspendLayout();
@@ -94,69 +97,77 @@
             this.toolStripSeparator1,
             this.connectToolStripMenuItem,
             this.connectExternalToolStripMenuItem,
+            this.connectInNewSuperPuTTYToolStripMenuItem,
             this.toolStripSeparator2,
             this.fileBrowserToolStripMenuItem});
             this.contextMenuStripAddTreeItem.Name = "contextMenuStripAddTreeItem";
             this.contextMenuStripAddTreeItem.ShowImageMargin = false;
-            this.contextMenuStripAddTreeItem.Size = new System.Drawing.Size(139, 192);
+            this.contextMenuStripAddTreeItem.Size = new System.Drawing.Size(182, 192);
             this.contextMenuStripAddTreeItem.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripAddTreeItem_Opening);
             // 
             // newSessionToolStripMenuItem
             // 
             this.newSessionToolStripMenuItem.Name = "newSessionToolStripMenuItem";
-            this.newSessionToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.newSessionToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.newSessionToolStripMenuItem.Text = "New";
             this.newSessionToolStripMenuItem.Click += new System.EventHandler(this.CreateOrEditSessionToolStripMenuItem_Click);
             // 
             // createLikeToolStripMenuItem
             // 
             this.createLikeToolStripMenuItem.Name = "createLikeToolStripMenuItem";
-            this.createLikeToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.createLikeToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.createLikeToolStripMenuItem.Text = "Copy As";
             this.createLikeToolStripMenuItem.Click += new System.EventHandler(this.CreateOrEditSessionToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.settingsToolStripMenuItem.Text = "Edit";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.CreateOrEditSessionToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(135, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(178, 6);
             // 
             // connectToolStripMenuItem
             // 
             this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            this.connectToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.connectToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.connectToolStripMenuItem.Text = "Connect";
             this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
             // 
             // connectExternalToolStripMenuItem
             // 
             this.connectExternalToolStripMenuItem.Name = "connectExternalToolStripMenuItem";
-            this.connectExternalToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.connectExternalToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.connectExternalToolStripMenuItem.Text = "Connect External";
             this.connectExternalToolStripMenuItem.Click += new System.EventHandler(this.connectExternalToolStripMenuItem_Click);
+            // 
+            // connectInNewSuperPuTTYToolStripMenuItem
+            // 
+            this.connectInNewSuperPuTTYToolStripMenuItem.Name = "connectInNewSuperPuTTYToolStripMenuItem";
+            this.connectInNewSuperPuTTYToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.connectInNewSuperPuTTYToolStripMenuItem.Text = "Connect in New Instance";
+            this.connectInNewSuperPuTTYToolStripMenuItem.Click += new System.EventHandler(this.connectInNewSuperPuTTYToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(135, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(178, 6);
             // 
             // fileBrowserToolStripMenuItem
             // 
             this.fileBrowserToolStripMenuItem.Name = "fileBrowserToolStripMenuItem";
-            this.fileBrowserToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.fileBrowserToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.fileBrowserToolStripMenuItem.Text = "File Transfer";
             this.fileBrowserToolStripMenuItem.Click += new System.EventHandler(this.fileBrowserToolStripMenuItem_Click);
             // 
@@ -169,12 +180,14 @@
             this.removeFolderToolStripMenuItem,
             this.toolStripMenuItem1,
             this.renameToolStripMenuItem,
+            this.toolStripMenuItem3,
+            this.connectAllToolStripMenuItem,
             this.toolStripMenuItem2,
             this.expandAllToolStripMenuItem,
             this.collapseAllToolStripMenuItem});
             this.contextMenuStripFolder.Name = "contextMenuStripAddTreeItem";
             this.contextMenuStripFolder.ShowImageMargin = false;
-            this.contextMenuStripFolder.Size = new System.Drawing.Size(129, 176);
+            this.contextMenuStripFolder.Size = new System.Drawing.Size(129, 204);
             this.contextMenuStripFolder.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripFolder_Opening);
             // 
             // newSessionToolStripMenuItem1
@@ -239,6 +252,18 @@
             this.timerDelayedSave.Interval = 3000;
             this.timerDelayedSave.Tick += new System.EventHandler(this.timerDelayedSave_Tick);
             // 
+            // connectAllToolStripMenuItem
+            // 
+            this.connectAllToolStripMenuItem.Name = "connectAllToolStripMenuItem";
+            this.connectAllToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.connectAllToolStripMenuItem.Text = "Connect All";
+            this.connectAllToolStripMenuItem.Click += new System.EventHandler(this.connectAllToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(125, 6);
+            // 
             // SessionTreeview
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -281,5 +306,8 @@
         private System.Windows.Forms.ToolStripMenuItem expandAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem connectExternalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem connectInNewSuperPuTTYToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem connectAllToolStripMenuItem;
     }
 }
