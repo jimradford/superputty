@@ -71,13 +71,21 @@ namespace SuperPutty
         {
             base.OnLoad(e);
 
-            // start with semi-collapsed view
-            nodeRoot.Expand();
-            foreach (TreeNode node in this.nodeRoot.Nodes)
+            if (SuperPuTTY.Settings.ExpandSessionsTreeOnStartup)
             {
-                if (!IsSessionNode(node))
+                nodeRoot.ExpandAll();
+                this.treeView1.SelectedNode = nodeRoot;
+            }
+            else
+            {
+                // start with semi-collapsed view
+                nodeRoot.Expand();
+                foreach (TreeNode node in this.nodeRoot.Nodes)
                 {
-                    node.Collapse();
+                    if (!IsSessionNode(node))
+                    {
+                        node.Collapse();
+                    }
                 }
             }
         }

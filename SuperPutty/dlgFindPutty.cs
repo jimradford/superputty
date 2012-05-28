@@ -135,6 +135,7 @@ namespace SuperPutty
             this.checkConstrainPuttyDocking.Checked = SuperPuTTY.Settings.RestrictContentToDocumentTabs;
             this.checkRestoreWindow.Checked = SuperPuTTY.Settings.RestoreWindowLocation;
             this.checkExitConfirmation.Checked = SuperPuTTY.Settings.ExitConfirmation;
+            this.checkExpandTree.Checked = SuperPuTTY.Settings.ExpandSessionsTreeOnStartup;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -183,6 +184,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.RestrictContentToDocumentTabs = this.checkConstrainPuttyDocking.Checked;
                 SuperPuTTY.Settings.RestoreWindowLocation = this.checkRestoreWindow.Checked;
                 SuperPuTTY.Settings.ExitConfirmation = this.checkExitConfirmation.Checked;
+                SuperPuTTY.Settings.ExpandSessionsTreeOnStartup = this.checkExpandTree.Checked;
 
                 SuperPuTTY.Settings.Save();
 
