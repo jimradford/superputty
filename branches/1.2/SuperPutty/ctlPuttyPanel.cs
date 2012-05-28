@@ -297,7 +297,10 @@ namespace SuperPutty
 
         private void puTTYMenuTSMI_Click(object sender, EventArgs e)
         {
-            NativeMethods.SendMessage(m_AppPanel.AppWindowHandle, (uint) NativeMethods.WM.SYSCOMMAND, Convert.ToUInt32(((ToolStripMenuItem)sender).Tag.ToString(), 16), 0);
+            string tag = ((ToolStripMenuItem)sender).Tag.ToString();
+            uint command = Convert.ToUInt32(tag, 16);
+            Log.DebugFormat("Sending Putty Command: tag={0}, command={1}", tag, command);
+            NativeMethods.SendMessage(m_AppPanel.AppWindowHandle, (uint) NativeMethods.WM.SYSCOMMAND, command, 0);
             SuperPuTTY.MainForm.BringToFront();
         }
 
