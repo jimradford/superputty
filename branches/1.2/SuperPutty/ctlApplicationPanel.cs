@@ -132,10 +132,10 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
         public bool ReFocusPuTTY()
         {
-            Log.InfoFormat("ReFocusPuTTY - {0}", this.m_AppWin);
+            Log.InfoFormat("[{0}] ReFocusPuTTY - {1}", this.m_AppWin, this.Parent.Text);
             settingForeground = true;
             return (this.m_AppWin != null
-                && NativeMethods.GetForegroundWindow() != this.m_AppWin
+                //&& NativeMethods.GetForegroundWindow() != this.m_AppWin
                 && !NativeMethods.SetForegroundWindow(this.m_AppWin));
         }
 
@@ -158,7 +158,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
             if (eventType == NativeMethods.EVENT_SYSTEM_FOREGROUND && hwnd == m_AppWin)
             {
-                //Log.DebugFormat("settingFG={0}, type={1}, dwET={2}, time={3}", settingForeground, eventType, dwEventThread, dwmsEventTime);
+                Log.DebugFormat("[{0}] HandlingForegroundEvent: settingFG={1}", hwnd, settingForeground);
                 if (settingForeground)
                 {
                     settingForeground = false;
@@ -172,20 +172,28 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 {
                     Form form = this.TopLevelControl.FindForm();
 
-                    // bring to top
-                    form.TopMost = true;
-                    form.TopMost = false;
+                    DesktopWindow window = DesktopWindow.GetFirstDesktopWindow();
+                    if (window == null || window.Handle != form.Handle)
+                    {
+                        Log.DebugFormat("[{0}] Activating Main Window - current=({1})", hwnd, window != null ? window.Exe : "?");
+                        // bring to top
+                        form.TopMost = true;
+                        form.TopMost = false;
 
-                    // set as active form in task bar
-                    form.Activate();
-    
-                    // stop flashing...happens occassionally when switching quickly b/c of activate()
-                    NativeMethods.FlashWindow(form.Handle, NativeMethods.FLASHW_STOP);
+                        // set as active form in task bar
+                        form.Activate();
+
+                        // stop flashing...happens occassionally when switching quickly when activate manuver is fails
+                        NativeMethods.FlashWindow(form.Handle, NativeMethods.FLASHW_STOP);
+                    }
 
                     // focus back to putty via setting active dock panel
                     ctlPuttyPanel parent = (ctlPuttyPanel) this.Parent;
                     if (parent.DockPanel.ActiveDocument != parent)
                     {
+                        Log.DebugFormat(
+                            "[{0}] Setting Active Document: {1} -> {2}", 
+                            hwnd, ((ToolWindow)parent.DockPanel.ActiveDocument).Text, parent.Text);
                         parent.Show();
                     }
                     else
@@ -193,13 +201,6 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                         // give focus back
                         this.ReFocusPuTTY();
                     }
-                    //SuperPuTTY.MainForm.SetActiveDocument( (ctlPuttyPanel) this.Parent );
-                    /*
-                    // give back focus to putty
-                    this.ReFocusPuTTY();
-                    //settingForeground = true;
-                    //NativeMethods.SetForegroundWindow(m_AppWin);
-                     */
                 }
             }
         }
