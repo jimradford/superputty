@@ -64,9 +64,10 @@ namespace SuperPutty
 
         internal DockPanel DockPanel { get { return this.dockPanel1; } }
 
-        private SessionTreeview m_Sessions;
-        private LayoutsList m_Layouts;
-        private Log4netLogViewer m_logViewer = null;
+        private SingletonToolWindowHelper<SessionTreeview> sessions;
+        private SingletonToolWindowHelper<LayoutsList> layouts;
+        private SingletonToolWindowHelper<Log4netLogViewer> logViewer;
+
         private NativeMethods.LowLevelKMProc llkp;
         private NativeMethods.LowLevelKMProc llmp;
         private static IntPtr kbHookID = IntPtr.Zero;
@@ -80,17 +81,18 @@ namespace SuperPutty
             dlgFindPutty.PuttyCheck();
             
             InitializeComponent();
+
+            // setup connection bar
             this.tbTxtBoxPassword.TextBox.PasswordChar = '*';
             this.RefreshConnectionToolbarData();
 
-            /* 
-             * Open the session treeview and dock it on the right
-             */
-            m_Sessions = new SessionTreeview(DockPanel);
-            m_Sessions.CloseButtonVisible = false;
+            // version in status bar
+            this.toolStripStatusLabelVersion.Text = SuperPuTTY.Version;
 
-            m_Layouts = new LayoutsList();
-            m_Layouts.CloseButtonVisible = false;
+            // tool windows
+            this.sessions = new SingletonToolWindowHelper<SessionTreeview>("Sessions", this.DockPanel, x => new SessionTreeview(x.DockPanel));
+            this.layouts = new SingletonToolWindowHelper<LayoutsList>("Layouts", this.DockPanel);
+            this.logViewer = new SingletonToolWindowHelper<Log4netLogViewer>("Log Viewer", this.DockPanel);
 
             // Hook into status
             SuperPuTTY.StatusEvent += new Action<string>(delegate(String msg) { this.toolStripStatusLabelMessage.Text = msg; });
@@ -98,8 +100,6 @@ namespace SuperPutty
 
             // Hook into LayoutChanging/Changed
             SuperPuTTY.LayoutChanging += new EventHandler<LayoutChangedEventArgs>(SuperPuTTY_LayoutChanging);
-
-            this.toolStripStatusLabelVersion.Text = SuperPuTTY.Version;
 
             // Low-Level Mouse and Keyboard hooks
             llkp = KBHookCallback;
@@ -113,6 +113,7 @@ namespace SuperPutty
                 FormUtils.RestoreFormPositionAndState(this, SuperPuTTY.Settings.WindowPosition, SuperPuTTY.Settings.WindowState);
             }
 
+            // show/hide toolbars and status bar
             ApplySettingsToToolbars();
         }
 
@@ -121,6 +122,11 @@ namespace SuperPutty
             this.BeginInvoke(new Action(this.LoadLayout));
         }
 
+        protected override void OnActivated(EventArgs e)
+        {
+            Log.DebugFormat("[{0}] Activated", this.Handle);
+            base.OnActivated(e);
+        }
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             // free hooks
@@ -143,8 +149,6 @@ namespace SuperPutty
 
             base.OnFormClosed(e);
         }
-
-
 
         private void frmSuperPutty_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -287,6 +291,35 @@ namespace SuperPutty
             this.sendCommandsToolStripMenuItem.Checked = SuperPuTTY.Settings.ShowToolBarCommands;
         }
 
+        private void sessionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.layouts.Instance != null)
+            {
+                this.sessions.ShowWindow(this.layouts.Instance.DockHandler.Pane, DockAlignment.Top, 0.5);
+            }
+            else
+            {
+                this.sessions.ShowWindow(DockState.DockRight);
+            }
+        }
+
+        private void logViewerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.logViewer.ShowWindow(DockState.DockBottom);
+        }
+
+
+        private void layoutsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.sessions.Instance != null)
+            {
+                this.layouts.ShowWindow(this.sessions.Instance.DockHandler.Pane, DockAlignment.Bottom, 0.5);
+            }
+            else
+            {
+                this.layouts.ShowWindow(DockState.DockRight);
+            }
+        }
         #endregion
 
         #region Layout
@@ -381,8 +414,8 @@ namespace SuperPutty
 
         void InitDefaultLayout()
         {
-            m_Sessions.Show(this.DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
-            m_Layouts.Show(m_Sessions.DockHandler.Pane, DockAlignment.Bottom, 0.5);
+            this.sessionsToolStripMenuItem_Click(this, EventArgs.Empty);
+            this.layoutsToolStripMenuItem_Click(this, EventArgs.Empty);
         }
 
         private void saveLayoutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -419,17 +452,16 @@ namespace SuperPutty
             if (typeof(SessionTreeview).FullName == persistString)
             {
                 // session tree
-                return this.m_Sessions;
+                return this.sessions.Instance ?? this.sessions.Initialize();
             }
             else if (typeof(LayoutsList).FullName == persistString)
             {
-                // session tree
-                return this.m_Layouts;
+                // layouts list
+                return this.layouts.Instance ?? this.layouts.Initialize();
             }
             else if (typeof(Log4netLogViewer).FullName == persistString)
             {
-                InitLogViewer();
-                return this.m_logViewer;
+                return this.logViewer.Instance ?? this.logViewer.Initialize();
             }
             else
             {
@@ -465,24 +497,6 @@ namespace SuperPutty
             SuperPuTTY.ReportStatus("Lauched Putty Configuration");
         }
 
-        private void logViewerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //DebugLogViewer logView = new DebugLogViewer();
-            //logView.Show(dockPanel1, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide);
-            if (this.m_logViewer == null)
-            {
-                InitLogViewer();
-                this.m_logViewer.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockBottom);
-                SuperPuTTY.ReportStatus("Showing Log Viewer");
-            }
-            else
-            {
-                this.m_logViewer.Show(DockPanel);
-                SuperPuTTY.ReportStatus("Bringing Log Viewer to Front");
-            }
-
-        }
-
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SuperPuTTY.ReportStatus("Editing Options");
@@ -498,15 +512,6 @@ namespace SuperPutty
             }
 
             SuperPuTTY.ReportStatus("Ready");
-        }
-
-        void InitLogViewer()
-        {
-            if (this.m_logViewer == null)
-            {
-                this.m_logViewer = new Log4netLogViewer();
-                this.m_logViewer.FormClosed += delegate { this.m_logViewer = null; };
-            }
         }
 
         #endregion
@@ -547,7 +552,6 @@ namespace SuperPutty
         }
         #endregion
 
-
         #region Toolbar
 
 
@@ -555,7 +559,6 @@ namespace SuperPutty
 
         private void tbBtnConnect_Click(object sender, EventArgs e)
         {
-
             TryConnectFromToolbar();
         }
 

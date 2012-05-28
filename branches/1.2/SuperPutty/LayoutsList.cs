@@ -19,6 +19,12 @@ namespace SuperPutty
             this.listBoxLayouts.DataSource = SuperPuTTY.Layouts;
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            this.listBoxLayouts.DataSource = null;
+            base.OnClosed(e);
+        }
+
         private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
         {
             e.Cancel = IndexAtCursor() == -1;

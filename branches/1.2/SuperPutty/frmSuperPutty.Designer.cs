@@ -49,6 +49,7 @@
             this.importSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fromPuTTYSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fromPuTTYCMExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
             this.editSessionsInNotepadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,6 +60,10 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sessionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.layoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.logViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolbarsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quickConnectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sendCommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,7 +71,6 @@
             this.showStatusBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.puTTYConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.logViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,7 +101,6 @@
             this.tbBtnSendCommand = new System.Windows.Forms.ToolStripButton();
             this.openFileDialogLayout = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogLayout = new System.Windows.Forms.SaveFileDialog();
-            this.fromPuTTYCMExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -162,6 +165,13 @@
             this.fromPuTTYSettingsToolStripMenuItem.Text = "From PuTTY Settings";
             this.fromPuTTYSettingsToolStripMenuItem.Click += new System.EventHandler(this.fromPuTTYSettingsToolStripMenuItem_Click);
             // 
+            // fromPuTTYCMExportToolStripMenuItem
+            // 
+            this.fromPuTTYCMExportToolStripMenuItem.Name = "fromPuTTYCMExportToolStripMenuItem";
+            this.fromPuTTYCMExportToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.fromPuTTYCMExportToolStripMenuItem.Text = "From PuTTY CM Export";
+            this.fromPuTTYCMExportToolStripMenuItem.Click += new System.EventHandler(this.fromPuTTYCMExportToolStripMenuItem_Click);
+            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
@@ -223,6 +233,10 @@
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sessionsToolStripMenuItem,
+            this.layoutsToolStripMenuItem,
+            this.logViewerToolStripMenuItem,
+            this.toolStripMenuItem8,
             this.toolbarsToolStripMenuItem,
             this.toolStripMenuItem6,
             this.showStatusBarToolStripMenuItem});
@@ -230,13 +244,39 @@
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
             // 
+            // sessionsToolStripMenuItem
+            // 
+            this.sessionsToolStripMenuItem.Name = "sessionsToolStripMenuItem";
+            this.sessionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sessionsToolStripMenuItem.Text = "Sessions";
+            this.sessionsToolStripMenuItem.Click += new System.EventHandler(this.sessionsToolStripMenuItem_Click);
+            // 
+            // layoutsToolStripMenuItem
+            // 
+            this.layoutsToolStripMenuItem.Name = "layoutsToolStripMenuItem";
+            this.layoutsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.layoutsToolStripMenuItem.Text = "Layouts";
+            this.layoutsToolStripMenuItem.Click += new System.EventHandler(this.layoutsToolStripMenuItem_Click);
+            // 
+            // logViewerToolStripMenuItem
+            // 
+            this.logViewerToolStripMenuItem.Name = "logViewerToolStripMenuItem";
+            this.logViewerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.logViewerToolStripMenuItem.Text = "Log Viewer";
+            this.logViewerToolStripMenuItem.Click += new System.EventHandler(this.logViewerToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem8
+            // 
+            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(149, 6);
+            // 
             // toolbarsToolStripMenuItem
             // 
             this.toolbarsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.quickConnectionToolStripMenuItem,
             this.sendCommandsToolStripMenuItem});
             this.toolbarsToolStripMenuItem.Name = "toolbarsToolStripMenuItem";
-            this.toolbarsToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.toolbarsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.toolbarsToolStripMenuItem.Text = "Toolbars";
             // 
             // quickConnectionToolStripMenuItem
@@ -260,14 +300,14 @@
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(123, 6);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(149, 6);
             // 
             // showStatusBarToolStripMenuItem
             // 
             this.showStatusBarToolStripMenuItem.Checked = global::SuperPutty.Properties.Settings.Default.ShowStatusBar;
             this.showStatusBarToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showStatusBarToolStripMenuItem.Name = "showStatusBarToolStripMenuItem";
-            this.showStatusBarToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.showStatusBarToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.showStatusBarToolStripMenuItem.Text = "Status Bar";
             this.showStatusBarToolStripMenuItem.Click += new System.EventHandler(this.toggleCheckedState);
             // 
@@ -275,7 +315,6 @@
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.puTTYConfigurationToolStripMenuItem,
-            this.logViewerToolStripMenuItem,
             this.toolStripMenuItem4,
             this.optionsToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
@@ -288,13 +327,6 @@
             this.puTTYConfigurationToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.puTTYConfigurationToolStripMenuItem.Text = "PuTTY Configuration";
             this.puTTYConfigurationToolStripMenuItem.Click += new System.EventHandler(this.puTTYConfigurationToolStripMenuItem_Click);
-            // 
-            // logViewerToolStripMenuItem
-            // 
-            this.logViewerToolStripMenuItem.Name = "logViewerToolStripMenuItem";
-            this.logViewerToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.logViewerToolStripMenuItem.Text = "Log Viewer";
-            this.logViewerToolStripMenuItem.Click += new System.EventHandler(this.logViewerToolStripMenuItem_Click);
             // 
             // toolStripMenuItem4
             // 
@@ -420,8 +452,8 @@
             // toolStripContainer1.TopToolStripPanel
             // 
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
-            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsConnect);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsCommands);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsConnect);
             this.toolStripContainer1.TopToolStripPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
             // statusStrip1
@@ -472,7 +504,7 @@
             this.toolStripLabel5,
             this.tbComboSession,
             this.tbBtnConnect});
-            this.tsConnect.Location = new System.Drawing.Point(3, 24);
+            this.tsConnect.Location = new System.Drawing.Point(3, 49);
             this.tsConnect.Name = "tsConnect";
             this.tsConnect.Size = new System.Drawing.Size(815, 25);
             this.tsConnect.TabIndex = 5;
@@ -562,7 +594,7 @@
             this.tsSendCommandCombo,
             this.tbBtnSendCommand});
             this.tsCommands.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.tsCommands.Location = new System.Drawing.Point(4, 49);
+            this.tsCommands.Location = new System.Drawing.Point(3, 24);
             this.tsCommands.Name = "tsCommands";
             this.tsCommands.Size = new System.Drawing.Size(522, 25);
             this.tsCommands.TabIndex = 6;
@@ -600,13 +632,6 @@
             // saveFileDialogLayout
             // 
             this.saveFileDialogLayout.Filter = "SuperPuTTY layout files|*.xml|All files|*.*";
-            // 
-            // fromPuTTYCMExportToolStripMenuItem
-            // 
-            this.fromPuTTYCMExportToolStripMenuItem.Name = "fromPuTTYCMExportToolStripMenuItem";
-            this.fromPuTTYCMExportToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.fromPuTTYCMExportToolStripMenuItem.Text = "From PuTTY CM Export";
-            this.fromPuTTYCMExportToolStripMenuItem.Click += new System.EventHandler(this.fromPuTTYCMExportToolStripMenuItem_Click);
             // 
             // frmSuperPutty
             // 
@@ -663,7 +688,6 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelMessage;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelLayout;
-        private System.Windows.Forms.ToolStripMenuItem logViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveLayoutAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelVersion;
@@ -695,6 +719,10 @@
         private System.Windows.Forms.ToolStripMenuItem fromFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fromPuTTYSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fromPuTTYCMExportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sessionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem layoutsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem logViewerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem8;
     }
 }
 

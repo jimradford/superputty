@@ -82,6 +82,12 @@ namespace SuperPutty
             }
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            SuperPuTTY.Sessions.ListChanged -= new ListChangedEventHandler(Sessions_ListChanged);
+            base.OnClosed(e);
+        }
+
         /// <summary>
         /// Load the sessions from the registry and populate the treeview control
         /// </summary>
