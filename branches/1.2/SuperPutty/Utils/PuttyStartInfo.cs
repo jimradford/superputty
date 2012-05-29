@@ -26,19 +26,25 @@ namespace SuperPutty.Utils
             }
             else
             {
-                string args = "-" + session.Proto.ToString().ToLower() + " ";
-                args += (!String.IsNullOrEmpty(session.Password) && session.Password.Length > 0) ? "-pw " + session.Password + " " : "";
-                args += "-P " + session.Port + " ";
-                args += (!String.IsNullOrEmpty(session.PuttySession)) ? "-load \"" + session.PuttySession + "\" " : "";
-                args += (!String.IsNullOrEmpty(session.ExtraArgs) ? session.ExtraArgs + " " : "");
-                args += (!String.IsNullOrEmpty(session.Username) && session.Username.Length > 0) ? session.Username + "@" : "";
-                args += session.Host;
-
-                this.Args = args;
+                this.Args = MakeArgs(session, true);
             }
 
+            Log.InfoFormat("Putty Args: '{0}'", MakeArgs(session, false));
+        }
 
-            Log.InfoFormat("Putty Args: '{0}'", this.Args);
+        static string MakeArgs(SessionData session, bool includePassword)
+        {
+            string args = "-" + session.Proto.ToString().ToLower() + " ";
+            args += (!String.IsNullOrEmpty(session.Password) && session.Password.Length > 0) 
+                ? "-pw " + (includePassword ? session.Password : "XXXXX") + " " 
+                : "";
+            args += "-P " + session.Port + " ";
+            args += (!String.IsNullOrEmpty(session.PuttySession)) ? "-load \"" + session.PuttySession + "\" " : "";
+            args += (!String.IsNullOrEmpty(session.ExtraArgs) ? session.ExtraArgs + " " : "");
+            args += (!String.IsNullOrEmpty(session.Username) && session.Username.Length > 0) ? session.Username + "@" : "";
+            args += session.Host;
+
+            return args;
         }
 
         /// <summary>
