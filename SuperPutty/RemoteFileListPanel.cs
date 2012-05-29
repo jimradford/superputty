@@ -310,5 +310,12 @@ namespace SuperPutty
         {
             LoadDirectory(m_Path);
         }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+
     }
 }
