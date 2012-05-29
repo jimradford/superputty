@@ -5,6 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using log4net;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace SuperPutty.Utils
 {
@@ -72,9 +73,9 @@ namespace SuperPutty.Utils
                     exe = process.MainModule.FileName;
                 }
             }
-            catch (Exception ex)
+            catch (Win32Exception ex)
             {
-                Log.Error("Could not get exe", ex);
+                Log.ErrorFormat("Could not get exe.  error={0}", ex.Message);
             }
             return exe;
         }
