@@ -34,6 +34,7 @@
             this.textBoxUsername = new System.Windows.Forms.TextBox();
             this.textBoxPasssword = new System.Windows.Forms.TextBox();
             this.checkBoxRemember = new System.Windows.Forms.CheckBox();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -59,9 +60,9 @@
             // button1
             // 
             this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(147, 84);
+            this.button1.Location = new System.Drawing.Point(78, 86);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(62, 23);
             this.button1.TabIndex = 3;
             this.button1.Text = "Ok";
             this.button1.UseVisualStyleBackColor = true;
@@ -96,12 +97,25 @@
             this.checkBoxRemember.UseVisualStyleBackColor = true;
             this.checkBoxRemember.CheckedChanged += new System.EventHandler(this.checkBoxRemember_CheckedChanged);
             // 
+            // btnCancel
+            // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(160, 86);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(62, 23);
+            this.btnCancel.TabIndex = 5;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
             // dlgLogin
             // 
             this.AcceptButton = this.button1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(234, 116);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.checkBoxRemember);
             this.Controls.Add(this.textBoxPasssword);
             this.Controls.Add(this.textBoxUsername);
@@ -126,5 +140,6 @@
         private System.Windows.Forms.TextBox textBoxUsername;
         private System.Windows.Forms.TextBox textBoxPasssword;
         private System.Windows.Forms.CheckBox checkBoxRemember;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

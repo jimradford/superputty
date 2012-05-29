@@ -68,9 +68,13 @@ namespace SuperPutty
                             m_Session.Password = m_Login.Password;
                             LoadDirectory(path);
                         }
+                        else
+                        {
+                            this.BeginInvoke(new MethodInvoker(this.Close));
+                        }
                         break;
                     case RequestResult.ListingFollows:
-                        Console.WriteLine("Remote host returned {0} File entries", files.Count);
+                        Logger.Log(string.Format("Remote host returned {0} File entries", files.Count));
                         RefreshListView(files);
                         break;
                     case RequestResult.UnknownError:
@@ -81,6 +85,10 @@ namespace SuperPutty
                         break;
                     case RequestResult.SessionInvalid:
                         Logger.Log("Session is invalid");
+                        break;
+                    case RequestResult.CancelLogin:
+                        Logger.Log("User cancel login");
+                        this.BeginInvoke(new MethodInvoker(this.Close));
                         break;
                     default:
                         Logger.Log("Unknown result '{0}'", result);

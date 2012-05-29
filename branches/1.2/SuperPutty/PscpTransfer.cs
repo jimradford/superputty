@@ -38,7 +38,8 @@ namespace SuperPutty
         ListingFollows,
         UnknownError,
         SessionInvalid,
-        InvalidArguments
+        InvalidArguments,
+        CancelLogin
     }
 
     public delegate void TransferUpdateCallback(bool fileComplete, bool cancelAll, FileTransferStatus status);
@@ -213,6 +214,11 @@ namespace SuperPutty
                         //m_Session.SaveToRegistry(); // passwords are *never* saved and stored permanently
                         SuperPuTTY.SaveSessions();
                     }
+                }
+                else
+                {
+                    Logger.Log("Cancel connection");
+                    callback(RequestResult.CancelLogin, null);
                 }
             }
 
