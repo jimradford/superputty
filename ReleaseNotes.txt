@@ -1,3 +1,15 @@
+1.2.0.9
+- 30 - Open Multiple sessions at one time (Sessions folder Connect All.  Warning if > 10 to open)
+- 97 - Embedded PuTTY frames can lose their visual tabs, leading to other erratic behavior (Method 1) (user confirmed fix in last build)
+- 106 - Putty sessions are collapsed at startup (added a user preference for this)
+- 109 - Add cancel button to file transfer login dialog
+- 110 -	Add close button or drop down menu to file transfer window
+- 112 - Option to enable/disable view of Sessions and Layouts tabs (View->Sessions, View->Layouts, View->Log Viewer)
+- More focus tweaking and logging
+- Sessions Tree - Added Connect in New Instace to open session in new instance of SuperPuTTY
+- Closed 7, 20, 73 - Fix in #92 seems to address all these issues.
+- Changed logging statements to remove password
+
 1.2.0.8
 - # 1 - When Application is in background, clicking on terminal session should bring application to front, not just focus app (possible fix from patch on issue #1)
 - #80 - Non standard port/telnet-ssh links
