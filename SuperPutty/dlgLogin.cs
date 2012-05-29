@@ -93,5 +93,10 @@ namespace SuperPutty
             if(!String.IsNullOrEmpty(textBoxUsername.Text))
                 textBoxPasssword.Focus();
         }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+        }
     }
 }

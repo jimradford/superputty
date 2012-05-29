@@ -48,7 +48,7 @@ namespace SuperPutty.Utils
                             Handle = hWnd, 
                             Title = strTitle, 
                             ProcessId = Convert.ToInt32(pid),
-                            Exe = process != null ? process.MainModule.FileName : null
+                            Exe = GetProcessExe(process)
                         });
                 }
                 return true;
@@ -60,6 +60,23 @@ namespace SuperPutty.Utils
             }
 
             return windows;
+        }
+
+        static string GetProcessExe(Process process)
+        {
+            string exe = "?";
+            try
+            {
+                if (process != null)
+                {
+                    exe = process.MainModule.FileName;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Could not get exe", ex);
+            }
+            return exe;
         }
 
         public static DesktopWindow GetFirstDesktopWindow() 
