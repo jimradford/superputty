@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using SuperPutty.Data;
 using log4net;
+using System.Web;
 
 namespace SuperPutty.Utils
 {
@@ -38,6 +39,13 @@ namespace SuperPutty.Utils
         {
             try
             {
+                if (args.Length == 1 && args[0].EndsWith("/") && args[0].Contains("://") && args[0].Contains("%20"))
+                {
+                    // special case for ssh links in browser
+                    // ssh://localhost:22%20-l%20beau/
+                    string cmdLine = HttpUtility.UrlDecode(args[0].TrimEnd('/'));
+                    args = cmdLine.Split(' ');
+                }
                 Parse(args);
                 this.IsValid = true;
             }
