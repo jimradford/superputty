@@ -458,6 +458,8 @@ namespace SuperPutty
         {
             // disable file transfers if pscp isn't configured.
             fileBrowserToolStripMenuItem.Enabled = frmSuperPutty.IsScpEnabled;
+
+            connectInNewSuperPuTTYToolStripMenuItem.Enabled = !SuperPuTTY.Settings.SingleInstanceMode;
         }
 
         #region Node helpers
