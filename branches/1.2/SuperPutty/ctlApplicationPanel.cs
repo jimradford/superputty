@@ -46,6 +46,7 @@ namespace SuperPutty
         private static bool RefocusOnVisChanged = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.RefocusOnVisChanged"] ?? "False");
         private static bool LoopWaitForHandle = Convert.ToBoolean(ConfigurationManager.AppSettings["SuperPuTTY.LoopWaitForHandle"] ?? "False");
         private static int ClosePuttyWaitTimeMs = Convert.ToInt32(ConfigurationManager.AppSettings["SuperPuTTY.ClosePuttyWaitTimeMs"] ?? "100");
+        private static string ActivatorTypeName = ConfigurationManager.AppSettings["SuperPuTTY.ActivatorTypeName"] ?? typeof(SetFGCombinedWindowActivator).FullName;
 
         private Process m_Process;
         private bool m_Created = false;
@@ -53,6 +54,7 @@ namespace SuperPutty
         private string m_ApplicationName = "";
         private string m_ApplicationParameters = "";
         private string m_ApplicationWorkingDirectory = "";
+        private WindowActivator m_windowActivator = null;
 
         internal PuttyClosedCallback m_CloseCallback;
 
@@ -89,6 +91,9 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             SuperPuTTY.LayoutChanged += new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
 
             // setup up the hook to watch for all EVENT_SYSTEM_FOREGROUND events system wide
+
+            this.m_windowActivator = (WindowActivator)Activator.CreateInstance(Type.GetType(ActivatorTypeName));
+            //this.m_windowActivator = new SetFGCombinedWindowActivator();
             this.m_winEventDelegate = new NativeMethods.WinEventDelegate(WinEventProc);
             this.m_hWinEventHook = NativeMethods.SetWinEventHook(
                 NativeMethods.EVENT_SYSTEM_FOREGROUND, 
@@ -135,7 +140,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             Log.InfoFormat("[{0}] ReFocusPuTTY - {1}", this.m_AppWin, this.Parent.Text);
             settingForeground = true;
             return (this.m_AppWin != null
-                //&& NativeMethods.GetForegroundWindow() != this.m_AppWin
+                && NativeMethods.GetForegroundWindow() != this.m_AppWin
                 && !NativeMethods.SetForegroundWindow(this.m_AppWin));
         }
 
@@ -146,11 +151,15 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         *
         * The idea is to watch for the EVENT_SYSTEM_FOREGROUND window, and when we see that from the putty terminal window
         * bring the superputty window to the foreground
+         * 
+         * Other hacks:
+         * http://stackoverflow.com/questions/4867210/how-to-bring-a-window-foreground-using-c
+         * http://stackoverflow.com/questions/46030/c-sharp-force-form-focus
         */
         NativeMethods.WinEventDelegate m_winEventDelegate;
         IntPtr m_hWinEventHook;
         bool settingForeground = false;
-
+        
         void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
             // if we got the EVENT_SYSTEM_FOREGROUND, and the hwnd is the putty terminal hwnd (m_AppWin)
@@ -165,27 +174,13 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     return;
                 }
 
-                //this.OnInnerApplicationFocused();
                 // This is the easiest way I found to get the superputty window to be brought to the top
                 // if you leave TopMost = true; then the window will always be on top.
                 if (this.TopLevelControl != null)
                 {
                     Form form = this.TopLevelControl.FindForm();
-
                     DesktopWindow window = DesktopWindow.GetFirstDesktopWindow();
-                    if (window == null || window.Handle != form.Handle)
-                    {
-                        Log.InfoFormat("[{0}] Activating Main Window - current=({1})", hwnd, window != null ? window.Exe : "?");
-                        // bring to top
-                        form.TopMost = true;
-                        form.TopMost = false;
-
-                        // set as active form in task bar
-                        form.Activate();
-
-                        // stop flashing...happens occassionally when switching quickly when activate manuver is fails
-                        NativeMethods.FlashWindow(form.Handle, NativeMethods.FLASHW_STOP);
-                    }
+                    this.m_windowActivator.ActivateForm(form, window, hwnd);
 
                     // focus back to putty via setting active dock panel
                     ctlPuttyPanel parent = (ctlPuttyPanel) this.Parent;
