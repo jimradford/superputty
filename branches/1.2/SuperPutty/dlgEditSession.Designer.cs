@@ -336,7 +336,11 @@ namespace SuperPutty
             this.Controls.Add(this.comboBoxPuttyProfile);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSave);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "dlgEditSession";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Create New Session";
             this.groupBox1.ResumeLayout(false);

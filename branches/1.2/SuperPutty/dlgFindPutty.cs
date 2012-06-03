@@ -137,6 +137,12 @@ namespace SuperPutty
             this.checkExitConfirmation.Checked = SuperPuTTY.Settings.ExitConfirmation;
             this.checkExpandTree.Checked = SuperPuTTY.Settings.ExpandSessionsTreeOnStartup;
             this.checkMinimizeToTray.Checked = SuperPuTTY.Settings.MinimizeToTray;
+
+            if (SuperPuTTY.IsFirstRun)
+            {
+                this.ShowIcon = true;
+                this.ShowInTaskbar = true;
+            }
         }
 
         protected override void OnLoad(EventArgs e)
