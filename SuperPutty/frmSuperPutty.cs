@@ -74,6 +74,7 @@ namespace SuperPutty
         private static IntPtr mHookID = IntPtr.Zero;
         private bool forceClose;
         private FormWindowState lastNonMinimizedWindowState = FormWindowState.Normal;
+        private ChildWindowFocusHelper focusHelper;
 
         int commandMRUIndex = 0;
 
@@ -108,6 +109,8 @@ namespace SuperPutty
             //kbHookID = SetKBHook(llkp);
             llmp = MHookCallback;
             //mHookID = SetMHook(llmp);
+
+            this.focusHelper = new ChildWindowFocusHelper(this);
 
             // Restore window location and size
             if (SuperPuTTY.Settings.RestoreWindowLocation)
@@ -149,6 +152,8 @@ namespace SuperPutty
                 SaveLayout(SuperPuTTY.AutoRestoreLayoutPath, "Saving auto-restore layout");
             }
 
+            this.focusHelper.Dispose();
+
             base.OnFormClosed(e);
         }
 
@@ -172,11 +177,16 @@ namespace SuperPutty
         {
             if (DockPanel.ActiveDocument is ctlPuttyPanel)
             {
-                ctlPuttyPanel p = (ctlPuttyPanel)DockPanel.ActiveDocument;
-                p.SetFocusToChildApplication();
-
-                this.Text = string.Format("SuperPuTTY - {0}", p.Text);
+                FocusActiveDocument();
             }
+        }
+
+        public void FocusActiveDocument()
+        {
+            ctlPuttyPanel p = (ctlPuttyPanel)DockPanel.ActiveDocument;
+            p.SetFocusToChildApplication();
+
+            this.Text = string.Format("SuperPuTTY - {0}", p.Text);
         }
 
         private void frmSuperPutty_Activated(object sender, EventArgs e)
@@ -809,6 +819,7 @@ namespace SuperPutty
 
         #endregion
 
+        #region Tray 
         private void frmSuperPutty_Resize(object sender, EventArgs e)
         {
             if (SuperPuTTY.Settings.MinimizeToTray)
@@ -840,6 +851,18 @@ namespace SuperPutty
         {
             forceClose = true;
             this.Close();
+        }
+
+        #endregion 
+
+
+        protected override void WndProc(ref Message m)
+        {
+            bool callBase = this.focusHelper.WndProcForFocus(ref m);
+            if (callBase)
+            {
+                base.WndProc(ref m);
+            }
         }
     }
 }
