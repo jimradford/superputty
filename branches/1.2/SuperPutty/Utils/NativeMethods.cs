@@ -21,6 +21,10 @@ namespace SuperPutty.Utils
         public const int WM_SYSKEYDOWN = 0x104;
         public const int WM_SYSKEYUP = 0x105;
 
+        public const int 
+            SC_MAXIMIZE = 0xF030,
+            SC_RESTORE = 0xF120;
+
         public const int
             ERROR_FILE_NOT_FOUND = 2,
             ERROR_ACCESS_DENIED = 5,
@@ -1212,6 +1216,8 @@ namespace SuperPutty.Utils
         [DllImport("user32.dll", SetLastError = true)]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr lpdwProcessId);
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr DefWindowProc(IntPtr hWnd, int uMsg, IntPtr wParam, IntPtr lParam);
 
         #endregion
 
