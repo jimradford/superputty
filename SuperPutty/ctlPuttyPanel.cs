@@ -78,6 +78,7 @@ namespace SuperPutty
             this.Text = session.SessionName;
 
             CreatePanel();
+            AdjustMenu();
         }
 
         private void CreatePanel()
@@ -96,6 +97,24 @@ namespace SuperPutty
             this.Controls.Add(this.m_AppPanel);
 
             this.ResumeLayout();
+        }
+
+        void AdjustMenu()
+        {
+            // for mintty, disable the putty menu items
+            if (this.Session.Proto == ConnectionProtocol.Mintty)
+            {
+                this.toolStripPuttySep1.Visible = false;
+                this.eventLogToolStripMenuItem.Visible = false;
+                this.toolStripPuttySep2.Visible = false;
+                this.changeSettingsToolStripMenuItem.Visible = false;
+                this.copyAllToClipboardToolStripMenuItem.Visible = false;
+                this.restartSessionToolStripMenuItem.Visible = false;
+                this.clearScrollbackToolStripMenuItem.Visible = false;
+                this.resetTerminalToolStripMenuItem.Visible = false;
+            }
+
+
         }
 
         void CreateMenu()

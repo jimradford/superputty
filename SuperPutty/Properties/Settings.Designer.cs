@@ -230,5 +230,18 @@ namespace SuperPutty.Properties {
                 this["MinimizeToTray"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MinttyExe {
+            get {
+                return ((string)(this["MinttyExe"]));
+            }
+            set {
+                this["MinttyExe"] = value;
+            }
+        }
     }
 }

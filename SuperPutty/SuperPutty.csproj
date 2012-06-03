@@ -83,7 +83,7 @@
     <Compile Include="AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
-    <Compile Include="CygtermInfo.cs" />
+    <Compile Include="Utils\CygtermStartInfo.cs" />
     <Compile Include="ctlApplicationPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -168,6 +168,7 @@
     <Compile Include="Utils\CommandLineOptions.cs" />
     <Compile Include="Utils\FormUtils.cs" />
     <Compile Include="Utils\HostConnectionString.cs" />
+    <Compile Include="Utils\MinttyStartInfo.cs" />
     <Compile Include="Utils\NativeMethods.cs" />
     <Compile Include="Utils\PortableSettingsProvider.cs" />
     <Compile Include="Utils\PuttyStartInfo.cs" />

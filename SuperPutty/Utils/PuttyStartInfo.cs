@@ -15,21 +15,30 @@ namespace SuperPutty.Utils
 
         public PuttyStartInfo(SessionData session)
         {
+            string argsToLog = null;
 
             this.Executable = SuperPuTTY.Settings.PuttyExe;
 
             if (session.Proto == ConnectionProtocol.Cygterm)
             {
-                CygtermInfo cyg = new CygtermInfo(session);
+                CygtermStartInfo cyg = new CygtermStartInfo(session);
                 this.Args = cyg.Args;
                 this.WorkingDir = cyg.StartingDir;
+            }
+            else if (session.Proto == ConnectionProtocol.Mintty)
+            {
+                MinttyStartInfo mintty = new MinttyStartInfo(session);
+                this.Args = mintty.Args;
+                this.WorkingDir = mintty.StartingDir;
+                this.Executable = SuperPuTTY.Settings.MinttyExe;
             }
             else
             {
                 this.Args = MakeArgs(session, true);
+                argsToLog = MakeArgs(session, false);
             }
 
-            Log.InfoFormat("Putty Args: '{0}'", MakeArgs(session, false));
+            Log.InfoFormat("Putty Args: '{0}'", argsToLog ?? this.Args);
         }
 
         static string MakeArgs(SessionData session, bool includePassword)

@@ -100,7 +100,19 @@ namespace SuperPutty
             else
             {
                 openFileDialog1.InitialDirectory = Application.StartupPath;
-            } 
+            }
+
+            if (string.IsNullOrEmpty(SuperPuTTY.Settings.MinttyExe))
+            {
+                if (File.Exists(@"C:\cygwin\bin\mintty.exe"))
+                {
+                    this.textBoxMinttyLocation.Text = @"C:\cygwin\bin\mintty.exe";
+                }
+            }
+            else
+            {
+                this.textBoxMinttyLocation.Text = SuperPuTTY.Settings.MinttyExe;
+            }
             
             // super putty settings (sessions and layouts)
             if (string.IsNullOrEmpty(SuperPuTTY.Settings.SettingsFolder))
@@ -184,6 +196,11 @@ namespace SuperPutty
                 errors.Insert(0, "PuTTY is required to properly use this application.");
             }
 
+            string mintty = this.textBoxMinttyLocation.Text;
+            if (!string.IsNullOrEmpty(mintty) && File.Exists(mintty))
+            {
+                SuperPuTTY.Settings.MinttyExe = mintty;
+            }
 
             if (errors.Count == 0)
             {
@@ -253,6 +270,21 @@ namespace SuperPutty
                 textBoxPscpLocation.Text = openFileDialog1.FileName;
         }
 
+
+        private void btnBrowseMintty_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Filter = "MinTTY|mintty.exe";
+            openFileDialog1.FileName = "mintty.exe";
+
+            if (File.Exists(textBoxMinttyLocation.Text))
+            {
+                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxMinttyLocation.Text);
+            }
+            openFileDialog1.ShowDialog();
+            if (!String.IsNullOrEmpty(openFileDialog1.FileName))
+                textBoxMinttyLocation.Text = openFileDialog1.FileName;
+        }
+
         /// <summary>
         /// Check that putty can be found.  If not, prompt the user
         /// </summary>
@@ -296,5 +328,6 @@ namespace SuperPutty
         {
             this.Close();
         }
+
     }
 }
