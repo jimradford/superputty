@@ -128,12 +128,10 @@
             // 
             // changeSettingsToolStripMenuItem
             // 
-            this.changeSettingsToolStripMenuItem.Enabled = false;
             this.changeSettingsToolStripMenuItem.Name = "changeSettingsToolStripMenuItem";
             this.changeSettingsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.changeSettingsToolStripMenuItem.Tag = "0x0050";
             this.changeSettingsToolStripMenuItem.Text = "Change Settings";
-            this.changeSettingsToolStripMenuItem.Visible = false;
             this.changeSettingsToolStripMenuItem.Click += new System.EventHandler(this.puTTYMenuTSMI_Click);
             // 
             // copyAllToClipboardToolStripMenuItem

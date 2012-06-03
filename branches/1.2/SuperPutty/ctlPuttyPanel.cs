@@ -300,6 +300,7 @@ namespace SuperPutty
             string tag = ((ToolStripMenuItem)sender).Tag.ToString();
             uint command = Convert.ToUInt32(tag, 16);
             Log.DebugFormat("Sending Putty Command: tag={0}, command={1}", tag, command);
+            NativeMethods.SetForegroundWindow(m_AppPanel.AppWindowHandle);
             NativeMethods.SendMessage(m_AppPanel.AppWindowHandle, (uint) NativeMethods.WM.SYSCOMMAND, command, 0);
             SuperPuTTY.MainForm.BringToFront();
         }
