@@ -72,6 +72,8 @@ namespace SuperPutty
         private NativeMethods.LowLevelKMProc llmp;
         private static IntPtr kbHookID = IntPtr.Zero;
         private static IntPtr mHookID = IntPtr.Zero;
+        private bool forceClose;
+        private FormWindowState lastNonMinimizedWindowState = FormWindowState.Normal;
 
         int commandMRUIndex = 0;
 
@@ -152,7 +154,7 @@ namespace SuperPutty
 
         private void frmSuperPutty_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (SuperPuTTY.Settings.ExitConfirmation)
+            if (SuperPuTTY.Settings.ExitConfirmation && !forceClose)
             {
                 if (MessageBox.Show("Exit SuperPuTTY?", "Confirm Exit", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.Cancel)
                 {
@@ -807,5 +809,37 @@ namespace SuperPutty
 
         #endregion
 
+        private void frmSuperPutty_Resize(object sender, EventArgs e)
+        {
+            if (SuperPuTTY.Settings.MinimizeToTray)
+            {
+                if (FormWindowState.Minimized == this.WindowState && !notifyicon.Visible)
+                {
+                    notifyicon.Visible = true;
+                    this.ShowInTaskbar = false;
+
+                }
+                else if (FormWindowState.Normal == this.WindowState || FormWindowState.Maximized == this.WindowState)
+                {
+                    notifyicon.Visible = false;
+                    this.lastNonMinimizedWindowState = this.WindowState;
+                }
+            }
+        }
+
+        private void notifyicon_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                this.ShowInTaskbar = true;
+                this.WindowState = this.lastNonMinimizedWindowState;
+            }
+        }
+
+        private void exitSuperPuTTYToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            forceClose = true;
+            this.Close();
+        }
     }
 }

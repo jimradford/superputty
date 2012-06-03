@@ -296,6 +296,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\log4net.dll" />
+    <Content Include="Resources\Apps-terminal.ico" />
+    <Content Include="Resources\Apps-utilities-terminal.ico" />
     <None Include="Resources\bullet_go.png" />
     <None Include="Resources\lightning_go.png" />
     <None Include="Resources\keyboard.png" />

@@ -52,12 +52,13 @@
             this.checkExitConfirmation = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.checkExpandTree = new System.Windows.Forms.CheckBox();
+            this.checkMinimizeToTray = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(388, 381);
+            this.buttonOk.Location = new System.Drawing.Point(388, 403);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 20;
@@ -197,7 +198,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(469, 381);
+            this.buttonCancel.Location = new System.Drawing.Point(469, 403);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 21;
@@ -275,13 +276,24 @@
             this.checkExpandTree.Text = "Expand Sessions Tree on Start up";
             this.checkExpandTree.UseVisualStyleBackColor = true;
             // 
+            // checkMinimizeToTray
+            // 
+            this.checkMinimizeToTray.AutoSize = true;
+            this.checkMinimizeToTray.Location = new System.Drawing.Point(180, 364);
+            this.checkMinimizeToTray.Name = "checkMinimizeToTray";
+            this.checkMinimizeToTray.Size = new System.Drawing.Size(106, 17);
+            this.checkMinimizeToTray.TabIndex = 30;
+            this.checkMinimizeToTray.Text = "Minimize To Tray";
+            this.checkMinimizeToTray.UseVisualStyleBackColor = true;
+            // 
             // dlgFindPutty
             // 
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(556, 416);
+            this.ClientSize = new System.Drawing.Size(556, 438);
+            this.Controls.Add(this.checkMinimizeToTray);
             this.Controls.Add(this.checkExpandTree);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.checkExitConfirmation);
@@ -336,5 +348,6 @@
         private System.Windows.Forms.CheckBox checkExitConfirmation;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkExpandTree;
+        private System.Windows.Forms.CheckBox checkMinimizeToTray;
     }
 }
