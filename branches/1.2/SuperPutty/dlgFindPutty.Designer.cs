@@ -53,12 +53,15 @@
             this.label6 = new System.Windows.Forms.Label();
             this.checkExpandTree = new System.Windows.Forms.CheckBox();
             this.checkMinimizeToTray = new System.Windows.Forms.CheckBox();
+            this.textBoxMinttyLocation = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.btnBrowseMintty = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(388, 403);
+            this.buttonOk.Location = new System.Drawing.Point(388, 413);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 20;
@@ -147,7 +150,7 @@
             // 
             this.textBoxSettingsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSettingsFolder.Location = new System.Drawing.Point(180, 172);
+            this.textBoxSettingsFolder.Location = new System.Drawing.Point(180, 193);
             this.textBoxSettingsFolder.Name = "textBoxSettingsFolder";
             this.textBoxSettingsFolder.Size = new System.Drawing.Size(283, 20);
             this.textBoxSettingsFolder.TabIndex = 4;
@@ -156,7 +159,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(12, 173);
+            this.label3.Location = new System.Drawing.Point(12, 194);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(143, 15);
             this.label3.TabIndex = 9;
@@ -165,7 +168,7 @@
             // buttonBrowseLayoutsFolder
             // 
             this.buttonBrowseLayoutsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(469, 169);
+            this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(469, 190);
             this.buttonBrowseLayoutsFolder.Name = "buttonBrowseLayoutsFolder";
             this.buttonBrowseLayoutsFolder.Size = new System.Drawing.Size(75, 23);
             this.buttonBrowseLayoutsFolder.TabIndex = 5;
@@ -177,7 +180,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(12, 201);
+            this.label4.Location = new System.Drawing.Point(12, 222);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(84, 15);
             this.label4.TabIndex = 12;
@@ -189,7 +192,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxLayouts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLayouts.FormattingEnabled = true;
-            this.comboBoxLayouts.Location = new System.Drawing.Point(180, 199);
+            this.comboBoxLayouts.Location = new System.Drawing.Point(180, 220);
             this.comboBoxLayouts.Name = "comboBoxLayouts";
             this.comboBoxLayouts.Size = new System.Drawing.Size(283, 21);
             this.comboBoxLayouts.TabIndex = 6;
@@ -198,7 +201,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(469, 403);
+            this.buttonCancel.Location = new System.Drawing.Point(469, 413);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 21;
@@ -210,7 +213,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(12, 232);
+            this.label5.Location = new System.Drawing.Point(12, 253);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(94, 15);
             this.label5.TabIndex = 23;
@@ -219,7 +222,7 @@
             // checkRestoreWindow
             // 
             this.checkRestoreWindow.AutoSize = true;
-            this.checkRestoreWindow.Location = new System.Drawing.Point(180, 255);
+            this.checkRestoreWindow.Location = new System.Drawing.Point(180, 276);
             this.checkRestoreWindow.Name = "checkRestoreWindow";
             this.checkRestoreWindow.Size = new System.Drawing.Size(193, 17);
             this.checkRestoreWindow.TabIndex = 26;
@@ -229,7 +232,7 @@
             // checkConstrainPuttyDocking
             // 
             this.checkConstrainPuttyDocking.AutoSize = true;
-            this.checkConstrainPuttyDocking.Location = new System.Drawing.Point(180, 318);
+            this.checkConstrainPuttyDocking.Location = new System.Drawing.Point(180, 339);
             this.checkConstrainPuttyDocking.Name = "checkConstrainPuttyDocking";
             this.checkConstrainPuttyDocking.Size = new System.Drawing.Size(193, 17);
             this.checkConstrainPuttyDocking.TabIndex = 25;
@@ -239,7 +242,7 @@
             // checkSingleInstanceMode
             // 
             this.checkSingleInstanceMode.AutoSize = true;
-            this.checkSingleInstanceMode.Location = new System.Drawing.Point(180, 232);
+            this.checkSingleInstanceMode.Location = new System.Drawing.Point(180, 253);
             this.checkSingleInstanceMode.Name = "checkSingleInstanceMode";
             this.checkSingleInstanceMode.Size = new System.Drawing.Size(254, 17);
             this.checkSingleInstanceMode.TabIndex = 24;
@@ -249,7 +252,7 @@
             // checkExitConfirmation
             // 
             this.checkExitConfirmation.AutoSize = true;
-            this.checkExitConfirmation.Location = new System.Drawing.Point(180, 278);
+            this.checkExitConfirmation.Location = new System.Drawing.Point(180, 299);
             this.checkExitConfirmation.Name = "checkExitConfirmation";
             this.checkExitConfirmation.Size = new System.Drawing.Size(104, 17);
             this.checkExitConfirmation.TabIndex = 27;
@@ -260,7 +263,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(12, 320);
+            this.label6.Location = new System.Drawing.Point(12, 341);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(90, 15);
             this.label6.TabIndex = 28;
@@ -269,7 +272,7 @@
             // checkExpandTree
             // 
             this.checkExpandTree.AutoSize = true;
-            this.checkExpandTree.Location = new System.Drawing.Point(180, 341);
+            this.checkExpandTree.Location = new System.Drawing.Point(180, 362);
             this.checkExpandTree.Name = "checkExpandTree";
             this.checkExpandTree.Size = new System.Drawing.Size(187, 17);
             this.checkExpandTree.TabIndex = 29;
@@ -279,12 +282,42 @@
             // checkMinimizeToTray
             // 
             this.checkMinimizeToTray.AutoSize = true;
-            this.checkMinimizeToTray.Location = new System.Drawing.Point(180, 364);
+            this.checkMinimizeToTray.Location = new System.Drawing.Point(180, 385);
             this.checkMinimizeToTray.Name = "checkMinimizeToTray";
             this.checkMinimizeToTray.Size = new System.Drawing.Size(106, 17);
             this.checkMinimizeToTray.TabIndex = 30;
             this.checkMinimizeToTray.Text = "Minimize To Tray";
             this.checkMinimizeToTray.UseVisualStyleBackColor = true;
+            // 
+            // textBoxMinttyLocation
+            // 
+            this.textBoxMinttyLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxMinttyLocation.Location = new System.Drawing.Point(180, 167);
+            this.textBoxMinttyLocation.Name = "textBoxMinttyLocation";
+            this.textBoxMinttyLocation.Size = new System.Drawing.Size(283, 20);
+            this.textBoxMinttyLocation.TabIndex = 31;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(12, 169);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(111, 15);
+            this.label7.TabIndex = 33;
+            this.label7.Text = "mintty.exe Location";
+            // 
+            // btnBrowseMintty
+            // 
+            this.btnBrowseMintty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBrowseMintty.Location = new System.Drawing.Point(469, 165);
+            this.btnBrowseMintty.Name = "btnBrowseMintty";
+            this.btnBrowseMintty.Size = new System.Drawing.Size(75, 23);
+            this.btnBrowseMintty.TabIndex = 32;
+            this.btnBrowseMintty.Text = "Browse";
+            this.btnBrowseMintty.UseVisualStyleBackColor = true;
+            this.btnBrowseMintty.Click += new System.EventHandler(this.btnBrowseMintty_Click);
             // 
             // dlgFindPutty
             // 
@@ -292,7 +325,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(556, 438);
+            this.ClientSize = new System.Drawing.Size(556, 448);
+            this.Controls.Add(this.textBoxMinttyLocation);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.btnBrowseMintty);
             this.Controls.Add(this.checkMinimizeToTray);
             this.Controls.Add(this.checkExpandTree);
             this.Controls.Add(this.label6);
@@ -354,5 +390,8 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkExpandTree;
         private System.Windows.Forms.CheckBox checkMinimizeToTray;
+        private System.Windows.Forms.TextBox textBoxMinttyLocation;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btnBrowseMintty;
     }
 }

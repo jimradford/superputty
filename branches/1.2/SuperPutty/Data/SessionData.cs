@@ -40,7 +40,8 @@ namespace SuperPutty.Data
         Rlogin,
         Raw,
         Serial,
-        Cygterm
+        Cygterm,
+        Mintty
     }
 
     public class SessionData : IComparable, ICloneable

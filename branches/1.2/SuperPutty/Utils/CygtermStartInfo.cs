@@ -7,19 +7,19 @@ using System.IO;
 using log4net;
 using SuperPutty.Data;
 
-namespace SuperPutty
+namespace SuperPutty.Utils
 {
     /// <summary>
     /// Helper class for cygterm support
     /// </summary>
-    public class CygtermInfo
+    public class CygtermStartInfo
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(CygtermInfo));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(CygtermStartInfo));
 
         public const string LocalHost = "localhost";
         private SessionData session;
 
-        public CygtermInfo(SessionData session)
+        public CygtermStartInfo(SessionData session)
         {
             this.session = session;
 
@@ -50,4 +50,5 @@ namespace SuperPutty
         public string StartingDir { get; set; }
 
     }
+
 }

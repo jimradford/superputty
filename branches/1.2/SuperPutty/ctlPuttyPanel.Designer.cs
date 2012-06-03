@@ -35,9 +35,9 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.renameTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripPuttySep1 = new System.Windows.Forms.ToolStripSeparator();
             this.eventLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripPuttySep2 = new System.Windows.Forms.ToolStripSeparator();
             this.changeSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyAllToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,9 +58,9 @@
             this.toolStripSeparator1,
             this.renameTabToolStripMenuItem,
             this.refreshToolStripMenuItem,
-            this.toolStripSeparator2,
+            this.toolStripPuttySep1,
             this.eventLogToolStripMenuItem,
-            this.toolStripMenuItem1,
+            this.toolStripPuttySep2,
             this.changeSettingsToolStripMenuItem,
             this.copyAllToClipboardToolStripMenuItem,
             this.restartSessionToolStripMenuItem,
@@ -108,10 +108,10 @@
             this.refreshToolStripMenuItem.Text = "Refresh Tab";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
-            // toolStripSeparator2
+            // toolStripPuttySep1
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
+            this.toolStripPuttySep1.Name = "toolStripPuttySep1";
+            this.toolStripPuttySep1.Size = new System.Drawing.Size(160, 6);
             // 
             // eventLogToolStripMenuItem
             // 
@@ -121,10 +121,10 @@
             this.eventLogToolStripMenuItem.Text = "Event Log";
             this.eventLogToolStripMenuItem.Click += new System.EventHandler(this.puTTYMenuTSMI_Click);
             // 
-            // toolStripMenuItem1
+            // toolStripPuttySep2
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(160, 6);
+            this.toolStripPuttySep2.Name = "toolStripPuttySep2";
+            this.toolStripPuttySep2.Size = new System.Drawing.Size(160, 6);
             // 
             // changeSettingsToolStripMenuItem
             // 
@@ -208,7 +208,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripSeparator toolStripPuttySep1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem duplicateSessionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeSessionToolStripMenuItem;
@@ -222,7 +222,7 @@
         private System.Windows.Forms.ToolStripMenuItem clearScrollbackToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetTerminalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyAllToClipboardToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripPuttySep2;
         private System.Windows.Forms.ToolStripMenuItem changeSettingsToolStripMenuItem;
 
     }

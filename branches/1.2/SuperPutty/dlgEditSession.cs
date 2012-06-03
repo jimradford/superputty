@@ -29,6 +29,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Web;
 using SuperPutty.Data;
+using SuperPutty.Utils;
 
 namespace SuperPutty
 {
@@ -77,6 +78,9 @@ namespace SuperPutty
                         break;
                     case ConnectionProtocol.Cygterm:
                         radioButtonCygterm.Checked = true;
+                        break;
+                    case ConnectionProtocol.Mintty:
+                        radioButtonMintty.Checked = true;
                         break;
                     default:
                         radioButtonSSH.Checked = true;
@@ -161,24 +165,24 @@ namespace SuperPutty
         }
 
         /// <summary>
-        /// Special UI handling for cygterm sessions
+        /// Special UI handling for cygterm or mintty sessions
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void radioButtonCygterm_CheckedChanged(object sender, EventArgs e)
         {
             string host = this.textBoxHostname.Text;
-            bool isCygterm = this.radioButtonCygterm.Checked;
-            this.textBoxPort.Enabled = !isCygterm;
-            this.textBoxExtraArgs.Enabled = !isCygterm;
-            this.textBoxUsername.Enabled = !isCygterm;
+            bool isLocalShell = this.radioButtonCygterm.Checked || this.radioButtonMintty.Checked;
+            this.textBoxPort.Enabled = !isLocalShell;
+            this.textBoxExtraArgs.Enabled = !isLocalShell;
+            this.textBoxUsername.Enabled = !isLocalShell;
 
-            if (isCygterm)
+            if (isLocalShell)
             {
-                if (String.IsNullOrEmpty(host) || !host.StartsWith(CygtermInfo.LocalHost))
+                if (String.IsNullOrEmpty(host) || !host.StartsWith(CygtermStartInfo.LocalHost))
                 {
                     OldHostname = this.textBoxHostname.Text;
-                    this.textBoxHostname.Text = CygtermInfo.LocalHost;
+                    this.textBoxHostname.Text = CygtermStartInfo.LocalHost;
                 }
             }
 

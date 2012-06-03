@@ -627,7 +627,7 @@ namespace SuperPutty
             if ((string)this.tbComboProtocol.SelectedItem == ConnectionProtocol.Cygterm.ToString())
             {
                 oldHostName = this.tbTxtBoxHost.Text;
-                this.tbTxtBoxHost.Text = oldHostName.StartsWith(CygtermInfo.LocalHost) ? oldHostName : CygtermInfo.LocalHost;
+                this.tbTxtBoxHost.Text = oldHostName.StartsWith(CygtermStartInfo.LocalHost) ? oldHostName : CygtermStartInfo.LocalHost;
             }
             else
             {
