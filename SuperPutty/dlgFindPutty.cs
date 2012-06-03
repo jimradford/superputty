@@ -136,6 +136,7 @@ namespace SuperPutty
             this.checkRestoreWindow.Checked = SuperPuTTY.Settings.RestoreWindowLocation;
             this.checkExitConfirmation.Checked = SuperPuTTY.Settings.ExitConfirmation;
             this.checkExpandTree.Checked = SuperPuTTY.Settings.ExpandSessionsTreeOnStartup;
+            this.checkMinimizeToTray.Checked = SuperPuTTY.Settings.MinimizeToTray;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -185,6 +186,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.RestoreWindowLocation = this.checkRestoreWindow.Checked;
                 SuperPuTTY.Settings.ExitConfirmation = this.checkExitConfirmation.Checked;
                 SuperPuTTY.Settings.ExpandSessionsTreeOnStartup = this.checkExpandTree.Checked;
+                SuperPuTTY.Settings.MinimizeToTray = this.checkMinimizeToTray.Checked;
 
                 SuperPuTTY.Settings.Save();
 

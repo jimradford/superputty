@@ -178,7 +178,12 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 // if you leave TopMost = true; then the window will always be on top.
                 if (this.TopLevelControl != null)
                 {
-                    Form form = this.TopLevelControl.FindForm();
+                    Form form = SuperPuTTY.MainForm;
+                    if (form.WindowState == FormWindowState.Minimized)
+                    {
+                        return;
+                    }
+
                     DesktopWindow window = DesktopWindow.GetFirstDesktopWindow();
                     this.m_windowActivator.ActivateForm(form, window, hwnd);
 
