@@ -315,7 +315,12 @@
             this.Controls.Add(this.buttonBrowsePscp);
             this.Controls.Add(this.buttonBrowsePutty);
             this.Controls.Add(this.buttonOk);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "dlgFindPutty";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SuperPuTTY Options";
             this.ResumeLayout(false);
