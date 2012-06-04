@@ -65,11 +65,11 @@ namespace SuperPutty.Utils
                         this.MainForm.FocusActiveDocument();
                     }
                     break;
-                case NativeMethods.WM.NCACTIVATE:
+                /*case NativeMethods.WM.NCACTIVATE:
                     // Never allow this window to display itself as inactive
                     NativeMethods.DefWindowProc(this.MainForm.Handle, m.Msg, (IntPtr)1, m.LParam);
                     m.Result = (IntPtr)1;
-                    return false;
+                    return false;*/
                 case NativeMethods.WM.SYSCOMMAND:
                     // Check for maximizing and restoring from maxed.
                     // Removing the last 4 bits. This is necessary because

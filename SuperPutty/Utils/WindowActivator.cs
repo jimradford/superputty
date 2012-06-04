@@ -139,12 +139,12 @@ namespace SuperPutty.Utils
     }
     #endregion
 
-    #region SetFGCombinedWindowActivator
+    #region CombinedWindowActivator
 
     /// <summary>
     /// Uses all the tricks in the book at once to do it...shady
     /// </summary>
-    public class SetFGCombinedWindowActivator : WindowActivator
+    public class CombinedWindowActivator : WindowActivator
     {
         private const int SW_HIDE = 0;
         private const int SW_SHOWNORMAL = 1;
@@ -175,10 +175,13 @@ namespace SuperPutty.Utils
 
                 IntPtr hWnd = form.Handle;
                 if (NativeMethods.IsIconic(hWnd))
+                {
                     NativeMethods.ShowWindowAsync(hWnd, SW_RESTORE);
-
-                NativeMethods.ShowWindowAsync(hWnd, SW_SHOW);
-
+                }
+                else
+                {
+                    NativeMethods.ShowWindowAsync(hWnd, SW_SHOW);
+                }
                 NativeMethods.SetForegroundWindow(hWnd);
 
                 // Code from Karl E. Peterson, www.mvps.org/vb/sample.htm
@@ -216,6 +219,88 @@ namespace SuperPutty.Utils
 
             }
 
+
+        }
+    }
+    #endregion
+
+
+    #region ShowWindowWindowActivator
+
+    public class ShowWindowWindowActivator : WindowActivator
+    {
+        private const int SW_HIDE = 0;
+        private const int SW_SHOWNORMAL = 1;
+        private const int SW_NORMAL = 1;
+        private const int SW_SHOWMINIMIZED = 2;
+        private const int SW_SHOWMAXIMIZED = 3;
+        private const int SW_MAXIMIZE = 3;
+        private const int SW_SHOWNOACTIVATE = 4;
+        private const int SW_SHOW = 5;
+        private const int SW_MINIMIZE = 6;
+        private const int SW_SHOWMINNOACTIVE = 7;
+        private const int SW_SHOWNA = 8;
+        private const int SW_RESTORE = 9;
+        private const int SW_SHOWDEFAULT = 10;
+        private const int SW_MAX = 10;
+
+        public override void ActivateForm(Form form, DesktopWindow window, IntPtr hwnd)
+        {
+            if (window == null || window.Handle != form.Handle)
+            {
+                Log.InfoFormat("[{0}] Activating Main Window - current=({1})", hwnd, window != null ? window.Exe : "?");
+
+                IntPtr Dummy = IntPtr.Zero;
+
+                IntPtr hWnd = form.Handle;
+                if (NativeMethods.IsIconic(hWnd))
+                {
+                    NativeMethods.ShowWindowAsync(hWnd, SW_RESTORE);
+                }
+                else
+                {
+                    NativeMethods.ShowWindowAsync(hWnd, SW_SHOW);
+                }
+                NativeMethods.SetForegroundWindow(hWnd);
+
+                NativeMethods.FlashWindow(form.Handle, NativeMethods.FLASHW_STOP);
+            }
+
+        }
+    }
+    #endregion
+
+    #region KeyEventWindowActivator
+
+    /// <summary>
+    /// Method posted by Breker on issue #1
+    /// 
+    /// Some of the pinvoke and const pulled from here
+    /// http://social.msdn.microsoft.com/Forums/en/csharplanguage/thread/51ab8259-d9ab-4469-a07d-2ecbb30a8b23
+    /// </summary>
+    public class KeyEventWindowActivator : WindowActivator
+    {
+        private const byte VK_MENU = 0x12;
+        private const byte VK_TAB = 0x09;
+        private const int KEYEVENTF_EXTENDEDKEY = 0x01;
+        private const int KEYEVENTF_KEYUP = 0x02;
+
+        public override void ActivateForm(Form form, DesktopWindow window, IntPtr hwnd)
+        {
+            if (window == null || window.Handle != form.Handle)
+            {
+                Log.InfoFormat("[{0}] Activating Main Window - current=({1})", hwnd, window != null ? window.Exe : "?");
+
+                // Send press of Alt key so that the main window can be activated w/o user interaction
+                NativeMethods.keybd_event(VK_MENU, 0xb8, 0, 0);
+                // Activate main window
+                form.Activate();
+                // Release Alt key
+                NativeMethods.keybd_event(VK_MENU, 0xb8, KEYEVENTF_KEYUP, 0);
+
+                // Set foreground back to terminal window
+                //NativeMethods.SetForegroundWindow(hwnd);
+            }
 
         }
     }

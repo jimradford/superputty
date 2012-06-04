@@ -1219,6 +1219,8 @@ namespace SuperPutty.Utils
         [DllImport("user32.dll")]
         public static extern IntPtr DefWindowProc(IntPtr hWnd, int uMsg, IntPtr wParam, IntPtr lParam);
 
+        [DllImport("user32.dll")]
+        public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
         #endregion
 
 
