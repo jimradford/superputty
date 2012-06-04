@@ -725,7 +725,8 @@ namespace SuperPutty
                             NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)c, 0);
                         }
 
-                        NativeMethods.SendMessage(handle, NativeMethods.WM_KEYUP, (int)Keys.Enter, 0);
+                        NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int) Keys.Enter, 0);
+                        //NativeMethods.SendMessage(handle, NativeMethods.WM_KEYUP, (int)Keys.Enter, 0);
                         sent++;
                     }
                 }
