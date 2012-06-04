@@ -1,3 +1,15 @@
+1.2.0.10
+- 45 - Minimize to Tray (merged in patch)
+- 107 -	Ability to change putty settings for current connection
+- 108 - Avoid additional item in task bar for modal dialogs (options, create/edit session ...)
+- 117 - Connect in New Instance
+- 116/119 - Minior Enhancement: Focus Window that is restarted automatically (Change for 107 addresses this)
+- 120 - Single Putty window can disappear -- window seems unrecoverable (rollback dock panel to 2.4)
+- More focus tweaking and logging
+- Support for MinTTY for local shell (from akngo fork)
+- Focus child on resize, restore, mouse move (from akngo fork)
+- Change icon (using mintty icon)
+
 1.2.0.9
 - 30 - Open Multiple sessions at one time (Sessions folder Connect All.  Warning if > 10 to open)
 - 97 - Embedded PuTTY frames can lose their visual tabs, leading to other erratic behavior (Method 1) (user confirmed fix in last build)

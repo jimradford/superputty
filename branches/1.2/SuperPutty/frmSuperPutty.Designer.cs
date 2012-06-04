@@ -387,7 +387,7 @@
             this.dockPanel1.Location = new System.Drawing.Point(0, 0);
             this.dockPanel1.Name = "dockPanel1";
             this.dockPanel1.Size = new System.Drawing.Size(1008, 634);
-            dockPanelGradient1.EndColor = System.Drawing.Color.MidnightBlue;
+            dockPanelGradient1.EndColor = System.Drawing.Color.Black;
             dockPanelGradient1.StartColor = System.Drawing.Color.Black;
             autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
             tabGradient1.EndColor = System.Drawing.SystemColors.Control;
@@ -455,8 +455,8 @@
             // toolStripContainer1.TopToolStripPanel
             // 
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
-            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsConnect);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsCommands);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsConnect);
             this.toolStripContainer1.TopToolStripPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
             // statusStrip1
@@ -597,7 +597,7 @@
             this.tsSendCommandCombo,
             this.tbBtnSendCommand});
             this.tsCommands.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.tsCommands.Location = new System.Drawing.Point(4, 49);
+            this.tsCommands.Location = new System.Drawing.Point(3, 49);
             this.tsCommands.Name = "tsCommands";
             this.tsCommands.Size = new System.Drawing.Size(522, 25);
             this.tsCommands.TabIndex = 6;
