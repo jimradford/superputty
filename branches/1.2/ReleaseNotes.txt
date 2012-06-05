@@ -1,3 +1,7 @@
+1.2.0.11
+- 126 - Error on (if you have no sessions)
+- 127 - New Session without name (icon problem)
+
 1.2.0.10
 - 45 - Minimize to Tray (merged in patch)
 - 107 -	Ability to change putty settings for current connection
