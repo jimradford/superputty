@@ -184,9 +184,12 @@ namespace SuperPutty
         public void FocusActiveDocument()
         {
             ctlPuttyPanel p = (ctlPuttyPanel)DockPanel.ActiveDocument;
-            p.SetFocusToChildApplication();
+            if (p != null)
+            {
+                p.SetFocusToChildApplication();
 
-            this.Text = string.Format("SuperPuTTY - {0}", p.Text);
+                this.Text = string.Format("SuperPuTTY - {0}", p.Text);
+            }
         }
 
         private void frmSuperPutty_Activated(object sender, EventArgs e)
