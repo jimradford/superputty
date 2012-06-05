@@ -175,15 +175,12 @@ namespace SuperPutty
         /// <param name="e"></param>
         private void dockPanel1_ActiveDocumentChanged(object sender, EventArgs e)
         {
-            if (DockPanel.ActiveDocument is ctlPuttyPanel)
-            {
-                FocusActiveDocument();
-            }
+            FocusActiveDocument();
         }
 
         public void FocusActiveDocument()
         {
-            ctlPuttyPanel p = (ctlPuttyPanel)DockPanel.ActiveDocument;
+            ctlPuttyPanel p = DockPanel.ActiveDocument as ctlPuttyPanel;
             if (p != null)
             {
                 p.SetFocusToChildApplication();
