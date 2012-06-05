@@ -64,7 +64,7 @@ namespace SuperPutty
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSessionName.Location = new System.Drawing.Point(9, 33);
             this.textBoxSessionName.Name = "textBoxSessionName";
-            this.textBoxSessionName.Size = new System.Drawing.Size(419, 20);
+            this.textBoxSessionName.Size = new System.Drawing.Size(410, 20);
             this.textBoxSessionName.TabIndex = 0;
             this.textBoxSessionName.TextChanged += new System.EventHandler(this.sessionForm_TextChanged);
             this.textBoxSessionName.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxSessionName_Validating);
@@ -104,7 +104,7 @@ namespace SuperPutty
             this.textBoxPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPort.Location = new System.Drawing.Point(339, 74);
             this.textBoxPort.Name = "textBoxPort";
-            this.textBoxPort.Size = new System.Drawing.Size(89, 20);
+            this.textBoxPort.Size = new System.Drawing.Size(80, 20);
             this.textBoxPort.TabIndex = 2;
             this.textBoxPort.Text = "22";
             this.textBoxPort.TextChanged += new System.EventHandler(this.sessionForm_TextChanged);
