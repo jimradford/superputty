@@ -57,8 +57,7 @@
     <StartupObject>SuperPutty.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>Apps-utilities-terminal.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
@@ -301,6 +300,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Apps-utilities-terminal.ico" />
     <Content Include="Lib\log4net.dll" />
     <Content Include="Resources\Apps-terminal.ico" />
     <Content Include="Resources\Apps-utilities-terminal.ico" />
