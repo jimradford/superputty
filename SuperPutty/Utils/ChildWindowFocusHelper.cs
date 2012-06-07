@@ -45,7 +45,12 @@ namespace SuperPutty.Utils
         /// <returns>true if base winproc should be called</returns>
         public bool WndProcForFocus(ref Message m)
         {
-            switch ((NativeMethods.WM)m.Msg)
+            NativeMethods.WM wm = (NativeMethods.WM) m.Msg;
+            
+            /*if (wm != NativeMethods.WM.GETICON){
+                Log.InfoFormat("WndProcForFocus: " + m);
+            }*/
+            switch (wm)
             {
                 case NativeMethods.WM.NCLBUTTONDOWN:
                     // This is in conjunction with the WM_NCMOUSEMOVE. We cannot detect
@@ -65,11 +70,15 @@ namespace SuperPutty.Utils
                         this.MainForm.FocusActiveDocument();
                     }
                     break;
-                /*case NativeMethods.WM.NCACTIVATE:
+                case NativeMethods.WM.NCACTIVATE:
                     // Never allow this window to display itself as inactive
                     NativeMethods.DefWindowProc(this.MainForm.Handle, m.Msg, (IntPtr)1, m.LParam);
                     m.Result = (IntPtr)1;
-                    return false;*/
+                    return false;
+                case NativeMethods.WM.WINDOWPOSCHANGED:
+                    // after restore from clicking on task bar (non minimized, just not active)
+                    //this.MainForm.FocusActiveDocument();
+                    break;
                 case NativeMethods.WM.SYSCOMMAND:
                     // Check for maximizing and restoring from maxed.
                     // Removing the last 4 bits. This is necessary because
