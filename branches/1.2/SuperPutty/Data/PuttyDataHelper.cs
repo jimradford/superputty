@@ -14,6 +14,9 @@ namespace SuperPutty.Data
     {
         public static readonly ILog Log = LogManager.GetLogger(typeof(PuttyDataHelper));
 
+        public const string SessionDefaultSettings = "Default Settings";
+        public const string SessionEmptySettings = "";
+
         public static RegistryKey RootAppKey
         {
             get
@@ -27,7 +30,8 @@ namespace SuperPutty.Data
         public static List<string> GetSessionNames()
         {
             List<string> names = new List<string>();
-
+            names.Add(SessionEmptySettings);
+            names.Add(SessionDefaultSettings);
             RegistryKey key = RootAppKey;
             if (key != null)
             {

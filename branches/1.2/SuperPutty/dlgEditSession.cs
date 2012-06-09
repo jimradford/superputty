@@ -131,10 +131,11 @@ namespace SuperPutty
 
         private void sessionForm_TextChanged(object sender, EventArgs e)
         {
-            buttonSave.Enabled = (textBoxSessionName.Text.Length > 0
+            buttonSave.Enabled = (
+                textBoxSessionName.Text.Length > 0
                 && textBoxHostname.Text.Length > 0
                 && textBoxPort.Text.Length > 0
-                && comboBoxPuttyProfile.Text.Length > 0);
+                && comboBoxPuttyProfile.Text != null);
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)

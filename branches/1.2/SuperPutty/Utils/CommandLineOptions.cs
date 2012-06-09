@@ -178,7 +178,7 @@ namespace SuperPutty.Utils
                     Proto = this.Protocol.GetValueOrDefault(ConnectionProtocol.SSH),
                     Username = this.UserName,
                     Password = this.Password,
-                    PuttySession = this.PuttySession ?? "Default Settings"
+                    PuttySession = this.PuttySession
                 };
                 ssi.UseScp = this.UseScp;
             }

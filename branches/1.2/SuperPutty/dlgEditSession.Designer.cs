@@ -293,7 +293,7 @@ namespace SuperPutty
             this.comboBoxPuttyProfile.Name = "comboBoxPuttyProfile";
             this.comboBoxPuttyProfile.Size = new System.Drawing.Size(296, 21);
             this.comboBoxPuttyProfile.TabIndex = 4;
-            this.comboBoxPuttyProfile.Text = "Default Settings";
+            this.comboBoxPuttyProfile.Text = "";
             this.comboBoxPuttyProfile.TextChanged += new System.EventHandler(this.sessionForm_TextChanged);
             // 
             // groupBox2
