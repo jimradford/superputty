@@ -321,7 +321,7 @@ namespace SuperPutty
             Log.DebugFormat("Sending Putty Command: tag={0}, command={1}", tag, command);
             NativeMethods.SetForegroundWindow(m_AppPanel.AppWindowHandle);
             NativeMethods.SendMessage(m_AppPanel.AppWindowHandle, (uint) NativeMethods.WM.SYSCOMMAND, command, 0);
-            SuperPuTTY.MainForm.BringToFront();
+            //SuperPuTTY.MainForm.BringToFront();
         }
 
     }
