@@ -637,7 +637,7 @@ namespace SuperPutty
             {
                 this.tbComboSession.Items.Add(sessionName);
             }
-            this.tbComboSession.SelectedItem = prevSession ?? "Default Settings";
+            this.tbComboSession.SelectedItem = prevSession ?? PuttyDataHelper.SessionEmptySettings;
         }
 
         private void tbComboProtocol_SelectedIndexChanged(object sender, EventArgs e)
