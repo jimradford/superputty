@@ -74,6 +74,7 @@ namespace SuperPutty
         private static IntPtr mHookID = IntPtr.Zero;
         private bool forceClose;
         private FormWindowState lastNonMinimizedWindowState = FormWindowState.Normal;
+        private Rectangle lastNormalDesktopBounds;
         private ChildWindowFocusHelper focusHelper;
 
         int commandMRUIndex = 0;
@@ -120,6 +121,7 @@ namespace SuperPutty
 
             // show/hide toolbars and status bar
             ApplySettingsToToolbars();
+            this.ResizeEnd += new EventHandler(frmSuperPutty_ResizeEnd);
         }
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
@@ -127,11 +129,6 @@ namespace SuperPutty
             this.BeginInvoke(new Action(this.LoadLayout));
         }
 
-        protected override void OnActivated(EventArgs e)
-        {
-            Log.DebugFormat("[{0}] Activated", this.Handle);
-            base.OnActivated(e);
-        }
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             // free hooks
@@ -139,9 +136,9 @@ namespace SuperPutty
             //NativeMethods.UnhookWindowsHookEx(mHookID);
 
             // save window size and location if not maximized or minimized
-            if (SuperPuTTY.Settings.RestoreWindowLocation && this.WindowState != FormWindowState.Minimized)
+            if (SuperPuTTY.Settings.RestoreWindowLocation)// && this.WindowState != FormWindowState.Minimized)
             {
-                SuperPuTTY.Settings.WindowPosition = this.DesktopBounds;
+                SuperPuTTY.Settings.WindowPosition = this.lastNormalDesktopBounds;
                 SuperPuTTY.Settings.WindowState = this.WindowState;
                 SuperPuTTY.Settings.Save();
             }
@@ -155,6 +152,14 @@ namespace SuperPutty
             this.focusHelper.Dispose();
 
             base.OnFormClosed(e);
+        }
+
+        void frmSuperPutty_ResizeEnd(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                this.lastNormalDesktopBounds = this.DesktopBounds;
+            }
         }
 
         private void frmSuperPutty_FormClosing(object sender, FormClosingEventArgs e)
@@ -191,6 +196,7 @@ namespace SuperPutty
 
         private void frmSuperPutty_Activated(object sender, EventArgs e)
         {
+            Log.DebugFormat("[{0}] Activated", this.Handle);
             //dockPanel1_ActiveDocumentChanged(null, null);
         }
 
@@ -836,6 +842,11 @@ namespace SuperPutty
                     notifyicon.Visible = false;
                     this.lastNonMinimizedWindowState = this.WindowState;
                 }
+            }
+
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                this.lastNormalDesktopBounds = this.DesktopBounds;
             }
         }
 
