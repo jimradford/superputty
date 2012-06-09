@@ -135,13 +135,20 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             }
         }
 
-        public bool ReFocusPuTTY()
+        public bool ReFocusPuTTY(string caller)
         {
-            Log.InfoFormat("[{0}] ReFocusPuTTY - {1}", this.m_AppWin, this.Parent.Text);
-            settingForeground = true;
-            return (this.m_AppWin != null
-                && NativeMethods.GetForegroundWindow() != this.m_AppWin
-                && !NativeMethods.SetForegroundWindow(this.m_AppWin));
+            bool result = false;
+            if (this.m_AppWin != null && NativeMethods.GetForegroundWindow() != this.m_AppWin)
+            {
+                Log.InfoFormat("[{0}] ReFocusPuTTY - puttyTab={1}, caller={2}", this.m_AppWin, this.Parent.Text, caller);
+                settingForeground = true;
+                result = !NativeMethods.SetForegroundWindow(this.m_AppWin);
+            }
+            //return (this.m_AppWin != null
+            //    && NativeMethods.GetForegroundWindow() != this.m_AppWin
+            //    && !NativeMethods.SetForegroundWindow(this.m_AppWin));
+
+            return result;
         }
 
         #region Focus Change Handling
@@ -199,7 +206,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     else
                     {
                         // give focus back
-                        this.ReFocusPuTTY();
+                        this.ReFocusPuTTY("WinEventProc-FG");
                     }
                 }
             }
@@ -338,7 +345,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 //MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
                 if (RefocusOnVisChanged && NativeMethods.GetForegroundWindow() != this.m_AppWin)
                 {
-                    this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY(); }));
+                    this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY("OnVisChanged"); }));
                 }
             }
                   

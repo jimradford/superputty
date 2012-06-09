@@ -175,15 +175,15 @@ namespace SuperPutty
         /// <param name="e"></param>
         private void dockPanel1_ActiveDocumentChanged(object sender, EventArgs e)
         {
-            FocusActiveDocument();
+            FocusActiveDocument("ActiveDocumentChanged");
         }
 
-        public void FocusActiveDocument()
+        public void FocusActiveDocument(string caller)
         {
             ctlPuttyPanel p = DockPanel.ActiveDocument as ctlPuttyPanel;
             if (p != null)
             {
-                p.SetFocusToChildApplication();
+                p.SetFocusToChildApplication(caller);
 
                 this.Text = string.Format("SuperPuTTY - {0}", p.Text);
             }

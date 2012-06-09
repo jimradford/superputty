@@ -34,6 +34,7 @@ using System.Collections.Specialized;
 using SuperPutty.Data;
 using WeifenLuo.WinFormsUI.Docking;
 using SuperPutty.Utils;
+using System.Threading;
 
 
 namespace SuperPutty
@@ -161,9 +162,9 @@ namespace SuperPutty
         /// <summary>
         /// Reset the focus to the child application window
         /// </summary>
-        internal void SetFocusToChildApplication()
+        internal void SetFocusToChildApplication(string caller)
         {
-            this.m_AppPanel.ReFocusPuTTY();         
+            this.m_AppPanel.ReFocusPuTTY(caller);         
         }
 
         protected override string GetPersistString()
@@ -316,13 +317,26 @@ namespace SuperPutty
 
         private void puTTYMenuTSMI_Click(object sender, EventArgs e)
         {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem) sender;
             string tag = ((ToolStripMenuItem)sender).Tag.ToString();
             uint command = Convert.ToUInt32(tag, 16);
-            Log.DebugFormat("Sending Putty Command: tag={0}, command={1}", tag, command);
-            NativeMethods.SetForegroundWindow(m_AppPanel.AppWindowHandle);
-            NativeMethods.SendMessage(m_AppPanel.AppWindowHandle, (uint) NativeMethods.WM.SYSCOMMAND, command, 0);
+
+            Log.DebugFormat("Sending Putty Command: menu={2}, tag={0}, command={1}", tag, command, menuItem.Text);
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                try
+                {
+                    this.SetFocusToChildApplication("MenuHandler");
+                    NativeMethods.SendMessage(m_AppPanel.AppWindowHandle, (uint)NativeMethods.WM.SYSCOMMAND, command, 0);
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Error sending command menu command to embedded putty", ex);
+                }
+            });
             //SuperPuTTY.MainForm.BringToFront();
         }
+
 
     }
 }
