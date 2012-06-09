@@ -267,21 +267,29 @@ namespace SuperPutty
             string fileName = SessionsFileName;
             Log.InfoFormat("Loading all sessions.  file={0}", fileName);
 
-            if (File.Exists(fileName))
+            try
             {
-                List<SessionData> sessions = SessionData.LoadSessionsFromFile(fileName);
-                // remove old
-                sessionsMap.Clear();
-                sessionsList.Clear();
-
-                foreach (SessionData session in sessions)
+                if (File.Exists(fileName))
                 {
-                    AddSession(session);
+                    List<SessionData> sessions = SessionData.LoadSessionsFromFile(fileName);
+                    // remove old
+                    sessionsMap.Clear();
+                    sessionsList.Clear();
+
+                    foreach (SessionData session in sessions)
+                    {
+                        AddSession(session);
+                    }
                 }
+                else
+                {
+                    Log.WarnFormat("Sessions file does not exist, nothing loaded.  file={0}", fileName);
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                Log.WarnFormat("Sessions file does not exist, nothing loaded.  file={0}", fileName);
+                Log.Error("Error while loading sessions from " + fileName, ex);
             }
         }
 
