@@ -50,6 +50,7 @@ namespace SuperPutty
         public const string SessionIdDelim = "/";
 
         private DockPanel m_DockPanel;
+        private bool isRenamingNode;
         //private Dictionary<string, SessionData> m_SessionsById = new Dictionary<string, SessionData>();
 
         TreeNode nodeRoot;
@@ -123,6 +124,10 @@ namespace SuperPutty
 
         void Sessions_ListChanged(object sender, ListChangedEventArgs e)
         {
+            if (isRenamingNode)
+            {
+                return;
+            }
             BindingList<SessionData> sessions = (BindingList<SessionData>) sender;
             if (e.ListChangedType == ListChangedType.ItemAdded)
             {
@@ -251,8 +256,20 @@ namespace SuperPutty
                     // handle renames
                     node.Text = session.SessionName;
                     node.Name = session.SessionName;
-                    SuperPuTTY.RemoveSession(session.OldSessionId);
-                    SuperPuTTY.AddSession(session);
+                    if (session.SessionId != session.OldSessionId)
+                    {
+                        try
+                        {
+                            this.isRenamingNode = true;
+                            SuperPuTTY.RemoveSession(session.OldSessionId);
+                            SuperPuTTY.AddSession(session);
+                        }
+                        finally
+                        {
+                            this.isRenamingNode = false;
+                        }
+
+                    }
                     ResortNodes();
                     this.treeView1.SelectedNode = node;
                 }
