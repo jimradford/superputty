@@ -67,7 +67,7 @@ namespace SuperPutty.Utils
                     if ((this.m_lastMouseDownOnTitleBar - DateTime.Now < this.m_delayUntilMouseMove)
                             && currentLocation == m_mouseDownLocation)
                     {
-                        this.MainForm.FocusActiveDocument();
+                        //this.MainForm.FocusActiveDocument("MouseMove");
                     }
                     break;
                 case NativeMethods.WM.NCACTIVATE:
@@ -88,7 +88,7 @@ namespace SuperPutty.Utils
                         case NativeMethods.SC_MAXIMIZE:
                         case NativeMethods.SC_RESTORE:
                             //Log.InfoFormat("SysCommand: {0}", m.WParam);
-                            this.MainForm.BeginInvoke(new MethodInvoker(this.MainForm.FocusActiveDocument));
+                            this.MainForm.BeginInvoke(new Action<string>(this.MainForm.FocusActiveDocument), "SYSCommand-Restore");
                             break;
                     }
                     break;
@@ -121,9 +121,14 @@ namespace SuperPutty.Utils
             return true;
         }
 
+        /// <summary>
+        /// Handles resizing of the super putty window AND moving the form from the title bar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void HandleResizeEnd(Object sender, EventArgs e)
         {
-            this.MainForm.FocusActiveDocument();
+            this.MainForm.FocusActiveDocument("ResizeEnd");
         }
 
         frmSuperPutty MainForm { get; set; }
