@@ -620,14 +620,16 @@ namespace SuperPutty
 
         void RefreshConnectionToolbarData()
         {
-            String prevProto = (string) this.tbComboProtocol.SelectedItem;
-            this.tbComboProtocol.Items.Clear();
-            foreach (ConnectionProtocol protocol in Enum.GetValues(typeof(ConnectionProtocol)))
+            if (this.tbComboProtocol.Items.Count == 0)
             {
-                this.tbComboProtocol.Items.Add(protocol.ToString());
+                this.tbComboProtocol.Items.Clear();
+                foreach (ConnectionProtocol protocol in Enum.GetValues(typeof(ConnectionProtocol)))
+                {
+                    this.tbComboProtocol.Items.Add(protocol.ToString());
+                }
+                this.tbComboProtocol.Items.Add("SCP");
+                this.tbComboProtocol.SelectedItem = ConnectionProtocol.SSH.ToString();
             }
-            this.tbComboProtocol.Items.Add("SCP");
-            this.tbComboProtocol.SelectedItem = prevProto ?? ConnectionProtocol.SSH.ToString();
 
             String prevSession = (string)this.tbComboSession.SelectedItem;
             this.tbComboSession.Items.Clear();
