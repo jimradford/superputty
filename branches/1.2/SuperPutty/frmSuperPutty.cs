@@ -68,6 +68,10 @@ namespace SuperPutty
         private SingletonToolWindowHelper<LayoutsList> layouts;
         private SingletonToolWindowHelper<Log4netLogViewer> logViewer;
 
+        private TextBoxFocusHelper tbFocusHelperHost;
+        private TextBoxFocusHelper tbFocusHelperUserName;
+        private TextBoxFocusHelper tbFocusHelperPassword;
+
         private NativeMethods.LowLevelKMProc llkp;
         private NativeMethods.LowLevelKMProc llmp;
         private static IntPtr kbHookID = IntPtr.Zero;
@@ -97,6 +101,11 @@ namespace SuperPutty
             this.sessions = new SingletonToolWindowHelper<SessionTreeview>("Sessions", this.DockPanel, x => new SessionTreeview(x.DockPanel));
             this.layouts = new SingletonToolWindowHelper<LayoutsList>("Layouts", this.DockPanel);
             this.logViewer = new SingletonToolWindowHelper<Log4netLogViewer>("Log Viewer", this.DockPanel);
+
+            // for toolbar
+            this.tbFocusHelperHost = new TextBoxFocusHelper(this.tbTxtBoxHost.TextBox);
+            this.tbFocusHelperUserName = new TextBoxFocusHelper(this.tbTxtBoxLogin.TextBox);
+            this.tbFocusHelperPassword = new TextBoxFocusHelper(this.tbTxtBoxPassword.TextBox);
 
             // Hook into status
             SuperPuTTY.StatusEvent += new Action<string>(delegate(String msg) { this.toolStripStatusLabelMessage.Text = msg; });
@@ -613,7 +622,7 @@ namespace SuperPutty
                     PuttySession = (string)this.tbComboSession.SelectedItem
                 };
                 SuperPuTTY.OpenSession(new SessionDataStartInfo { Session = session, UseScp = isScp });
-
+                oldHostName = this.tbTxtBoxHost.Text;
                 RefreshConnectionToolbarData();
             }
         }
@@ -640,17 +649,13 @@ namespace SuperPutty
             this.tbComboSession.SelectedItem = prevSession ?? PuttyDataHelper.SessionEmptySettings;
         }
 
-        private void tbComboProtocol_SelectedIndexChanged(object sender, EventArgs e)
+        private void toolStripButtonClearFields_Click(object sender, EventArgs e)
         {
-            if ((string)this.tbComboProtocol.SelectedItem == ConnectionProtocol.Cygterm.ToString())
-            {
-                oldHostName = this.tbTxtBoxHost.Text;
-                this.tbTxtBoxHost.Text = oldHostName.StartsWith(CygtermStartInfo.LocalHost) ? oldHostName : CygtermStartInfo.LocalHost;
-            }
-            else
-            {
-                this.tbTxtBoxHost.Text = oldHostName;
-            }
+            this.tbComboProtocol.SelectedItem = ConnectionProtocol.SSH.ToString();
+            this.tbTxtBoxHost.Clear();
+            this.tbTxtBoxLogin.Clear();
+            this.tbTxtBoxPassword.Clear();
+            this.tbComboSession.SelectedItem = PuttyDataHelper.SessionEmptySettings;
         }
 
         private void tbTextCommand_KeyPress(object sender, KeyPressEventArgs e)
@@ -878,5 +883,6 @@ namespace SuperPutty
                 base.WndProc(ref m);
             }
         }
+
     }
 }

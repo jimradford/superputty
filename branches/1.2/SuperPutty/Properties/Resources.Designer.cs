@@ -95,6 +95,13 @@ namespace SuperPutty.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap cross_black {
+            get {
+                object obj = ResourceManager.GetObject("cross-black", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap keyboard {
             get {
                 object obj = ResourceManager.GetObject("keyboard", resourceCulture);
