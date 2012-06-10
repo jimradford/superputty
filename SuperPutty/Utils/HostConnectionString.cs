@@ -32,8 +32,17 @@ namespace SuperPutty.Utils
             if (idxPort != -1)
             {
                 // localhost:2020
-                this.Host = hostPort.Substring(0, idxPort);
-                this.Port = Convert.ToInt32(hostPort.Substring(idxPort + 1));
+                int port;
+                if (int.TryParse(hostPort.Substring(idxPort + 1), out port))
+                {
+                    this.Host = hostPort.Substring(0, idxPort);
+                    this.Port = port;
+                }
+                else
+                {
+                    this.Host = hostPort;
+                }
+
             }
             else
             {

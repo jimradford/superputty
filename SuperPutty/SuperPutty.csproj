@@ -179,6 +179,7 @@
     <Compile Include="Utils\SingleInstanceHelper.cs" />
     <Compile Include="Utils\SingletonToolWindowHelper.cs" />
     <Compile Include="Utils\DesktopWindowHelper.cs" />
+    <Compile Include="Utils\TextBoxFocusHelper.cs" />
     <Compile Include="Utils\WindowActivator.cs" />
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
@@ -304,6 +305,7 @@
     <Content Include="Lib\log4net.dll" />
     <Content Include="Resources\Apps-terminal.ico" />
     <Content Include="Resources\Apps-utilities-terminal.ico" />
+    <None Include="Resources\cross-black.png" />
     <Content Include="terminal_gdm.ico" />
     <None Include="Resources\bullet_go.png" />
     <None Include="Resources\lightning_go.png" />
