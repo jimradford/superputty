@@ -1,3 +1,12 @@
+1.2.0.12
+- 123 - fullscreen window size should not be saved otherwise window mode becomes recorded fullscreen size
+- 125 - Tray icon size problem
+- 129 -	Context menu remains partly visible when invoking "Change Settings"
+- 132 - AboutBox: Urls are detected but nothing happens on mouse click
+- 133 - Possibility to have SuperPutty sessions w/o associated PuTTY Session Profile (empty allowed)
+- 134 -	Cannot open superputty (Fail to start if sessions.xml unparseable - added try/catch)
+- 135 - Setting to have the hostname not clear after opening a new session (overall round of clean up and tweaks)
+
 1.2.0.11
 - 126 - Error on (if you have no sessions)
 - 127 - New Session without name (icon problem)
