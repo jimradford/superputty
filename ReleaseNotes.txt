@@ -1,3 +1,6 @@
+1.2.0.13
+- 136 - Layout crashes out if Session dock is autohidden (added check to prevent this)
+
 1.2.0.12
 - 123 - fullscreen window size should not be saved otherwise window mode becomes recorded fullscreen size
 - 125 - Tray icon size problem
