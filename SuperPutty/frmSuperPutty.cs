@@ -165,10 +165,7 @@ namespace SuperPutty
 
         void frmSuperPutty_ResizeEnd(object sender, EventArgs e)
         {
-            if (this.WindowState == FormWindowState.Normal)
-            {
-                this.lastNormalDesktopBounds = this.DesktopBounds;
-            }
+            SaveLastWindowBounds();
         }
 
         private void frmSuperPutty_FormClosing(object sender, FormClosingEventArgs e)
@@ -543,6 +540,8 @@ namespace SuperPutty
                 {
                     SuperPuTTY.ApplyDockRestrictions(dockContent);
                 }
+
+                this.SaveLastWindowBounds();
             }
 
             SuperPuTTY.ReportStatus("Ready");
@@ -858,6 +857,11 @@ namespace SuperPutty
                 }
             }
 
+            SaveLastWindowBounds();
+        }
+
+        private void SaveLastWindowBounds()
+        {
             if (this.WindowState == FormWindowState.Normal)
             {
                 this.lastNormalDesktopBounds = this.DesktopBounds;
