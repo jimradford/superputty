@@ -31,7 +31,6 @@ namespace SuperPutty.Data
         {
             List<string> names = new List<string>();
             names.Add(SessionEmptySettings);
-            names.Add(SessionDefaultSettings);
             RegistryKey key = RootAppKey;
             if (key != null)
             {
@@ -40,6 +39,11 @@ namespace SuperPutty.Data
                 {
                     names.Add(HttpUtility.UrlDecode(rawSession));
                 }
+            }
+
+            if (!names.Contains(SessionDefaultSettings))
+            {
+                names.Insert(1, SessionDefaultSettings);
             }
 
             return names;
