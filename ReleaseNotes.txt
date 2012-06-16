@@ -1,0 +1,106 @@
+1.2.0.14
+- 138 - After using context menu of tray icon to exit SuperPutty it can't be started again
+- 139 - Change of option "Restore Window Size and Location" is only recognized after restart
+- 140 -	Edit Session: "Default Settings" appears twice in combo box "PuTTY Session Profile"
+- 141 - Clear Window bar on closing session
+- 142 - TreeView: Wrong behavior of double click on +/- icon
+
+1.2.0.13
+- 136 - Layout crashes out if Session dock is autohidden (added check to prevent this)
+
+1.2.0.12
+- 123 - fullscreen window size should not be saved otherwise window mode becomes recorded fullscreen size
+- 125 - Tray icon size problem
+- 129 -	Context menu remains partly visible when invoking "Change Settings"
+- 132 - AboutBox: Urls are detected but nothing happens on mouse click
+- 133 - Possibility to have SuperPutty sessions w/o associated PuTTY Session Profile (empty allowed)
+- 134 -	Cannot open superputty (Fail to start if sessions.xml unparseable - added try/catch)
+- 135 - Setting to have the hostname not clear after opening a new session (overall round of clean up and tweaks)
+
+1.2.0.11
+- 126 - Error on (if you have no sessions)
+- 127 - New Session without name (icon problem)
+
+1.2.0.10
+- 45 - Minimize to Tray (merged in patch)
+- 107 -	Ability to change putty settings for current connection
+- 108 - Avoid additional item in task bar for modal dialogs (options, create/edit session ...)
+- 117 - Connect in New Instance
+- 116/119 - Minior Enhancement: Focus Window that is restarted automatically (Change for 107 addresses this)
+- 120 - Single Putty window can disappear -- window seems unrecoverable (rollback dock panel to 2.4)
+- More focus tweaking and logging
+- Support for MinTTY for local shell (from akngo fork)
+- Focus child on resize, restore, mouse move (from akngo fork)
+- Change icon (using mintty icon)
+
+1.2.0.9
+- 30 - Open Multiple sessions at one time (Sessions folder Connect All.  Warning if > 10 to open)
+- 97 - Embedded PuTTY frames can lose their visual tabs, leading to other erratic behavior (Method 1) (user confirmed fix in last build)
+- 106 - Putty sessions are collapsed at startup (added a user preference for this)
+- 109 - Add cancel button to file transfer login dialog
+- 110 -	Add close button or drop down menu to file transfer window
+- 112 - Option to enable/disable view of Sessions and Layouts tabs (View->Sessions, View->Layouts, View->Log Viewer)
+- More focus tweaking and logging
+- Sessions Tree - Added Connect in New Instace to open session in new instance of SuperPuTTY
+- Closed 7, 20, 73 - Fix in #92 seems to address all these issues.
+- Changed logging statements to remove password
+
+1.2.0.8
+- # 1 - When Application is in background, clicking on terminal session should bring application to front, not just focus app (possible fix from patch on issue #1)
+- #80 - Non standard port/telnet-ssh links
+- #99 - Center all windows on the screen
+- #103 - SCP Refresh button incorrect tooltip
+- #105 - Error on Layouts
+
+1.2.0.7
+- #13 - cant read all sessions already existed in putty.  (File, Import Sessions, From Putty settings)
+- #22 - Importing connection list from PuTTY Connection Manager to Superputty (File, Import Sessions, From Putty CM)
+- #44 - Open back previously opened session after crash or close of SuperPutty (Set Default Layout to '<AutoRestore>')
+- #94 - Visual Enhancments (Make main form icon default icon throughout application)
+- Added 'Connect External' in session tree view - Opens Putty session outside of SuperPuTTY.
+
+1.2.0.6
+- #92 - SuperPutty opens sessions in a new Putty Window
+- #96 - Problems when editing sessions w/non-standard ports
+
+1.2.0.5
+- #78 - To maximize putty screen size, add ability to hide connection & send command toolbar and status bar 
+- #82 - Menu items "Edit sessions" and "Reload sessions" 
+- #83 - Option to avoid expansion of complete tree
+- #84 - Issues when adding/editing nodes
+- #85 - Sessions default to not expanded
+- #87 - Ability to pass extra command line arguments to PuTTY 
+- Misc other clean up on add session logic
+
+1.2.0.4
+- #70 - New context menu item in tree: Create like (called it Copy As)
+- #75 - Send Commands Toolbar should be able to send just a <CR>
+- #76 - Send Commands Toolbar should clear previous command
+- #77 - sessions can be moved between folders and manually sorted trough drag and drop (drag and drop only)
+- #79 - Confirm on exit can be a preference 
+
+1.2.0.3
+- # 1 - When Application is in background, clicking on terminal session should bring application to front, not just focus app (fix from #68)
+- #27 - Single instance mode (enabled in options now)
+- #58 - Option to start maximized (restore position and state)
+- #65 - Upgrade to current version of WeifenLuo.WinFormsUI.Docking.dll (2.5)
+- #71 - Check that session or folder name is not empty (bug fix)
+- #72 - cygterm Appearance settings not honored (added '-load' flag support for cygterm)
+- #68 - Added PuTTY context menu items to PuttyPanel
+- #74 - SuperPutty 1.2.0.2 does not run under Program FIles
+
+1.2.0.2
+- #64 - Issue with PortableSettings w/numeric hostnames (disable settings)
+- #66 - Suppress beep when closing terminal session
+- Reload sessions after saving options
+
+1.2.0.1
+- Fix for #63 - The window's last line hides behind the status bar - Screenshot attached
+
+1.2.0.0
+- Merged various changes from patches on Issues
+- Moved Settings file to %USERPROFILE% or install dir (will need to reconfigure)
+- Connection tool bar
+- Send Command tool bar
+- Single instance support (edit SuperPutty.exe.config to enable)
+- Command Line interface (see issue 26...wiki page later with full usage
