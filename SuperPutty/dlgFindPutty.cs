@@ -27,11 +27,15 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using log4net;
+using SuperPutty.Data;
 
 namespace SuperPutty
 {
     public partial class dlgFindPutty : Form
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(dlgFindPutty));
+
         private string m_PuttyLocation;
 
         public string PuttyLocation
@@ -47,18 +51,23 @@ namespace SuperPutty
             private set { m_PscpLocation = value; }
         }
 
+        private string OrigSettingsFolder { get; set; }
+        private string OrigDefaultLayoutName { get; set; }
+
         public dlgFindPutty()
         {
             InitializeComponent();
 
+            string puttyExe = SuperPuTTY.Settings.PuttyExe;
+            string pscpExe = SuperPuTTY.Settings.PscpExe;
 
             // check for location of putty/pscp
-            if (!String.IsNullOrEmpty(frmSuperPutty.PuttyExe) && File.Exists(frmSuperPutty.PuttyExe))
+            if (!String.IsNullOrEmpty(puttyExe) && File.Exists(puttyExe))
             {
-                textBoxPuttyLocation.Text = frmSuperPutty.PuttyExe;
-                if (!String.IsNullOrEmpty(frmSuperPutty.PscpExe) && File.Exists(frmSuperPutty.PscpExe))
+                textBoxPuttyLocation.Text = puttyExe;
+                if (!String.IsNullOrEmpty(pscpExe) && File.Exists(pscpExe))
                 {
-                    textBoxPscpLocation.Text = frmSuperPutty.PscpExe;
+                    textBoxPscpLocation.Text = pscpExe;
                 }
             }
             else if(!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("ProgramFiles(x86)")))
@@ -91,34 +100,155 @@ namespace SuperPutty
             else
             {
                 openFileDialog1.InitialDirectory = Application.StartupPath;
-            }                
+            }
+
+            if (string.IsNullOrEmpty(SuperPuTTY.Settings.MinttyExe))
+            {
+                if (File.Exists(@"C:\cygwin\bin\mintty.exe"))
+                {
+                    this.textBoxMinttyLocation.Text = @"C:\cygwin\bin\mintty.exe";
+                }
+            }
+            else
+            {
+                this.textBoxMinttyLocation.Text = SuperPuTTY.Settings.MinttyExe;
+            }
+            
+            // super putty settings (sessions and layouts)
+            if (string.IsNullOrEmpty(SuperPuTTY.Settings.SettingsFolder))
+            {
+                // Set a default
+                String dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SuperPuTTY");
+                if (!Directory.Exists(dir))
+                {
+                    Log.InfoFormat("Creating default settings dir: {0}", dir);
+                    Directory.CreateDirectory(dir);
+                }
+                this.textBoxSettingsFolder.Text = dir;
+            }
+            else
+            {
+                this.textBoxSettingsFolder.Text = SuperPuTTY.Settings.SettingsFolder;
+            }
+            this.OrigSettingsFolder = SuperPuTTY.Settings.SettingsFolder;
+
+            // default layouts
+            List<String> layouts = new List<string>();
+            layouts.Add(String.Empty);
+            foreach (LayoutData layout in SuperPuTTY.Layouts)
+            {
+                layouts.Add(layout.Name);
+            }
+            this.comboBoxLayouts.DataSource = layouts;
+            this.comboBoxLayouts.SelectedItem = SuperPuTTY.Settings.DefaultLayoutName;
+            this.OrigDefaultLayoutName = SuperPuTTY.Settings.DefaultLayoutName;
+
+            this.checkSingleInstanceMode.Checked = SuperPuTTY.Settings.SingleInstanceMode;
+            this.checkConstrainPuttyDocking.Checked = SuperPuTTY.Settings.RestrictContentToDocumentTabs;
+            this.checkRestoreWindow.Checked = SuperPuTTY.Settings.RestoreWindowLocation;
+            this.checkExitConfirmation.Checked = SuperPuTTY.Settings.ExitConfirmation;
+            this.checkExpandTree.Checked = SuperPuTTY.Settings.ExpandSessionsTreeOnStartup;
+            this.checkMinimizeToTray.Checked = SuperPuTTY.Settings.MinimizeToTray;
+
+            if (SuperPuTTY.IsFirstRun)
+            {
+                this.ShowIcon = true;
+                this.ShowInTaskbar = true;
+            }
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            this.BeginInvoke(new MethodInvoker(delegate { this.textBoxPuttyLocation.Focus(); }));
         }
        
         private void buttonOk_Click(object sender, EventArgs e)
         {
+            List<String> errors = new List<string>();
             if (!String.IsNullOrEmpty(textBoxPscpLocation.Text) && File.Exists(textBoxPscpLocation.Text))
             {
-                PscpLocation = textBoxPscpLocation.Text;
+                SuperPuTTY.Settings.PscpExe = textBoxPscpLocation.Text;
+            }
+
+            string settingsDir = textBoxSettingsFolder.Text;
+            if (String.IsNullOrEmpty(settingsDir) || !Directory.Exists(settingsDir))
+            {
+                errors.Add("Settings Folder must be set to valid directory");
+            }
+            else
+            {
+                SuperPuTTY.Settings.SettingsFolder = settingsDir;
+            }
+
+            if (this.comboBoxLayouts.SelectedValue != null)
+            {
+                SuperPuTTY.Settings.DefaultLayoutName = (string) comboBoxLayouts.SelectedValue;
             }
 
             if (!String.IsNullOrEmpty(textBoxPuttyLocation.Text) && File.Exists(textBoxPuttyLocation.Text))
             {
-                PuttyLocation = textBoxPuttyLocation.Text;
+                SuperPuTTY.Settings.PuttyExe = textBoxPuttyLocation.Text;
+            }
+            else
+            {
+                errors.Insert(0, "PuTTY is required to properly use this application.");
+            }
+
+            string mintty = this.textBoxMinttyLocation.Text;
+            if (!string.IsNullOrEmpty(mintty) && File.Exists(mintty))
+            {
+                SuperPuTTY.Settings.MinttyExe = mintty;
+            }
+
+            if (errors.Count == 0)
+            {
+                SuperPuTTY.Settings.SingleInstanceMode = this.checkSingleInstanceMode.Checked;
+                SuperPuTTY.Settings.RestrictContentToDocumentTabs = this.checkConstrainPuttyDocking.Checked;
+                SuperPuTTY.Settings.RestoreWindowLocation = this.checkRestoreWindow.Checked;
+                SuperPuTTY.Settings.ExitConfirmation = this.checkExitConfirmation.Checked;
+                SuperPuTTY.Settings.ExpandSessionsTreeOnStartup = this.checkExpandTree.Checked;
+                SuperPuTTY.Settings.MinimizeToTray = this.checkMinimizeToTray.Checked;
+
+                SuperPuTTY.Settings.Save();
+
+                // @TODO - move this to a better place...maybe event handler after opening
+                if (OrigSettingsFolder != SuperPuTTY.Settings.SettingsFolder)
+                {
+                    SuperPuTTY.LoadLayouts();
+                    SuperPuTTY.LoadSessions();
+                }
+                else if (OrigDefaultLayoutName != SuperPuTTY.Settings.DefaultLayoutName)
+                {
+                    SuperPuTTY.LoadLayouts();
+                }
                 DialogResult = DialogResult.OK;
             }
             else
             {
-                if (MessageBox.Show("PuTTY is required to properly use this application.", "PuTTY Required", MessageBoxButtons.RetryCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+                StringBuilder sb = new StringBuilder();
+                foreach (String s in errors)
                 {
-                    System.Environment.Exit(1);
+                    sb.Append(s).AppendLine().AppendLine();
                 }
-            }                        
+                if (MessageBox.Show(sb.ToString(), "Errors", MessageBoxButtons.RetryCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+                {
+                    DialogResult = DialogResult.Cancel;
+                }
+            }
         }
 
         private void buttonBrowse_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "PuTTY|putty.exe";
+            openFileDialog1.Filter = "PuTTY|putty.exe|KiTTY|kitty*.exe";
             openFileDialog1.FileName = "putty.exe";
+            if (File.Exists(textBoxPuttyLocation.Text))
+            {
+                openFileDialog1.FileName = Path.GetFileName(textBoxPuttyLocation.Text);
+                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxPuttyLocation.Text);
+                openFileDialog1.FilterIndex = openFileDialog1.FileName.ToLower().StartsWith("putty") ? 1 : 2;
+            }
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 if (!String.IsNullOrEmpty(openFileDialog1.FileName))
@@ -130,9 +260,74 @@ namespace SuperPutty
         {
             openFileDialog1.Filter = "PScp|pscp.exe";
             openFileDialog1.FileName = "pscp.exe";
+
+            if (File.Exists(textBoxPscpLocation.Text))
+            {
+                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxPscpLocation.Text);
+            }
             openFileDialog1.ShowDialog();
             if (!String.IsNullOrEmpty(openFileDialog1.FileName))
                 textBoxPscpLocation.Text = openFileDialog1.FileName;
         }
+
+
+        private void btnBrowseMintty_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Filter = "MinTTY|mintty.exe";
+            openFileDialog1.FileName = "mintty.exe";
+
+            if (File.Exists(textBoxMinttyLocation.Text))
+            {
+                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxMinttyLocation.Text);
+            }
+            openFileDialog1.ShowDialog();
+            if (!String.IsNullOrEmpty(openFileDialog1.FileName))
+                textBoxMinttyLocation.Text = openFileDialog1.FileName;
+        }
+
+        /// <summary>
+        /// Check that putty can be found.  If not, prompt the user
+        /// </summary>
+        public static void PuttyCheck()
+        {
+            if (String.IsNullOrEmpty(SuperPuTTY.Settings.PuttyExe) || SuperPuTTY.IsFirstRun)
+            {
+                // first time, try to import old putty settings from registry
+                SuperPuTTY.Settings.ImportFromRegistry();
+                dlgFindPutty dialog = new dlgFindPutty();
+                if (dialog.ShowDialog() == DialogResult.Cancel)
+                {
+                    System.Environment.Exit(1);
+                }
+            }
+
+            if (String.IsNullOrEmpty(SuperPuTTY.Settings.PuttyExe))
+            {
+                MessageBox.Show("Cannot find PuTTY installation. Please visit http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html to download a copy",
+                    "PuTTY Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+                System.Environment.Exit(1);
+            }
+
+            if (SuperPuTTY.IsFirstRun && SuperPuTTY.Sessions.Count == 0)
+            {
+                // first run, got nothing...try to import from registry
+                SuperPuTTY.ImportSessionsFromSuperPutty1030();
+            }
+        }
+
+        private void buttonBrowseLayoutsFolder_Click(object sender, EventArgs e)
+        {
+            if (this.folderBrowserDialog.ShowDialog(this) == DialogResult.OK) 
+            {
+                this.textBoxSettingsFolder.Text = this.folderBrowserDialog.SelectedPath;
+            }
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
     }
 }

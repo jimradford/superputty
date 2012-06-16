@@ -27,6 +27,8 @@ using System.Text;
 using System.Diagnostics;
 using System.Threading;
 using System.Text.RegularExpressions;
+using SuperPutty.Data;
+
 
 namespace SuperPutty
 {
@@ -36,7 +38,8 @@ namespace SuperPutty
         ListingFollows,
         UnknownError,
         SessionInvalid,
-        InvalidArguments
+        InvalidArguments,
+        CancelLogin
     }
 
     public delegate void TransferUpdateCallback(bool fileComplete, bool cancelAll, FileTransferStatus status);
@@ -207,7 +210,15 @@ namespace SuperPutty
                     m_Session.Password = m_Login.Password;
 
                     if (m_Login.Remember)
-                        m_Session.SaveToRegistry(); // passwords are *never* saved and stored permanently
+                    {
+                        //m_Session.SaveToRegistry(); // passwords are *never* saved and stored permanently
+                        SuperPuTTY.SaveSessions();
+                    }
+                }
+                else
+                {
+                    Logger.Log("Cancel connection");
+                    callback(RequestResult.CancelLogin, null);
                 }
             }
 
@@ -223,13 +234,8 @@ namespace SuperPutty
                 m_processDir.StartInfo.CreateNoWindow = true;
                 m_processDir.StartInfo.FileName = frmSuperPutty.PscpExe;                
                 // process the various options from the session object and convert them into arguments pscp can understand
-                string args = "-ls "; // default arguments
-                args += (!String.IsNullOrEmpty(m_Session.PuttySession)) ? "-load \"" + m_Session.PuttySession + "\" " : "";
-                args += (!String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0) ? "-pw " + m_Session.Password + " " : "";
-                args += "-P " + m_Session.Port + " ";
-                args += (!String.IsNullOrEmpty(m_Session.Username)) ? m_Session.Username + "@" : "";
-                args += m_Session.Host + ":" + path;
-                Logger.Log("Sending Command: '{0} {1}'", m_processDir.StartInfo.FileName, args);
+                string args = MakeArgs(m_Session, true, path);
+                Logger.Log("Sending Command: '{0} {1}'", m_processDir.StartInfo.FileName, MakeArgs(m_Session, false, path));
                 m_processDir.StartInfo.Arguments = args;                                
                 /*
                  * Handle output from spawned pscp.exe process, handle any data received and parse
@@ -419,6 +425,20 @@ namespace SuperPutty
                 FileNode = new FileEntry();
                 return false;
             }
+        }
+
+        static string MakeArgs(SessionData session, bool includePassword, string path)
+        {
+            string args = "-ls "; // default arguments
+            args += (!String.IsNullOrEmpty(session.PuttySession)) ? "-load \"" + session.PuttySession + "\" " : "";
+            args += (!String.IsNullOrEmpty(session.Password) && session.Password.Length > 0) 
+                ? "-pw " + (includePassword ? session.Password : "XXXXX") + " " 
+                : "";
+            args += "-P " + session.Port + " ";
+            args += (!String.IsNullOrEmpty(session.Username)) ? session.Username + "@" : "";
+            args += session.Host + ":" + path;
+
+            return args;
         }
 
         /// <summary>
