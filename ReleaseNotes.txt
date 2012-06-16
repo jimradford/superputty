@@ -1,3 +1,10 @@
+1.2.0.14
+- 138 - After using context menu of tray icon to exit SuperPutty it can't be started again
+- 139 - Change of option "Restore Window Size and Location" is only recognized after restart
+- 140 -	Edit Session: "Default Settings" appears twice in combo box "PuTTY Session Profile"
+- 141 - Clear Window bar on closing session
+- 142 - TreeView: Wrong behavior of double click on +/- icon
+
 1.2.0.13
 - 136 - Layout crashes out if Session dock is autohidden (added check to prevent this)
 
