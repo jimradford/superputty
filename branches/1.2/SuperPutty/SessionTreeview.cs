@@ -156,10 +156,12 @@ namespace SuperPutty
         /// </summary>
         /// <param name="sender">The treeview control that was double clicked</param>
         /// <param name="e">An Empty EventArgs object</param>
-        private void treeView1_DoubleClick(object sender, EventArgs e)
+        private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            TreeNode node = this.treeView1.SelectedNode;
-            if (IsSessionNode(node))
+            // e is null if this method is called from connectToolStripMenuItem_Click
+            TreeNode node = (e != null) ? e.Node : treeView1.SelectedNode;
+
+            if (IsSessionNode(node) && node == treeView1.SelectedNode)
             {
                 SessionData sessionData = (SessionData)node.Tag;
                 SuperPuTTY.OpenPuttySession(sessionData);
@@ -331,7 +333,7 @@ namespace SuperPutty
         /// <param name="e"></param>
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            treeView1_DoubleClick(null, EventArgs.Empty);
+            treeView1_NodeMouseDoubleClick(null, null);
         }
 
         /// <summary>
@@ -737,6 +739,7 @@ namespace SuperPutty
             SuperPuTTY.SaveSessions();
             SuperPuTTY.ReportStatus("Saved Sessions after Drag-Drop @ {0}", DateTime.Now);
         }
+
 
     }
 
