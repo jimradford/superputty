@@ -47,12 +47,31 @@ namespace SuperPutty
         private ApplicationPanel m_AppPanel;
         private SessionData m_Session;
         private PuttyClosedCallback m_ApplicationExit;
+
         public ctlPuttyPanel(SessionData session, PuttyClosedCallback callback)
         {
             m_Session = session;
             m_ApplicationExit = callback;
             m_puttyStartInfo = new PuttyStartInfo(session);
 
+            // Insert this panel into the list used for Ctrl-Tab handling.
+            if (frmSuperPutty.currentPanel == null)
+            {
+                // First panel to be created
+                frmSuperPutty.currentPanel = previousPanel = nextPanel = this;
+            }
+            else
+            {
+                // Other panels exist. Tie ourselves into list ahead of current panel.
+                previousPanel = frmSuperPutty.currentPanel;
+                nextPanel = frmSuperPutty.currentPanel.nextPanel;
+                frmSuperPutty.currentPanel.nextPanel = this;
+                nextPanel.previousPanel = this;
+
+                // We are now the current panel
+                frmSuperPutty.currentPanel = this;
+            }
+            
             /*
             string args;
             if (session.Proto == ConnectionProtocol.Cygterm)
@@ -152,7 +171,24 @@ namespace SuperPutty
             }
         }
 
+        // Make this panel the current one. Remove from previous
+        // position in list and re-add in front of current panel
+        public void makePanelCurrent()
+        {
+            if (frmSuperPutty.currentPanel == this)
+                return;
 
+            // Remove ourselves from our position in chain
+            previousPanel.nextPanel = nextPanel;
+            nextPanel.previousPanel = previousPanel;
+
+            previousPanel = frmSuperPutty.currentPanel;
+            nextPanel = frmSuperPutty.currentPanel.nextPanel;
+            frmSuperPutty.currentPanel.nextPanel = this;
+            nextPanel.previousPanel = this;
+
+            frmSuperPutty.currentPanel = this;
+        }
 
         private void closeSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -263,6 +299,8 @@ namespace SuperPutty
 
         public SessionData Session { get { return this.m_Session; } }
         public ApplicationPanel AppPanel { get { return this.m_AppPanel; } }
+        public ctlPuttyPanel previousPanel { get; set; }
+        public ctlPuttyPanel nextPanel { get; set; }
 
         public static ctlPuttyPanel NewPanel(SessionData sessionData)
         {
