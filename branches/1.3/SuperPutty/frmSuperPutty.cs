@@ -64,6 +64,8 @@ namespace SuperPutty
 
         internal DockPanel DockPanel { get { return this.dockPanel1; } }
 
+        public static ctlPuttyPanel currentPanel { get; set; }
+
         private SingletonToolWindowHelper<SessionTreeview> sessions;
         private SingletonToolWindowHelper<LayoutsList> layouts;
         private SingletonToolWindowHelper<Log4netLogViewer> logViewer;
@@ -73,13 +75,15 @@ namespace SuperPutty
         private TextBoxFocusHelper tbFocusHelperPassword;
 
         private NativeMethods.LowLevelKMProc llkp;
-        private NativeMethods.LowLevelKMProc llmp;
+        //private NativeMethods.LowLevelKMProc llmp;
         private static IntPtr kbHookID = IntPtr.Zero;
         private static IntPtr mHookID = IntPtr.Zero;
         private bool forceClose;
         private FormWindowState lastNonMinimizedWindowState = FormWindowState.Normal;
         private Rectangle lastNormalDesktopBounds;
         private ChildWindowFocusHelper focusHelper;
+        private static bool ControlDown = false;
+        public static ctlPuttyPanel currentTabPanel;
 
         int commandMRUIndex = 0;
 
@@ -116,8 +120,8 @@ namespace SuperPutty
 
             // Low-Level Mouse and Keyboard hooks
             llkp = KBHookCallback;
-            //kbHookID = SetKBHook(llkp);
-            llmp = MHookCallback;
+            kbHookID = SetKBHook(llkp);
+            //llmp = MHookCallback;
             //mHookID = SetMHook(llmp);
 
             this.focusHelper = new ChildWindowFocusHelper(this);
@@ -141,7 +145,7 @@ namespace SuperPutty
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             // free hooks
-            //NativeMethods.UnhookWindowsHookEx(kbHookID);
+            NativeMethods.UnhookWindowsHookEx(kbHookID);
             //NativeMethods.UnhookWindowsHookEx(mHookID);
 
             // save window size and location if not maximized or minimized
@@ -200,6 +204,12 @@ namespace SuperPutty
                 ctlPuttyPanel p = DockPanel.ActiveDocument as ctlPuttyPanel;
                 if (p != null)
                 {
+                    // If we aren't using Ctrl-Tab to move between panels,
+                    // i.e. we got here because the operator clicked on the
+                    // panel directly, then record it as the current panel.
+                    if (currentTabPanel == null)
+                        p.makePanelCurrent();
+
                     p.SetFocusToChildApplication(caller);
 
                     this.Text = string.Format("SuperPuTTY - {0}", p.Text);
@@ -775,20 +785,76 @@ namespace SuperPutty
             }
         }
 
+        // Intercept keyboard messages for Ctrl-F4 and Ctrl-Tab handling
         private IntPtr KBHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            Log.InfoFormat("KBHook={0}, Keys={1}", nCode, wParam);
-            if (nCode >= 0 && wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN && IsForegroundWindow(this.Handle))
+            if (nCode >= 0 && IsForegroundWindow(this.Handle))
             {
                 int vkCode = Marshal.ReadInt32(lParam);
+                // Log.InfoFormat("KBHook={0}, wParam={1}, lParam={2}", nCode, wParam, vkCode);
 
-                Log.InfoFormat("VK={0}, Keys={1}", vkCode, (Keys) vkCode);
-                if ((Keys)vkCode == Keys.Menu || (Keys)vkCode == Keys.LMenu || (Keys)vkCode == Keys.RMenu)
+                // Detect control key state for left and right control keys
+                if ((Keys)vkCode == Keys.LControlKey || (Keys)vkCode == Keys.RControlKey)
                 {
-                    //menuStrip.Visible = true;
-                    //menuStrip.Focus();
+                    // Set flag to indicate if Ctrl key is up or down
+                    ControlDown = (wParam == (IntPtr)NativeMethods.WM_KEYDOWN);
+
+                    // If Ctrl-Tab has been pressed to move to an older panel then
+                    // make it current panel when Ctrl key is finally released.
+                    if (!ControlDown && currentTabPanel != null)
+                    {
+                        currentTabPanel.makePanelCurrent();
+                        currentTabPanel = null;
+                    }
+                }
+
+                // Operator has pressed Ctrl-F4, close the active PuTTY or file transfer panel
+                if (ControlDown && (Keys)vkCode == Keys.F4)
+                {
+                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
+                    {
+                        ToolWindow tw = DockPanel.ActiveDocument as ToolWindow;
+                        tw.Close();
+                    }
+
+                    // Eat the keystroke
+                    return (IntPtr)1;
+                }
+
+                // Operator has pressed Ctrl-Tab, make previous PuTTY panel active
+                if (ControlDown && (Keys)vkCode == Keys.Tab)
+                {
+                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN 
+                     && DockPanel.ActiveDocument is ctlPuttyPanel)
+                    {
+                        if (currentTabPanel == null)
+                            currentTabPanel = currentPanel;
+                        if (currentTabPanel != null && currentTabPanel.previousPanel != null)
+                        {
+                            currentTabPanel = currentTabPanel.previousPanel;
+                            currentTabPanel.Activate();
+
+                            // RML: Need code to activate main frame SuperPutty window
+                            //      while still leaving focus in PuTTY session
+//                          FocusActiveDocument("After Ctrl-Tab");
+                        }
+                    }
+
+                    // Eat the keystroke
+                    return (IntPtr)1;
                 }
             }
+                                
+            //if (nCode >= 0 && wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN && IsForegroundWindow(this.Handle))
+            //{
+            //    int vkCode = Marshal.ReadInt32(lParam);
+            //    Log.InfoFormat("VK={0}, Keys={1}", vkCode, (Keys) vkCode);
+            //    if ((Keys)vkCode == Keys.Menu || (Keys)vkCode == Keys.LMenu || (Keys)vkCode == Keys.RMenu)
+            //    {
+            //        //menuStrip.Visible = true;
+            //        //menuStrip.Focus();
+            //    }
+            //}
             return NativeMethods.CallNextHookEx(kbHookID, nCode, wParam, lParam);
         }
 
