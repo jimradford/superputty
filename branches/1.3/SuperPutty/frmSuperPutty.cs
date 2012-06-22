@@ -152,7 +152,7 @@ namespace SuperPutty
             if (SuperPuTTY.Settings.RestoreWindowLocation)// && this.WindowState != FormWindowState.Minimized)
             {
                 SuperPuTTY.Settings.WindowPosition = this.lastNormalDesktopBounds;
-                SuperPuTTY.Settings.WindowState = this.WindowState == FormWindowState.Minimized ? FormWindowState.Normal : this.WindowState;
+                SuperPuTTY.Settings.WindowState = this.WindowState == FormWindowState.Minimized ? this.WindowState = this.lastNonMinimizedWindowState : this.WindowState;
                 SuperPuTTY.Settings.Save();
             }
 
