@@ -814,7 +814,10 @@ namespace SuperPutty
                     if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
                     {
                         ToolWindow tw = DockPanel.ActiveDocument as ToolWindow;
-                        tw.Close();
+                        if (tw != null)
+                        {
+                            tw.Close();
+                        }
                     }
 
                     // Eat the keystroke
@@ -827,13 +830,33 @@ namespace SuperPutty
                     if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN 
                      && DockPanel.ActiveDocument is ctlPuttyPanel)
                     {
+
                         if (currentTabPanel == null)
                             currentTabPanel = currentPanel;
                         if (currentTabPanel != null && currentTabPanel.previousPanel != null)
                         {
+
+                            // transfer to list
+                            IDockContent dcPrev = this.DockPanel.ActiveDocument;
+                            List<IDockContent> docs = new List<IDockContent>(this.DockPanel.DocumentsToArray());
+                            int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
+                            if (idx != -1){
+                                dcPrev = docs[idx == 0 ? docs.Count - 1 : idx - 1 ];
+                            }
+
+                            /*
+                            Log.InfoFormat("## Switching: {0} -> {1}",
+                                currentTabPanel.DockHandler.TabText,
+                                currentTabPanel.previousPanel.DockHandler.TabText);
+
+                            Log.InfoFormat("## Switching2: {0} -> {1}", 
+                                this.DockPanel.ActiveDocument.DockHandler.TabText,
+                                dcPrev.DockHandler.TabText);
+                             */
+
                             currentTabPanel = currentTabPanel.previousPanel;
                             currentTabPanel.Activate();
-
+                            //((ctlPuttyPanel)dcPrev).Activate();
                             // RML: Need code to activate main frame SuperPutty window
                             //      while still leaving focus in PuTTY session
 //                          FocusActiveDocument("After Ctrl-Tab");

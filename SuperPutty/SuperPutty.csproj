@@ -306,7 +306,6 @@
     <Content Include="Resources\Apps-terminal.ico" />
     <Content Include="Resources\Apps-utilities-terminal.ico" />
     <None Include="Resources\cross-black.png" />
-    <Content Include="terminal_gdm.ico" />
     <None Include="Resources\bullet_go.png" />
     <None Include="Resources\lightning_go.png" />
     <None Include="Resources\keyboard.png" />

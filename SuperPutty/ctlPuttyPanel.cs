@@ -171,6 +171,29 @@ namespace SuperPutty
             }
         }
 
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            base.OnFormClosed(e);
+
+            // only 1 panel
+            if (frmSuperPutty.currentPanel == this && nextPanel == this && previousPanel == this)
+            {
+                frmSuperPutty.currentPanel = null;
+                return;
+            }
+
+            // Remove ourselves from our position in chain and set last active tab as current
+            if (previousPanel != null)
+            {
+                previousPanel.nextPanel = nextPanel;
+            }
+            if (nextPanel != null)
+            {
+                nextPanel.previousPanel = previousPanel;
+            }
+            frmSuperPutty.currentPanel = previousPanel;
+        }
+
         // Make this panel the current one. Remove from previous
         // position in list and re-add in front of current panel
         public void makePanelCurrent()
@@ -189,6 +212,7 @@ namespace SuperPutty
 
             frmSuperPutty.currentPanel = this;
         }
+
 
         private void closeSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
