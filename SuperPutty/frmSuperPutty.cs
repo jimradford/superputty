@@ -825,8 +825,8 @@ namespace SuperPutty
                     return (IntPtr)1;
                 }
 
-                // Operator has pressed Ctrl-PageUp, Move to Next Tab
-                if (isControlDown && (Keys)vkCode == Keys.PageUp && wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
+                // Operator has pressed Ctrl-PageDown, Move to Next Tab
+                if (isControlDown && (Keys)vkCode == Keys.PageDown && wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
                 {
                     this.currentTabPanel = null;
                     ToolWindow dcNext = (ToolWindow) this.DockPanel.ActiveDocument;
@@ -841,8 +841,8 @@ namespace SuperPutty
                     }
                 }
 
-                // Operator has pressed Ctrl-PageDonw, Move to Prev Tab
-                if (isControlDown && (Keys)vkCode == Keys.PageDown && wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
+                // Operator has pressed Ctrl-PageUp, Move to Prev Tab
+                if (isControlDown && (Keys)vkCode == Keys.PageUp && wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
                 {
                     this.currentTabPanel = null;
                     ToolWindow dcPrev = (ToolWindow)this.DockPanel.ActiveDocument;
