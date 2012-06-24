@@ -64,7 +64,7 @@ namespace SuperPutty
 
         internal DockPanel DockPanel { get { return this.dockPanel1; } }
 
-        public static ctlPuttyPanel currentPanel { get; set; }
+        public ToolWindowDocument CurrentPanel { get; set; }
 
         private SingletonToolWindowHelper<SessionTreeview> sessions;
         private SingletonToolWindowHelper<LayoutsList> layouts;
@@ -82,9 +82,8 @@ namespace SuperPutty
         private FormWindowState lastNonMinimizedWindowState = FormWindowState.Normal;
         private Rectangle lastNormalDesktopBounds;
         private ChildWindowFocusHelper focusHelper;
-        private static bool ControlDown = false;
-        public static ctlPuttyPanel currentTabPanel;
-
+        bool isControlDown = false;
+        ToolWindowDocument currentTabPanel;
         int commandMRUIndex = 0;
 
         public frmSuperPutty()
@@ -201,18 +200,23 @@ namespace SuperPutty
             }
             else
             {
-                ctlPuttyPanel p = DockPanel.ActiveDocument as ctlPuttyPanel;
-                if (p != null)
+                ToolWindowDocument window = this.DockPanel.ActiveDocument as ToolWindowDocument;
+                if (window != null)
                 {
                     // If we aren't using Ctrl-Tab to move between panels,
                     // i.e. we got here because the operator clicked on the
                     // panel directly, then record it as the current panel.
                     if (currentTabPanel == null)
-                        p.makePanelCurrent();
+                    {
+                        window.MakePanelCurrent();
+                    }
 
-                    p.SetFocusToChildApplication(caller);
-
-                    this.Text = string.Format("SuperPuTTY - {0}", p.Text);
+                    ctlPuttyPanel p = window as ctlPuttyPanel;
+                    if (p != null)
+                    {
+                        p.SetFocusToChildApplication(caller);
+                        this.Text = string.Format("SuperPuTTY - {0}", p.Text);
+                    }
                 }
             }
         }
@@ -797,69 +801,78 @@ namespace SuperPutty
                 if ((Keys)vkCode == Keys.LControlKey || (Keys)vkCode == Keys.RControlKey)
                 {
                     // Set flag to indicate if Ctrl key is up or down
-                    ControlDown = (wParam == (IntPtr)NativeMethods.WM_KEYDOWN);
+                    isControlDown = (wParam == (IntPtr)NativeMethods.WM_KEYDOWN);
 
                     // If Ctrl-Tab has been pressed to move to an older panel then
                     // make it current panel when Ctrl key is finally released.
-                    if (!ControlDown && currentTabPanel != null)
+                    if (!isControlDown && currentTabPanel != null)
                     {
-                        currentTabPanel.makePanelCurrent();
+                        currentTabPanel.MakePanelCurrent();
                         currentTabPanel = null;
                     }
                 }
 
                 // Operator has pressed Ctrl-F4, close the active PuTTY or file transfer panel
-                if (ControlDown && (Keys)vkCode == Keys.F4)
+                if (isControlDown && (Keys)vkCode == Keys.F4)
                 {
                     if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
                     {
                         ToolWindow tw = DockPanel.ActiveDocument as ToolWindow;
-                        if (tw != null)
-                        {
-                            tw.Close();
-                        }
+                        if (tw != null) { tw.Close(); }
                     }
 
                     // Eat the keystroke
                     return (IntPtr)1;
                 }
 
-                // Operator has pressed Ctrl-Tab, make previous PuTTY panel active
-                if (ControlDown && (Keys)vkCode == Keys.Tab)
+                // Operator has pressed Ctrl-PageUp, Move to Next Tab
+                if (isControlDown && (Keys)vkCode == Keys.PageUp && wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
                 {
-                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN 
-                     && DockPanel.ActiveDocument is ctlPuttyPanel)
+                    this.currentTabPanel = null;
+                    ToolWindow dcNext = (ToolWindow) this.DockPanel.ActiveDocument;
+                    List<IDockContent> docs = new List<IDockContent>(this.DockPanel.DocumentsToArray());
+                    int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
+                    if (idx != -1){
+                        dcNext = (ToolWindow) docs[idx == docs.Count - 1 ? 0 : idx + 1 ];
+                        dcNext.Activate();
+
+                        // Eat the keystroke
+                        return (IntPtr)1;
+                    }
+                }
+
+                // Operator has pressed Ctrl-PageDonw, Move to Prev Tab
+                if (isControlDown && (Keys)vkCode == Keys.PageDown && wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
+                {
+                    this.currentTabPanel = null;
+                    ToolWindow dcPrev = (ToolWindow)this.DockPanel.ActiveDocument;
+                    List<IDockContent> docs = new List<IDockContent>(this.DockPanel.DocumentsToArray());
+                    int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
+                    if (idx != -1)
+                    {
+                        dcPrev = (ToolWindow)docs[idx == 0 ? docs.Count - 1 : idx - 1];
+                        dcPrev.Activate();
+
+                        // Eat the keystroke
+                        return (IntPtr)1;
+                    }
+                }
+
+                // Operator has pressed Ctrl-Tab, make previous PuTTY panel active
+                if (isControlDown && (Keys)vkCode == Keys.Tab)
+                {
+                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN && this.DockPanel.ActiveDocument is ToolWindowDocument)
                     {
 
                         if (currentTabPanel == null)
-                            currentTabPanel = currentPanel;
-                        if (currentTabPanel != null && currentTabPanel.previousPanel != null)
+                            currentTabPanel = CurrentPanel;
+                        if (currentTabPanel != null && currentTabPanel.PreviousPanel != null)
                         {
-
-                            // transfer to list
-                            IDockContent dcPrev = this.DockPanel.ActiveDocument;
-                            List<IDockContent> docs = new List<IDockContent>(this.DockPanel.DocumentsToArray());
-                            int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
-                            if (idx != -1){
-                                dcPrev = docs[idx == 0 ? docs.Count - 1 : idx - 1 ];
-                            }
-
-                            /*
-                            Log.InfoFormat("## Switching: {0} -> {1}",
-                                currentTabPanel.DockHandler.TabText,
-                                currentTabPanel.previousPanel.DockHandler.TabText);
-
-                            Log.InfoFormat("## Switching2: {0} -> {1}", 
-                                this.DockPanel.ActiveDocument.DockHandler.TabText,
-                                dcPrev.DockHandler.TabText);
-                             */
-
-                            currentTabPanel = currentTabPanel.previousPanel;
+                            currentTabPanel = currentTabPanel.PreviousPanel;
                             currentTabPanel.Activate();
-                            //((ctlPuttyPanel)dcPrev).Activate();
                             // RML: Need code to activate main frame SuperPutty window
                             //      while still leaving focus in PuTTY session
-//                          FocusActiveDocument("After Ctrl-Tab");
+                            //                          FocusActiveDocument("After Ctrl-Tab");
                         }
                     }
 
@@ -868,16 +881,6 @@ namespace SuperPutty
                 }
             }
                                 
-            //if (nCode >= 0 && wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN && IsForegroundWindow(this.Handle))
-            //{
-            //    int vkCode = Marshal.ReadInt32(lParam);
-            //    Log.InfoFormat("VK={0}, Keys={1}", vkCode, (Keys) vkCode);
-            //    if ((Keys)vkCode == Keys.Menu || (Keys)vkCode == Keys.LMenu || (Keys)vkCode == Keys.RMenu)
-            //    {
-            //        //menuStrip.Visible = true;
-            //        //menuStrip.Focus();
-            //    }
-            //}
             return NativeMethods.CallNextHookEx(kbHookID, nCode, wParam, lParam);
         }
 

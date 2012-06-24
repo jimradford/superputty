@@ -39,7 +39,7 @@ using System.Threading;
 
 namespace SuperPutty
 {
-    public partial class ctlPuttyPanel : ToolWindow
+    public partial class ctlPuttyPanel : ToolWindowDocument
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ctlPuttyPanel));
 
@@ -54,45 +54,6 @@ namespace SuperPutty
             m_ApplicationExit = callback;
             m_puttyStartInfo = new PuttyStartInfo(session);
 
-            // Insert this panel into the list used for Ctrl-Tab handling.
-            if (frmSuperPutty.currentPanel == null)
-            {
-                // First panel to be created
-                frmSuperPutty.currentPanel = previousPanel = nextPanel = this;
-            }
-            else
-            {
-                // Other panels exist. Tie ourselves into list ahead of current panel.
-                previousPanel = frmSuperPutty.currentPanel;
-                nextPanel = frmSuperPutty.currentPanel.nextPanel;
-                frmSuperPutty.currentPanel.nextPanel = this;
-                nextPanel.previousPanel = this;
-
-                // We are now the current panel
-                frmSuperPutty.currentPanel = this;
-            }
-            
-            /*
-            string args;
-            if (session.Proto == ConnectionProtocol.Cygterm)
-            {
-                CygtermInfo cyg = new CygtermInfo(m_Session);
-                args = cyg.Args;
-                ApplicationWorkingDirectory = cyg.StartingDir;
-            }
-            else
-            {
-                args = "-" + session.Proto.ToString().ToLower() + " ";
-                args += (!String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0) ? "-pw " + m_Session.Password + " " : "";
-                args += "-P " + m_Session.Port + " ";
-                args += (!String.IsNullOrEmpty(m_Session.PuttySession)) ? "-load \"" + m_Session.PuttySession + "\" " : "";
-                args += (!String.IsNullOrEmpty(m_Session.ExtraArgs) ? m_Session.ExtraArgs + " " : "");
-                args += (!String.IsNullOrEmpty(m_Session.Username) && m_Session.Username.Length > 0) ? m_Session.Username + "@" : "";
-                args += m_Session.Host;
-            } 
-            Log.InfoFormat("Putty Args: '{0}'", args);
-            this.ApplicationParameters = args;
-            */
             InitializeComponent();
 
             this.Text = session.SessionName;
@@ -170,49 +131,6 @@ namespace SuperPutty
                 }
             }
         }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            base.OnFormClosed(e);
-
-            // only 1 panel
-            if (frmSuperPutty.currentPanel == this && nextPanel == this && previousPanel == this)
-            {
-                frmSuperPutty.currentPanel = null;
-                return;
-            }
-
-            // Remove ourselves from our position in chain and set last active tab as current
-            if (previousPanel != null)
-            {
-                previousPanel.nextPanel = nextPanel;
-            }
-            if (nextPanel != null)
-            {
-                nextPanel.previousPanel = previousPanel;
-            }
-            frmSuperPutty.currentPanel = previousPanel;
-        }
-
-        // Make this panel the current one. Remove from previous
-        // position in list and re-add in front of current panel
-        public void makePanelCurrent()
-        {
-            if (frmSuperPutty.currentPanel == this)
-                return;
-
-            // Remove ourselves from our position in chain
-            previousPanel.nextPanel = nextPanel;
-            nextPanel.previousPanel = previousPanel;
-
-            previousPanel = frmSuperPutty.currentPanel;
-            nextPanel = frmSuperPutty.currentPanel.nextPanel;
-            frmSuperPutty.currentPanel.nextPanel = this;
-            nextPanel.previousPanel = this;
-
-            frmSuperPutty.currentPanel = this;
-        }
-
 
         private void closeSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
