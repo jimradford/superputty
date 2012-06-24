@@ -86,6 +86,12 @@
     <Compile Include="AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindowEx.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ToolWindowEx.Designer.cs">
+      <DependentUpon>ToolWindowEx.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils\ChildWindowFocusHelper.cs" />
     <Compile Include="Utils\CygtermStartInfo.cs" />
     <Compile Include="ctlApplicationPanel.cs">

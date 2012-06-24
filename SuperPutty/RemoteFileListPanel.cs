@@ -32,7 +32,7 @@ using SuperPutty.Data;
 
 namespace SuperPutty
 {
-    public partial class RemoteFileListPanel : ToolWindow
+    public partial class RemoteFileListPanel : ToolWindowDocument
     {
         private DockPanel m_DockPanel;
         private PscpTransfer m_Transfer;
