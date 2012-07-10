@@ -240,7 +240,7 @@ namespace SuperPutty
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Filter = "XML Files|*.xml";
+            saveDialog.Filter = "XML Files|*.xml|All files|*.*";
             saveDialog.FileName = "Sessions.XML";
             saveDialog.InitialDirectory = Application.StartupPath;
             if (saveDialog.ShowDialog() == DialogResult.OK)
@@ -252,7 +252,7 @@ namespace SuperPutty
         private void fromFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Filter = "XML Files|*.xml";
+            openDialog.Filter = "XML Files|*.xml|All files|*.*";
             openDialog.FileName = "Sessions.XML";
             openDialog.CheckFileExists = true;
             openDialog.InitialDirectory = Application.StartupPath;
@@ -266,7 +266,7 @@ namespace SuperPutty
         private void fromPuTTYCMExportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Filter = "XML Files|*.xml";
+            openDialog.Filter = "XML Files|*.xml|All files|*.*";
             openDialog.FileName = "export.xml";
             openDialog.CheckFileExists = true;
             openDialog.InitialDirectory = Application.StartupPath;
