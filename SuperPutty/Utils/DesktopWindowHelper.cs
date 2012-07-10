@@ -42,15 +42,22 @@ namespace SuperPutty.Utils
                     uint pid;
                     NativeMethods.GetWindowThreadProcessId(hWnd, out pid);
 
-                    Process process = Process.GetProcessById(Convert.ToInt32(pid));
-                    windows.Add(
-                        new DesktopWindow
-                        {
-                            Handle = hWnd, 
-                            Title = strTitle, 
-                            ProcessId = Convert.ToInt32(pid),
-                            Exe = GetProcessExe(process)
-                        });
+                    try
+                    {
+                        Process process = Process.GetProcessById(Convert.ToInt32(pid));
+                        windows.Add(
+                            new DesktopWindow
+                            {
+                                Handle = hWnd,
+                                Title = strTitle,
+                                ProcessId = Convert.ToInt32(pid),
+                                Exe = GetProcessExe(process)
+                            });
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Log.WarnFormat("Process not found, ignoring. pid={0}, ex={0}", pid, ex.Message);                        
+                    }
                 }
                 return true;
             };
@@ -75,7 +82,7 @@ namespace SuperPutty.Utils
             }
             catch (Win32Exception ex)
             {
-                Log.ErrorFormat("Could not get exe.  error={0}", ex.Message);
+                Log.ErrorFormat("Could not get exe.  error={0}, process={1}", ex.Message, process.Id);
             }
             return exe;
         }
