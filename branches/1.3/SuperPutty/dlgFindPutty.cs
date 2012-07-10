@@ -133,15 +133,7 @@ namespace SuperPutty
             this.OrigSettingsFolder = SuperPuTTY.Settings.SettingsFolder;
 
             // default layouts
-            List<String> layouts = new List<string>();
-            layouts.Add(String.Empty);
-            foreach (LayoutData layout in SuperPuTTY.Layouts)
-            {
-                layouts.Add(layout.Name);
-            }
-            this.comboBoxLayouts.DataSource = layouts;
-            this.comboBoxLayouts.SelectedItem = SuperPuTTY.Settings.DefaultLayoutName;
-            this.OrigDefaultLayoutName = SuperPuTTY.Settings.DefaultLayoutName;
+            InitLayouts();
 
             this.checkSingleInstanceMode.Checked = SuperPuTTY.Settings.SingleInstanceMode;
             this.checkConstrainPuttyDocking.Checked = SuperPuTTY.Settings.RestrictContentToDocumentTabs;
@@ -155,6 +147,35 @@ namespace SuperPutty
                 this.ShowIcon = true;
                 this.ShowInTaskbar = true;
             }
+        }
+
+        private void InitLayouts()
+        {
+            String defaultLayout;
+            List<String> layouts = new List<string>();
+            if (SuperPuTTY.IsFirstRun)
+            {
+                layouts.Add(String.Empty);
+                // HACK: first time so layouts directory not set yet so layouts don't exist...
+                //       preload <AutoRestore> so we can set it as default
+                layouts.Add(LayoutData.AutoRestore);
+
+                defaultLayout = LayoutData.AutoRestore;
+            }
+            else
+            {
+                layouts.Add(String.Empty);
+                // auto restore in inte layouts collection already
+                foreach (LayoutData layout in SuperPuTTY.Layouts)
+                {
+                    layouts.Add(layout.Name);
+                }
+
+                defaultLayout = SuperPuTTY.Settings.DefaultLayoutName;
+            }
+            this.comboBoxLayouts.DataSource = layouts;
+            this.comboBoxLayouts.SelectedItem = defaultLayout;
+            this.OrigDefaultLayoutName = defaultLayout;
         }
 
         protected override void OnLoad(EventArgs e)
