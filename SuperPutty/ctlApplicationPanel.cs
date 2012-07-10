@@ -196,7 +196,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
                     // focus back to putty via setting active dock panel
                     ctlPuttyPanel parent = (ctlPuttyPanel) this.Parent;
-                    if (parent.DockPanel.ActiveDocument != parent && !parent.IsFloat)
+                    if (parent.DockPanel.ActiveDocument != parent && parent.DockState == DockState.Document)
                     {
                         string activeDoc = parent.DockPanel.ActiveDocument != null
                             ? ((ToolWindow)parent.DockPanel.ActiveDocument).Text : "?";
