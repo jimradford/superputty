@@ -682,7 +682,7 @@ namespace SuperPutty
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                TrySendCommandsFromToolbar();
+                TrySendCommandsFromToolbar(true);
                 e.Handled = true;
             }
         }
@@ -691,7 +691,7 @@ namespace SuperPutty
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                TrySendCommandsFromToolbar();
+                TrySendCommandsFromToolbar(true);
                 e.Handled = true;
             }
         }
@@ -737,10 +737,16 @@ namespace SuperPutty
 
         private void tbBtnSendCommand_Click(object sender, EventArgs e)
         {
-            TrySendCommandsFromToolbar();
+            TrySendCommandsFromToolbar(true);
         }
 
-        int TrySendCommandsFromToolbar()
+
+        private void tbBtnSendCommandNoHist_Click(object sender, EventArgs e)
+        {
+            TrySendCommandsFromToolbar(false);
+        }
+
+        int TrySendCommandsFromToolbar(bool saveHistory)
         {
             int sent = 0;
             String command = this.tsSendCommandCombo.Text; //this.tbTextCommand.Text;
@@ -767,7 +773,7 @@ namespace SuperPutty
                 {
                     // success...clear text and save in mru
                     this.tsSendCommandCombo.Text = string.Empty;
-                    if (!string.IsNullOrEmpty(command))
+                    if (!string.IsNullOrEmpty(command) && saveHistory)
                     {
                         this.tsSendCommandCombo.Items.Add(command);
                     }
