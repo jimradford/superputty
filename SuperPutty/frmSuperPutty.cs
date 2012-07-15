@@ -73,6 +73,7 @@ namespace SuperPutty
         private TextBoxFocusHelper tbFocusHelperHost;
         private TextBoxFocusHelper tbFocusHelperUserName;
         private TextBoxFocusHelper tbFocusHelperPassword;
+        private frmDocumentSelector sendCommandsDocumentSelector;
 
         private NativeMethods.LowLevelKMProc llkp;
         //private NativeMethods.LowLevelKMProc llmp;
@@ -92,6 +93,7 @@ namespace SuperPutty
             dlgFindPutty.PuttyCheck();
             
             InitializeComponent();
+            if (this.DesignMode) return;
 
             // setup connection bar
             this.tbTxtBoxPassword.TextBox.PasswordChar = '*';
@@ -109,6 +111,7 @@ namespace SuperPutty
             this.tbFocusHelperHost = new TextBoxFocusHelper(this.tbTxtBoxHost.TextBox);
             this.tbFocusHelperUserName = new TextBoxFocusHelper(this.tbTxtBoxLogin.TextBox);
             this.tbFocusHelperPassword = new TextBoxFocusHelper(this.tbTxtBoxPassword.TextBox);
+            this.sendCommandsDocumentSelector = new frmDocumentSelector(this.DockPanel);
 
             // Hook into status
             SuperPuTTY.StatusEvent += new Action<string>(delegate(String msg) { this.toolStripStatusLabelMessage.Text = msg; });
@@ -678,6 +681,11 @@ namespace SuperPutty
             this.tbComboSession.SelectedItem = PuttyDataHelper.SessionEmptySettings;
         }
 
+        private void tsBtnSelectDocs_Click(object sender, EventArgs e)
+        {
+            this.sendCommandsDocumentSelector.Show();
+        }
+
         private void tbTextCommand_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
@@ -992,6 +1000,7 @@ namespace SuperPutty
                 base.WndProc(ref m);
             }
         }
+
 
     }
 }

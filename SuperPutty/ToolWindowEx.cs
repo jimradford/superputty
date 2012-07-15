@@ -17,6 +17,7 @@ namespace SuperPutty
         public ToolWindowDocument()
         {
             InitializeComponent();
+            if (SuperPuTTY.MainForm == null) return;
             
             // Insert this panel into the list used for Ctrl-Tab handling.
             if (SuperPuTTY.MainForm.CurrentPanel == null)
