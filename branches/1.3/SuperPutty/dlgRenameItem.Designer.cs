@@ -68,6 +68,7 @@
             this.txtItemName.Name = "txtItemName";
             this.txtItemName.Size = new System.Drawing.Size(341, 20);
             this.txtItemName.TabIndex = 0;
+            this.txtItemName.TextChanged += new System.EventHandler(this.folderForm_TextChanged);
             this.txtItemName.Validating += new System.ComponentModel.CancelEventHandler(this.txtItemName_Validating);
             // 
             // labelDetailName
@@ -76,10 +77,11 @@
             this.labelDetailName.AutoSize = true;
             this.labelDetailName.Enabled = false;
             this.labelDetailName.Location = new System.Drawing.Point(14, 49);
+            this.labelDetailName.MaximumSize = new System.Drawing.Size(180, 13);
             this.labelDetailName.Name = "labelDetailName";
-            this.labelDetailName.Size = new System.Drawing.Size(84, 13);
+            this.labelDetailName.Size = new System.Drawing.Size(180, 13);
             this.labelDetailName.TabIndex = 4;
-            this.labelDetailName.Text = "<SessionName>";
+            this.labelDetailName.Text = "<SessionName                                >";
             // 
             // errorProvider
             // 
