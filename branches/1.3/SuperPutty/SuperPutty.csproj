@@ -86,6 +86,12 @@
     <Compile Include="AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmDocumentSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDocumentSelector.Designer.cs">
+      <DependentUpon>frmDocumentSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindowEx.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -202,6 +208,9 @@
     <EmbeddedResource Include="dlgRenameItem.resx">
       <DependentUpon>dlgRenameItem.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmDocumentSelector.resx">
+      <DependentUpon>frmDocumentSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmTransferStatus.resx">
       <DependentUpon>frmTransferStatus.cs</DependentUpon>
     </EmbeddedResource>
@@ -309,6 +318,8 @@
   <ItemGroup>
     <Content Include="Apps-utilities-terminal.ico" />
     <Content Include="Lib\log4net.dll" />
+    <Content Include="Resources\accept-gray.png" />
+    <Content Include="Resources\application_edit.png" />
     <Content Include="Resources\Apps-terminal.ico" />
     <Content Include="Resources\Apps-utilities-terminal.ico" />
     <None Include="Resources\cross-black.png" />

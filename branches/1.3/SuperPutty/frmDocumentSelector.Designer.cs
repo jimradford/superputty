@@ -54,9 +54,9 @@
             this.checkBoxSelectAll.AutoSize = true;
             this.checkBoxSelectAll.Location = new System.Drawing.Point(3, 9);
             this.checkBoxSelectAll.Name = "checkBoxSelectAll";
-            this.checkBoxSelectAll.Size = new System.Drawing.Size(70, 17);
+            this.checkBoxSelectAll.Size = new System.Drawing.Size(95, 17);
             this.checkBoxSelectAll.TabIndex = 2;
-            this.checkBoxSelectAll.Text = "Select All";
+            this.checkBoxSelectAll.Text = "Auto Select All";
             this.checkBoxSelectAll.UseVisualStyleBackColor = true;
             this.checkBoxSelectAll.CheckedChanged += new System.EventHandler(this.checkBoxSelectAll_CheckedChanged);
             // 
@@ -118,7 +118,8 @@
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "frmDocumentSelector";
-            this.Text = "frmDocumentSelector";
+            this.ShowInTaskbar = false;
+            this.Text = "Select Documents";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
