@@ -681,8 +681,18 @@ namespace SuperPutty
             this.tbComboSession.SelectedItem = PuttyDataHelper.SessionEmptySettings;
         }
 
+        /// <summary>
+        /// Show selector below toolbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tsBtnSelectDocs_Click(object sender, EventArgs e)
         {
+            Rectangle rect = this.tbBtnSelectDocs.Bounds;
+            int top = this.tsCommands.Top + this.tsCommands.Height + 3;
+            int left = rect.Left + rect.Width - this.sendCommandsDocumentSelector.Width + 3;
+            this.sendCommandsDocumentSelector.StartPosition = FormStartPosition.Manual;
+            this.sendCommandsDocumentSelector.Location = this.PointToScreen(new Point(left, top));
             this.sendCommandsDocumentSelector.Show();
         }
 
@@ -764,7 +774,7 @@ namespace SuperPutty
                 {
                     ctlPuttyPanel puttyPanel = content as ctlPuttyPanel;
                     int handle = puttyPanel.AppPanel.AppWindowHandle.ToInt32();
-                    if (puttyPanel != null)
+                    if (puttyPanel != null && this.sendCommandsDocumentSelector.IsDocumentSelected(puttyPanel))
                     {
                         Log.InfoFormat("SendCommand: session={0}, command=[{1}]", puttyPanel.Session.SessionId, command);
                         foreach (char c in command)

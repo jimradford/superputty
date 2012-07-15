@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using log4net;
+using SuperPutty.Data;
 
 namespace SuperPutty
 {
@@ -16,8 +17,7 @@ namespace SuperPutty
         private static readonly ILog Log = LogManager.GetLogger(typeof(frmDocumentSelector));
 
         private DockPanel dockPanel;
-        private List<string> selectedSessionIds = new List<string>();
-        private List<string> sesiondIds = new List<string>();
+        private List<IDockContent> selectedTabs = new List<IDockContent>();
 
         public frmDocumentSelector(DockPanel dockPanel)
         {
@@ -40,15 +40,12 @@ namespace SuperPutty
                     ctlPuttyPanel pp = doc as ctlPuttyPanel;
                     if (pp != null)
                     {
-                        ListViewItem item = this.listViewDocs.Items.Add(pp.Session.SessionId);
-                        item.Selected = this.selectedSessionIds.Contains(pp.Session.SessionId);
-                        item.Tag = pp.Session;
-                        item.SubItems.Add(new ListViewItem.ListViewSubItem(item, pp.Text));
+                        ListViewItem item = this.listViewDocs.Items.Add(pp.Text);
+                        item.Selected = IsDocumentSelected(pp); 
+                        item.Tag = pp;
                         item.SubItems.Add(new ListViewItem.ListViewSubItem(item, pp.Session.SessionId));
                     }
                 }
-
-                // select the active sessionIds
             }
         }
 
@@ -61,13 +58,32 @@ namespace SuperPutty
         private void btnOK_Click(object sender, EventArgs e)
         {
             Log.Debug("OK");
+            this.selectedTabs.Clear();
+            foreach (ListViewItem item in this.listViewDocs.Items)
+            {
+                if (item.Selected)
+                {
+                    this.selectedTabs.Add((ctlPuttyPanel)item.Tag);
+                }
+            }
             this.DialogResult = DialogResult.OK;
+            this.Hide();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            e.Cancel = true;
             this.Hide();
         }
 
         private void checkBoxSelectAll_CheckedChanged(object sender, EventArgs e)
         {
             this.listViewDocs.Enabled = !this.checkBoxSelectAll.Checked;
+            if (this.listViewDocs.Enabled)
+            {
+                this.listViewDocs.Focus();
+            }
         }
 
         public bool IsDocumentSelected(ctlPuttyPanel document)
@@ -76,7 +92,7 @@ namespace SuperPutty
             if (document != null && document.Session != null)
             {
                 string sid = document.Session.SessionId;
-                selected = this.checkBoxSelectAll.Checked || this.selectedSessionIds.Contains(sid);
+                selected = this.checkBoxSelectAll.Checked || this.selectedTabs.Contains(document);
             }
             return selected;
         }
