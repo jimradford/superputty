@@ -1117,6 +1117,12 @@ namespace SuperPutty.Utils
         public static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern int RegisterWindowMessage(string lpString);
+
+        [DllImport("user32.dll", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
+        public static extern int RegisterShellHookWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
@@ -1144,6 +1150,7 @@ namespace SuperPutty.Utils
         public const uint EVENT_SYSTEM_FOREGROUND = 3;
         public const uint WINEVENT_OUTOFCONTEXT = 0;
         public const uint EVENT_OBJECT_NAMECHANGE = 0x800C;
+        public const uint EVENT_SYSTEM_MINIMIZEEND = 23;
 
         public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
