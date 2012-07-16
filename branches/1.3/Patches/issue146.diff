@@ -1,0 +1,42 @@
+Index: dlgRenameItem.cs
+===================================================================
+--- dlgRenameItem.cs	(revision 204)
++++ dlgRenameItem.cs	(working copy)
+@@ -74,5 +74,11 @@
+         {
+             e.Cancel = false;
+         }
++
++        private void folderForm_TextChanged(object sender, EventArgs e)
++        {
++            btnOK.Enabled = (txtItemName.Text.Length > 0);
++        }
++
+     }
+ }
+Index: dlgRenameItem.Designer.cs
+===================================================================
+--- dlgRenameItem.Designer.cs	(revision 204)
++++ dlgRenameItem.Designer.cs	(working copy)
+@@ -68,6 +68,7 @@
+             this.txtItemName.Name = "txtItemName";
+             this.txtItemName.Size = new System.Drawing.Size(341, 20);
+             this.txtItemName.TabIndex = 0;
++            this.txtItemName.TextChanged += new System.EventHandler(this.folderForm_TextChanged);
+             this.txtItemName.Validating += new System.ComponentModel.CancelEventHandler(this.txtItemName_Validating);
+             // 
+             // labelDetailName
+@@ -76,10 +77,11 @@
+             this.labelDetailName.AutoSize = true;
+             this.labelDetailName.Enabled = false;
+             this.labelDetailName.Location = new System.Drawing.Point(14, 49);
++            this.labelDetailName.MaximumSize = new System.Drawing.Size(180, 13);
+             this.labelDetailName.Name = "labelDetailName";
+-            this.labelDetailName.Size = new System.Drawing.Size(84, 13);
++            this.labelDetailName.Size = new System.Drawing.Size(180, 13);
+             this.labelDetailName.TabIndex = 4;
+-            this.labelDetailName.Text = "<SessionName>";
++            this.labelDetailName.Text = "<SessionName                                >";
+             // 
+             // errorProvider
+             // 
