@@ -1,10 +1,13 @@
 1.3.0.1
+-  56: 	add support for sending the same commands to multiple opened sessions (added selector dialog and context menu "Accept Commands")
+- 146: 	Error in folder name validation (applied patch)
 - 153:	dynamic view sessions (Enabled tooldtip on selected item and increase dropdown width)
 - 156:	Save settings and use the same everytime
 - 157:	Dock window does not get focus (Check for document dockstate)
 - 158:	Ability to have a multi-send command NOT logged in the history combo box (added 2nd button)
 - 162:	crash on opening session (applied fix from patch)
 - 164:	Export/Import of Sessions.XML issue (added "All Files")
+- 165: 	Patch - add putty title event change to SP tabs
 
 1.3.0.0
 - Initial build of switch tabs via keyboard shortcuts (ctrl-tab or ctrl-home/end) [roblowe53]
