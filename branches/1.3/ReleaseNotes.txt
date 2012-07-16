@@ -1,6 +1,7 @@
 1.3.0.1
 -  56: 	add support for sending the same commands to multiple opened sessions (added selector dialog and context menu "Accept Commands")
 - 146: 	Error in folder name validation (applied patch)
+- 152: 	Keyboard focus doesn't return to putty tab when switching via Alt-Tab (merged solution from akngo version)
 - 153:	dynamic view sessions (Enabled tooldtip on selected item and increase dropdown width)
 - 156:	Save settings and use the same everytime
 - 157:	Dock window does not get focus (Check for document dockstate)
