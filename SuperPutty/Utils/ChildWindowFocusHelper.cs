@@ -3,6 +3,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 using log4net;
+using System.Collections.Generic;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace SuperPutty.Utils
 {
@@ -10,22 +12,60 @@ namespace SuperPutty.Utils
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ChildWindowFocusHelper));
 
-        //private int m_shellHookNotify;
-        //private bool m_externalWindow = false;
+        private int m_shellHookNotify;
+        private bool m_externalWindow = false;
         private DateTime m_lastMouseDownOnTitleBar = DateTime.Now;
         private TimeSpan m_delayUntilMouseMove = new TimeSpan(0, 0, 0, 0, 200); // 200ms
         private Point m_mouseDownLocation = new Point(0, 0);
-        //private RestoreFromMinimizedTracker m_restoreFromMinimized;
+
+        private IDictionary<IntPtr, ctlPuttyPanel> childWindows = new Dictionary<IntPtr, ctlPuttyPanel>();
 
         public ChildWindowFocusHelper(frmSuperPutty form)
         {
             this.MainForm = form;
             this.MainForm.ResizeEnd += HandleResizeEnd;
+
+            foreach (IDockContent doc in this.MainForm.DockPanel.Contents)
+            {
+                ctlPuttyPanel pp = doc as ctlPuttyPanel;
+                if (pp != null)
+                {
+                    this.childWindows.Add(pp.AppPanel.AppWindowHandle, pp);
+                }
+            }
+            this.MainForm.DockPanel.ContentAdded += DockPanel_ContentAdded;
+            this.MainForm.DockPanel.ContentRemoved += DockPanel_ContentRemoved;
+        }
+
+        void DockPanel_ContentAdded(object sender, DockContentEventArgs e)
+        {
+            ctlPuttyPanel pp = e.Content as ctlPuttyPanel;
+            if (pp != null)
+            {
+                this.childWindows.Add(pp.AppPanel.AppWindowHandle, pp);
+            }
+        }
+
+        void DockPanel_ContentRemoved(object sender, DockContentEventArgs e)
+        {
+            ctlPuttyPanel pp = e.Content as ctlPuttyPanel;
+            if (pp != null)
+            {
+                this.childWindows.Remove(pp.AppPanel.AppWindowHandle);
+            }
+        }
+
+        public void Start()
+        {
+            this.m_shellHookNotify = NativeMethods.RegisterWindowMessage("SHELLHOOK");
+            NativeMethods.RegisterShellHookWindow(this.MainForm.Handle);
         }
 
         public void Dispose()
         {
             this.MainForm.ResizeEnd -= HandleResizeEnd;
+            this.MainForm.DockPanel.ContentAdded -= DockPanel_ContentAdded;
+            this.MainForm.DockPanel.ContentRemoved -= DockPanel_ContentRemoved;
         }
 
         private int GET_X_LPARAM(int lParam)
@@ -94,31 +134,36 @@ namespace SuperPutty.Utils
                     break;
                 default:
 
-                    /*if (m.Msg == m_shellHookNotify)
+                    if (m.Msg == m_shellHookNotify)
                     {
                         switch (m.WParam.ToInt32())
                         {
                             case 4:
                                 IntPtr current = NativeMethods.GetForegroundWindow();
-                                if (current != this.Handle && !ContainsChild(current))
+                                if (current != this.MainForm.Handle && !this.ContainsChild(current))
                                 {
                                     m_externalWindow = true;
                                 }
                                 else if (m_externalWindow)
                                 {
                                     m_externalWindow = false;
-                                    NativeMethods.BringWindowToTop(this.Handle);
-                                    FocusCurrentTab();
+                                    NativeMethods.BringWindowToTop(this.MainForm.Handle);
+                                    this.MainForm.FocusActiveDocument("SHELLHOOK");
                                 }
                                 break;
                             default:
                                 break;
                         }
-                    }*/
+                    }
                     break;
             }
 
             return true;
+        }
+
+        bool ContainsChild(IntPtr childHandle)
+        {
+            return this.childWindows.ContainsKey(childHandle);
         }
 
         /// <summary>

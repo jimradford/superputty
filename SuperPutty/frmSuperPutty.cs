@@ -127,6 +127,7 @@ namespace SuperPutty
             //mHookID = SetMHook(llmp);
 
             this.focusHelper = new ChildWindowFocusHelper(this);
+            this.focusHelper.Start();
 
             // Restore window location and size
             if (SuperPuTTY.Settings.RestoreWindowLocation)
