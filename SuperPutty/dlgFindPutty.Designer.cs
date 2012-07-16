@@ -56,12 +56,14 @@
             this.textBoxMinttyLocation = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.btnBrowseMintty = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.comboBoxTabText = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(388, 413);
+            this.buttonOk.Location = new System.Drawing.Point(388, 448);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 20;
@@ -113,8 +115,8 @@
             // 
             // textBoxPuttyLocation
             // 
-            this.textBoxPuttyLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPuttyLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPuttyLocation.Location = new System.Drawing.Point(180, 113);
             this.textBoxPuttyLocation.Name = "textBoxPuttyLocation";
             this.textBoxPuttyLocation.Size = new System.Drawing.Size(283, 20);
@@ -122,8 +124,8 @@
             // 
             // textBoxPscpLocation
             // 
-            this.textBoxPscpLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPscpLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPscpLocation.Location = new System.Drawing.Point(180, 142);
             this.textBoxPscpLocation.Name = "textBoxPscpLocation";
             this.textBoxPscpLocation.Size = new System.Drawing.Size(283, 20);
@@ -148,8 +150,8 @@
             // 
             // textBoxSettingsFolder
             // 
-            this.textBoxSettingsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSettingsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSettingsFolder.Location = new System.Drawing.Point(180, 193);
             this.textBoxSettingsFolder.Name = "textBoxSettingsFolder";
             this.textBoxSettingsFolder.Size = new System.Drawing.Size(283, 20);
@@ -188,8 +190,8 @@
             // 
             // comboBoxLayouts
             // 
-            this.comboBoxLayouts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxLayouts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxLayouts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLayouts.FormattingEnabled = true;
             this.comboBoxLayouts.Location = new System.Drawing.Point(180, 220);
@@ -201,7 +203,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(469, 413);
+            this.buttonCancel.Location = new System.Drawing.Point(469, 448);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 21;
@@ -291,8 +293,8 @@
             // 
             // textBoxMinttyLocation
             // 
-            this.textBoxMinttyLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxMinttyLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxMinttyLocation.Location = new System.Drawing.Point(180, 167);
             this.textBoxMinttyLocation.Name = "textBoxMinttyLocation";
             this.textBoxMinttyLocation.Size = new System.Drawing.Size(283, 20);
@@ -319,13 +321,33 @@
             this.btnBrowseMintty.UseVisualStyleBackColor = true;
             this.btnBrowseMintty.Click += new System.EventHandler(this.btnBrowseMintty_Click);
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(177, 408);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(56, 13);
+            this.label8.TabIndex = 34;
+            this.label8.Text = "Tab Text: ";
+            // 
+            // comboBoxTabText
+            // 
+            this.comboBoxTabText.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxTabText.FormattingEnabled = true;
+            this.comboBoxTabText.Location = new System.Drawing.Point(239, 405);
+            this.comboBoxTabText.Name = "comboBoxTabText";
+            this.comboBoxTabText.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxTabText.TabIndex = 35;
+            // 
             // dlgFindPutty
             // 
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(556, 448);
+            this.ClientSize = new System.Drawing.Size(556, 483);
+            this.Controls.Add(this.comboBoxTabText);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.textBoxMinttyLocation);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.btnBrowseMintty);
@@ -393,5 +415,7 @@
         private System.Windows.Forms.TextBox textBoxMinttyLocation;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnBrowseMintty;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox comboBoxTabText;
     }
 }

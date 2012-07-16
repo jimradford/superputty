@@ -132,6 +132,13 @@ namespace SuperPutty
             }
             this.OrigSettingsFolder = SuperPuTTY.Settings.SettingsFolder;
 
+            // tab text
+            foreach(String s in Enum.GetNames(typeof(frmSuperPutty.TabTextBehavior)))
+            {
+                this.comboBoxTabText.Items.Add(s);
+            }
+            this.comboBoxTabText.SelectedItem = SuperPuTTY.Settings.TabTextBehavior;
+
             // default layouts
             InitLayouts();
 
@@ -231,6 +238,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.ExitConfirmation = this.checkExitConfirmation.Checked;
                 SuperPuTTY.Settings.ExpandSessionsTreeOnStartup = this.checkExpandTree.Checked;
                 SuperPuTTY.Settings.MinimizeToTray = this.checkMinimizeToTray.Checked;
+                SuperPuTTY.Settings.TabTextBehavior = (String) this.comboBoxTabText.SelectedItem;
 
                 SuperPuTTY.Settings.Save();
 

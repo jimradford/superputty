@@ -136,7 +136,7 @@ namespace SuperPutty
 
             // show/hide toolbars and status bar
             ApplySettingsToToolbars();
-            this.ResizeEnd += new EventHandler(frmSuperPutty_ResizeEnd);
+            this.ResizeEnd += new EventHandler(frmSuperPutty_ResizeEnd);            
         }
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
@@ -1011,6 +1011,11 @@ namespace SuperPutty
             }
         }
 
-
+        public enum TabTextBehavior
+        {
+            Static,
+            Dynamic, 
+            Mixed
+        }
     }
 }

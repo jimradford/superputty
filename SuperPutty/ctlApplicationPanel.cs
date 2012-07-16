@@ -32,6 +32,7 @@ using System.IO;
 using log4net;
 using System.Configuration;
 using SuperPutty.Utils;
+using System.Text;
 
 namespace SuperPutty
 {
@@ -55,6 +56,7 @@ namespace SuperPutty
         private string m_ApplicationParameters = "";
         private string m_ApplicationWorkingDirectory = "";
         private WindowActivator m_windowActivator = null;
+        private string m_originalText;
 
         internal PuttyClosedCallback m_CloseCallback;
 
@@ -96,11 +98,18 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             //this.m_windowActivator = new SetFGCombinedWindowActivator();
             this.m_winEventDelegate = new NativeMethods.WinEventDelegate(WinEventProc);
             this.m_hWinEventHook = NativeMethods.SetWinEventHook(
-                NativeMethods.EVENT_SYSTEM_FOREGROUND, 
-                NativeMethods.EVENT_SYSTEM_FOREGROUND, 
+                NativeMethods.EVENT_SYSTEM_FOREGROUND,
+                NativeMethods.EVENT_OBJECT_NAMECHANGE, 
                 IntPtr.Zero, 
                 this.m_winEventDelegate, 0, 0, 
                 NativeMethods.WINEVENT_OUTOFCONTEXT);
+
+            SuperPuTTY.Settings.SettingsSaving += new SettingsSavingEventHandler(Settings_SettingsSaving);
+        }
+
+        void Settings_SettingsSaving(object sender, CancelEventArgs e)
+        {
+            this.UpdateTitle();
         }
 
         void ApplicationPanel_Disposed(object sender, EventArgs e)
@@ -172,6 +181,11 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             // if we got the EVENT_SYSTEM_FOREGROUND, and the hwnd is the putty terminal hwnd (m_AppWin)
             // then bring the supperputty window to the foreground
 
+            if (eventType == NativeMethods.EVENT_OBJECT_NAMECHANGE && hwnd == m_AppWin)
+            {
+                UpdateTitle();
+            }
+
             if (eventType == NativeMethods.EVENT_SYSTEM_FOREGROUND && hwnd == m_AppWin)
             {
                 Log.DebugFormat("[{0}] HandlingForegroundEvent: settingFG={1}", hwnd, settingForeground);
@@ -212,6 +226,26 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             }
         }
 
+        private void UpdateTitle()
+        {
+            int length = NativeMethods.SendMessage(m_AppWin, NativeMethods.WM_GETTEXTLENGTH, 0, 0) + 1;
+            StringBuilder sb = new StringBuilder(length + 1);
+            NativeMethods.SendMessage(m_AppWin, NativeMethods.WM_GETTEXT, sb.Capacity, sb);
+            string controlText = sb.ToString();
+
+            switch ((SuperPutty.frmSuperPutty.TabTextBehavior)Enum.Parse(typeof(frmSuperPutty.TabTextBehavior), SuperPuTTY.Settings.TabTextBehavior))
+            {
+                case frmSuperPutty.TabTextBehavior.Static:
+                    this.Parent.Text = this.m_originalText;
+                    break;
+                case frmSuperPutty.TabTextBehavior.Dynamic:
+                    this.Parent.Text = controlText;
+                    break;
+                case frmSuperPutty.TabTextBehavior.Mixed:
+                    this.Parent.Text = this.m_originalText + ": " + controlText;
+                    break;
+            }
+        }
 
         public event EventHandler InnerApplicationFocused;
 
@@ -249,7 +283,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             {
                 m_Created = true;
                 m_AppWin = IntPtr.Zero;
-
+                m_originalText = this.Parent.Text;
                 try
                 {
                     m_Process = new Process();

@@ -356,7 +356,6 @@ namespace SuperPutty
             {
                 ctlPuttyPanel sessionPanel = ctlPuttyPanel.NewPanel(session);
                 ApplyDockRestrictions(sessionPanel);
-                MakeUniqueTitle(sessionPanel);
                 sessionPanel.Show(MainForm.DockPanel, session.LastDockstate);
                 SuperPuTTY.ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
             }
@@ -500,25 +499,6 @@ namespace SuperPutty
             }
 
             return newSessionId;
-        }
-
-        static void MakeUniqueTitle(Control control)
-        {
-            IDictionary<string, IDockContent> tabs = 
-                MainForm.DockPanel.Documents.ToDictionary<IDockContent, string>(x => x.DockHandler.TabText);
-
-            string title = control.Text;
-            for (int i = 1; i < 1000; i++)
-            {
-                IDockContent document;
-                if (!tabs.TryGetValue(title, out document))
-                {
-                    break;
-                }
-                title = String.Format("{0}({1})", control.Text, i);
-            }
-            control.Text = title;
-
         }
 
         #endregion
