@@ -178,16 +178,15 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         
         void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            // if we got the EVENT_SYSTEM_FOREGROUND, and the hwnd is the putty terminal hwnd (m_AppWin)
-            // then bring the supperputty window to the foreground
-
             if (eventType == NativeMethods.EVENT_OBJECT_NAMECHANGE && hwnd == m_AppWin)
             {
+                // Putty xterm chdir - apply to title
                 UpdateTitle();
             }
-
-            if (eventType == NativeMethods.EVENT_SYSTEM_FOREGROUND && hwnd == m_AppWin)
+            else if (eventType == NativeMethods.EVENT_SYSTEM_FOREGROUND && hwnd == m_AppWin)
             {
+                // if we got the EVENT_SYSTEM_FOREGROUND, and the hwnd is the putty terminal hwnd (m_AppWin)
+                // then bring the supperputty window to the foreground
                 Log.DebugFormat("[{0}] HandlingForegroundEvent: settingFG={1}", hwnd, settingForeground);
                 if (settingForeground)
                 {
@@ -209,7 +208,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     this.m_windowActivator.ActivateForm(form, window, hwnd);
 
                     // focus back to putty via setting active dock panel
-                    ctlPuttyPanel parent = (ctlPuttyPanel) this.Parent;
+                    ctlPuttyPanel parent = (ctlPuttyPanel)this.Parent;
                     if (parent.DockPanel.ActiveDocument != parent && parent.DockState == DockState.Document)
                     {
                         string activeDoc = parent.DockPanel.ActiveDocument != null
