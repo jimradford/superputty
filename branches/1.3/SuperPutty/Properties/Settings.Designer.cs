@@ -243,5 +243,18 @@ namespace SuperPutty.Properties {
                 this["MinttyExe"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Static")]
+        public string TabTextBehavior {
+            get {
+                return ((string)(this["TabTextBehavior"]));
+            }
+            set {
+                this["TabTextBehavior"] = value;
+            }
+        }
     }
 }

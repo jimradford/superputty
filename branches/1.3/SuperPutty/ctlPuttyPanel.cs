@@ -57,9 +57,14 @@ namespace SuperPutty
             InitializeComponent();
 
             this.Text = session.SessionName;
-
             CreatePanel();
             AdjustMenu();
+        }
+
+        protected override void OnTextChanged(EventArgs e)
+        {
+            base.OnTextChanged(e);
+            this.ToolTipText = this.Text;
         }
 
         private void CreatePanel()
@@ -94,8 +99,6 @@ namespace SuperPutty
                 this.clearScrollbackToolStripMenuItem.Visible = false;
                 this.resetTerminalToolStripMenuItem.Visible = false;
             }
-
-
         }
 
         void CreateMenu()
@@ -317,6 +320,10 @@ namespace SuperPutty
             //SuperPuTTY.MainForm.BringToFront();
         }
 
-
+        public bool AcceptCommands
+        {
+            get { return this.acceptCommandsToolStripMenuItem.Checked;  }
+            set { this.acceptCommandsToolStripMenuItem.Checked = value; }
+        }
     }
 }

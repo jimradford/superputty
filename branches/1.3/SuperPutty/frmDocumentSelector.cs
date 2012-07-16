@@ -17,15 +17,11 @@ namespace SuperPutty
         private static readonly ILog Log = LogManager.GetLogger(typeof(frmDocumentSelector));
 
         private DockPanel dockPanel;
-        private List<IDockContent> selectedTabs = new List<IDockContent>();
 
         public frmDocumentSelector(DockPanel dockPanel)
         {
             this.dockPanel = dockPanel;
             InitializeComponent();
-
-            // init
-            this.checkBoxSelectAll.Checked = true;
         }
 
         protected override void OnVisibleChanged(EventArgs e)
@@ -44,8 +40,10 @@ namespace SuperPutty
                         item.Selected = IsDocumentSelected(pp); 
                         item.Tag = pp;
                         item.SubItems.Add(new ListViewItem.ListViewSubItem(item, pp.Session.SessionId));
+                        item.SubItems.Add(new ListViewItem.ListViewSubItem(item, pp.GetHashCode().ToString()));
                     }
                 }
+                this.BeginInvoke(new Action(delegate { this.listViewDocs.Focus(); }));
             }
         }
 
@@ -58,13 +56,9 @@ namespace SuperPutty
         private void btnOK_Click(object sender, EventArgs e)
         {
             Log.Debug("OK");
-            this.selectedTabs.Clear();
             foreach (ListViewItem item in this.listViewDocs.Items)
             {
-                if (item.Selected)
-                {
-                    this.selectedTabs.Add((ctlPuttyPanel)item.Tag);
-                }
+                ((ctlPuttyPanel)item.Tag).AcceptCommands = item.Selected;
             }
             this.DialogResult = DialogResult.OK;
             this.Hide();
@@ -77,24 +71,12 @@ namespace SuperPutty
             this.Hide();
         }
 
-        private void checkBoxSelectAll_CheckedChanged(object sender, EventArgs e)
-        {
-            this.listViewDocs.Enabled = !this.checkBoxSelectAll.Checked;
-            if (this.listViewDocs.Enabled)
-            {
-                this.listViewDocs.Focus();
-            }
-        }
-
         public bool IsDocumentSelected(ctlPuttyPanel document)
         {
-            bool selected = false;
-            if (document != null && document.Session != null)
-            {
-                string sid = document.Session.SessionId;
-                selected = this.checkBoxSelectAll.Checked || this.selectedTabs.Contains(document);
-            }
-            return selected;
+            return 
+                document != null && 
+                document.Session != null && 
+                document.AcceptCommands;
         }
     }
 }

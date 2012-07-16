@@ -21,6 +21,9 @@ namespace SuperPutty.Utils
         public const int WM_SYSKEYDOWN = 0x104;
         public const int WM_SYSKEYUP = 0x105;
 
+        public const int WM_GETTEXTLENGTH = 0XE;
+        public const int WM_GETTEXT = 0XD;
+
         public const int 
             SC_MAXIMIZE = 0xF030,
             SC_RESTORE = 0xF120;
@@ -1071,6 +1074,9 @@ namespace SuperPutty.Utils
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, int wParam, IntPtr lParam);
 
+        [DllImport("user32.dll", EntryPoint = "SendMessage", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        public static extern bool SendMessage(IntPtr hWnd, uint Msg, int wParam, StringBuilder lParam);
+
         [DllImport("USER32.DLL", EntryPoint = "PostMessageW", SetLastError = true,
              CharSet = CharSet.Unicode, ExactSpelling = true,
              CallingConvention = CallingConvention.StdCall)]
@@ -1137,6 +1143,7 @@ namespace SuperPutty.Utils
 
         public const uint EVENT_SYSTEM_FOREGROUND = 3;
         public const uint WINEVENT_OUTOFCONTEXT = 0;
+        public const uint EVENT_OBJECT_NAMECHANGE = 0x800C;
 
         public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
