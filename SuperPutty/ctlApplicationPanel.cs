@@ -104,7 +104,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 this.m_winEventDelegate, 0, 0, 
                 NativeMethods.WINEVENT_OUTOFCONTEXT);
 
-            SuperPuTTY.Settings.SettingsSaving += new SettingsSavingEventHandler(Settings_SettingsSaving);
+            SuperPuTTY.Settings.SettingsSaving += Settings_SettingsSaving;
         }
 
         void Settings_SettingsSaving(object sender, CancelEventArgs e)
@@ -117,6 +117,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             this.Disposed -= new EventHandler(ApplicationPanel_Disposed);
             SuperPuTTY.LayoutChanged -= new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
             NativeMethods.UnhookWinEvent(m_hWinEventHook);
+            SuperPuTTY.Settings.SettingsSaving -= Settings_SettingsSaving;
         }
 
         void SuperPuTTY_LayoutChanged(object sender, Data.LayoutChangedEventArgs e)
