@@ -13,6 +13,7 @@
 
 
 ===External Articles===
-
+  * A great guide on getting SuperPutty setup.
+    http://automation-nation.org/superputty-tutorial
 
 ===Known Forks===
