@@ -2,6 +2,7 @@
 #labels Featured
 #sidebar TOCArticles
 
+===Guide===
   # Introduction to SuperPuTTY
     # [SuperPutty#Introduction Introduction to SuperPutty]
     # [SuperPutty#Requrements Minimum system requirements]
@@ -13,7 +14,8 @@
 
 
 ===External Articles===
-  * A great guide on getting SuperPutty setup.
-    http://automation-nation.org/superputty-tutorial
+  * A great guide on getting SuperPutty setup.  http://automation-nation.org/superputty-tutorial
 
 ===Known Forks===
+  * https://github.com/phendryx/superputty
+  * https://github.com/akngo/superputty
