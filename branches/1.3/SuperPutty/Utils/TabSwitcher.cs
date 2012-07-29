@@ -12,6 +12,34 @@ namespace SuperPutty.Utils
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(TabSwitcher));
 
+        public static readonly ITabSwitchStrategy[] Strategies;
+        static TabSwitcher()
+        {
+            List<ITabSwitchStrategy> strats = new List<ITabSwitchStrategy>();
+            strats.Add(new VisualOrderTabSwitchStrategy());
+            strats.Add(new OpenOrderTabSwitchStrategy());
+            strats.Add(new MRUTabSwitchStrategy());
+            Strategies = strats.ToArray();
+        }
+
+        public static ITabSwitchStrategy StrategyFromTypeName(String typeName)
+        {
+            ITabSwitchStrategy strategy = Strategies[0];
+            try
+            {
+                Type t = Type.GetType(typeName);
+                if (t != null)
+                {
+                    strategy = (ITabSwitchStrategy) Activator.CreateInstance(t);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error parsing strategy, defaulting to Visual: typeName=" + typeName, ex);
+            }
+            return strategy;
+        }
+
         public TabSwitcher(DockPanel dockPanel)
         {
             this.Documents = new List<ToolWindow>();
@@ -31,6 +59,7 @@ namespace SuperPutty.Utils
                     // clean up
                     if (this.tabSwitchStrategy != null)
                     {
+                        Log.InfoFormat("Cleaning up old strategy: {0}", this.tabSwitchStrategy.Description);
                         this.tabSwitchStrategy.Dispose();
                     }
 
@@ -38,12 +67,13 @@ namespace SuperPutty.Utils
                     this.tabSwitchStrategy = value;
                     if (value != null)
                     {
+                        Log.InfoFormat("Initialing new strategy: {0}", this.tabSwitchStrategy.Description);
                         this.tabSwitchStrategy.Initialize(this.DockPanel);
                         foreach (IDockContent doc in this.DockPanel.Documents)
                         {
                             this.AddDocument((ToolWindow)doc);
                         }
-                        this.CurrentDocument = this.CurrentDocument;
+                        this.CurrentDocument = this.CurrentDocument ?? this.ActiveDocument;
                     }
                 }
             }
@@ -56,6 +86,7 @@ namespace SuperPutty.Utils
             {
                 this.currentDocument = value;
                 this.TabSwitchStrategy.SetCurrentTab(value);
+                this.IsSwitchingTabs = false;
             }
         }
 
@@ -86,14 +117,16 @@ namespace SuperPutty.Utils
             this.TabSwitchStrategy.RemoveTab(tab);
         }
 
-        public void MoveToNextDocument()
+        public bool MoveToNextDocument()
         {
-            this.TabSwitchStrategy.MoveToNextTab();
+            this.IsSwitchingTabs = true;
+            return this.TabSwitchStrategy.MoveToNextTab();
         }
 
-        public void MoveToPrevDocument()
+        public bool MoveToPrevDocument()
         {
-            this.TabSwitchStrategy.MoveToPrevTab();
+            this.IsSwitchingTabs = true;
+            return this.TabSwitchStrategy.MoveToPrevTab();
         }
 
 
@@ -112,10 +145,10 @@ namespace SuperPutty.Utils
             this.DockPanel.ContentRemoved -= DockPanel_ContentRemoved;
         }
 
-        public bool MRU { get; set; }
         public ToolWindow ActiveDocument { get { return (ToolWindow)this.DockPanel.ActiveDocument; } }
         public DockPanel DockPanel { get; private set; }
         public IList<ToolWindow> Documents { get; private set; }
+        public bool IsSwitchingTabs { get; set; }
 
         ITabSwitchStrategy tabSwitchStrategy;
         ToolWindow currentDocument;
@@ -125,19 +158,26 @@ namespace SuperPutty.Utils
     #region ITabSwitchStrategy
     public interface ITabSwitchStrategy : IDisposable
     {
+        string Description { get; }
         void Initialize(DockPanel panel);
         void AddTab(ToolWindow tab);
         void RemoveTab(ToolWindow tab);
         void SetCurrentTab(ToolWindow window);
 
-        void MoveToNextTab();
-        void MoveToPrevTab();
+        bool MoveToNextTab();
+        bool MoveToPrevTab();
     }
     #endregion
 
-    #region OrderedTabSwitchStrategy 
-    public class OrderedTabSwitchStrategy : ITabSwitchStrategy
+    #region AbstractOrderedTabSwitchStrategy
+    public abstract class AbstractOrderedTabSwitchStrategy : ITabSwitchStrategy
     {
+
+        protected AbstractOrderedTabSwitchStrategy(string desc)
+        {
+            this.Description = desc;
+        }
+
         public void Initialize(DockPanel panel) 
         {
             this.DockPanel = panel;
@@ -146,40 +186,98 @@ namespace SuperPutty.Utils
         public void AddTab(ToolWindow tab) {}
         public void RemoveTab(ToolWindow tab) {}
 
-        public void MoveToNextTab()
+        public bool MoveToNextTab()
         {
-            ToolWindow winNext = (ToolWindow)this.DockPanel.ActiveDocument;
-            List<IDockContent> docs = new List<IDockContent>(this.DockPanel.DocumentsToArray());
+            bool res = false;
+            List<IDockContent> docs = GetDocuments();
             int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
             if (idx != -1)
             {
-                winNext = (ToolWindow)docs[idx == docs.Count - 1 ? 0 : idx + 1];
+                ToolWindow winNext = (ToolWindow)docs[idx == docs.Count - 1 ? 0 : idx + 1];
                 winNext.Activate();
+                res = true;
             }
+            return res;
         }
 
-        public void MoveToPrevTab()
+        public bool MoveToPrevTab()
         {
-            ToolWindow winPrev = (ToolWindow) this.DockPanel.ActiveDocument;
-            List<IDockContent> docs = new List<IDockContent>(this.DockPanel.DocumentsToArray());
+            bool res = false;
+            List<IDockContent> docs = GetDocuments();
             int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
             if (idx != -1)
             {
-                winPrev = (ToolWindow) docs[idx == 0 ? docs.Count - 1 : idx - 1];
+                ToolWindow winPrev = (ToolWindow)docs[idx == 0 ? docs.Count - 1 : idx - 1];
                 winPrev.Activate();
+                res = true;
             }
+            return res;
         }
 
-        public void SetCurrentTab(ToolWindow window) {}
+        protected abstract List<IDockContent> GetDocuments();
+
+        public void SetCurrentTab(ToolWindow window)  { }
         public void Dispose() {}
 
-        DockPanel DockPanel { get; set; }
+        protected DockPanel DockPanel { get; set; }
+        public string Description { get; protected set; }
     }
+    #endregion
+
+    #region VisualOrderTabSwitchStrategy
+    public class VisualOrderTabSwitchStrategy : AbstractOrderedTabSwitchStrategy
+    {
+        public VisualOrderTabSwitchStrategy() : 
+            base("Visual: Left-to-Right, Top-to-Bottom") { }
+
+        protected override List<IDockContent> GetDocuments()
+        {
+            List<IDockContent> docs = new List<IDockContent>();
+            if (this.DockPanel.Contents.Count > 0 && this.DockPanel.Panes.Count > 0)
+            {
+                List<DockPane> panes = new List<DockPane>(this.DockPanel.Panes);
+                panes.Sort((x, y) =>
+                {
+                    int res = x.Top.CompareTo(y.Top);
+                    return res == 0 ? x.Left.CompareTo(y.Left) : res;
+                });
+                foreach (DockPane pane in panes)
+                {
+                    if (pane.Appearance == DockPane.AppearanceStyle.Document)
+                    {
+                        docs.AddRange(pane.Contents);
+                        //Log.InfoFormat("\tPane: contents={0}, L={1}, T={2}", pane.Contents.Count, pane.Left, pane.Top);
+                        //foreach (IDockContent content in pane.Contents) { //Log.Info("\t\t" + content.DockHandler.TabText); }
+                    }
+                }
+            }
+            return docs;
+        }
+    }
+    #endregion
+
+    #region OpenOrderTabSwitchStrategy
+    public class OpenOrderTabSwitchStrategy : AbstractOrderedTabSwitchStrategy
+    {
+        public OpenOrderTabSwitchStrategy() :
+            base("Open: In the order sessions are opened.") { }
+
+        protected override List<IDockContent> GetDocuments()
+        {
+            return new List<IDockContent>(this.DockPanel.DocumentsToArray());
+        }
+    }
+
     #endregion
 
     #region MRUTabSwitchStrategy
     public class MRUTabSwitchStrategy : ITabSwitchStrategy
     {
+        public string Description
+        {
+            get { return "MRU: Similar to Windows Alt-Tab"; }
+        }
+
         public void Initialize(DockPanel panel)
         {
             this.DockPanel = panel;
@@ -238,22 +336,38 @@ namespace SuperPutty.Utils
             }
         }
 
-        public void MoveToNextTab()
+        public bool MoveToNextTab()
         {
-            if (this.CurrentTab != null)
+            bool res = false;
+            if (this.TransitioningTab == null)
             {
-                this.CurrentTab.Next.Window.Activate();
-                //this.SetCurrentTab(this.CurrentTab.Next.Window);
+                this.TransitioningTab = this.CurrentTab;
             }
+
+            if (this.TransitioningTab != null)
+            {
+                this.TransitioningTab = this.TransitioningTab.Next;
+                this.TransitioningTab.Window.Activate();
+                res = true;
+            }
+            return res;
         }
 
-        public void MoveToPrevTab()
+        public bool MoveToPrevTab()
         {
-            if (this.CurrentTab != null)
+            bool res = false;
+            if (this.TransitioningTab == null)
             {
-                this.CurrentTab.Prev.Window.Activate();
-                //this.SetCurrentTab(this.CurrentTab.Prev.Window);
+                this.TransitioningTab = this.CurrentTab;
             }
+
+            if (this.TransitioningTab != null)
+            {
+                this.TransitioningTab = this.TransitioningTab.Prev;
+                this.TransitioningTab.Window.Activate();
+                res = true;
+            }
+            return res;
         }
 
         public void SetCurrentTab(ToolWindow window)
@@ -273,6 +387,7 @@ namespace SuperPutty.Utils
                 node.Next.Prev = node;
 
                 this.CurrentTab = node;
+                this.TransitioningTab = null;
             }
         }
 
@@ -280,6 +395,7 @@ namespace SuperPutty.Utils
 
         DockPanel DockPanel { get; set; }
         TabNode CurrentTab { get; set; }
+        TabNode TransitioningTab { get; set; }
 
         private IDictionary<ToolWindow, TabNode> nodes = new Dictionary<ToolWindow, TabNode>();
 
@@ -291,162 +407,4 @@ namespace SuperPutty.Utils
         }
     }
     #endregion
-
-
-    #region ITabSwitcher
-    public interface ITabSwitcher : IDisposable
-    {
-        event EventHandler<EventArgs> CurrentTabChanged;
-        ToolWindow CurrentTab { get; set; }
-
-        void Initialize(DockPanel dockPanel);
-        void AddTab(ToolWindow newTab);
-        void RemoveTab(ToolWindow oldTab);
-        void MoveToNextTab();
-        void MoveToPrevTab();
-    } 
-    #endregion
-
-    #region AbstractTabSwitcher
-    public abstract class AbstractTabSwitcher : ITabSwitcher
-    {
-        public event EventHandler<EventArgs> CurrentTabChanged;
-
-        public abstract void AddTab(ToolWindow newTab);
-        public abstract void RemoveTab(ToolWindow oldTab);
-        public abstract void MoveToNextTab();
-        public abstract void MoveToPrevTab();
-        public abstract void Dispose();
-
-        public virtual void Initialize(DockPanel dockPanel)
-        {
-            this.DockPanel = dockPanel;
-            this.DockPanel.ContentAdded += DockPanel_ContentAdded;
-            this.DockPanel.ContentRemoved += DockPanel_ContentRemoved;
-
-            foreach (IDockContent doc in this.DockPanel.Documents)
-            {
-                this.AddTab((ToolWindow) doc);
-            }
-        }
-
-        void DockPanel_ContentAdded(object sender, DockContentEventArgs e)
-        {
-            this.DockPanel.BeginInvoke(new Action(
-                delegate
-                {
-                    if (e.Content.DockHandler.DockState == DockState.Document)
-                    {
-                        this.AddTab((ToolWindow)e.Content);
-                    }
-                }));
-        }
-
-        void DockPanel_ContentRemoved(object sender, DockContentEventArgs e)
-        {
-            this.RemoveTab((ToolWindow)e.Content);
-        }
-
-        public ToolWindow CurrentTab
-        {
-            get { return this.currentTab; }
-            set
-            {
-                if (this.currentTab != value)
-                {
-                    this.currentTab = value;
-                    this.OnCurrentTabChanged();
-                }
-            }
-        }
-
-        protected void OnCurrentTabChanged()
-        {
-            if (this.CurrentTabChanged != null)
-            {
-                this.CurrentTabChanged(this, EventArgs.Empty);
-            }
-        }
-
-        protected DockPanel DockPanel { get; set; }
-        protected ToolWindow currentTab;
-    } 
-    #endregion
-
-    public class MRUTabSwitcher : AbstractTabSwitcher
-    {
-        public override void AddTab(ToolWindow newTab)
-        {
-            if (!nodes.ContainsKey(newTab))
-            {
-                // store node
-                TabNode node = new TabNode { Window = newTab };
-                nodes.Add(newTab, node);
-
-                if (this.CurrentTab != null)
-                {
-                    TabNode nodeCurrent;
-                    if (nodes.TryGetValue(this.CurrentTab, out nodeCurrent))
-                    {
-                        // attach the node
-                        node.Prev = nodeCurrent;
-                        node.Next = nodeCurrent.Next;
-                        nodeCurrent.Next = node;
-                        node.Next.Prev = node;
-                    }
-                }
-                else
-                {
-                    // first tab
-                    node.Prev = node;
-                    node.Next = node;
-                }
-            }
-        }
-
-        public override void RemoveTab(ToolWindow oldTab)
-        {
-            TabNode node;
-            if (this.nodes.TryGetValue(oldTab, out node))
-            {
-                // remove the tab
-                this.nodes.Remove(oldTab);
-
-                // remove the node from the circular list
-                if (this.CurrentTab == oldTab && node.Next == node && node.Prev == node)
-                {
-                    this.CurrentTab = null;
-                }
-                else
-                {
-                    node.Prev.Next = node.Next;
-                    node.Next.Prev = node.Prev;
-                    this.CurrentTab = node.Prev.Window;
-                }
-
-            }
-        }
-
-        public override void MoveToNextTab()
-        {
-        }
-
-        public override void MoveToPrevTab()
-        {
-        }
-
-        public override void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
-        private IDictionary<ToolWindow, TabNode> nodes = new Dictionary<ToolWindow, TabNode>();
-
-        public class TabNode
-        {
-            public ToolWindow Window { get; set; }
-            public TabNode Next { get; set; }
-            public TabNode Prev { get; set; }
-        }
-    }
 }

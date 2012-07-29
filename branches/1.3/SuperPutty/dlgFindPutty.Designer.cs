@@ -58,12 +58,14 @@
             this.btnBrowseMintty = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.comboBoxTabText = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.comboBoxTabSwitching = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(388, 448);
+            this.buttonOk.Location = new System.Drawing.Point(388, 463);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 20;
@@ -203,7 +205,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(469, 448);
+            this.buttonCancel.Location = new System.Drawing.Point(469, 463);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 21;
@@ -334,10 +336,29 @@
             // 
             this.comboBoxTabText.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTabText.FormattingEnabled = true;
-            this.comboBoxTabText.Location = new System.Drawing.Point(239, 405);
+            this.comboBoxTabText.Location = new System.Drawing.Point(256, 405);
             this.comboBoxTabText.Name = "comboBoxTabText";
-            this.comboBoxTabText.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxTabText.Size = new System.Drawing.Size(207, 21);
             this.comboBoxTabText.TabIndex = 35;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(177, 433);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(78, 13);
+            this.label9.TabIndex = 36;
+            this.label9.Text = "Tab Switching:";
+            // 
+            // comboBoxTabSwitching
+            // 
+            this.comboBoxTabSwitching.DisplayMember = "Description";
+            this.comboBoxTabSwitching.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxTabSwitching.FormattingEnabled = true;
+            this.comboBoxTabSwitching.Location = new System.Drawing.Point(256, 430);
+            this.comboBoxTabSwitching.Name = "comboBoxTabSwitching";
+            this.comboBoxTabSwitching.Size = new System.Drawing.Size(207, 21);
+            this.comboBoxTabSwitching.TabIndex = 37;
             // 
             // dlgFindPutty
             // 
@@ -345,7 +366,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(556, 483);
+            this.ClientSize = new System.Drawing.Size(556, 498);
+            this.Controls.Add(this.comboBoxTabSwitching);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.comboBoxTabText);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.textBoxMinttyLocation);
@@ -417,5 +440,7 @@
         private System.Windows.Forms.Button btnBrowseMintty;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboBoxTabText;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox comboBoxTabSwitching;
     }
 }

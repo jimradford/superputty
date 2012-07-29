@@ -29,6 +29,7 @@ using System.Text;
 using System.Windows.Forms;
 using log4net;
 using SuperPutty.Data;
+using SuperPutty.Utils;
 
 namespace SuperPutty
 {
@@ -139,6 +140,18 @@ namespace SuperPutty
             }
             this.comboBoxTabText.SelectedItem = SuperPuTTY.Settings.TabTextBehavior;
 
+            // tab switcher
+            ITabSwitchStrategy selectedItem = null;
+            foreach (ITabSwitchStrategy strat in TabSwitcher.Strategies)
+            {
+                this.comboBoxTabSwitching.Items.Add(strat);
+                if (strat.GetType().FullName == SuperPuTTY.Settings.TabSwitcher)
+                {
+                    selectedItem = strat;
+                }
+            }
+            this.comboBoxTabSwitching.SelectedItem = selectedItem ?? TabSwitcher.Strategies[0];
+
             // default layouts
             InitLayouts();
 
@@ -239,6 +252,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.ExpandSessionsTreeOnStartup = this.checkExpandTree.Checked;
                 SuperPuTTY.Settings.MinimizeToTray = this.checkMinimizeToTray.Checked;
                 SuperPuTTY.Settings.TabTextBehavior = (String) this.comboBoxTabText.SelectedItem;
+                SuperPuTTY.Settings.TabSwitcher = (String)this.comboBoxTabSwitching.SelectedItem.GetType().FullName;
 
                 SuperPuTTY.Settings.Save();
 
