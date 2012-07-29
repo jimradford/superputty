@@ -308,6 +308,7 @@ namespace SuperPutty
                 sessionsMap.Remove(sessionId);
                 sessionsList.Remove(session);
             }
+            Log.InfoFormat("Removed Session, id={0}, success={1}", sessionId, session != null);
 
             return session;
         }
@@ -317,7 +318,25 @@ namespace SuperPutty
             SessionData session = null;
             if (sessionId != null)
             {
-                sessionsMap.TryGetValue(sessionId, out session);
+                if (!sessionsMap.TryGetValue(sessionId, out session))
+                {
+                    // no hit by id...so try the list
+                    // @TODO: Revisit...this is a work around the sessionId changing in tree
+                    foreach (SessionData sd in sessionsList)
+                    {
+                        if (sd.SessionId == sessionId)
+                        {
+                            session = sd;
+                            // reindex list
+                            sessionsMap.Clear();
+                            foreach (SessionData s in sessionsList)
+                            {
+                                sessionsMap[s.SessionId] = s;
+                            }
+                            break;
+                        }
+                    }
+                }
             }
             return session;
         }
