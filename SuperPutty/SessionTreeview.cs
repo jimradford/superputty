@@ -431,10 +431,31 @@ namespace SuperPutty
         private void removeFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TreeNode node = this.treeView1.SelectedNode;
-            if (node != null && node.Nodes.Count == 0)
+            if (node != null)
             {
-                node.Remove();
-                SuperPuTTY.ReportStatus("Removed Folder, {0}", node.Text);
+                if (node.Nodes.Count > 0)
+                {
+                    List<SessionData> sessions = new List<SessionData>();
+                    GetAllSessions(node, sessions);
+                    if (DialogResult.Yes == MessageBox.Show(
+                        "Remove Folder and " + sessions.Count + " sessions?",
+                        "Remove Folder", 
+                        MessageBoxButtons.YesNo))
+                    {
+                        foreach (SessionData session in sessions)
+                        {
+                            SuperPuTTY.RemoveSession(session.SessionId);
+                        }
+                        node.Remove();
+                        SuperPuTTY.ReportStatus("Removed Folder, {0} and {1} sessions", node.Text, sessions.Count);
+                        SuperPuTTY.SaveSessions();
+                    }
+                }
+                else
+                {
+                    node.Remove();
+                    SuperPuTTY.ReportStatus("Removed Folder, {0}", node.Text);
+                }
             }
         }
 
@@ -470,7 +491,7 @@ namespace SuperPutty
             bool isRootNode = this.treeView1.SelectedNode != this.nodeRoot;
             this.renameToolStripMenuItem.Enabled = isRootNode;
             // TODO: handle removing folder and nodes in it recursively
-            this.removeFolderToolStripMenuItem.Enabled = isRootNode && this.treeView1.SelectedNode.Nodes.Count == 0;
+            this.removeFolderToolStripMenuItem.Enabled = isRootNode;// && this.treeView1.SelectedNode.Nodes.Count == 0;
         }
 
         private void contextMenuStripAddTreeItem_Opening(object sender, CancelEventArgs e)
