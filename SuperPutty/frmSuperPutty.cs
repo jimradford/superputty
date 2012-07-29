@@ -84,8 +84,9 @@ namespace SuperPutty
         private Rectangle lastNormalDesktopBounds;
         private ChildWindowFocusHelper focusHelper;
         bool isControlDown = false;
-        ToolWindowDocument currentTabPanel;
         int commandMRUIndex = 0;
+
+        private readonly TabSwitcher tabSwitcher;
 
         public frmSuperPutty()
         {
@@ -137,7 +138,11 @@ namespace SuperPutty
 
             // show/hide toolbars and status bar
             ApplySettingsToToolbars();
-            this.ResizeEnd += new EventHandler(frmSuperPutty_ResizeEnd);            
+            this.ResizeEnd += new EventHandler(frmSuperPutty_ResizeEnd);     
+       
+            // tab switching
+            this.tabSwitcher = new TabSwitcher(this.DockPanel);
+            this.tabSwitcher.TabSwitchStrategy = TabSwitcher.StrategyFromTypeName(SuperPuTTY.Settings.TabSwitcher);
         }
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
@@ -210,10 +215,9 @@ namespace SuperPutty
                     // If we aren't using Ctrl-Tab to move between panels,
                     // i.e. we got here because the operator clicked on the
                     // panel directly, then record it as the current panel.
-                    if (currentTabPanel == null)
+                    if (!this.tabSwitcher.IsSwitchingTabs)
                     {
-                        //Log.Info("### TabClick:" + window.Text);
-                        window.MakePanelCurrent();
+                        this.tabSwitcher.CurrentDocument = window;
                     }
 
                     ctlPuttyPanel p = window as ctlPuttyPanel;
@@ -560,6 +564,9 @@ namespace SuperPutty
                     SuperPuTTY.ApplyDockRestrictions(dockContent);
                 }
 
+                // apply tab switching strategy change
+                this.tabSwitcher.TabSwitchStrategy = TabSwitcher.StrategyFromTypeName(SuperPuTTY.Settings.TabSwitcher);
+
                 this.SaveLastWindowBounds();
             }
 
@@ -831,11 +838,9 @@ namespace SuperPutty
 
                     // If Ctrl-Tab has been pressed to move to an older panel then
                     // make it current panel when Ctrl key is finally released.
-                    if (!isControlDown && currentTabPanel != null)
+                    if (!isControlDown)
                     {
-                        //Log.Info("### ControlUp:" + currentTabPanel.Text);
-                        currentTabPanel.MakePanelCurrent();
-                        currentTabPanel = null;
+                        this.tabSwitcher.CurrentDocument = (ToolWindow)this.DockPanel.ActiveDocument;
                     }
                 }
 
@@ -855,14 +860,8 @@ namespace SuperPutty
                 // Operator has pressed Ctrl-End, Move to Next Tab
                 if (isControlDown && (Keys)vkCode == Keys.End && wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
                 {
-                    this.currentTabPanel = null;
-                    ToolWindow dcNext = (ToolWindow) this.DockPanel.ActiveDocument;
-                    List<IDockContent> docs = GetDocuments(); // new List<IDockContent>(this.DockPanel.DocumentsToArray());
-                    int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
-                    if (idx != -1){
-                        dcNext = (ToolWindow) docs[idx == docs.Count - 1 ? 0 : idx + 1 ];
-                        dcNext.Activate();
-
+                    if (this.tabSwitcher.MoveToNextDocument())
+                    {
                         // Eat the keystroke
                         return (IntPtr)1;
                     }
@@ -871,15 +870,8 @@ namespace SuperPutty
                 // Operator has pressed Ctrl-Home, Move to Prev Tab
                 if (isControlDown && (Keys)vkCode == Keys.Home && wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
                 {
-                    this.currentTabPanel = null;
-                    ToolWindow dcPrev = (ToolWindow)this.DockPanel.ActiveDocument;
-                    List<IDockContent> docs = GetDocuments(); // new List<IDockContent>(this.DockPanel.DocumentsToArray());
-                    int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
-                    if (idx != -1)
+                    if (this.tabSwitcher.MoveToPrevDocument())
                     {
-                        dcPrev = (ToolWindow)docs[idx == 0 ? docs.Count - 1 : idx - 1];
-                        dcPrev.Activate();
-
                         // Eat the keystroke
                         return (IntPtr)1;
                     }
@@ -890,50 +882,16 @@ namespace SuperPutty
                 {
                     if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN && this.DockPanel.ActiveDocument is ToolWindowDocument)
                     {
-                        if (currentTabPanel == null)
-                            currentTabPanel = CurrentPanel;
-                        if (currentTabPanel != null && currentTabPanel.PreviousPanel != null)
+                        if (this.tabSwitcher.MoveToPrevDocument())
                         {
-                            currentTabPanel = currentTabPanel.PreviousPanel;
-
-                            //Log.Info("### Switch to " + currentTabPanel.Text);
-                            currentTabPanel.Activate();
-                            // RML: Need code to activate main frame SuperPutty window
-                            //      while still leaving focus in PuTTY session
-                            //                          FocusActiveDocument("After Ctrl-Tab");
+                            // Eat the keystroke
+                            return (IntPtr)1;
                         }
                     }
-
-                    // Eat the keystroke
-                    return (IntPtr)1;
                 }
             }
                                 
             return NativeMethods.CallNextHookEx(kbHookID, nCode, wParam, lParam);
-        }
-
-        List<IDockContent> GetDocuments()
-        {
-            List<IDockContent> docs = new List<IDockContent>();
-            if (this.DockPanel.Contents.Count > 0 && this.DockPanel.Panes.Count > 0)
-            {
-                List<DockPane> panes = new List<DockPane>(this.DockPanel.Panes);
-                panes.Sort((x, y) =>
-                {
-                    int res = x.Top.CompareTo(y.Top);
-                    return res == 0 ? x.Left.CompareTo(y.Left) : res;
-                });
-                foreach (DockPane pane in panes) 
-                {
-                    if (pane.Appearance == DockPane.AppearanceStyle.Document)
-                    {
-                        docs.AddRange(pane.Contents);
-                        //Log.InfoFormat("\tPane: contents={0}, L={1}, T={2}", pane.Contents.Count, pane.Left, pane.Top);
-                        //foreach (IDockContent content in pane.Contents) { //Log.Info("\t\t" + content.DockHandler.TabText); }
-                    }
-                }
-            }
-            return docs;
         }
 
         private static IntPtr SetMHook(NativeMethods.LowLevelKMProc proc)

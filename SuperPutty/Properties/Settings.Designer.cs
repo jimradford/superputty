@@ -256,5 +256,18 @@ namespace SuperPutty.Properties {
                 this["TabTextBehavior"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("SuperPutty.Utils.VisualOrderTabSwitchStrategy")]
+        public string TabSwitcher {
+            get {
+                return ((string)(this["TabSwitcher"]));
+            }
+            set {
+                this["TabSwitcher"] = value;
+            }
+        }
     }
 }

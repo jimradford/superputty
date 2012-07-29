@@ -56,5 +56,8 @@
     <Setting Name="TabTextBehavior" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)">Static</Value>
     </Setting>
+    <Setting Name="TabSwitcher" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SuperPutty.Utils.VisualOrderTabSwitchStrategy</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
