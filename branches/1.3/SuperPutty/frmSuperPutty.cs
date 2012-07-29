@@ -212,6 +212,7 @@ namespace SuperPutty
                     // panel directly, then record it as the current panel.
                     if (currentTabPanel == null)
                     {
+                        //Log.Info("### TabClick:" + window.Text);
                         window.MakePanelCurrent();
                     }
 
@@ -832,6 +833,7 @@ namespace SuperPutty
                     // make it current panel when Ctrl key is finally released.
                     if (!isControlDown && currentTabPanel != null)
                     {
+                        //Log.Info("### ControlUp:" + currentTabPanel.Text);
                         currentTabPanel.MakePanelCurrent();
                         currentTabPanel = null;
                     }
@@ -855,7 +857,7 @@ namespace SuperPutty
                 {
                     this.currentTabPanel = null;
                     ToolWindow dcNext = (ToolWindow) this.DockPanel.ActiveDocument;
-                    List<IDockContent> docs = new List<IDockContent>(this.DockPanel.DocumentsToArray());
+                    List<IDockContent> docs = GetDocuments(); // new List<IDockContent>(this.DockPanel.DocumentsToArray());
                     int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
                     if (idx != -1){
                         dcNext = (ToolWindow) docs[idx == docs.Count - 1 ? 0 : idx + 1 ];
@@ -871,7 +873,7 @@ namespace SuperPutty
                 {
                     this.currentTabPanel = null;
                     ToolWindow dcPrev = (ToolWindow)this.DockPanel.ActiveDocument;
-                    List<IDockContent> docs = new List<IDockContent>(this.DockPanel.DocumentsToArray());
+                    List<IDockContent> docs = GetDocuments(); // new List<IDockContent>(this.DockPanel.DocumentsToArray());
                     int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
                     if (idx != -1)
                     {
@@ -888,12 +890,13 @@ namespace SuperPutty
                 {
                     if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN && this.DockPanel.ActiveDocument is ToolWindowDocument)
                     {
-
                         if (currentTabPanel == null)
                             currentTabPanel = CurrentPanel;
                         if (currentTabPanel != null && currentTabPanel.PreviousPanel != null)
                         {
                             currentTabPanel = currentTabPanel.PreviousPanel;
+
+                            //Log.Info("### Switch to " + currentTabPanel.Text);
                             currentTabPanel.Activate();
                             // RML: Need code to activate main frame SuperPutty window
                             //      while still leaving focus in PuTTY session
@@ -907,6 +910,30 @@ namespace SuperPutty
             }
                                 
             return NativeMethods.CallNextHookEx(kbHookID, nCode, wParam, lParam);
+        }
+
+        List<IDockContent> GetDocuments()
+        {
+            List<IDockContent> docs = new List<IDockContent>();
+            if (this.DockPanel.Contents.Count > 0 && this.DockPanel.Panes.Count > 0)
+            {
+                List<DockPane> panes = new List<DockPane>(this.DockPanel.Panes);
+                panes.Sort((x, y) =>
+                {
+                    int res = x.Top.CompareTo(y.Top);
+                    return res == 0 ? x.Left.CompareTo(y.Left) : res;
+                });
+                foreach (DockPane pane in panes) 
+                {
+                    if (pane.Appearance == DockPane.AppearanceStyle.Document)
+                    {
+                        docs.AddRange(pane.Contents);
+                        //Log.InfoFormat("\tPane: contents={0}, L={1}, T={2}", pane.Contents.Count, pane.Left, pane.Top);
+                        //foreach (IDockContent content in pane.Contents) { //Log.Info("\t\t" + content.DockHandler.TabText); }
+                    }
+                }
+            }
+            return docs;
         }
 
         private static IntPtr SetMHook(NativeMethods.LowLevelKMProc proc)
@@ -1001,7 +1028,6 @@ namespace SuperPutty
         }
 
         #endregion 
-
 
         protected override void WndProc(ref Message m)
         {
