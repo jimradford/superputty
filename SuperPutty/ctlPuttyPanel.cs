@@ -133,11 +133,69 @@ namespace SuperPutty
                     }
                 }
             }
+            DockPane pane = GetDockPane();
+            if (pane != null)
+            {
+                this.closeOthersToTheRightToolStripMenuItem.Enabled =
+                    pane.Contents.IndexOf(this) != pane.Contents.Count - 1;
+            }
         }
 
         private void closeSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void closeOthersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (IDockContent doc in new List<IDockContent>(this.DockPanel.DocumentsToArray()))
+            {
+                if (doc == this) { continue; }
+                ToolWindowDocument win = doc as ToolWindowDocument;
+                if (win != null)
+                {
+                    win.Close();
+                }
+            }
+        }
+
+        private void closeOthersToTheRightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // find the dock pane with this window
+            DockPane pane = GetDockPane();
+            if (pane != null)
+            {
+                // found the pane
+                bool close = false;
+                foreach (IDockContent content in new List<IDockContent>(pane.Contents))
+                {
+                    if (content == this)
+                    {
+                        close = true;
+                        continue;
+                    }
+                    if (close)
+                    {
+                        ToolWindowDocument win = content as ToolWindowDocument;
+                        if (win != null)
+                        {
+                            win.Close();
+                        }
+                    }
+                }
+            }
+        }
+
+        DockPane GetDockPane()
+        {
+            foreach (DockPane pane in this.DockPanel.Panes)
+            {
+                if (pane.Contents.Contains(this))
+                {
+                    return pane;
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -325,5 +383,6 @@ namespace SuperPutty
             get { return this.acceptCommandsToolStripMenuItem.Checked;  }
             set { this.acceptCommandsToolStripMenuItem.Checked = value; }
         }
+
     }
 }
