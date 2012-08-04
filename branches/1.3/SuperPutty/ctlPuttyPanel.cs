@@ -57,6 +57,8 @@ namespace SuperPutty
             InitializeComponent();
 
             this.Text = session.SessionName;
+            this.TextOverride = session.SessionName;
+
             CreatePanel();
             AdjustMenu();
         }
@@ -290,6 +292,7 @@ namespace SuperPutty
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 this.Text = dialog.ItemName;
+                this.TextOverride = dialog.ItemName;
             }
         }
 
@@ -385,5 +388,6 @@ namespace SuperPutty
             set { this.acceptCommandsToolStripMenuItem.Checked = value; }
         }
 
+        public string TextOverride { get; set; }
     }
 }
