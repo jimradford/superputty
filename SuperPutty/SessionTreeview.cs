@@ -23,20 +23,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using System.Text;
-using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
-using Microsoft.Win32;
-using System.Xml.Serialization;
-using SuperPutty.Data;
-using log4net;
-using System.Diagnostics;
-using SuperPutty.Utils;
 using System.Configuration;
+using System.Drawing;
+using System.Windows.Forms;
+using log4net;
+using SuperPutty.Data;
+using SuperPutty.Utils;
+using WeifenLuo.WinFormsUI.Docking;
 
 
 namespace SuperPutty
@@ -438,8 +431,8 @@ namespace SuperPutty
                     List<SessionData> sessions = new List<SessionData>();
                     GetAllSessions(node, sessions);
                     if (DialogResult.Yes == MessageBox.Show(
-                        "Remove Folder and " + sessions.Count + " sessions?",
-                        "Remove Folder", 
+                        "Remove Folder [" + node.Text + "] and [" + sessions.Count + "] sessions?",
+                        "Remove Folder?", 
                         MessageBoxButtons.YesNo))
                     {
                         foreach (SessionData session in sessions)
