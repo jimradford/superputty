@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(dlgFindPutty));
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonBrowsePutty = new System.Windows.Forms.Button();
@@ -60,6 +61,7 @@
             this.comboBoxTabText = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.comboBoxTabSwitching = new System.Windows.Forms.ComboBox();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // buttonOk
@@ -168,6 +170,7 @@
             this.label3.Size = new System.Drawing.Size(143, 15);
             this.label3.TabIndex = 9;
             this.label3.Text = "Settings Folder (Required)";
+            this.toolTip.SetToolTip(this.label3, "Where sessions and layout config files are stored");
             // 
             // buttonBrowseLayoutsFolder
             // 
@@ -189,6 +192,7 @@
             this.label4.Size = new System.Drawing.Size(84, 15);
             this.label4.TabIndex = 12;
             this.label4.Text = "Default Layout";
+            this.toolTip.SetToolTip(this.label4, "Determines which set of sessions, if any, to restore at startup");
             // 
             // comboBoxLayouts
             // 
@@ -231,6 +235,7 @@
             this.checkRestoreWindow.Size = new System.Drawing.Size(193, 17);
             this.checkRestoreWindow.TabIndex = 26;
             this.checkRestoreWindow.Text = "Restore Window Size and Location";
+            this.toolTip.SetToolTip(this.checkRestoreWindow, "Save windows size and location on close and restore on start up");
             this.checkRestoreWindow.UseVisualStyleBackColor = true;
             // 
             // checkConstrainPuttyDocking
@@ -241,6 +246,7 @@
             this.checkConstrainPuttyDocking.Size = new System.Drawing.Size(193, 17);
             this.checkConstrainPuttyDocking.TabIndex = 25;
             this.checkConstrainPuttyDocking.Text = "Restrict Content to Document Tabs";
+            this.toolTip.SetToolTip(this.checkConstrainPuttyDocking, "Prevent sessions from being docked in tool windows (edges)");
             this.checkConstrainPuttyDocking.UseVisualStyleBackColor = true;
             // 
             // checkSingleInstanceMode
@@ -251,6 +257,8 @@
             this.checkSingleInstanceMode.Size = new System.Drawing.Size(254, 17);
             this.checkSingleInstanceMode.TabIndex = 24;
             this.checkSingleInstanceMode.Text = "Only allow single instance of SuperPuTTY to run";
+            this.toolTip.SetToolTip(this.checkSingleInstanceMode, "If checked, new sessions launched from the command line are opened in an existing" +
+        " instance");
             this.checkSingleInstanceMode.UseVisualStyleBackColor = true;
             // 
             // checkExitConfirmation
@@ -261,6 +269,7 @@
             this.checkExitConfirmation.Size = new System.Drawing.Size(104, 17);
             this.checkExitConfirmation.TabIndex = 27;
             this.checkExitConfirmation.Text = "Exit Confirmation";
+            this.toolTip.SetToolTip(this.checkExitConfirmation, "Ask for confirmation before closing SuperPutty");
             this.checkExitConfirmation.UseVisualStyleBackColor = true;
             // 
             // label6
@@ -281,6 +290,7 @@
             this.checkExpandTree.Size = new System.Drawing.Size(187, 17);
             this.checkExpandTree.TabIndex = 29;
             this.checkExpandTree.Text = "Expand Sessions Tree on Start up";
+            this.toolTip.SetToolTip(this.checkExpandTree, "Expand the session tree at startup to full extent");
             this.checkExpandTree.UseVisualStyleBackColor = true;
             // 
             // checkMinimizeToTray
@@ -311,6 +321,7 @@
             this.label7.Size = new System.Drawing.Size(111, 15);
             this.label7.TabIndex = 33;
             this.label7.Text = "mintty.exe Location";
+            this.toolTip.SetToolTip(this.label7, "Alternative to putty-cyg for local access");
             // 
             // btnBrowseMintty
             // 
@@ -331,6 +342,7 @@
             this.label8.Size = new System.Drawing.Size(56, 13);
             this.label8.TabIndex = 34;
             this.label8.Text = "Tab Text: ";
+            this.toolTip.SetToolTip(this.label8, "Determines how tabs are named and if they respond to the shell\'s title changing");
             // 
             // comboBoxTabText
             // 
@@ -349,6 +361,7 @@
             this.label9.Size = new System.Drawing.Size(78, 13);
             this.label9.TabIndex = 36;
             this.label9.Text = "Tab Switching:";
+            this.toolTip.SetToolTip(this.label9, "Determines the order sessions tabs are cycled through");
             // 
             // comboBoxTabSwitching
             // 
@@ -442,5 +455,6 @@
         private System.Windows.Forms.ComboBox comboBoxTabText;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox comboBoxTabSwitching;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
