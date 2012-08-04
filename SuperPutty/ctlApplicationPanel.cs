@@ -56,7 +56,6 @@ namespace SuperPutty
         private string m_ApplicationParameters = "";
         private string m_ApplicationWorkingDirectory = "";
         private WindowActivator m_windowActivator = null;
-        private string m_originalText;
 
         internal PuttyClosedCallback m_CloseCallback;
 
@@ -232,17 +231,18 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             StringBuilder sb = new StringBuilder(length + 1);
             NativeMethods.SendMessage(m_AppWin, NativeMethods.WM_GETTEXT, sb.Capacity, sb);
             string controlText = sb.ToString();
+            string parentText = ((ctlPuttyPanel)this.Parent).TextOverride;
 
             switch ((SuperPutty.frmSuperPutty.TabTextBehavior)Enum.Parse(typeof(frmSuperPutty.TabTextBehavior), SuperPuTTY.Settings.TabTextBehavior))
             {
                 case frmSuperPutty.TabTextBehavior.Static:
-                    this.Parent.Text = this.m_originalText;
+                    this.Parent.Text = parentText;
                     break;
                 case frmSuperPutty.TabTextBehavior.Dynamic:
                     this.Parent.Text = controlText;
                     break;
                 case frmSuperPutty.TabTextBehavior.Mixed:
-                    this.Parent.Text = this.m_originalText + ": " + controlText;
+                    this.Parent.Text = parentText + ": " + controlText;
                     break;
             }
         }
@@ -283,7 +283,6 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             {
                 m_Created = true;
                 m_AppWin = IntPtr.Zero;
-                m_originalText = this.Parent.Text;
                 try
                 {
                     m_Process = new Process();
