@@ -84,6 +84,7 @@ namespace SuperPutty
         private Rectangle lastNormalDesktopBounds;
         private ChildWindowFocusHelper focusHelper;
         bool isControlDown = false;
+        bool isShiftDown = false;
         int commandMRUIndex = 0;
 
         private readonly TabSwitcher tabSwitcher;
@@ -838,7 +839,21 @@ namespace SuperPutty
 
                     // If Ctrl-Tab has been pressed to move to an older panel then
                     // make it current panel when Ctrl key is finally released.
-                    if (!isControlDown)
+                    if (!isControlDown && !isShiftDown)
+                    {
+                        this.tabSwitcher.CurrentDocument = (ToolWindow)this.DockPanel.ActiveDocument;
+                    }
+                }
+
+                // Detect shift key state for left and right shift keys
+                if ((Keys)vkCode == Keys.LShiftKey || (Keys)vkCode == Keys.RShiftKey)
+                {
+                    // Set flag to indicate if Ctrl key is up or down
+                    isShiftDown = (wParam == (IntPtr)NativeMethods.WM_KEYDOWN);
+
+                    // If Ctrl-Shift-Tab has been pressed to move to an older panel then
+                    // make it current panel when both keys are finally released.
+                    if (!isControlDown && !isShiftDown)
                     {
                         this.tabSwitcher.CurrentDocument = (ToolWindow)this.DockPanel.ActiveDocument;
                     }
@@ -877,8 +892,21 @@ namespace SuperPutty
                     }
                 }
 
-                // Operator has pressed Ctrl-Tab, make previous PuTTY panel active
-                if (isControlDown && (Keys)vkCode == Keys.Tab)
+                // Operator has pressed Ctrl-Tab, make next PuTTY panel active
+                if (isControlDown && !isShiftDown && (Keys)vkCode == Keys.Tab)
+                {
+                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN && this.DockPanel.ActiveDocument is ToolWindowDocument)
+                    {
+                        if (this.tabSwitcher.MoveToNextDocument())
+                        {
+                            // Eat the keystroke
+                            return (IntPtr)1;
+                        }
+                    }
+                }
+
+                // Operator has pressed Ctrl-Shift-Tab, make previous PuTTY panel active
+                if (isControlDown && isShiftDown && (Keys)vkCode == Keys.Tab)
                 {
                     if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN && this.DockPanel.ActiveDocument is ToolWindowDocument)
                     {
@@ -889,6 +917,7 @@ namespace SuperPutty
                         }
                     }
                 }
+
             }
                                 
             return NativeMethods.CallNextHookEx(kbHookID, nCode, wParam, lParam);
