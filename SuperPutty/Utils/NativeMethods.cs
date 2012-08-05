@@ -1066,6 +1066,9 @@ namespace SuperPutty.Utils
         public static extern int SendMessage(IntPtr hWnd, uint Msg, long wParam, long lParam);
 
         [DllImport("user32.dll")]
+        private static extern int FindWindow(string className, string windowText);
+
+        [DllImport("user32.dll")]
         public static extern bool ShowWindow(IntPtr hWnd, WindowShowStyle nCmdShow);
 
         [DllImport("user32")]

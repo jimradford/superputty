@@ -75,6 +75,27 @@ namespace SuperPutty.Utils
             SuperPuTTY.ReportStatus("Closed {0}", this.Name);
         }
 
+        public void Hide()
+        {
+            if (this.Instance != null)
+            {
+                this.Instance.Hide();
+            }
+        }
+
+        public void Restore()
+        {
+            if (this.Instance != null)
+            {
+                this.Instance.Show(this.DockPanel);
+            }
+        }
+
+        public bool IsVisible
+        {
+            get { return this.Instance != null && this.Instance.Visible; }
+        }
+
 
         public string Name { get; private set; }
         public DockPanel DockPanel { get; private set; }
