@@ -88,6 +88,7 @@ namespace SuperPutty
         int commandMRUIndex = 0;
 
         private readonly TabSwitcher tabSwitcher;
+        private readonly ViewState fullscreenViewState;
 
         public frmSuperPutty()
         {
@@ -144,6 +145,9 @@ namespace SuperPutty
             // tab switching
             this.tabSwitcher = new TabSwitcher(this.DockPanel);
             this.tabSwitcher.TabSwitchStrategy = TabSwitcher.StrategyFromTypeName(SuperPuTTY.Settings.TabSwitcher);
+
+            // full screen
+            this.fullscreenViewState = new ViewState(this);
         }
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
@@ -375,6 +379,122 @@ namespace SuperPutty
                 this.layouts.ShowWindow(DockState.DockRight);
             }
         }
+
+
+        private void fullScreenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToggleFullScreen();
+        }
+
+        void ToggleFullScreen()
+        {
+            if (this.fullScreenToolStripMenuItem.Checked)
+            {
+                Log.InfoFormat("Restore from Fullscreen");
+                this.fullscreenViewState.Restore();
+            }
+            else
+            {
+                Log.InfoFormat("Go to Fullscreen");
+                this.fullscreenViewState.SaveState();
+                this.fullscreenViewState.Hide();
+            }
+            this.fullScreenToolStripMenuItem.Checked = !this.fullScreenToolStripMenuItem.Checked;
+
+        }
+
+        class ViewState
+        {
+            public ViewState(frmSuperPutty mainForm)
+            {
+                this.MainForm = mainForm;
+                this.ConnectionBarLocation = this.MainForm.tsConnect.Location;
+                this.CommandBarLocation = this.MainForm.tsConnect.Location;
+            }
+
+            public frmSuperPutty MainForm { get; set; }
+            public bool StatusBar { get; set; }
+            public bool ConnectionBar { get; set; }
+            public bool CommandBar { get; set; }
+            public bool SessionsWindow { get; set; }
+            public bool LogWindow { get; set; }
+            public bool LayoutWindow { get; set; }
+
+            public FormBorderStyle FormBorderStyle { get; set; }
+            public FormWindowState FormWindowState { get; set; }
+
+            public Point ConnectionBarLocation { get; set; }
+            public Point CommandBarLocation { get; set; }
+
+            public void SaveState()
+            {
+                this.StatusBar = this.MainForm.showStatusBarToolStripMenuItem.Checked;
+
+                this.ConnectionBar = this.MainForm.quickConnectionToolStripMenuItem.Checked;
+                this.CommandBar = this.MainForm.sendCommandsToolStripMenuItem.Checked;
+
+                this.SessionsWindow = this.MainForm.sessions.IsVisible;
+                this.LogWindow = this.MainForm.logViewer.IsVisible;
+                this.LayoutWindow = this.MainForm.layouts.IsVisible;
+
+                this.FormBorderStyle = this.MainForm.FormBorderStyle;
+                this.FormWindowState = this.MainForm.WindowState;
+
+            }
+
+            public void Hide()
+            {
+                // windows
+                this.MainForm.sessions.Hide();
+                this.MainForm.layouts.Hide();
+                this.MainForm.logViewer.Hide();
+
+                // status bar
+                this.MainForm.statusStrip1.Hide();
+
+                // toolbars
+                this.MainForm.tsCommands.Visible = false;
+                this.MainForm.tsConnect.Visible = false;
+
+                // menubar
+                this.MainForm.menuStrip1.Hide();
+
+                this.MainForm.FormBorderStyle = FormBorderStyle.None;
+                this.MainForm.WindowState = FormWindowState.Maximized;
+                this.MainForm.TopMost = true;
+            }
+
+            public void Restore()
+            {
+                // windows
+                if (this.SessionsWindow) { this.MainForm.sessions.Restore(); }
+                if (this.LayoutWindow) { this.MainForm.layouts.Restore(); }
+                if (this.LogWindow) { this.MainForm.logViewer.Restore(); }
+
+                // status bar
+                if (this.StatusBar) { this.MainForm.statusStrip1.Show(); }
+
+                // toolbars
+                if (this.CommandBar && this.ConnectionBar)
+                {
+                    // both visible so set locations
+                    this.MainForm.tsConnect.Visible = true;
+                    this.MainForm.tsConnect.Location = this.ConnectionBarLocation;
+                    this.MainForm.tsCommands.Visible = true;
+                    this.MainForm.tsCommands.Location = this.CommandBarLocation;
+                }
+                else if (this.CommandBar) { this.MainForm.tsCommands.Visible = true; }
+                else if (this.ConnectionBar) { this.MainForm.tsConnect.Visible = true; }
+ 
+                // menubar
+                this.MainForm.menuStrip1.Show();
+
+                this.MainForm.TopMost = false;
+                this.MainForm.WindowState = this.FormWindowState;
+                this.MainForm.FormBorderStyle = this.FormBorderStyle;
+            }
+        }
+
         #endregion
 
         #region Layout
@@ -829,7 +949,7 @@ namespace SuperPutty
             if (nCode >= 0 && IsForegroundWindow(this.Handle))
             {
                 int vkCode = Marshal.ReadInt32(lParam);
-                // Log.InfoFormat("KBHook={0}, wParam={1}, lParam={2}", nCode, wParam, vkCode);
+                //Log.InfoFormat("KBHook={0}, wParam={1}, lParam={2}", nCode, wParam, vkCode);
 
                 // Detect control key state for left and right control keys
                 if ((Keys)vkCode == Keys.LControlKey || (Keys)vkCode == Keys.RControlKey)
@@ -916,6 +1036,16 @@ namespace SuperPutty
                             return (IntPtr)1;
                         }
                     }
+                }
+
+                if ((Keys)vkCode == Keys.F11)
+                {
+                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
+                    {
+                        this.BeginInvoke(new MethodInvoker(this.ToggleFullScreen));
+                    }
+                    // Eat the keystroke
+                    return (IntPtr)1;
                 }
 
             }
@@ -1031,5 +1161,6 @@ namespace SuperPutty
             Dynamic, 
             Mixed
         }
+
     }
 }
