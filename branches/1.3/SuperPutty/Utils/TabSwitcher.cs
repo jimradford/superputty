@@ -46,7 +46,6 @@ namespace SuperPutty.Utils
 
             this.DockPanel = dockPanel;
             this.DockPanel.ContentAdded += DockPanel_ContentAdded;
-            this.DockPanel.ContentRemoved += DockPanel_ContentRemoved;
         }
 
         public ITabSwitchStrategy TabSwitchStrategy
@@ -97,14 +96,17 @@ namespace SuperPutty.Utils
                 {
                     if (e.Content.DockHandler.DockState == DockState.Document)
                     {
-                        this.AddDocument((ToolWindow)e.Content);
+                        ToolWindow window = (ToolWindow)e.Content;
+                        this.AddDocument(window);
+                        window.FormClosed += window_FormClosed;
                     }
                 }));
         }
 
-        void DockPanel_ContentRemoved(object sender, DockContentEventArgs e)
+        void window_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
         {
-            this.RemoveDocument((ToolWindow)e.Content);
+            ToolWindow window = (ToolWindow)sender;
+            this.RemoveDocument((ToolWindow)sender);
         }
 
         void AddDocument(ToolWindow tab)
@@ -142,7 +144,10 @@ namespace SuperPutty.Utils
         public void Dispose()
         {
             this.DockPanel.ContentAdded -= DockPanel_ContentAdded;
-            this.DockPanel.ContentRemoved -= DockPanel_ContentRemoved;
+            foreach (ToolWindow win in this.Documents)
+            {
+                win.FormClosed -= this.window_FormClosed;
+            }
         }
 
         public ToolWindow ActiveDocument { get { return (ToolWindow)this.DockPanel.ActiveDocument; } }
@@ -227,6 +232,8 @@ namespace SuperPutty.Utils
     #region VisualOrderTabSwitchStrategy
     public class VisualOrderTabSwitchStrategy : AbstractOrderedTabSwitchStrategy
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(VisualOrderTabSwitchStrategy));
+
         public VisualOrderTabSwitchStrategy() : 
             base("Visual: Left-to-Right, Top-to-Bottom") { }
 
@@ -245,7 +252,13 @@ namespace SuperPutty.Utils
                 {
                     if (pane.Appearance == DockPane.AppearanceStyle.Document)
                     {
-                        docs.AddRange(pane.Contents);
+                        foreach (IDockContent content in pane.Contents)
+                        {
+                            if (content.DockHandler.DockState == DockState.Document)
+                            {
+                                docs.Add(content);
+                            }
+                        }
                         //Log.InfoFormat("\tPane: contents={0}, L={1}, T={2}", pane.Contents.Count, pane.Left, pane.Top);
                         //foreach (IDockContent content in pane.Contents) { //Log.Info("\t\t" + content.DockHandler.TabText); }
                     }
