@@ -510,8 +510,8 @@ namespace SuperPutty
 
             if (SuperPuTTY.StartingSession != null)
             {
-                // load empty layout then open session
-                SuperPuTTY.LoadLayout(null);
+                // coming from command line, so no don't load any layout
+                //SuperPuTTY.LoadLayout(null);
                 SuperPuTTY.OpenSession(SuperPuTTY.StartingSession);
             }
             else
