@@ -6,12 +6,15 @@ using SuperPutty.Data;
 using log4net;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace SuperPutty.Utils
 {
     public class PuttyStartInfo
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(PuttyStartInfo));
+
+        private static readonly Regex regExEnvVars = new Regex(@"(%\w+%)");
 
         public PuttyStartInfo(SessionData session)
         {
@@ -38,6 +41,9 @@ namespace SuperPutty.Utils
                 argsToLog = MakeArgs(session, false);
             }
 
+            // attempt to parse env vars
+            this.Args = this.Args.Contains('%') ? TryParseEnvVars(this.Args) : this.Args;
+
             Log.InfoFormat("Putty Args: '{0}'", argsToLog ?? this.Args);
         }
 
@@ -54,6 +60,26 @@ namespace SuperPutty.Utils
             args += session.Host;
 
             return args;
+        }
+
+        static string TryParseEnvVars(string args)
+        {
+            string result = args;
+            try
+            {
+                result = regExEnvVars.Replace(
+                    args,
+                    m =>
+                    {
+                        string name = m.Value.Trim('%');
+                        return Environment.GetEnvironmentVariable(name) ?? m.Value;
+                    });
+            }
+            catch(Exception ex)
+            {
+                Log.Warn("Could not parse env vars in args", ex);
+            }
+            return result;
         }
 
         /// <summary>
