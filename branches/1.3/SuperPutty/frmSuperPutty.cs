@@ -444,54 +444,79 @@ namespace SuperPutty
 
             public void Hide()
             {
-                // windows
-                this.MainForm.sessions.Hide();
-                this.MainForm.layouts.Hide();
-                this.MainForm.logViewer.Hide();
+                try
+                {
+                    this.MainForm.DockPanel.Visible = false;
 
-                // status bar
-                this.MainForm.statusStrip1.Hide();
+                    // windows
+                    this.MainForm.sessions.Hide();
+                    this.MainForm.layouts.Hide();
+                    this.MainForm.logViewer.Hide();
 
-                // toolbars
-                this.MainForm.tsCommands.Visible = false;
-                this.MainForm.tsConnect.Visible = false;
+                    // status bar
+                    this.MainForm.statusStrip1.Hide();
 
-                // menubar
-                this.MainForm.menuStrip1.Hide();
+                    // toolbars
+                    this.MainForm.tsCommands.Visible = false;
+                    this.MainForm.tsConnect.Visible = false;
 
-                this.MainForm.FormBorderStyle = FormBorderStyle.None;
-                this.MainForm.WindowState = FormWindowState.Maximized;
-                this.MainForm.TopMost = true;
+                    // menubar
+                    this.MainForm.menuStrip1.Hide();
+
+                    this.MainForm.FormBorderStyle = FormBorderStyle.None;
+                    if (this.MainForm.WindowState == FormWindowState.Maximized)
+                    {
+                        // if maximized, goto normal first
+                        this.MainForm.WindowState = FormWindowState.Normal;
+                    }
+                    this.MainForm.WindowState = FormWindowState.Maximized;
+                    this.MainForm.TopMost = true;
+                }
+                finally
+                {
+                    this.MainForm.DockPanel.Visible = true;
+                }
+
             }
 
             public void Restore()
             {
-                // windows
-                if (this.SessionsWindow) { this.MainForm.sessions.Restore(); }
-                if (this.LayoutWindow) { this.MainForm.layouts.Restore(); }
-                if (this.LogWindow) { this.MainForm.logViewer.Restore(); }
-
-                // status bar
-                if (this.StatusBar) { this.MainForm.statusStrip1.Show(); }
-
-                // toolbars
-                if (this.CommandBar && this.ConnectionBar)
+                try
                 {
-                    // both visible so set locations
-                    this.MainForm.tsConnect.Visible = true;
-                    this.MainForm.tsConnect.Location = this.ConnectionBarLocation;
-                    this.MainForm.tsCommands.Visible = true;
-                    this.MainForm.tsCommands.Location = this.CommandBarLocation;
-                }
-                else if (this.CommandBar) { this.MainForm.tsCommands.Visible = true; }
-                else if (this.ConnectionBar) { this.MainForm.tsConnect.Visible = true; }
- 
-                // menubar
-                this.MainForm.menuStrip1.Show();
+                    this.MainForm.DockPanel.Visible = false;
 
-                this.MainForm.TopMost = false;
-                this.MainForm.WindowState = this.FormWindowState;
-                this.MainForm.FormBorderStyle = this.FormBorderStyle;
+                    // windows
+                    if (this.SessionsWindow) { this.MainForm.sessions.Restore(); }
+                    if (this.LayoutWindow) { this.MainForm.layouts.Restore(); }
+                    if (this.LogWindow) { this.MainForm.logViewer.Restore(); }
+
+                    // status bar
+                    if (this.StatusBar) { this.MainForm.statusStrip1.Show(); }
+
+                    // toolbars
+                    if (this.CommandBar && this.ConnectionBar)
+                    {
+                        // both visible so set locations
+                        this.MainForm.tsConnect.Visible = true;
+                        this.MainForm.tsConnect.Location = this.ConnectionBarLocation;
+                        this.MainForm.tsCommands.Visible = true;
+                        this.MainForm.tsCommands.Location = this.CommandBarLocation;
+                    }
+                    else if (this.CommandBar) { this.MainForm.tsCommands.Visible = true; }
+                    else if (this.ConnectionBar) { this.MainForm.tsConnect.Visible = true; }
+
+                    // menubar
+                    this.MainForm.menuStrip1.Show();
+
+                    this.MainForm.TopMost = false;
+                    this.MainForm.WindowState = this.FormWindowState;
+                    this.MainForm.FormBorderStyle = this.FormBorderStyle;
+                }
+                finally
+                {
+                    this.MainForm.DockPanel.Visible = true;
+
+                }
             }
         }
 
