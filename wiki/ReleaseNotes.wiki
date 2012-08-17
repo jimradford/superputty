@@ -1,11 +1,20 @@
-#summary Descriptions of changes in each release
+#summary Summary of changes in past and future releases
 
 = Release Notes =
 
 == Current and Released ==
 
+=== v1.2.x.x ===
+
+  * Merging in patches
+  * Command Toolbar
+  * Connection Toolbar
+  * Restore Location
+  * CLI
+  * Single Instance mode
+  * Portable configs
+
 === v1.1.0.x ===
-_final release soon_
 
   * Cygterm Protocol Support
     * Specify starting folder via hostname field (e.g. localhost:c:\dev\svn)
@@ -31,15 +40,22 @@ _final release soon_
     * Shell text garbled at start or after minimize/maximize
     * Improved logic to grab putty windows
 
-----
-== Future ==
 
-=== v1.2.x.x ===
+
+----
+== Road map ==
+
+=== v1.3.x.x ===
 _in development_
 
-  * Change settings to use custom provider (portability)
-  * Command Line Interface
-  * Single Instance Support 
-  * Connection Toolbar
-  * Send Commands Toolbar
-  * Others items...
+  * Switch Tabs from Keyboard
+  * Full Screen
+  * More advanced configuration screen
+
+=== v1.4.x.x ===
+
+  * SCP enhancements
+
+=== v1.5.x.x ===
+
+  * Revisit Tree Implementation
