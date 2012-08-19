@@ -100,6 +100,7 @@ namespace SuperPutty
             this.tbFocusHelperUserName = new TextBoxFocusHelper(this.tbTxtBoxLogin.TextBox);
             this.tbFocusHelperPassword = new TextBoxFocusHelper(this.tbTxtBoxPassword.TextBox);
             this.sendCommandsDocumentSelector = new frmDocumentSelector(this.DockPanel);
+            this.sendCommandsDocumentSelector.Owner = this;
 
             // Hook into status
             SuperPuTTY.StatusEvent += new Action<string>(delegate(String msg) { this.toolStripStatusLabelMessage.Text = msg; });
