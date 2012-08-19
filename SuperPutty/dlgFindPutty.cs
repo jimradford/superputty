@@ -152,6 +152,14 @@ namespace SuperPutty
             }
             this.comboBoxTabSwitching.SelectedItem = selectedItem ?? TabSwitcher.Strategies[0];
 
+            // activator types
+            this.comboBoxActivatorType.Items.Add(typeof(KeyEventWindowActivator).FullName);
+            this.comboBoxActivatorType.Items.Add(typeof(CombinedWindowActivator).FullName);
+            this.comboBoxActivatorType.Items.Add(typeof(SetFGWindowActivator).FullName);
+            this.comboBoxActivatorType.Items.Add(typeof(RestoreWindowActivator).FullName);
+            this.comboBoxActivatorType.Items.Add(typeof(SetFGAttachThreadWindowActivator).FullName);
+            this.comboBoxActivatorType.SelectedItem = SuperPuTTY.Settings.WindowActivator;
+
             // default layouts
             InitLayouts();
 
@@ -161,6 +169,9 @@ namespace SuperPutty
             this.checkExitConfirmation.Checked = SuperPuTTY.Settings.ExitConfirmation;
             this.checkExpandTree.Checked = SuperPuTTY.Settings.ExpandSessionsTreeOnStartup;
             this.checkMinimizeToTray.Checked = SuperPuTTY.Settings.MinimizeToTray;
+            this.checkSessionsTreeShowLines.Checked = SuperPuTTY.Settings.SessionsTreeShowLines;
+            this.btnFont.Font = SuperPuTTY.Settings.SessionsTreeFont;
+            this.btnFont.Text = ToShortString(SuperPuTTY.Settings.SessionsTreeFont);
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -251,8 +262,11 @@ namespace SuperPutty
                 SuperPuTTY.Settings.ExitConfirmation = this.checkExitConfirmation.Checked;
                 SuperPuTTY.Settings.ExpandSessionsTreeOnStartup = this.checkExpandTree.Checked;
                 SuperPuTTY.Settings.MinimizeToTray = this.checkMinimizeToTray.Checked;
-                SuperPuTTY.Settings.TabTextBehavior = (String) this.comboBoxTabText.SelectedItem;
-                SuperPuTTY.Settings.TabSwitcher = (String)this.comboBoxTabSwitching.SelectedItem.GetType().FullName;
+                SuperPuTTY.Settings.TabTextBehavior = (string) this.comboBoxTabText.SelectedItem;
+                SuperPuTTY.Settings.TabSwitcher = (string)this.comboBoxTabSwitching.SelectedItem.GetType().FullName;
+                SuperPuTTY.Settings.SessionsTreeShowLines = this.checkSessionsTreeShowLines.Checked;
+                SuperPuTTY.Settings.SessionsTreeFont = this.btnFont.Font;
+                SuperPuTTY.Settings.WindowActivator = (string) this.comboBoxActivatorType.SelectedItem;
 
                 SuperPuTTY.Settings.Save();
 
@@ -372,5 +386,21 @@ namespace SuperPutty
             this.Close();
         }
 
+        private void btnFont_Click(object sender, EventArgs e)
+        {
+            this.fontDialog.Font = this.btnFont.Font;
+            if (this.fontDialog.ShowDialog() == DialogResult.OK)
+            {
+                this.btnFont.Font = this.fontDialog.Font;
+                this.btnFont.Text = ToShortString(this.fontDialog.Font);
+            }
+        }
+
+
+        static string ToShortString(Font font)
+        {
+            return String.Format("{0}, {1} pt, {2}", font.FontFamily.Name, font.Size, font.Style);
+        }
     }
+
 }

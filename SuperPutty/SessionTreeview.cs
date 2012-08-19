@@ -62,6 +62,7 @@ namespace SuperPutty
             // populate sessions in the treeview from the registry
             LoadSessions();
             SuperPuTTY.Sessions.ListChanged += new ListChangedEventHandler(Sessions_ListChanged);
+            SuperPuTTY.Settings.SettingsSaving += new SettingsSavingEventHandler(Settings_SettingsSaving);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -85,11 +86,25 @@ namespace SuperPutty
                     }
                 }
             }
+
+            this.ApplySettings();
+        }
+
+        void Settings_SettingsSaving(object sender, CancelEventArgs e)
+        {
+            this.ApplySettings();
+        }
+
+        void ApplySettings()
+        {
+            this.treeView1.ShowLines = SuperPuTTY.Settings.SessionsTreeShowLines;
+            this.treeView1.Font = SuperPuTTY.Settings.SessionsTreeFont;
         }
 
         protected override void OnClosed(EventArgs e)
         {
             SuperPuTTY.Sessions.ListChanged -= new ListChangedEventHandler(Sessions_ListChanged);
+            SuperPuTTY.Settings.SettingsSaving -= new SettingsSavingEventHandler(Settings_SettingsSaving);
             base.OnClosed(e);
         }
 

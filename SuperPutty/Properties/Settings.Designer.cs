@@ -269,5 +269,44 @@ namespace SuperPutty.Properties {
                 this["TabSwitcher"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("SuperPutty.Utils.KeyEventWindowActivator")]
+        public string WindowActivator {
+            get {
+                return ((string)(this["WindowActivator"]));
+            }
+            set {
+                this["WindowActivator"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SessionsTreeShowLines {
+            get {
+                return ((bool)(this["SessionsTreeShowLines"]));
+            }
+            set {
+                this["SessionsTreeShowLines"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Segoe UI, 9pt")]
+        public global::System.Drawing.Font SessionsTreeFont {
+            get {
+                return ((global::System.Drawing.Font)(this["SessionsTreeFont"]));
+            }
+            set {
+                this["SessionsTreeFont"] = value;
+            }
+        }
     }
 }
