@@ -61,34 +61,33 @@
             this.label9 = new System.Windows.Forms.Label();
             this.comboBoxTabSwitching = new System.Windows.Forms.ComboBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.label10 = new System.Windows.Forms.Label();
+            this.checkSessionsTreeShowLines = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
             this.tabPageGUI = new System.Windows.Forms.TabPage();
-            this.tabPageAdvanced = new System.Windows.Forms.TabPage();
-            this.panelBottom = new System.Windows.Forms.Panel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.checkSessionsTreeShowLines = new System.Windows.Forms.CheckBox();
-            this.label11 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnFont = new System.Windows.Forms.Button();
-            this.fontDialog = new System.Windows.Forms.FontDialog();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.tabPageShortcuts = new System.Windows.Forms.TabPage();
+            this.label11 = new System.Windows.Forms.Label();
+            this.tabPageAdvanced = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.comboBoxActivatorType = new System.Windows.Forms.ComboBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.panelBottom = new System.Windows.Forms.Panel();
+            this.fontDialog = new System.Windows.Forms.FontDialog();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
-            this.tabPageAdvanced.SuspendLayout();
-            this.panelBottom.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.tabPageAdvanced.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.panelBottom.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -392,11 +391,41 @@
             this.comboBoxTabSwitching.Size = new System.Drawing.Size(207, 21);
             this.comboBoxTabSwitching.TabIndex = 37;
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(11, 16);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(31, 13);
+            this.label10.TabIndex = 35;
+            this.label10.Text = "Font:";
+            this.toolTip.SetToolTip(this.label10, "Determines how tabs are named and if they respond to the shell\'s title changing");
+            // 
+            // checkSessionsTreeShowLines
+            // 
+            this.checkSessionsTreeShowLines.AutoSize = true;
+            this.checkSessionsTreeShowLines.Location = new System.Drawing.Point(76, 70);
+            this.checkSessionsTreeShowLines.Name = "checkSessionsTreeShowLines";
+            this.checkSessionsTreeShowLines.Size = new System.Drawing.Size(81, 17);
+            this.checkSessionsTreeShowLines.TabIndex = 36;
+            this.checkSessionsTreeShowLines.Text = "Show Lines";
+            this.toolTip.SetToolTip(this.checkSessionsTreeShowLines, "Show lines in tree");
+            this.checkSessionsTreeShowLines.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(15, 20);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(52, 13);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Activator:";
+            this.toolTip.SetToolTip(this.label6, "Method for activating SuperPutty when clicking on a putty session.");
+            // 
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabPageGeneral);
             this.tabControl.Controls.Add(this.tabPageGUI);
-            this.tabControl.Controls.Add(this.tabPageShortcuts);
             this.tabControl.Controls.Add(this.tabPageAdvanced);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(5, 5);
@@ -443,40 +472,17 @@
             this.tabPageGUI.Text = "GUI";
             this.tabPageGUI.UseVisualStyleBackColor = true;
             // 
-            // tabPageAdvanced
+            // groupBox3
             // 
-            this.tabPageAdvanced.Controls.Add(this.groupBox5);
-            this.tabPageAdvanced.Controls.Add(this.groupBox4);
-            this.tabPageAdvanced.Location = new System.Drawing.Point(4, 22);
-            this.tabPageAdvanced.Name = "tabPageAdvanced";
-            this.tabPageAdvanced.Size = new System.Drawing.Size(622, 247);
-            this.tabPageAdvanced.TabIndex = 2;
-            this.tabPageAdvanced.Text = "Advanced";
-            this.tabPageAdvanced.UseVisualStyleBackColor = true;
-            // 
-            // panelBottom
-            // 
-            this.panelBottom.Controls.Add(this.buttonCancel);
-            this.panelBottom.Controls.Add(this.buttonOk);
-            this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBottom.Location = new System.Drawing.Point(5, 278);
-            this.panelBottom.Name = "panelBottom";
-            this.panelBottom.Size = new System.Drawing.Size(630, 27);
-            this.panelBottom.TabIndex = 39;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.btnFont);
-            this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Controls.Add(this.checkSessionsTreeShowLines);
-            this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.checkExpandTree);
-            this.groupBox1.Location = new System.Drawing.Point(3, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(349, 99);
-            this.groupBox1.TabIndex = 38;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Session Tree";
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.checkMinimizeToTray);
+            this.groupBox3.Location = new System.Drawing.Point(358, 3);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(258, 242);
+            this.groupBox3.TabIndex = 40;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Misc";
             // 
             // groupBox2
             // 
@@ -493,26 +499,29 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Tabs and Docking";
             // 
-            // label10
+            // groupBox1
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(11, 16);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(31, 13);
-            this.label10.TabIndex = 35;
-            this.label10.Text = "Font:";
-            this.toolTip.SetToolTip(this.label10, "Determines how tabs are named and if they respond to the shell\'s title changing");
+            this.groupBox1.Controls.Add(this.btnFont);
+            this.groupBox1.Controls.Add(this.label11);
+            this.groupBox1.Controls.Add(this.checkSessionsTreeShowLines);
+            this.groupBox1.Controls.Add(this.label10);
+            this.groupBox1.Controls.Add(this.checkExpandTree);
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(349, 99);
+            this.groupBox1.TabIndex = 38;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Session Tree";
             // 
-            // checkSessionsTreeShowLines
+            // btnFont
             // 
-            this.checkSessionsTreeShowLines.AutoSize = true;
-            this.checkSessionsTreeShowLines.Location = new System.Drawing.Point(76, 70);
-            this.checkSessionsTreeShowLines.Name = "checkSessionsTreeShowLines";
-            this.checkSessionsTreeShowLines.Size = new System.Drawing.Size(81, 17);
-            this.checkSessionsTreeShowLines.TabIndex = 36;
-            this.checkSessionsTreeShowLines.Text = "Show Lines";
-            this.toolTip.SetToolTip(this.checkSessionsTreeShowLines, "Show lines in tree");
-            this.checkSessionsTreeShowLines.UseVisualStyleBackColor = true;
+            this.btnFont.Location = new System.Drawing.Point(76, 11);
+            this.btnFont.Name = "btnFont";
+            this.btnFont.Size = new System.Drawing.Size(207, 23);
+            this.btnFont.TabIndex = 39;
+            this.btnFont.Text = "Choose Font";
+            this.btnFont.UseVisualStyleBackColor = true;
+            this.btnFont.Click += new System.EventHandler(this.btnFont_Click);
             // 
             // label11
             // 
@@ -524,27 +533,40 @@
             this.label11.TabIndex = 37;
             this.label11.Text = "Options:";
             // 
-            // groupBox3
+            // tabPageAdvanced
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tabPageAdvanced.Controls.Add(this.groupBox5);
+            this.tabPageAdvanced.Controls.Add(this.groupBox4);
+            this.tabPageAdvanced.Location = new System.Drawing.Point(4, 22);
+            this.tabPageAdvanced.Name = "tabPageAdvanced";
+            this.tabPageAdvanced.Size = new System.Drawing.Size(622, 247);
+            this.tabPageAdvanced.TabIndex = 2;
+            this.tabPageAdvanced.Text = "Advanced";
+            this.tabPageAdvanced.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.checkMinimizeToTray);
-            this.groupBox3.Location = new System.Drawing.Point(358, 3);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(258, 242);
-            this.groupBox3.TabIndex = 40;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Misc";
+            this.groupBox5.Controls.Add(this.comboBoxActivatorType);
+            this.groupBox5.Controls.Add(this.label6);
+            this.groupBox5.Location = new System.Drawing.Point(3, 102);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(616, 142);
+            this.groupBox5.TabIndex = 29;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Focus";
             // 
-            // btnFont
+            // comboBoxActivatorType
             // 
-            this.btnFont.Location = new System.Drawing.Point(76, 11);
-            this.btnFont.Name = "btnFont";
-            this.btnFont.Size = new System.Drawing.Size(207, 23);
-            this.btnFont.TabIndex = 39;
-            this.btnFont.Text = "Choose Font";
-            this.btnFont.UseVisualStyleBackColor = true;
-            this.btnFont.Click += new System.EventHandler(this.btnFont_Click);
+            this.comboBoxActivatorType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxActivatorType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxActivatorType.FormattingEnabled = true;
+            this.comboBoxActivatorType.Location = new System.Drawing.Point(79, 17);
+            this.comboBoxActivatorType.Name = "comboBoxActivatorType";
+            this.comboBoxActivatorType.Size = new System.Drawing.Size(531, 21);
+            this.comboBoxActivatorType.TabIndex = 1;
             // 
             // groupBox4
             // 
@@ -560,48 +582,15 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Application Behavior";
             // 
-            // tabPageShortcuts
+            // panelBottom
             // 
-            this.tabPageShortcuts.Location = new System.Drawing.Point(4, 22);
-            this.tabPageShortcuts.Name = "tabPageShortcuts";
-            this.tabPageShortcuts.Size = new System.Drawing.Size(622, 247);
-            this.tabPageShortcuts.TabIndex = 3;
-            this.tabPageShortcuts.Text = "Shortcuts";
-            this.tabPageShortcuts.UseVisualStyleBackColor = true;
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox5.Controls.Add(this.comboBoxActivatorType);
-            this.groupBox5.Controls.Add(this.label6);
-            this.groupBox5.Location = new System.Drawing.Point(3, 102);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(616, 142);
-            this.groupBox5.TabIndex = 29;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Focus";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(15, 20);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(52, 13);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "Activator:";
-            this.toolTip.SetToolTip(this.label6, "Method for activating SuperPutty when clicking on a putty session.");
-            // 
-            // comboBoxActivatorType
-            // 
-            this.comboBoxActivatorType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxActivatorType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxActivatorType.FormattingEnabled = true;
-            this.comboBoxActivatorType.Location = new System.Drawing.Point(79, 17);
-            this.comboBoxActivatorType.Name = "comboBoxActivatorType";
-            this.comboBoxActivatorType.Size = new System.Drawing.Size(531, 21);
-            this.comboBoxActivatorType.TabIndex = 1;
+            this.panelBottom.Controls.Add(this.buttonCancel);
+            this.panelBottom.Controls.Add(this.buttonOk);
+            this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelBottom.Location = new System.Drawing.Point(5, 278);
+            this.panelBottom.Name = "panelBottom";
+            this.panelBottom.Size = new System.Drawing.Size(630, 27);
+            this.panelBottom.TabIndex = 39;
             // 
             // dlgFindPutty
             // 
@@ -625,18 +614,18 @@
             this.tabPageGeneral.ResumeLayout(false);
             this.tabPageGeneral.PerformLayout();
             this.tabPageGUI.ResumeLayout(false);
-            this.tabPageAdvanced.ResumeLayout(false);
-            this.panelBottom.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.tabPageAdvanced.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.panelBottom.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -688,7 +677,6 @@
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.FontDialog fontDialog;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.TabPage tabPageShortcuts;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.ComboBox comboBoxActivatorType;
         private System.Windows.Forms.Label label6;
