@@ -59,5 +59,14 @@
     <Setting Name="TabSwitcher" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)">SuperPutty.Utils.VisualOrderTabSwitchStrategy</Value>
     </Setting>
+    <Setting Name="WindowActivator" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SuperPutty.Utils.KeyEventWindowActivator</Value>
+    </Setting>
+    <Setting Name="SessionsTreeShowLines" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SessionsTreeFont" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Segoe UI, 9pt</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

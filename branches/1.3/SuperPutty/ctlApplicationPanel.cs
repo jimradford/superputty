@@ -93,7 +93,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
             // setup up the hook to watch for all EVENT_SYSTEM_FOREGROUND events system wide
 
-            this.m_windowActivator = (WindowActivator)Activator.CreateInstance(Type.GetType(ActivatorTypeName));
+            string typeName = string.IsNullOrEmpty(SuperPuTTY.Settings.WindowActivator) ? ActivatorTypeName : SuperPuTTY.Settings.WindowActivator;
+            this.m_windowActivator = (WindowActivator)Activator.CreateInstance(Type.GetType(typeName));
             //this.m_windowActivator = new SetFGCombinedWindowActivator();
             this.m_winEventDelegate = new NativeMethods.WinEventDelegate(WinEventProc);
             this.m_hWinEventHook = NativeMethods.SetWinEventHook(
