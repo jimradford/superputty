@@ -88,6 +88,13 @@ namespace SuperPutty.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap asterisk_gray {
+            get {
+                object obj = ResourceManager.GetObject("asterisk_gray", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap bullet_go {
             get {
                 object obj = ResourceManager.GetObject("bullet_go", resourceCulture);

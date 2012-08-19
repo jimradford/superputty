@@ -54,6 +54,8 @@ namespace SuperPutty.Utils
             AW_BLEND = 0x00080000
         }
 
+        public const int EM_SETPASSWORDCHAR       = 0x00CC;
+
         public struct COPYDATA
         {
             public int dwData;
