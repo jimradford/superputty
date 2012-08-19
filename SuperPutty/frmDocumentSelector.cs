@@ -22,6 +22,7 @@ namespace SuperPutty
         {
             this.dockPanel = dockPanel;
             InitializeComponent();
+            this.checkSendToVisible.Checked = SuperPuTTY.Settings.SendCommandsToVisibleOnly;
         }
 
         protected override void OnVisibleChanged(EventArgs e)
@@ -62,6 +63,8 @@ namespace SuperPutty
             }
             this.DialogResult = DialogResult.OK;
             this.Hide();
+
+            SuperPuTTY.Settings.SendCommandsToVisibleOnly = this.checkSendToVisible.Checked;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -73,10 +76,17 @@ namespace SuperPutty
 
         public bool IsDocumentSelected(ctlPuttyPanel document)
         {
-            return 
-                document != null && 
-                document.Session != null && 
-                document.AcceptCommands;
+            bool selected = false;
+            if (document != null && document.Session != null)
+            {
+                selected = this.checkSendToVisible.Checked ? document.Visible : document.AcceptCommands;
+            }
+            return selected;
+        }
+
+        private void checkSendToVisible_CheckedChanged(object sender, EventArgs e)
+        {
+            this.listViewDocs.Enabled = !this.checkSendToVisible.Checked;
         }
     }
 }

@@ -308,5 +308,18 @@ namespace SuperPutty.Properties {
                 this["SessionsTreeFont"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SendCommandsToVisibleOnly {
+            get {
+                return ((bool)(this["SendCommandsToVisibleOnly"]));
+            }
+            set {
+                this["SendCommandsToVisibleOnly"] = value;
+            }
+        }
     }
 }

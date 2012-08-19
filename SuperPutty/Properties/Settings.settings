@@ -68,5 +68,8 @@
     <Setting Name="SessionsTreeFont" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Drawing.Font" Scope="User">
       <Value Profile="(Default)">Segoe UI, 9pt</Value>
     </Setting>
+    <Setting Name="SendCommandsToVisibleOnly" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

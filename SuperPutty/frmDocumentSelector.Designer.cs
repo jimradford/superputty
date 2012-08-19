@@ -34,11 +34,13 @@
             this.listViewDocs = new System.Windows.Forms.ListView();
             this.colTab = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colSessionId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.checkSendToVisible = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.checkSendToVisible);
             this.panel1.Controls.Add(this.btnCancel);
             this.panel1.Controls.Add(this.btnOK);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -94,6 +96,17 @@
             this.colSessionId.Text = "Session Id";
             this.colSessionId.Width = 300;
             // 
+            // checkSendToVisible
+            // 
+            this.checkSendToVisible.AutoSize = true;
+            this.checkSendToVisible.Location = new System.Drawing.Point(7, 9);
+            this.checkSendToVisible.Name = "checkSendToVisible";
+            this.checkSendToVisible.Size = new System.Drawing.Size(151, 17);
+            this.checkSendToVisible.TabIndex = 2;
+            this.checkSendToVisible.Text = "Send To Visible Tabs Only";
+            this.checkSendToVisible.UseVisualStyleBackColor = true;
+            this.checkSendToVisible.CheckedChanged += new System.EventHandler(this.checkSendToVisible_CheckedChanged);
+            // 
             // frmDocumentSelector
             // 
             this.AcceptButton = this.btnOK;
@@ -108,6 +121,7 @@
             this.ShowInTaskbar = false;
             this.Text = "Select Documents";
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -120,6 +134,7 @@
         private System.Windows.Forms.ListView listViewDocs;
         private System.Windows.Forms.ColumnHeader colTab;
         private System.Windows.Forms.ColumnHeader colSessionId;
+        private System.Windows.Forms.CheckBox checkSendToVisible;
 
     }
 }
