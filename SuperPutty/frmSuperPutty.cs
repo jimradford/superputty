@@ -864,7 +864,7 @@ namespace SuperPutty
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                TrySendCommandsFromToolbar(true);
+                TrySendCommandsFromToolbar(!this.tbBtnMaskText.Checked);
                 e.Handled = true;
             }
         }
@@ -910,13 +910,22 @@ namespace SuperPutty
 
         private void tbBtnSendCommand_Click(object sender, EventArgs e)
         {
-            TrySendCommandsFromToolbar(true);
+            TrySendCommandsFromToolbar(!this.tbBtnMaskText.Checked);
         }
 
 
-        private void tbBtnSendCommandNoHist_Click(object sender, EventArgs e)
+        private void tbBtnMaskText_Click(object sender, EventArgs e)
         {
-            TrySendCommandsFromToolbar(false);
+            IntPtr handle = NativeMethods.GetWindow(this.tsSendCommandCombo.ComboBox.Handle, NativeMethods.GetWindowCmd.GW_CHILD);
+            if (this.tbBtnMaskText.Checked)
+            {
+                NativeMethods.SendMessage(handle, NativeMethods.EM_SETPASSWORDCHAR, (int)'*', 0);
+            }
+            else
+            {
+                NativeMethods.SendMessage(handle, NativeMethods.EM_SETPASSWORDCHAR, 0, 0);
+            }
+            this.tsSendCommandCombo.ComboBox.Refresh();
         }
 
         int TrySendCommandsFromToolbar(bool saveHistory)
