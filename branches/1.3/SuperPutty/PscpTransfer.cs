@@ -232,7 +232,7 @@ namespace SuperPutty
                 //m_processDir.StartInfo.RedirectStandardInput = true;
                 m_processDir.StartInfo.RedirectStandardOutput = true;
                 m_processDir.StartInfo.CreateNoWindow = true;
-                m_processDir.StartInfo.FileName = frmSuperPutty.PscpExe;                
+                m_processDir.StartInfo.FileName = SuperPuTTY.Settings.PscpExe;                
                 // process the various options from the session object and convert them into arguments pscp can understand
                 string args = MakeArgs(m_Session, true, path);
                 Logger.Log("Sending Command: '{0} {1}'", m_processDir.StartInfo.FileName, MakeArgs(m_Session, false, path));
@@ -468,7 +468,7 @@ namespace SuperPutty
                     processCopyToRemote.StartInfo.RedirectStandardError = true;                    
                     processCopyToRemote.StartInfo.RedirectStandardInput = true;
                     processCopyToRemote.StartInfo.RedirectStandardOutput = true;
-                    processCopyToRemote.StartInfo.FileName = frmSuperPutty.PscpExe;
+                    processCopyToRemote.StartInfo.FileName = SuperPuTTY.Settings.PscpExe;
                     processCopyToRemote.StartInfo.CreateNoWindow = true;
                     // process the various options from the session object and convert them into arguments pscp can understand
                     string args = "-r -agent "; // default arguments

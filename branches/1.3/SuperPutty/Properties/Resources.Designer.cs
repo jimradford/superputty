@@ -118,7 +118,7 @@ namespace SuperPutty.Properties {
         
         internal static System.Drawing.Bitmap cross_black {
             get {
-                object obj = ResourceManager.GetObject("cross-black", resourceCulture);
+                object obj = ResourceManager.GetObject("cross_black", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
