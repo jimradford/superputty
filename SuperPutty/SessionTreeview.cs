@@ -505,7 +505,7 @@ namespace SuperPutty
         private void contextMenuStripAddTreeItem_Opening(object sender, CancelEventArgs e)
         {
             // disable file transfers if pscp isn't configured.
-            fileBrowserToolStripMenuItem.Enabled = frmSuperPutty.IsScpEnabled;
+            fileBrowserToolStripMenuItem.Enabled = SuperPuTTY.IsScpEnabled;
 
             connectInNewSuperPuTTYToolStripMenuItem.Enabled = !SuperPuTTY.Settings.SingleInstanceMode;
         }

@@ -47,21 +47,6 @@ namespace SuperPutty
 
         private static string XmlEditor = ConfigurationManager.AppSettings["SuperPuTTY.XmlEditor"];
 
-        public static string PuttyExe
-        {
-            get { return SuperPuTTY.Settings.PuttyExe; }
-        }
-
-        public static string PscpExe
-        {
-            get { return SuperPuTTY.Settings.PscpExe; }
-        }
-
-        public static bool IsScpEnabled
-        {
-            get { return File.Exists(PscpExe); }
-        }
-
         internal DockPanel DockPanel { get { return this.dockPanel1; } }
 
         public ToolWindowDocument CurrentPanel { get; set; }
@@ -691,7 +676,7 @@ namespace SuperPutty
         private void puTTYConfigurationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process p = new Process();
-            p.StartInfo.FileName = PuttyExe;
+            p.StartInfo.FileName = SuperPuTTY.Settings.PuttyExe;
             p.Start();
 
             SuperPuTTY.ReportStatus("Lauched Putty Configuration");

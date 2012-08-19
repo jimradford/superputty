@@ -535,6 +535,11 @@ namespace SuperPutty
             }
         }
 
+        public static bool IsScpEnabled
+        {
+            get { return File.Exists(SuperPuTTY.Settings.PscpExe); }
+        }
+
         public static string Version
         {
             get
