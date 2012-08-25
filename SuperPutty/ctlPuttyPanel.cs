@@ -35,6 +35,7 @@ using SuperPutty.Data;
 using WeifenLuo.WinFormsUI.Docking;
 using SuperPutty.Utils;
 using System.Threading;
+using System.Configuration;
 
 
 namespace SuperPutty
@@ -42,6 +43,9 @@ namespace SuperPutty
     public partial class ctlPuttyPanel : ToolWindowDocument
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ctlPuttyPanel));
+
+        private static int RefocusAttempts = Convert.ToInt32(ConfigurationManager.AppSettings["SuperPuTTY.RefocusAttempts"] ?? "5");
+        private static int RefocusIntervalMs = Convert.ToInt32(ConfigurationManager.AppSettings["SuperPuTTY.RefocusIntervalMs"] ?? "80");
 
         private PuttyStartInfo m_puttyStartInfo;
         private ApplicationPanel m_AppPanel;
@@ -206,7 +210,25 @@ namespace SuperPutty
         /// </summary>
         internal void SetFocusToChildApplication(string caller)
         {
-            this.m_AppPanel.ReFocusPuTTY(caller);         
+            bool success = false;
+            for (int i = 0; i < RefocusAttempts; i++)
+            {
+                Thread.Sleep(RefocusIntervalMs);
+                if (this.m_AppPanel.ReFocusPuTTY(caller))
+                {
+                    if (i > 0)
+                    {
+                        Log.DebugFormat("SetFocusToChildApplication success after {0} attempts", i + 1);
+                    }
+                    success = true;
+                    break;
+                }
+            }
+
+            if (!success)
+            {
+                Log.WarnFormat("Unable to SetFocusToChildApplication, {0}", this.Text);
+            }
         }
 
         protected override string GetPersistString()
