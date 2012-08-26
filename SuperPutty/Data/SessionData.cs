@@ -87,6 +87,13 @@ namespace SuperPutty.Data
             }
         }
 
+        private string _ImageKey;
+        [XmlAttribute]
+        public string ImageKey
+        {
+            get { return _ImageKey; }
+            set { _ImageKey = value; }
+        }
 
         private string _Host;
         [XmlAttribute]

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace SuperPutty
+namespace SuperPutty.Gui
 {
     public partial class dlgRenameItem : Form
     {

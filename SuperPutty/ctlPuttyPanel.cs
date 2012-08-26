@@ -36,6 +36,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using SuperPutty.Utils;
 using System.Threading;
 using System.Configuration;
+using SuperPutty.Gui;
 
 
 namespace SuperPutty

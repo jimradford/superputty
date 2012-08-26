@@ -30,6 +30,7 @@ using Microsoft.Win32;
 using System.Web;
 using SuperPutty.Data;
 using SuperPutty.Utils;
+using SuperPutty.Gui;
 
 namespace SuperPutty
 {
@@ -40,8 +41,9 @@ namespace SuperPutty
         private SessionData Session;
         private String OldHostname;
         private bool isInitialized = false;
+        private ImageListPopup imgPopup = null;
 
-        public dlgEditSession(SessionData session)
+        public dlgEditSession(SessionData session, ImageList iconList)
         {
             Session = session;
             InitializeComponent();
@@ -101,6 +103,13 @@ namespace SuperPutty
                 radioButtonSSH.Checked = true;
             }
             this.isInitialized = true;
+
+            // Setup icon chooser
+            this.buttonImageSelect.ImageList = iconList;
+            this.buttonImageSelect.ImageKey = string.IsNullOrEmpty(Session.ImageKey) 
+                ? SessionTreeview.ImageKeySession
+                : Session.ImageKey;
+
         }
 
         protected override void OnLoad(EventArgs e)
@@ -152,6 +161,7 @@ namespace SuperPutty
             Session.Port = int.Parse(textBoxPort.Text.Trim());
             Session.Username = textBoxUsername.Text.Trim();
             Session.SessionId = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
+            Session.ImageKey = buttonImageSelect.ImageKey;
 
             for (int i = 0; i < groupBox1.Controls.Count; i++)
             {
@@ -258,6 +268,7 @@ namespace SuperPutty
             }
         }
 
+
         public SessionNameValidationHandler SessionNameValidator { get; set; }
 
         public static int GetDefaultPort(ConnectionProtocol protocol)
@@ -278,5 +289,37 @@ namespace SuperPutty
             }
             return port;
         }
+
+        #region Icon
+        private void buttonImageSelect_Click(object sender, EventArgs e)
+        {
+            if (this.imgPopup == null)
+            {
+                int n = buttonImageSelect.ImageList.Images.Count;
+                int x = (int) Math.Floor(Math.Sqrt(n)) + 1;
+                int cols = x;
+                int rows = x;
+
+                imgPopup = new ImageListPopup();
+                imgPopup.BackgroundColor = Color.FromArgb(241, 241, 241);
+                imgPopup.BackgroundOverColor = Color.FromArgb(102, 154, 204);
+                imgPopup.Init(this.buttonImageSelect.ImageList, 8, 8, cols, rows);
+                imgPopup.ItemClick += new ImageListPopupEventHandler(this.OnItemClicked);
+            }
+
+            Point pt = PointToScreen(new Point(buttonImageSelect.Left, buttonImageSelect.Bottom));
+            imgPopup.Show(pt.X + 2, pt.Y);
+        }
+
+
+        private void OnItemClicked(object sender, ImageListPopupEventArgs e)
+        {
+            if (imgPopup == sender)
+            {
+                buttonImageSelect.ImageKey = e.SelectedItem;
+            }
+        } 
+        #endregion
+
     }
 }
