@@ -56,7 +56,7 @@ namespace SuperPutty.Utils
             args += "-P " + session.Port + " ";
             args += (!String.IsNullOrEmpty(session.PuttySession)) ? "-load \"" + session.PuttySession + "\" " : "";
             args += (!String.IsNullOrEmpty(session.ExtraArgs) ? session.ExtraArgs + " " : "");
-            args += (!String.IsNullOrEmpty(session.Username) && session.Username.Length > 0) ? session.Username + "@" : "";
+            args += (!String.IsNullOrEmpty(session.Username) && session.Username.Length > 0) ? " -l " + session.Username + " " : "";
             args += session.Host;
 
             return args;
