@@ -19,6 +19,7 @@ namespace SuperPutty.Utils
             strats.Add(new VisualOrderTabSwitchStrategy());
             strats.Add(new OpenOrderTabSwitchStrategy());
             strats.Add(new MRUTabSwitchStrategy());
+            //strats.Add(new MRUTabSwitchStrategyOld());
             Strategies = strats.ToArray();
         }
 
@@ -83,6 +84,7 @@ namespace SuperPutty.Utils
             get { return this.currentDocument; }
             set
             {
+                //Log.Info("Setting current doc: " + value);
                 this.currentDocument = value;
                 this.TabSwitchStrategy.SetCurrentTab(value);
                 this.IsSwitchingTabs = false;
@@ -283,8 +285,8 @@ namespace SuperPutty.Utils
 
     #endregion
 
-    #region MRUTabSwitchStrategy
-    public class MRUTabSwitchStrategy : ITabSwitchStrategy
+    #region MRUTabSwitchStrategyOld
+    public class MRUTabSwitchStrategyOld : ITabSwitchStrategy
     {
         public string Description
         {
@@ -420,4 +422,87 @@ namespace SuperPutty.Utils
         }
     }
     #endregion
+
+    #region MRUTabSwitchStrategy
+    public class MRUTabSwitchStrategy : ITabSwitchStrategy
+    {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(MRUTabSwitchStrategy));
+
+        public string Description
+        {
+            get { return "MRU: Similar to Windows Alt-Tab"; }
+        }
+
+        public void Initialize(DockPanel panel)
+        {
+            this.DockPanel = panel;
+        }
+
+        public void AddTab(ToolWindow newTab)
+        {
+            Log.InfoFormat("AddTab: {0}", newTab.Text);
+            this.docs.Add(newTab);
+        }
+
+        public void RemoveTab(ToolWindow oldTab)
+        {
+            this.docs.Remove(oldTab);
+        }
+
+        public bool MoveToNextTab()
+        {
+            bool res = false;
+            int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
+            if (idx != -1)
+            {
+                ToolWindow winNext = (ToolWindow)docs[idx == docs.Count - 1 ? 0 : idx + 1];
+                winNext.Activate();
+                res = true;
+            }
+            return res;
+        }
+
+        public bool MoveToPrevTab()
+        {
+            bool res = false;
+            int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
+            if (idx != -1)
+            {
+                ToolWindow winNext = (ToolWindow)docs[idx == docs.Count - 1 ? 0 : idx + 1];
+                winNext.Activate();
+                res = true;
+            }
+            return res;
+        }
+
+        public void SetCurrentTab(ToolWindow window)
+        {
+            if (window != null)
+            {
+                if (this.docs.Contains(window))
+                {
+                    this.docs.Remove(window);
+                    this.docs.Insert(0, window);
+                    if (Log.IsDebugEnabled)
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        foreach (IDockContent doc in docs)
+                        {
+                            sb.Append(((ToolWindow)doc).Text).Append(", ");
+                        }
+                        Log.DebugFormat("Tabs: {0}", sb.ToString().TrimEnd(','));
+                    }
+                }
+            }
+        }
+
+        public void Dispose() { }
+
+        DockPanel DockPanel { get; set; }
+
+        private IList<IDockContent> docs = new List<IDockContent>();
+
+    }
+    #endregion
+
 }
