@@ -38,6 +38,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using SuperPutty.Utils;
 using System.Configuration;
+using System.Collections;
 
 namespace SuperPutty
 {
@@ -79,7 +80,7 @@ namespace SuperPutty
         {
             // Verify Putty is set; Prompt user if necessary; exit otherwise
             dlgFindPutty.PuttyCheck();
-            
+
             InitializeComponent();
             if (this.DesignMode) return;
 
@@ -1058,7 +1059,7 @@ namespace SuperPutty
                     }
                 }
 
-                if ((Keys)vkCode == Keys.F11)
+                if ((Keys)vkCode == Keys.F11 && !isShiftDown && !isControlDown)
                 {
                     if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
                     {
@@ -1181,6 +1182,7 @@ namespace SuperPutty
             Dynamic, 
             Mixed
         }
+
 
     }
 }

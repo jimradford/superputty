@@ -30,6 +30,9 @@ using log4net;
 using SuperPutty.Data;
 using SuperPutty.Utils;
 using WeifenLuo.WinFormsUI.Docking;
+using SuperPutty.Gui;
+using System.IO;
+using System.Text.RegularExpressions;
 
 
 namespace SuperPutty
@@ -41,12 +44,14 @@ namespace SuperPutty
         private static int MaxSessionsToOpen = Convert.ToInt32(ConfigurationManager.AppSettings["SuperPuTTY.MaxSessionsToOpen"] ?? "10");
 
         public const string SessionIdDelim = "/";
+        public const string ImageKeySession = "computer";
+        public const string ImageKeyFolder = "folder";
 
         private DockPanel m_DockPanel;
         private bool isRenamingNode;
-        //private Dictionary<string, SessionData> m_SessionsById = new Dictionary<string, SessionData>();
-
         TreeNode nodeRoot;
+        ImageList imgIcons = new ImageList();
+
         /// <summary>
         /// Instantiate the treeview containing the sessions
         /// </summary>
@@ -114,6 +119,7 @@ namespace SuperPutty
         public void LoadSessions()
         {
             treeView1.Nodes.Clear();
+            this.treeView1.ImageList = GetImageList();
 
             this.nodeRoot = treeView1.Nodes.Add("root", "PuTTY Sessions", 0);
             this.nodeRoot.ContextMenuStrip = this.contextMenuStripFolder;
@@ -219,7 +225,7 @@ namespace SuperPutty
                 }
             }
 
-            dlgEditSession form = new dlgEditSession(session);
+            dlgEditSession form = new dlgEditSession(session, this.treeView1.ImageList);
             form.Text = title;
             form.SessionNameValidator += delegate(string txt, out string error)
             {
@@ -266,6 +272,8 @@ namespace SuperPutty
                     // handle renames
                     node.Text = session.SessionName;
                     node.Name = session.SessionName;
+                    node.ImageKey = session.ImageKey;
+                    node.SelectedImageKey = session.ImageKey;
                     if (session.SessionId != session.OldSessionId)
                     {
                         try
@@ -524,6 +532,13 @@ namespace SuperPutty
                 addedNode = parentNode.Nodes.Add(session.SessionName, session.SessionName, 1, 1);
                 addedNode.Tag = session;
                 addedNode.ContextMenuStrip = this.contextMenuStripAddTreeItem;
+
+                // Add node icon
+                if (session.ImageKey != null & session.ImageKey != "")
+                    addedNode.ImageKey = session.ImageKey;
+                else
+                    addedNode.ImageKey = ImageKeySession;
+                addedNode.SelectedImageKey = addedNode.ImageKey;
             }
 
             return addedNode;
@@ -539,7 +554,7 @@ namespace SuperPutty
             else
             {
                 SuperPuTTY.ReportStatus("Adding new folder, {1}.  parent={0}", parentNode.Text, nodeName);
-                nodeNew = parentNode.Nodes.Add(nodeName, nodeName, 0);
+                nodeNew = parentNode.Nodes.Add(nodeName, nodeName, ImageKeyFolder, ImageKeyFolder);
                 nodeNew.ContextMenuStrip = this.contextMenuStripFolder;
             }
             return nodeNew;
@@ -796,7 +811,56 @@ namespace SuperPutty
             SuperPuTTY.ReportStatus("Saved Sessions after Drag-Drop @ {0}", DateTime.Now);
         }
 
+        public ImageList GetImageList()
+        {
+            ImageList imageList = this.treeView1.ImageList;
+            try
+            {
+                imageList = LoadImageList("default");
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Could not load images from theme folder, using defaults", ex);
+            }
+            return imageList;
+        }
 
+        /// <summary>
+        /// Load Images from themes folder
+        /// </summary>
+        /// <param name="theme"></param>
+        public ImageList LoadImageList(string theme)
+        {
+            ImageList imgIcons = new ImageList();
+
+            // Load the 2 standard icons in case no icons exist in icons directory, these will be used.
+            imgIcons.Images.Add(ImageKeyFolder, SuperPutty.Properties.Resources.folder);
+            imgIcons.Images.Add(ImageKeySession, SuperPutty.Properties.Resources.computer);
+
+            string themeFolder = Directory.GetCurrentDirectory();
+            themeFolder = Path.Combine(themeFolder, "themes");
+            themeFolder = Path.Combine(themeFolder, theme);
+            themeFolder = Path.Combine(themeFolder, "icons");
+
+            if (Directory.Exists(themeFolder))
+            {
+                foreach (FileInfo fi in new DirectoryInfo(themeFolder).GetFiles())
+                {
+                    if (Regex.IsMatch(fi.Extension, @"\.(bmp|jpg|jpeg|png)", RegexOptions.IgnoreCase))
+                    {
+                        Image img = Image.FromFile(fi.FullName);
+                        imgIcons.Images.Add(fi.Name, img);
+                    }
+                }
+                Log.InfoFormat("Loaded {0} icons from theme directory.  dir={1}", imgIcons.Images.Count, themeFolder);
+            }
+            else
+            {
+                Log.WarnFormat("theme directory not found, no images loaded. dir={0}", themeFolder);
+            }
+
+            return imgIcons;
+        }
     }
 
 }

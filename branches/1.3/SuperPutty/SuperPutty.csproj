@@ -86,6 +86,12 @@
     <Compile Include="AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gui\ImageListPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\ImageListPopup.designer.cs">
+      <DependentUpon>ImageListPopup.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmDocumentSelector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,10 +125,10 @@
     <Compile Include="dlgMouseFeedback.Designer.cs">
       <DependentUpon>dlgMouseFeedback.cs</DependentUpon>
     </Compile>
-    <Compile Include="dlgRenameItem.cs">
+    <Compile Include="Gui\dlgRenameItem.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgRenameItem.Designer.cs">
+    <Compile Include="Gui\dlgRenameItem.Designer.cs">
       <DependentUpon>dlgRenameItem.cs</DependentUpon>
     </Compile>
     <Compile Include="frmTransferStatus.cs">
@@ -196,6 +202,10 @@
     <Compile Include="Utils\WindowActivator.cs" />
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\ImageListPopup.resx">
+      <DependentUpon>ImageListPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ctlApplicationPanel.resx">
       <DependentUpon>ctlApplicationPanel.cs</DependentUpon>
@@ -206,7 +216,7 @@
     <EmbeddedResource Include="dlgMouseFeedback.resx">
       <DependentUpon>dlgMouseFeedback.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgRenameItem.resx">
+    <EmbeddedResource Include="Gui\dlgRenameItem.resx">
       <DependentUpon>dlgRenameItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmDocumentSelector.resx">
@@ -318,11 +328,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Apps-utilities-terminal.ico" />
-    <Content Include="Lib\log4net.dll" />
+    <Content Include="_Lib\log4net.dll" />
     <Content Include="Resources\accept-gray.png" />
     <Content Include="Resources\application_edit.png" />
     <Content Include="Resources\Apps-terminal.ico" />
     <Content Include="Resources\Apps-utilities-terminal.ico" />
+    <None Include="Resources\folder.png" />
     <None Include="Resources\cross-black.png" />
     <None Include="Resources\bullet_go.png" />
     <None Include="Resources\lightning_go.png" />

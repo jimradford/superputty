@@ -36,13 +36,6 @@ namespace SuperPutty
             this.textBoxPort = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButtonMintty = new System.Windows.Forms.RadioButton();
-            this.radioButtonCygterm = new System.Windows.Forms.RadioButton();
-            this.radioButtonSerial = new System.Windows.Forms.RadioButton();
-            this.radioButtonSSH = new System.Windows.Forms.RadioButton();
-            this.radioButtonRlogin = new System.Windows.Forms.RadioButton();
-            this.radioButtonTelnet = new System.Windows.Forms.RadioButton();
-            this.radioButtonRaw = new System.Windows.Forms.RadioButton();
             this.textBoxExtraArgs = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.buttonSave = new System.Windows.Forms.Button();
@@ -53,6 +46,14 @@ namespace SuperPutty
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxUsername = new System.Windows.Forms.TextBox();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.buttonImageSelect = new System.Windows.Forms.Button();
+            this.radioButtonMintty = new System.Windows.Forms.RadioButton();
+            this.radioButtonCygterm = new System.Windows.Forms.RadioButton();
+            this.radioButtonSerial = new System.Windows.Forms.RadioButton();
+            this.radioButtonSSH = new System.Windows.Forms.RadioButton();
+            this.radioButtonRlogin = new System.Windows.Forms.RadioButton();
+            this.radioButtonTelnet = new System.Windows.Forms.RadioButton();
+            this.radioButtonRaw = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
@@ -60,8 +61,8 @@ namespace SuperPutty
             // 
             // textBoxSessionName
             // 
-            this.textBoxSessionName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSessionName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSessionName.Location = new System.Drawing.Point(9, 33);
             this.textBoxSessionName.Name = "textBoxSessionName";
             this.textBoxSessionName.Size = new System.Drawing.Size(410, 20);
@@ -91,8 +92,8 @@ namespace SuperPutty
             // 
             // textBoxHostname
             // 
-            this.textBoxHostname.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxHostname.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxHostname.Location = new System.Drawing.Point(9, 74);
             this.textBoxHostname.Name = "textBoxHostname";
             this.textBoxHostname.Size = new System.Drawing.Size(324, 20);
@@ -122,8 +123,8 @@ namespace SuperPutty
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.radioButtonMintty);
             this.groupBox1.Controls.Add(this.radioButtonCygterm);
             this.groupBox1.Controls.Add(this.radioButtonSerial);
@@ -138,6 +139,119 @@ namespace SuperPutty
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Connection type:";
+            // 
+            // textBoxExtraArgs
+            // 
+            this.textBoxExtraArgs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxExtraArgs.Location = new System.Drawing.Point(150, 222);
+            this.textBoxExtraArgs.Name = "textBoxExtraArgs";
+            this.textBoxExtraArgs.Size = new System.Drawing.Size(296, 20);
+            this.textBoxExtraArgs.TabIndex = 6;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(12, 224);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(132, 15);
+            this.label6.TabIndex = 14;
+            this.label6.Text = "Extra PuTTY Arguments";
+            // 
+            // buttonSave
+            // 
+            this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonSave.Enabled = false;
+            this.buttonSave.Location = new System.Drawing.Point(293, 257);
+            this.buttonSave.Name = "buttonSave";
+            this.buttonSave.Size = new System.Drawing.Size(75, 23);
+            this.buttonSave.TabIndex = 7;
+            this.buttonSave.Text = "Save";
+            this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            // 
+            // buttonCancel
+            // 
+            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.buttonCancel.Location = new System.Drawing.Point(374, 257);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancel.TabIndex = 7;
+            this.buttonCancel.Text = "Cancel";
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(12, 172);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(121, 15);
+            this.label4.TabIndex = 9;
+            this.label4.Text = "PuTTY Session Profile";
+            // 
+            // comboBoxPuttyProfile
+            // 
+            this.comboBoxPuttyProfile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxPuttyProfile.FormattingEnabled = true;
+            this.comboBoxPuttyProfile.Location = new System.Drawing.Point(150, 170);
+            this.comboBoxPuttyProfile.Name = "comboBoxPuttyProfile";
+            this.comboBoxPuttyProfile.Size = new System.Drawing.Size(296, 21);
+            this.comboBoxPuttyProfile.TabIndex = 4;
+            this.comboBoxPuttyProfile.TextChanged += new System.EventHandler(this.sessionForm_TextChanged);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.textBoxSessionName);
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.textBoxHostname);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.textBoxPort);
+            this.groupBox2.Location = new System.Drawing.Point(12, 0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(434, 109);
+            this.groupBox2.TabIndex = 11;
+            this.groupBox2.TabStop = false;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(12, 198);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(93, 15);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "Login Username";
+            // 
+            // textBoxUsername
+            // 
+            this.textBoxUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxUsername.Location = new System.Drawing.Point(150, 196);
+            this.textBoxUsername.Name = "textBoxUsername";
+            this.textBoxUsername.Size = new System.Drawing.Size(296, 20);
+            this.textBoxUsername.TabIndex = 5;
+            // 
+            // errorProvider
+            // 
+            this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+            this.errorProvider.ContainerControl = this;
+            // 
+            // buttonImageSelect
+            // 
+            this.buttonImageSelect.Location = new System.Drawing.Point(12, 251);
+            this.buttonImageSelect.Name = "buttonImageSelect";
+            this.buttonImageSelect.Size = new System.Drawing.Size(29, 29);
+            this.buttonImageSelect.TabIndex = 16;
+            this.buttonImageSelect.UseVisualStyleBackColor = true;
+            this.buttonImageSelect.Click += new System.EventHandler(this.buttonImageSelect_Click);
             // 
             // radioButtonMintty
             // 
@@ -231,111 +345,6 @@ namespace SuperPutty
             this.radioButtonRaw.UseVisualStyleBackColor = true;
             this.radioButtonRaw.CheckedChanged += new System.EventHandler(this.radioButtonRaw_CheckedChanged);
             // 
-            // textBoxExtraArgs
-            // 
-            this.textBoxExtraArgs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxExtraArgs.Location = new System.Drawing.Point(150, 222);
-            this.textBoxExtraArgs.Name = "textBoxExtraArgs";
-            this.textBoxExtraArgs.Size = new System.Drawing.Size(296, 20);
-            this.textBoxExtraArgs.TabIndex = 6;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(12, 224);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(132, 15);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "Extra PuTTY Arguments";
-            // 
-            // buttonSave
-            // 
-            this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSave.Enabled = false;
-            this.buttonSave.Location = new System.Drawing.Point(293, 257);
-            this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(75, 23);
-            this.buttonSave.TabIndex = 7;
-            this.buttonSave.Text = "Save";
-            this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
-            // 
-            // buttonCancel
-            // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(374, 257);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 7;
-            this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(12, 172);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(121, 15);
-            this.label4.TabIndex = 9;
-            this.label4.Text = "PuTTY Session Profile";
-            // 
-            // comboBoxPuttyProfile
-            // 
-            this.comboBoxPuttyProfile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxPuttyProfile.FormattingEnabled = true;
-            this.comboBoxPuttyProfile.Location = new System.Drawing.Point(150, 170);
-            this.comboBoxPuttyProfile.Name = "comboBoxPuttyProfile";
-            this.comboBoxPuttyProfile.Size = new System.Drawing.Size(296, 21);
-            this.comboBoxPuttyProfile.TabIndex = 4;
-            this.comboBoxPuttyProfile.Text = "";
-            this.comboBoxPuttyProfile.TextChanged += new System.EventHandler(this.sessionForm_TextChanged);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.textBoxSessionName);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.textBoxHostname);
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.textBoxPort);
-            this.groupBox2.Location = new System.Drawing.Point(12, 0);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(434, 109);
-            this.groupBox2.TabIndex = 11;
-            this.groupBox2.TabStop = false;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(12, 198);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(93, 15);
-            this.label5.TabIndex = 12;
-            this.label5.Text = "Login Username";
-            // 
-            // textBoxUsername
-            // 
-            this.textBoxUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxUsername.Location = new System.Drawing.Point(150, 196);
-            this.textBoxUsername.Name = "textBoxUsername";
-            this.textBoxUsername.Size = new System.Drawing.Size(296, 20);
-            this.textBoxUsername.TabIndex = 5;
-            // 
-            // errorProvider
-            // 
-            this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-            this.errorProvider.ContainerControl = this;
-            // 
             // dlgEditSession
             // 
             this.AcceptButton = this.buttonSave;
@@ -343,6 +352,7 @@ namespace SuperPutty
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(458, 292);
+            this.Controls.Add(this.buttonImageSelect);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBoxExtraArgs);
             this.Controls.Add(this.textBoxUsername);
@@ -396,5 +406,6 @@ namespace SuperPutty
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBoxExtraArgs;
         private System.Windows.Forms.RadioButton radioButtonMintty;
+        private System.Windows.Forms.Button buttonImageSelect;
     }
 }

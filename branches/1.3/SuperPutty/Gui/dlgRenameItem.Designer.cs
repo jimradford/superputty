@@ -1,4 +1,4 @@
-﻿namespace SuperPutty
+﻿namespace SuperPutty.Gui
 {
     partial class dlgRenameItem
     {
