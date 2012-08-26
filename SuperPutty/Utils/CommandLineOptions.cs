@@ -113,6 +113,9 @@ namespace SuperPutty.Utils
                     case "-load":
                         this.PuttySession = queue.Dequeue();
                         break;
+                    case "--help":
+                        this.Help = true;
+                        return;
                     default:
                         // unflagged arg must be the host...
                         this.Host = arg;
@@ -125,12 +128,9 @@ namespace SuperPutty.Utils
         public SessionDataStartInfo ToSessionStartInfo()
         {
             SessionDataStartInfo ssi = null;
-            if (this.Host == null && this.SessionId == null)
+            if (this.SessionId != null)
             {
-                Log.WarnFormat("Host or SessionId not provided, cannot create session, id={0}", this.SessionId);
-            }
-            else if (this.SessionId != null)
-            {
+                // first try to resolve by sessionId
                 SessionData session = SuperPuTTY.GetSessionById(this.SessionId);
                 if (session == null)
                 {
@@ -145,42 +145,30 @@ namespace SuperPutty.Utils
                     };
                 }
             }
-            else if (this.Host == null)
+            else if (this.Host != null ||  this.PuttySession != null)
             {
-                Log.WarnFormat("Host not provided, cannot create session");
-            }
-            else
-            {
-                // ssh://localhost:2020
-                HostConnectionString connStr = new HostConnectionString(this.Host);
-                this.Host = connStr.Host;
-                this.Protocol = connStr.Protocol.GetValueOrDefault(this.Protocol.GetValueOrDefault(ConnectionProtocol.SSH));
-                this.Port = connStr.Port.GetValueOrDefault(this.Port.GetValueOrDefault(dlgEditSession.GetDefaultPort(this.Protocol.GetValueOrDefault())));
-
-                /*
-                int idx = this.Host.IndexOf("://");
-                if (idx != -1)
+                // Host or puttySession provided
+                string sessionName;
+                if (this.Host != null)
                 {
-                    this.Protocol = (ConnectionProtocol) Enum.Parse(typeof(ConnectionProtocol), this.Host.Substring(0, idx), true);
-                    string hostPort = this.Host.Substring(idx + 3);
-
-                    int idxPort = hostPort.IndexOf(":");
-                    if (idxPort != -1)
-                    {
-                        this.Host = hostPort.Substring(0, idxPort);
-                        this.Port = Convert.ToInt32(hostPort.Substring(idxPort + 1));
-                    }
-                    else
-                    {
-                        this.Host = hostPort;
-                    }
-                }*/
+                    // Decode URL type host spec, if provided (e.g. ssh://localhost:2020)
+                    HostConnectionString connStr = new HostConnectionString(this.Host);
+                    this.Host = connStr.Host;
+                    this.Protocol = connStr.Protocol.GetValueOrDefault(this.Protocol.GetValueOrDefault(ConnectionProtocol.SSH));
+                    this.Port = connStr.Port.GetValueOrDefault(this.Port.GetValueOrDefault(dlgEditSession.GetDefaultPort(this.Protocol.GetValueOrDefault())));
+                    sessionName = this.Host;
+                }
+                else
+                {
+                    // no host provided so assume sss
+                    sessionName = this.PuttySession;
+                }
 
                 ssi = new SessionDataStartInfo();
                 ssi.Session = new SessionData
                 {
                     Host = this.Host,
-                    SessionName = this.Host,
+                    SessionName = sessionName,
                     SessionId = SuperPuTTY.MakeUniqueSessionId(SessionData.CombineSessionIds("CLI", this.Host)),
                     Port = this.Port.GetValueOrDefault(22),
                     Proto = this.Protocol.GetValueOrDefault(ConnectionProtocol.SSH),
@@ -191,7 +179,48 @@ namespace SuperPutty.Utils
                 ssi.UseScp = this.UseScp;
             }
 
+            if (ssi == null)
+            {
+                Log.WarnFormat("Could not determine session or host to connect.  SessionId or Host or PuttySession must be provided");
+            }
+
             return ssi;
+        }
+
+        /// <summary>
+        /// Return usage string
+        /// </summary>
+        /// <returns></returns>
+        public static string Usage()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Usage:");
+            sb.AppendLine("");
+            sb.AppendLine("  SuperPutty.exe -session SESSION");
+            sb.AppendLine("  SuperPutty.exe -layout LAYOUT");
+            sb.AppendLine("  SuperPutty.exe -load SETTINGS");
+            sb.AppendLine("  SuperPutty.exe -PROTO -P PORT -l USER -pw PASSWORD -load SETTINGS HOST");
+            sb.AppendLine("  SuperPutty.exe -l USER -pw PASSWORD -load SETTINGS PROTO://HOST:PORT");
+            sb.AppendLine();
+            sb.AppendLine("Options:");
+            sb.AppendLine();
+            sb.AppendLine("  SESSION\t\t - Session id");
+            sb.AppendLine("  LAYOUT\t\t - Layout name");
+            sb.AppendLine("  SETTINGS\t - Putty Saved Session Profile");
+            sb.AppendLine("  PROTO\t\t - Protocol - (ssh|telnet|serial|raw|scp|cygterm|rlogin|mintty)");
+            sb.AppendLine("  USER\t\t - User name");
+            sb.AppendLine("  PASSWORD\t - Login Password");
+            sb.AppendLine("  HOST\t\t - Hostname");
+            sb.AppendLine();
+            sb.AppendLine("Examples:");
+            sb.AppendLine();
+            sb.AppendLine("  SuperPutty.exe -session nyc-qa-1");
+            sb.AppendLine("  SuperPutty.exe -layout prod");
+            sb.AppendLine("  SuperPutty.exe -ssh -P 22 -l homer -pw springfield -load pp1 prod-reactor");
+            sb.AppendLine("  SuperPutty.exe -l peter -pw griffin stewie01");
+            sb.AppendLine("  SuperPutty.exe -load localhost");
+            
+            return sb.ToString();
         }
 
         public string ExePath { get; private set; }
@@ -207,6 +236,7 @@ namespace SuperPutty.Utils
         public string PuttySession { get; private set; }
 
         public string Host { get; private set; }
+        public bool Help { get; private set; }
 
     }
 }

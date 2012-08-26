@@ -54,6 +54,15 @@ namespace SuperPutty
                 // parse command line args
                 CommandLine = new CommandLineOptions(args);
 
+                // display help if --help specified
+                if (CommandLine.Help)
+                {
+                    if (DialogResult.Cancel == MessageBox.Show(CommandLineOptions.Usage(), "SuperPutty CLI Help", MessageBoxButtons.OKCancel))
+                    {
+                        Environment.Exit(0);
+                    }
+                }
+
                 // load data
                 LoadLayouts();
                 LoadSessions();

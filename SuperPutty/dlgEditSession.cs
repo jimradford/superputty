@@ -31,11 +31,14 @@ using System.Web;
 using SuperPutty.Data;
 using SuperPutty.Utils;
 using SuperPutty.Gui;
+using log4net;
 
 namespace SuperPutty
 {
     public partial class dlgEditSession : Form
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(dlgEditSession));
+
         public delegate bool SessionNameValidationHandler(string name, out string error);
 
         private SessionData Session;
@@ -96,20 +99,25 @@ namespace SuperPutty
                         break;
                     }
                 }
+
+                this.buttonSave.Enabled = true;
             }
             else
             {
                 this.Text = "Create new session";
                 radioButtonSSH.Checked = true;
+                this.buttonSave.Enabled = false;
             }
-            this.isInitialized = true;
+
 
             // Setup icon chooser
             this.buttonImageSelect.ImageList = iconList;
-            this.buttonImageSelect.ImageKey = string.IsNullOrEmpty(Session.ImageKey) 
+            this.buttonImageSelect.ImageKey = string.IsNullOrEmpty(Session.ImageKey)
                 ? SessionTreeview.ImageKeySession
                 : Session.ImageKey;
+            this.toolTip.SetToolTip(this.buttonImageSelect, buttonImageSelect.ImageKey);
 
+            this.isInitialized = true;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -125,26 +133,7 @@ namespace SuperPutty
             {
                 comboBoxPuttyProfile.Items.Add(sessionName);
             }
-            /*
-            RegistryKey key = SuperPuTTY.IsKiTTY 
-                ? Registry.CurrentUser.OpenSubKey(@"Software\9bis.com\KiTTY\Sessions")
-                : Registry.CurrentUser.OpenSubKey(@"Software\SimonTatham\PuTTY\Sessions");
-            if (key != null)
-            {
-                string[] savedSessionNames = key.GetSubKeyNames();
-
-                for (int i = 0; i < savedSessionNames.Length; i++)
-                    comboBoxPuttyProfile.Items.Add(HttpUtility.UrlDecode(savedSessionNames[i]));
-            }*/
-        }
-
-        private void sessionForm_TextChanged(object sender, EventArgs e)
-        {
-            buttonSave.Enabled = (
-                textBoxSessionName.Text.Length > 0
-                && textBoxHostname.Text.Length > 0
-                && textBoxPort.Text.Length > 0
-                && comboBoxPuttyProfile.Text != null);
+            comboBoxPuttyProfile.SelectedItem = PuttyDataHelper.SessionDefaultSettings;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -250,26 +239,7 @@ namespace SuperPutty
             }
         }
 
-        private void textBoxSessionName_Validating(object sender, CancelEventArgs e)
-        {
-            if (this.SessionNameValidator != null)
-            {
-                string error;
-                if (!this.SessionNameValidator(this.textBoxSessionName.Text, out error))
-                {
-                    this.errorProvider.SetError(this.textBoxSessionName, error ?? "Invalid Session Name");
-                    this.buttonSave.Enabled = false;
-                }
-                else
-                {
-                    this.errorProvider.SetError(this.textBoxSessionName, String.Empty);
-                    this.buttonSave.Enabled = true;
-                }
-            }
-        }
 
-
-        public SessionNameValidationHandler SessionNameValidator { get; set; }
 
         public static int GetDefaultPort(ConnectionProtocol protocol)
         {
@@ -317,8 +287,94 @@ namespace SuperPutty
             if (imgPopup == sender)
             {
                 buttonImageSelect.ImageKey = e.SelectedItem;
+                this.toolTip.SetToolTip(this.buttonImageSelect, buttonImageSelect.ImageKey);
             }
         } 
+        #endregion
+
+        #region Validation Logic
+
+        public SessionNameValidationHandler SessionNameValidator { get; set; }
+
+        private void textBoxSessionName_Validating(object sender, CancelEventArgs e)
+        {
+            if (this.SessionNameValidator != null)
+            {
+                string error;
+                if (!this.SessionNameValidator(this.textBoxSessionName.Text, out error))
+                {
+                    e.Cancel = true;
+                    this.SetError(this.textBoxSessionName, error ?? "Invalid Session Name");
+                }
+            }
+        }
+
+        private void textBoxSessionName_Validated(object sender, EventArgs e)
+        {
+            this.SetError(this.textBoxSessionName, String.Empty);
+        }
+
+        private void textBoxPort_Validating(object sender, CancelEventArgs e)
+        {
+            int val;
+            if (!Int32.TryParse(this.textBoxPort.Text, out val))
+            {
+                e.Cancel = true;
+                this.SetError(this.textBoxPort, "Invalid Port");
+            }
+        }
+
+        private void textBoxPort_Validated(object sender, EventArgs e)
+        {
+            this.SetError(this.textBoxPort, String.Empty);
+        }
+
+        private void textBoxHostname_Validating(object sender, CancelEventArgs e)
+        {
+            if (string.IsNullOrEmpty((string)this.comboBoxPuttyProfile.SelectedItem) &&
+                string.IsNullOrEmpty(this.textBoxHostname.Text.Trim()))
+            {
+                if (sender == this.textBoxHostname)
+                {
+                    this.SetError(this.textBoxHostname, "A host name must be specified if a Putty Session Profile is not selected");
+                }
+                else if (sender == this.comboBoxPuttyProfile)
+                {
+                    this.SetError(this.comboBoxPuttyProfile, "A Putty Session Profile must be selected if a Host Name is not provided");
+                }
+            }
+            else
+            {
+                this.SetError(this.textBoxHostname, String.Empty);
+                this.SetError(this.comboBoxPuttyProfile, String.Empty);
+            }
+        }
+
+        private void comboBoxPuttyProfile_Validating(object sender, CancelEventArgs e)
+        {
+            this.textBoxHostname_Validating(sender, e);
+        }
+
+        private void comboBoxPuttyProfile_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.ValidateChildren(ValidationConstraints.ImmediateChildren);    
+        }
+
+        void SetError(Control control, string error)
+        {
+            this.errorProvider.SetError(control, error);
+            this.EnableDisableSaveButton();
+        }
+
+        void EnableDisableSaveButton()
+        {
+            this.buttonSave.Enabled = (
+                this.errorProvider.GetError(this.textBoxSessionName) == String.Empty &&
+                this.errorProvider.GetError(this.textBoxHostname) == String.Empty &&
+                this.errorProvider.GetError(this.textBoxPort) == String.Empty &&
+                this.errorProvider.GetError(this.comboBoxPuttyProfile) == String.Empty);
+        }
+
         #endregion
 
     }
