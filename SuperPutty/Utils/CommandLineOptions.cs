@@ -46,8 +46,16 @@ namespace SuperPutty.Utils
                     string cmdLine = HttpUtility.UrlDecode(args[0].TrimEnd('/'));
                     args = cmdLine.Split(' ');
                 }
-                Parse(args);
-                this.IsValid = true;
+                if (args.Length > 0)
+                {
+                    Parse(args);
+                    this.IsValid = true;
+                }
+                else
+                {
+                    // no args to consider
+                    this.IsValid = false;
+                }
             }
             catch (Exception ex)
             {
@@ -119,7 +127,7 @@ namespace SuperPutty.Utils
             SessionDataStartInfo ssi = null;
             if (this.Host == null && this.SessionId == null)
             {
-                Log.Warn("Host or SessionId not provided, cannot create session");
+                Log.WarnFormat("Host or SessionId not provided, cannot create session, id={0}", this.SessionId);
             }
             else if (this.SessionId != null)
             {
