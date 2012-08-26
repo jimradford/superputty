@@ -121,7 +121,7 @@ namespace SuperPutty
             treeView1.Nodes.Clear();
             this.treeView1.ImageList = GetImageList();
 
-            this.nodeRoot = treeView1.Nodes.Add("root", "PuTTY Sessions", 0);
+            this.nodeRoot = treeView1.Nodes.Add("root", "PuTTY Sessions", ImageKeyFolder, ImageKeyFolder);
             this.nodeRoot.ContextMenuStrip = this.contextMenuStripFolder;
 
             foreach (SessionData session in SuperPuTTY.GetAllSessions())
@@ -529,16 +529,16 @@ namespace SuperPutty
             }
             else
             {
-                addedNode = parentNode.Nodes.Add(session.SessionName, session.SessionName, 1, 1);
+                addedNode = parentNode.Nodes.Add(session.SessionName, session.SessionName, ImageKeySession, ImageKeySession);
                 addedNode.Tag = session;
                 addedNode.ContextMenuStrip = this.contextMenuStripAddTreeItem;
 
-                // Add node icon
-                if (session.ImageKey != null & session.ImageKey != "")
+                // Override with custom icon if valid
+                if (IsValidImage(session.ImageKey))
+                {
                     addedNode.ImageKey = session.ImageKey;
-                else
-                    addedNode.ImageKey = ImageKeySession;
-                addedNode.SelectedImageKey = addedNode.ImageKey;
+                    addedNode.SelectedImageKey = session.ImageKey;
+                }
             }
 
             return addedNode;
@@ -811,6 +811,21 @@ namespace SuperPutty
             SuperPuTTY.ReportStatus("Saved Sessions after Drag-Drop @ {0}", DateTime.Now);
         }
 
+        #region Icon
+        bool IsValidImage(string imageKey)
+        {
+            bool valid = false;
+            if (!string.IsNullOrEmpty(imageKey))
+            {
+                valid = this.treeView1.ImageList.Images.ContainsKey(imageKey);
+                if (!valid)
+                {
+                    Log.WarnFormat("Missing icon, {0}", imageKey);
+                }
+            }
+            return valid;
+        }
+
         public ImageList GetImageList()
         {
             ImageList imageList = this.treeView1.ImageList;
@@ -849,7 +864,7 @@ namespace SuperPutty
                     if (Regex.IsMatch(fi.Extension, @"\.(bmp|jpg|jpeg|png)", RegexOptions.IgnoreCase))
                     {
                         Image img = Image.FromFile(fi.FullName);
-                        imgIcons.Images.Add(fi.Name, img);
+                        imgIcons.Images.Add(Path.GetFileNameWithoutExtension(fi.Name), img);
                     }
                 }
                 Log.InfoFormat("Loaded {0} icons from theme directory.  dir={1}", imgIcons.Images.Count, themeFolder);
@@ -861,6 +876,7 @@ namespace SuperPutty
 
             return imgIcons;
         }
+        #endregion
     }
 
 }
