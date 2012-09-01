@@ -767,8 +767,8 @@ namespace SuperPutty
                 nodePayload.Remove();
 
                 // add new
-                UpdateSessionId(nodeNew, (SessionData)nodeNew.Tag); //
                 node.Nodes.Add(nodeNew);
+                UpdateSessionId(nodeNew, (SessionData)nodeNew.Tag); //
 
                 // If this a folder, reset it's childrens sessionIds
                 if (IsFolderNode(nodeNew))
