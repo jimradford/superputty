@@ -211,6 +211,8 @@ namespace SuperPutty
         /// </summary>
         internal void SetFocusToChildApplication(string caller)
         {
+            if (!this.m_AppPanel.ExternalProcessCaptured) { return; }
+
             bool success = false;
             for (int i = 0; i < RefocusAttempts; i++)
             {
