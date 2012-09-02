@@ -78,6 +78,15 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
+            this.tabPageShortcuts = new System.Windows.Forms.TabPage();
+            this.dataGridViewShortcuts = new System.Windows.Forms.DataGridView();
+            this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.colClear = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.shortcutStringDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.keyboardShortcutBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
@@ -88,6 +97,9 @@
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.panelBottom.SuspendLayout();
+            this.tabPageShortcuts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -426,6 +438,7 @@
             // 
             this.tabControl.Controls.Add(this.tabPageGeneral);
             this.tabControl.Controls.Add(this.tabPageGUI);
+            this.tabControl.Controls.Add(this.tabPageShortcuts);
             this.tabControl.Controls.Add(this.tabPageAdvanced);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(5, 5);
@@ -592,6 +605,92 @@
             this.panelBottom.Size = new System.Drawing.Size(630, 27);
             this.panelBottom.TabIndex = 39;
             // 
+            // tabPageShortcuts
+            // 
+            this.tabPageShortcuts.Controls.Add(this.dataGridViewShortcuts);
+            this.tabPageShortcuts.Location = new System.Drawing.Point(4, 22);
+            this.tabPageShortcuts.Name = "tabPageShortcuts";
+            this.tabPageShortcuts.Size = new System.Drawing.Size(622, 247);
+            this.tabPageShortcuts.TabIndex = 3;
+            this.tabPageShortcuts.Text = "Shortcuts";
+            this.tabPageShortcuts.UseVisualStyleBackColor = true;
+            // 
+            // dataGridViewShortcuts
+            // 
+            this.dataGridViewShortcuts.AllowUserToAddRows = false;
+            this.dataGridViewShortcuts.AllowUserToDeleteRows = false;
+            this.dataGridViewShortcuts.AutoGenerateColumns = false;
+            this.dataGridViewShortcuts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewShortcuts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.nameDataGridViewTextBoxColumn,
+            this.keyDataGridViewTextBoxColumn,
+            this.modifiersDataGridViewTextBoxColumn,
+            this.shortcutStringDataGridViewTextBoxColumn,
+            this.colEdit,
+            this.colClear});
+            this.dataGridViewShortcuts.DataSource = this.keyboardShortcutBindingSource;
+            this.dataGridViewShortcuts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridViewShortcuts.Location = new System.Drawing.Point(0, 0);
+            this.dataGridViewShortcuts.Name = "dataGridViewShortcuts";
+            this.dataGridViewShortcuts.ReadOnly = true;
+            this.dataGridViewShortcuts.Size = new System.Drawing.Size(622, 247);
+            this.dataGridViewShortcuts.TabIndex = 0;
+            this.dataGridViewShortcuts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShortcuts_CellClick);
+            // 
+            // colEdit
+            // 
+            this.colEdit.HeaderText = "";
+            this.colEdit.Name = "colEdit";
+            this.colEdit.ReadOnly = true;
+            this.colEdit.Text = "Edit";
+            this.colEdit.UseColumnTextForButtonValue = true;
+            this.colEdit.Width = 50;
+            // 
+            // colClear
+            // 
+            this.colClear.HeaderText = "";
+            this.colClear.Name = "colClear";
+            this.colClear.ReadOnly = true;
+            this.colClear.Text = "Clear";
+            this.colClear.UseColumnTextForButtonValue = true;
+            this.colClear.Width = 50;
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.nameDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // keyDataGridViewTextBoxColumn
+            // 
+            this.keyDataGridViewTextBoxColumn.DataPropertyName = "Key";
+            this.keyDataGridViewTextBoxColumn.HeaderText = "Key";
+            this.keyDataGridViewTextBoxColumn.Name = "keyDataGridViewTextBoxColumn";
+            this.keyDataGridViewTextBoxColumn.ReadOnly = true;
+            this.keyDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // modifiersDataGridViewTextBoxColumn
+            // 
+            this.modifiersDataGridViewTextBoxColumn.DataPropertyName = "Modifiers";
+            this.modifiersDataGridViewTextBoxColumn.HeaderText = "Modifiers";
+            this.modifiersDataGridViewTextBoxColumn.Name = "modifiersDataGridViewTextBoxColumn";
+            this.modifiersDataGridViewTextBoxColumn.ReadOnly = true;
+            this.modifiersDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // shortcutStringDataGridViewTextBoxColumn
+            // 
+            this.shortcutStringDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.shortcutStringDataGridViewTextBoxColumn.DataPropertyName = "ShortcutString";
+            this.shortcutStringDataGridViewTextBoxColumn.HeaderText = "Shortcut";
+            this.shortcutStringDataGridViewTextBoxColumn.Name = "shortcutStringDataGridViewTextBoxColumn";
+            this.shortcutStringDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // keyboardShortcutBindingSource
+            // 
+            this.keyboardShortcutBindingSource.DataSource = typeof(SuperPutty.Data.KeyboardShortcut);
+            // 
             // dlgFindPutty
             // 
             this.AcceptButton = this.buttonOk;
@@ -626,6 +725,9 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.panelBottom.ResumeLayout(false);
+            this.tabPageShortcuts.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -680,5 +782,14 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.ComboBox comboBoxActivatorType;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TabPage tabPageShortcuts;
+        private System.Windows.Forms.DataGridView dataGridViewShortcuts;
+        private System.Windows.Forms.BindingSource keyboardShortcutBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn keyDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn modifiersDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn shortcutStringDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewButtonColumn colEdit;
+        private System.Windows.Forms.DataGridViewButtonColumn colClear;
     }
 }

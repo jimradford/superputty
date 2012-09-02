@@ -2,6 +2,11 @@
 using Microsoft.Win32;
 using System.IO;
 using SuperPutty.Utils;
+using SuperPutty.Data;
+using System;
+using System.Windows.Forms;
+using System.Configuration;
+using System.Collections.Generic;
 
 namespace SuperPutty.Properties {
     
@@ -67,6 +72,42 @@ namespace SuperPutty.Properties {
                     Log.Debug("Imported PscpExe from Registry");
                     PscpExe = pscpExe;
                 }
+            }
+        }
+
+        public KeyboardShortcut[] LoadShortcuts()
+        {
+            List<KeyboardShortcut> shortcuts = new List<KeyboardShortcut>();
+
+            foreach (SuperPuttyAction action in Enum.GetValues(typeof(SuperPuttyAction)))
+            {
+                string name = string.Format("Action_{0}_Shortcut", action);
+                try
+                {
+                    Keys keys = (Keys)this[name];
+
+                    // get new and update menu items if needed
+                    KeyboardShortcut ks = KeyboardShortcut.FromKeys(keys);
+                    ks.Name = action.ToString();
+
+                    shortcuts.Add(ks);
+                }
+                catch (SettingsPropertyNotFoundException)
+                {
+                    Log.Debug("Could not load shortcut for " + name);
+                }
+            }
+
+            return shortcuts.ToArray();
+        }
+
+        public void UpdateFromShortcuts(KeyboardShortcut[] shortcuts)
+        {
+            foreach (KeyboardShortcut ks in shortcuts)
+            {
+                SuperPuttyAction action = (SuperPuttyAction)Enum.Parse(typeof(SuperPuttyAction), ks.Name);
+                string name = string.Format("Action_{0}_Shortcut", action);
+                this[name] = ks.Key | ks.Modifiers;
             }
         }
     }

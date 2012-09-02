@@ -71,10 +71,13 @@ namespace SuperPutty
         private ChildWindowFocusHelper focusHelper;
         bool isControlDown = false;
         bool isShiftDown = false;
+        bool isAltDown = false;
         int commandMRUIndex = 0;
 
         private readonly TabSwitcher tabSwitcher;
         private readonly ViewState fullscreenViewState;
+
+        Dictionary<Keys, SuperPuttyAction> shortcuts = new Dictionary<Keys, SuperPuttyAction>();
 
         public frmSuperPutty()
         {
@@ -135,6 +138,9 @@ namespace SuperPutty
 
             // full screen
             this.fullscreenViewState = new ViewState(this);
+
+            // keyboard shortcuts
+            this.UpdateShortcutsFromSettings();
         }
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
@@ -689,7 +695,7 @@ namespace SuperPutty
             SuperPuTTY.ReportStatus("Editing Options");
 
             dlgFindPutty dialog = new dlgFindPutty();
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 // try to apply settings to existing documents (don't worry about the ones docked on sides)
                 foreach (DockContent dockContent in this.DockPanel.Documents)
@@ -701,6 +707,7 @@ namespace SuperPutty
                 this.tabSwitcher.TabSwitchStrategy = TabSwitcher.StrategyFromTypeName(SuperPuTTY.Settings.TabSwitcher);
 
                 this.SaveLastWindowBounds();
+                this.UpdateShortcutsFromSettings();
             }
 
             SuperPuTTY.ReportStatus("Ready");
@@ -1000,6 +1007,70 @@ namespace SuperPutty
                     }
                 }
 
+                // Detect alt key state
+                if ((Keys)vkCode == Keys.Alt)
+                {
+                    // Set flag to indicate if Alt key is up or down
+                    isAltDown = (wParam == (IntPtr)NativeMethods.WM_KEYDOWN);
+                }
+
+                // Operator has pressed Ctrl-Tab, make next PuTTY panel active
+                if (isControlDown && !isShiftDown && (Keys)vkCode == Keys.Tab)
+                {
+                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN && this.DockPanel.ActiveDocument is ToolWindowDocument)
+                    {
+                        if (this.tabSwitcher.MoveToNextDocument())
+                        {
+                            // Eat the keystroke
+                            return (IntPtr)1;
+                        }
+                    }
+                }
+
+                // Operator has pressed Ctrl-Shift-Tab, make previous PuTTY panel active
+                if (isControlDown && isShiftDown && (Keys)vkCode == Keys.Tab)
+                {
+                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN && this.DockPanel.ActiveDocument is ToolWindowDocument)
+                    {
+                        if (this.tabSwitcher.MoveToPrevDocument())
+                        {
+                            // Eat the keystroke
+                            return (IntPtr)1;
+                        }
+                    }
+                }
+
+                // misc action handling
+                if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
+                {
+                    Keys keys = (Keys)vkCode;
+                    if (isControlDown) keys |= Keys.Control;
+                    if (isShiftDown) keys |= Keys.Shift;
+                    if (isAltDown) keys |= Keys.Alt;
+
+                    SuperPuttyAction action;
+                    if (this.shortcuts.TryGetValue(keys, out action))
+                    {
+                        if (ExecuteSuperPuttyAction(action))
+                        {
+                            return (IntPtr)1;
+                        }
+                    }
+                }
+
+                /*
+                 * 
+                 if ((Keys)vkCode == Keys.F11 && !isShiftDown && !isControlDown)
+                {
+                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
+                    {
+                        this.BeginInvoke(new MethodInvoker(this.ToggleFullScreen));
+                    }
+                    // Eat the keystroke
+                    return (IntPtr)1;
+                }
+
+
                 // Operator has pressed Ctrl-F4, close the active PuTTY or file transfer panel
                 if (isControlDown && (Keys)vkCode == Keys.F4)
                 {
@@ -1031,43 +1102,8 @@ namespace SuperPutty
                         // Eat the keystroke
                         return (IntPtr)1;
                     }
-                }
+                }*/
 
-                // Operator has pressed Ctrl-Tab, make next PuTTY panel active
-                if (isControlDown && !isShiftDown && (Keys)vkCode == Keys.Tab)
-                {
-                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN && this.DockPanel.ActiveDocument is ToolWindowDocument)
-                    {
-                        if (this.tabSwitcher.MoveToNextDocument())
-                        {
-                            // Eat the keystroke
-                            return (IntPtr)1;
-                        }
-                    }
-                }
-
-                // Operator has pressed Ctrl-Shift-Tab, make previous PuTTY panel active
-                if (isControlDown && isShiftDown && (Keys)vkCode == Keys.Tab)
-                {
-                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN && this.DockPanel.ActiveDocument is ToolWindowDocument)
-                    {
-                        if (this.tabSwitcher.MoveToPrevDocument())
-                        {
-                            // Eat the keystroke
-                            return (IntPtr)1;
-                        }
-                    }
-                }
-
-                if ((Keys)vkCode == Keys.F11 && !isShiftDown && !isControlDown)
-                {
-                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
-                    {
-                        this.BeginInvoke(new MethodInvoker(this.ToggleFullScreen));
-                    }
-                    // Eat the keystroke
-                    return (IntPtr)1;
-                }
 
             }
                                 
@@ -1117,6 +1153,66 @@ namespace SuperPutty
             List<IntPtr> list = gch.Target as List<IntPtr>;
             if (handle == NativeMethods.GetForegroundWindow()) list.Add(handle);
             if (list.Count == 0) return true; else return false;
+        }
+
+        void UpdateShortcutsFromSettings()
+        {
+            // remove old
+            this.shortcuts.Clear();
+            this.fullScreenToolStripMenuItem.ShortcutKeys = Keys.None;
+            this.optionsToolStripMenuItem.ShortcutKeys = Keys.None;
+
+            // reload new definitions
+            foreach (KeyboardShortcut ks in SuperPuTTY.Settings.LoadShortcuts())
+            {
+                SuperPuttyAction action = (SuperPuttyAction)Enum.Parse(typeof(SuperPuttyAction), ks.Name);
+                Keys keys = ks.Key | ks.Modifiers;
+                this.shortcuts.Add(keys, action);
+
+                switch (action)
+                {
+                    case SuperPuttyAction.FullScreen:
+                        this.fullScreenToolStripMenuItem.ShortcutKeys = keys;
+                        break;
+                    case SuperPuttyAction.Options:
+                        this.optionsToolStripMenuItem.ShortcutKeys = keys;
+                        break;
+                }
+            }
+        }
+
+        bool ExecuteSuperPuttyAction(SuperPuttyAction action)
+        {
+            bool success = true;
+
+            Log.InfoFormat("Executing action, name={0}", action);
+            switch (action)
+            {
+                case SuperPuttyAction.CloseTab:
+                    ToolWindow win = this.DockPanel.ActiveDocument as ToolWindow;
+                    if (win != null) { win.Close(); }
+                    break;
+                case SuperPuttyAction.NextTab:
+                    this.tabSwitcher.MoveToNextDocument();
+                    break;
+                case SuperPuttyAction.PrevTab:
+                    this.tabSwitcher.MoveToPrevDocument();
+                    break;
+                case SuperPuttyAction.FullScreen:
+                    this.ToggleFullScreen();
+                    break;
+                case SuperPuttyAction.Options:
+                    this.BeginInvoke(new Action(() => {
+                        this.Activate();
+                        this.optionsToolStripMenuItem_Click(this, EventArgs.Empty);
+                    }));
+                    break;
+                default:
+                    success = false;
+                    break;
+            }
+
+            return success;
         }
 
         #endregion
@@ -1182,7 +1278,6 @@ namespace SuperPutty
             Dynamic, 
             Mixed
         }
-
 
     }
 }

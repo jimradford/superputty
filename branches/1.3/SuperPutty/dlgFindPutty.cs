@@ -30,6 +30,7 @@ using System.Windows.Forms;
 using log4net;
 using SuperPutty.Data;
 using SuperPutty.Utils;
+using SuperPutty.Gui;
 
 namespace SuperPutty
 {
@@ -54,6 +55,8 @@ namespace SuperPutty
 
         private string OrigSettingsFolder { get; set; }
         private string OrigDefaultLayoutName { get; set; }
+
+        private BindingList<KeyboardShortcut> Shortcuts { get; set; }
 
         public dlgFindPutty()
         {
@@ -178,6 +181,14 @@ namespace SuperPutty
                 this.ShowIcon = true;
                 this.ShowInTaskbar = true;
             }
+
+            // shortcuts
+            this.Shortcuts = new BindingList<KeyboardShortcut>();
+            foreach (KeyboardShortcut ks in SuperPuTTY.Settings.LoadShortcuts())
+            {
+                this.Shortcuts.Add(ks);
+            }
+            this.dataGridViewShortcuts.DataSource = this.Shortcuts;
         }
 
         private void InitLayouts()
@@ -268,6 +279,11 @@ namespace SuperPutty
                 SuperPuTTY.Settings.SessionsTreeFont = this.btnFont.Font;
                 SuperPuTTY.Settings.WindowActivator = (string) this.comboBoxActivatorType.SelectedItem;
 
+                // save shortcuts
+                KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
+                this.Shortcuts.CopyTo(shortcuts, 0);
+                SuperPuTTY.Settings.UpdateFromShortcuts(shortcuts);
+
                 SuperPuTTY.Settings.Save();
 
                 // @TODO - move this to a better place...maybe event handler after opening
@@ -280,6 +296,7 @@ namespace SuperPutty
                 {
                     SuperPuTTY.LoadLayouts();
                 }
+
                 DialogResult = DialogResult.OK;
             }
             else
@@ -396,11 +413,38 @@ namespace SuperPutty
             }
         }
 
+        private void dataGridViewShortcuts_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex == -1 || e.ColumnIndex == -1) { return; }
+
+            Log.InfoFormat("Shortcuts grid click: row={0}, col={1}", e.RowIndex, e.ColumnIndex);
+            DataGridViewColumn col = this.dataGridViewShortcuts.Columns[e.ColumnIndex];
+            DataGridViewRow row = this.dataGridViewShortcuts.Rows[e.RowIndex];
+            KeyboardShortcut ks = (KeyboardShortcut) row.DataBoundItem;
+
+            if (col == colEdit)
+            {
+                KeyboardShortcutEditor editor = new KeyboardShortcutEditor();
+                editor.StartPosition = FormStartPosition.CenterParent;
+                if (DialogResult.OK == editor.ShowDialog(this, ks))
+                {
+                    this.Shortcuts.ResetItem(this.Shortcuts.IndexOf(ks));
+                    Log.InfoFormat("Edited shortcut: {0}", ks);
+                }
+            }
+            else if (col == colClear)
+            {
+                ks.Clear();
+                this.Shortcuts.ResetItem(this.Shortcuts.IndexOf(ks));
+                Log.InfoFormat("Cleared shortcut: {0}", ks);
+            }
+        }
 
         static string ToShortString(Font font)
         {
             return String.Format("{0}, {1} pt, {2}", font.FontFamily.Name, font.Size, font.Style);
         }
+
     }
 
 }

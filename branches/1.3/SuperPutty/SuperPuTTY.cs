@@ -598,4 +598,15 @@ namespace SuperPutty
         #endregion
     }
 
+    #region SuperPuttyAction
+    public enum SuperPuttyAction
+    {
+        CloseTab,
+        NextTab,
+        PrevTab,
+        Options,
+        FullScreen
+    } 
+    #endregion
+
 }
