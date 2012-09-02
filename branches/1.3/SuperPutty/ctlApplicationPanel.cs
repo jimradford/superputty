@@ -148,7 +148,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool ReFocusPuTTY(string caller)
         {
             bool result = false;
-            if (this.m_AppWin != null && NativeMethods.GetForegroundWindow() != this.m_AppWin)
+            if (this.ExternalProcessCaptured && NativeMethods.GetForegroundWindow() != this.m_AppWin)
             {
                 //Log.InfoFormat("[{0}] ReFocusPuTTY - puttyTab={1}, caller={2}", this.m_AppWin, this.Parent.Text, caller);
                 settingForeground = true;
@@ -360,20 +360,28 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     }
                 }
 
-                //Logger.Log("ApplicationPanel Handle: {0}", this.Handle.ToString("X"));              
-                //Logger.Log("Process Handle: {0}", m_AppWin.ToString("X"));
-                // Set the application as a child of the parent form
-                NativeMethods.SetParent(m_AppWin, this.Handle);
+                if ("PuTTY Command Line Error" == this.m_Process.MainWindowTitle)
+                {
+                    // dont' try to capture or manipulate the window
+                    Log.WarnFormat("Error while creating putty session: title={0}, handle={1}.  Abort capture window", this.m_Process.MainWindowTitle, this.m_AppWin);
+                    this.m_AppWin = IntPtr.Zero;
+                }
+                else
+                {
+                    //Logger.Log("Process Handle: {0}", m_AppWin.ToString("X"));
+                    // Set the application as a child of the parent form
+                    NativeMethods.SetParent(m_AppWin, this.Handle);
 
-                // Show it! (must be done before we set the windows visibility parameters below                
-                NativeMethods.ShowWindow(m_AppWin, NativeMethods.WindowShowStyle.Maximize);
+                    // Show it! (must be done before we set the windows visibility parameters below                
+                    NativeMethods.ShowWindow(m_AppWin, NativeMethods.WindowShowStyle.Maximize);
 
-                // set window parameters (how it's displayed)
-                long lStyle = NativeMethods.GetWindowLong(m_AppWin, NativeMethods.GWL_STYLE);
-                lStyle &= ~(NativeMethods.WS_BORDER | NativeMethods.WS_THICKFRAME);
-                NativeMethods.SetWindowLong(m_AppWin, NativeMethods.GWL_STYLE, lStyle);
+                    // set window parameters (how it's displayed)
+                    long lStyle = NativeMethods.GetWindowLong(m_AppWin, NativeMethods.GWL_STYLE);
+                    lStyle &= ~(NativeMethods.WS_BORDER | NativeMethods.WS_THICKFRAME);
+                    NativeMethods.SetWindowLong(m_AppWin, NativeMethods.GWL_STYLE, lStyle);
+                }
             }
-            if (this.Visible && this.m_Created)
+            if (this.Visible && this.m_Created && this.ExternalProcessCaptured)
             {
                 // Move the child so it's located over the parent
                 this.MoveWindow("OnVisChanged");
@@ -394,7 +402,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         /// <param name="e"></param>
         protected override void OnHandleDestroyed(EventArgs e)
         {
-            if (m_AppWin != IntPtr.Zero)
+            if (this.ExternalProcessCaptured)
             {
                 // Send WM_DESTROY instead of WM_CLOSE, so that the Client doesn't
                 // ask in the Background whether the session shall be closed.
@@ -416,7 +424,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         protected override void OnResize(EventArgs e)
         {
             // if valid
-            if (this.m_AppWin != IntPtr.Zero)
+            if (ExternalProcessCaptured)
             {
                 // if not minimizing && visible
                 if (this.Height > 0 && this.Width > 0 && this.Visible)
@@ -425,6 +433,14 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 }
             }
             base.OnResize(e);
+        }
+
+        public bool ExternalProcessCaptured
+        {
+            get
+            {
+                return this.m_AppWin != IntPtr.Zero;
+            }
         }
 
         #endregion    
