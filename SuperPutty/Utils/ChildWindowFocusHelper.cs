@@ -150,6 +150,14 @@ namespace SuperPutty.Utils
                                     NativeMethods.BringWindowToTop(this.MainForm.Handle);
                                     this.MainForm.FocusActiveDocument("SHELLHOOK");
                                 }
+                                //else if (current == this.MainForm.Handle)
+                                //{
+                                //    //Log.Info("### hwd=" + this.MainForm.Handle + ", m.h=" + m.HWnd + ", blah=" + DesktopWindow.GetFirstDesktopWindow().Title);
+                                //    foreach (DesktopWindow dw in DesktopWindow.GetDesktopWindows())
+                                //    {
+                                //        //Log.Info("blah=" + dw.Title);
+                                //    }
+                                //}
                                 break;
                             default:
                                 break;

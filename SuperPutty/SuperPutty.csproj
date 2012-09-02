@@ -86,6 +86,7 @@
     <Compile Include="AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Data\KeyboardShortcut.cs" />
     <Compile Include="Gui\ImageListPopup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,6 +98,12 @@
     </Compile>
     <Compile Include="frmDocumentSelector.Designer.cs">
       <DependentUpon>frmDocumentSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\KeyboardShortcutEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\KeyboardShortcutEditor.Designer.cs">
+      <DependentUpon>KeyboardShortcutEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ToolWindowEx.cs">
       <SubType>Form</SubType>
@@ -225,6 +232,9 @@
     <EmbeddedResource Include="frmTransferStatus.resx">
       <DependentUpon>frmTransferStatus.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Gui\KeyboardShortcutEditor.resx">
+      <DependentUpon>KeyboardShortcutEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LayoutsList.resx">
       <DependentUpon>LayoutsList.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -321,6 +331,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\DataSources\SuperPutty.Data.KeyboardShortcut.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

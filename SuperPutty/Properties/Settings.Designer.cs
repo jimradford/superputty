@@ -321,5 +321,70 @@ namespace SuperPutty.Properties {
                 this["SendCommandsToVisibleOnly"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F11")]
+        public global::System.Windows.Forms.Keys Action_FullScreen_Shortcut {
+            get {
+                return ((global::System.Windows.Forms.Keys)(this["Action_FullScreen_Shortcut"]));
+            }
+            set {
+                this["Action_FullScreen_Shortcut"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Ctrl+F4")]
+        public global::System.Windows.Forms.Keys Action_CloseTab_Shortcut {
+            get {
+                return ((global::System.Windows.Forms.Keys)(this["Action_CloseTab_Shortcut"]));
+            }
+            set {
+                this["Action_CloseTab_Shortcut"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Ctrl+End")]
+        public global::System.Windows.Forms.Keys Action_NextTab_Shortcut {
+            get {
+                return ((global::System.Windows.Forms.Keys)(this["Action_NextTab_Shortcut"]));
+            }
+            set {
+                this["Action_NextTab_Shortcut"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Ctrl+Home")]
+        public global::System.Windows.Forms.Keys Action_PrevTab_Shortcut {
+            get {
+                return ((global::System.Windows.Forms.Keys)(this["Action_PrevTab_Shortcut"]));
+            }
+            set {
+                this["Action_PrevTab_Shortcut"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F2")]
+        public global::System.Windows.Forms.Keys Action_Options_Shortcut {
+            get {
+                return ((global::System.Windows.Forms.Keys)(this["Action_Options_Shortcut"]));
+            }
+            set {
+                this["Action_Options_Shortcut"] = value;
+            }
+        }
     }
 }
