@@ -383,6 +383,10 @@
     <None Include="Resources\server_go.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>IF NOT EXIST $(SolutionDir)bin\Debug\themes mkdir $(SolutionDir)bin\Debug\themes 
+IF NOT EXIST $(SolutionDir)bin\Debug\themes xcopy /E  /Y $(ProjectDir)Resources\themes $(SolutionDir)bin\Debug\themes</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
