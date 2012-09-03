@@ -66,6 +66,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Web" />
     <Reference Include="System.Data" />
@@ -104,6 +105,17 @@
     </Compile>
     <Compile Include="Gui\KeyboardShortcutEditor.Designer.cs">
       <DependentUpon>KeyboardShortcutEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\QuickSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\QuickSelector.Designer.cs">
+      <DependentUpon>QuickSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\QuickSelectorData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>QuickSelectorData.xsd</DependentUpon>
     </Compile>
     <Compile Include="ToolWindowEx.cs">
       <SubType>Form</SubType>
@@ -235,6 +247,9 @@
     <EmbeddedResource Include="Gui\KeyboardShortcutEditor.resx">
       <DependentUpon>KeyboardShortcutEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Gui\QuickSelector.resx">
+      <DependentUpon>QuickSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LayoutsList.resx">
       <DependentUpon>LayoutsList.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -330,6 +345,17 @@
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Gui\QuickSelectorData.xsc">
+      <DependentUpon>QuickSelectorData.xsd</DependentUpon>
+    </None>
+    <None Include="Gui\QuickSelectorData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>QuickSelectorData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Gui\QuickSelectorData.xss">
+      <DependentUpon>QuickSelectorData.xsd</DependentUpon>
     </None>
     <None Include="Properties\DataSources\SuperPutty.Data.KeyboardShortcut.datasource" />
     <None Include="Properties\Settings.settings">

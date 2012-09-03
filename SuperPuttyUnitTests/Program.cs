@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using NUnit.Gui;
 
 namespace SuperPuttyUnitTests
 {
@@ -10,6 +11,11 @@ namespace SuperPuttyUnitTests
     {
         [STAThread]
         static void Main(string[] args)
+        {
+            RunGui(args);
+        }
+
+        static void RunConsole()
         {
             string[] my_args = { Assembly.GetExecutingAssembly().Location };
 
@@ -20,6 +26,11 @@ namespace SuperPuttyUnitTests
 
             Console.WriteLine("Complete - Any key to kill");
             Console.ReadLine();
+        }
+
+        static void RunGui(string[] args)
+        {
+            AppEntry.Main(args);
         }
     }
 }
