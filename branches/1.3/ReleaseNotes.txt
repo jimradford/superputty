@@ -1,3 +1,8 @@
+1.3.0.7
+- 154: 	Configurable hotkeys to switch tabs (Configure from Options, Shortcuts)
+- 199: 	Unable to Connect Dialog (added code to not capture the error popup)
+- 214: 	Hosts moved to root (under Putty Sessions tree) are forever stuck there.  (Fix for bug introduced in 1.3.0.4)
+
 1.3.0.6
 - 180: 	Possibility to leave host name empty in SuperPutty session (made modifications throughout to support)
 - 203: 	Patch - Host icon changer for 1.3 svn
