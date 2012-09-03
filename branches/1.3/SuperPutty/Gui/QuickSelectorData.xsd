@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="QuickSelectorData" targetNamespace="http://tempuri.org/QuickSelectorData.xsd" xmlns:mstns="http://tempuri.org/QuickSelectorData.xsd" xmlns="http://tempuri.org/QuickSelectorData.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="QuickSelectorData" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="QuickSelectorData" msprop:Generator_UserDSName="QuickSelectorData">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="ItemData" msprop:Generator_TableClassName="ItemDataDataTable" msprop:Generator_TableVarName="tableItemData" msprop:Generator_TablePropName="ItemData" msprop:Generator_RowDeletingName="ItemDataRowDeleting" msprop:Generator_UserTableName="ItemData" msprop:Generator_RowChangingName="ItemDataRowChanging" msprop:Generator_RowEvHandlerName="ItemDataRowChangeEventHandler" msprop:Generator_RowDeletedName="ItemDataRowDeleted" msprop:Generator_RowEvArgName="ItemDataRowChangeEvent" msprop:Generator_RowChangedName="ItemDataRowChanged" msprop:Generator_RowClassName="ItemDataRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" type="xs:string" minOccurs="0" />
+              <xs:element name="Detail" msprop:Generator_ColumnVarNameInTable="columnDetail" msprop:Generator_ColumnPropNameInRow="Detail" msprop:Generator_ColumnPropNameInTable="DetailColumn" msprop:Generator_UserColumnName="Detail" type="xs:string" minOccurs="0" />
+              <xs:element name="TextColor" msdata:DataType="System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_ColumnVarNameInTable="columnTextColor" msprop:Generator_ColumnPropNameInRow="TextColor" msprop:Generator_ColumnPropNameInTable="TextColorColumn" msprop:Generator_UserColumnName="TextColor" type="xs:anyType" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
