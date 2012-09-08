@@ -32,6 +32,7 @@ using SuperPutty.Utils;
 using System.Reflection;
 using System.IO;
 using System.Drawing;
+using System.Text;
 
 namespace SuperPutty
 {
@@ -128,9 +129,25 @@ namespace SuperPutty
             Log.Error(msg);
         }
 
+        /// <summary>
+        /// For issue 218:
+        /// http://stackoverflow.com/questions/295161/how-to-avoid-filenotfoundexception-if-net-3-5-is-not-installed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            MessageBox.Show(e.Exception.ToString(), "Application_ThreadException", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            StringBuilder sb = new StringBuilder();
+            if (e.Exception.Message.Contains("Could not load file or assembly 'System.Core, Version=3.5.0.0"))
+            {
+                sb.Append("SuperPutty requires the Microsoft .NET Framework version 3.5, or greater, in order to run.\n\nPlease contact your System Administrator for more information.");
+            }
+            else
+            {
+                sb.Append(e.Exception);
+            }
+
+            MessageBox.Show(sb.ToString(), "Application_ThreadException", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Log.Error("Application_ThreadException", e.Exception);
         }
 
