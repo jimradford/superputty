@@ -7,6 +7,8 @@ using System;
 using System.Windows.Forms;
 using System.Configuration;
 using System.Collections.Generic;
+using System.Threading;
+using System.Globalization;
 
 namespace SuperPutty.Properties {
     
@@ -82,20 +84,28 @@ namespace SuperPutty.Properties {
             foreach (SuperPuttyAction action in Enum.GetValues(typeof(SuperPuttyAction)))
             {
                 string name = string.Format("Action_{0}_Shortcut", action);
+
+                // default
+                KeyboardShortcut ks = new KeyboardShortcut { Key = Keys.None };
+
+                // try load froms settings, note that Ctrl/Strg have conflicts
+                // http://blogs.msdn.com/b/michkap/archive/2010/06/05/10019465.aspx
                 try
                 {
                     Keys keys = (Keys)this[name];
-
-                    // get new and update menu items if needed
-                    KeyboardShortcut ks = KeyboardShortcut.FromKeys(keys);
-                    ks.Name = action.ToString();
-
-                    shortcuts.Add(ks);
+                    ks = KeyboardShortcut.FromKeys(keys);
+                }
+                catch (ArgumentException ex)
+                {
+                    Log.Warn("Could not convert shortcut text to Keys, possible localization bug with Ctrl and Strg.  Setting to None: " + name, ex);
                 }
                 catch (SettingsPropertyNotFoundException)
                 {
-                    Log.Debug("Could not load shortcut for " + name);
+                    Log.Debug("Could not load shortcut for " + name + ", Setting to None.");
                 }
+
+                ks.Name = action.ToString();
+                shortcuts.Add(ks);
             }
 
             return shortcuts.ToArray();
