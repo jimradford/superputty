@@ -1165,19 +1165,30 @@ namespace SuperPutty
             // reload new definitions
             foreach (KeyboardShortcut ks in SuperPuTTY.Settings.LoadShortcuts())
             {
-                SuperPuttyAction action = (SuperPuttyAction)Enum.Parse(typeof(SuperPuttyAction), ks.Name);
-                Keys keys = ks.Key | ks.Modifiers;
-                this.shortcuts.Add(keys, action);
-
-                switch (action)
+                try
                 {
-                    case SuperPuttyAction.FullScreen:
-                        this.fullScreenToolStripMenuItem.ShortcutKeys = keys;
-                        break;
-                    case SuperPuttyAction.Options:
-                        this.optionsToolStripMenuItem.ShortcutKeys = keys;
-                        break;
+                    SuperPuttyAction action = (SuperPuttyAction)Enum.Parse(typeof(SuperPuttyAction), ks.Name);
+                    Keys keys = ks.Key | ks.Modifiers;
+                    if (keys != Keys.None)
+                    {
+                        this.shortcuts.Add(keys, action);
+                    }
+
+                    switch (action)
+                    {
+                        case SuperPuttyAction.FullScreen:
+                            this.fullScreenToolStripMenuItem.ShortcutKeys = keys;
+                            break;
+                        case SuperPuttyAction.Options:
+                            this.optionsToolStripMenuItem.ShortcutKeys = keys;
+                            break;
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Error creating shortcut: " + ks + ", disabled.", ex);
+                }
+
             }
         }
 
