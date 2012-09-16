@@ -1,5 +1,12 @@
+1.3.0.8
+- 218: 	crash when start program (added message for missing .NET 3.5)
+- 219: 	New Session won't close on Cancel (Set CausesValidation=False on Cancel button)
+- 220: 	Crash on startup (Catch argument exception...Strg/Ctrl conflict)
+- 223: 	Critical hotkey bug preventing start-up (added check and error handling)
+
 1.3.0.7
 - 154: 	Configurable hotkeys to switch tabs (Configure from Options, Shortcuts)
+- 191: 	F11 et progress editor (Shortcut is configurable now)
 - 199: 	Unable to Connect Dialog (added code to not capture the error popup)
 - 214: 	Hosts moved to root (under Putty Sessions tree) are forever stuck there.  (Fix for bug introduced in 1.3.0.4)
 
