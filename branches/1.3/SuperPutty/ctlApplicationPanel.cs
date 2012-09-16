@@ -136,7 +136,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
             if (!SuperPuTTY.IsLayoutChanging)
             {
-                bool success = NativeMethods.MoveWindow(m_AppWin, 0, 0, this.Width, this.Height + 300, this.Visible);
+                bool success = NativeMethods.MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, this.Visible);
                 if (Log.IsDebugEnabled)
                 {
                     Log.DebugFormat("MoveWindow [{3,-15}{4,20}] w={0,4}, h={1,4}, visible={2}, success={5}", this.Width, this.Height, this.Visible, src, this.Name, success);
