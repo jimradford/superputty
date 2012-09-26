@@ -117,7 +117,15 @@ namespace SuperPutty.Properties {
             {
                 SuperPuttyAction action = (SuperPuttyAction)Enum.Parse(typeof(SuperPuttyAction), ks.Name);
                 string name = string.Format("Action_{0}_Shortcut", action);
-                this[name] = ks.Key | ks.Modifiers;
+                try
+                {
+                    this[name] = ks.Key | ks.Modifiers;
+                }
+                catch (ArgumentException ex)
+                {
+                    this[name] = Keys.None;
+                    Log.WarnFormat("Could not update shortcut for " + name + ".  Setting to None.", ex);
+                }
             }
         }
     }
