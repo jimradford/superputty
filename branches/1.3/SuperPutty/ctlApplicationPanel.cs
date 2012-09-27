@@ -98,8 +98,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             //this.m_windowActivator = new SetFGCombinedWindowActivator();
             this.m_winEventDelegate = new NativeMethods.WinEventDelegate(WinEventProc);
             this.m_hWinEventHook = NativeMethods.SetWinEventHook(
-                NativeMethods.EVENT_SYSTEM_FOREGROUND,
-                NativeMethods.EVENT_OBJECT_NAMECHANGE, 
+                (int) NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND,
+                (int) NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE, 
                 IntPtr.Zero, 
                 this.m_winEventDelegate, 0, 0, 
                 NativeMethods.WINEVENT_OUTOFCONTEXT);
@@ -176,15 +176,27 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         NativeMethods.WinEventDelegate m_winEventDelegate;
         IntPtr m_hWinEventHook;
         bool settingForeground = false;
+        bool isSwitchingViaAltTab = false;
         
         void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            if (eventType == NativeMethods.EVENT_OBJECT_NAMECHANGE && hwnd == m_AppWin)
+            Log.DebugFormat("eventType={0}, hwnd={1}", eventType, hwnd);
+            if (eventType == (int) NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE && hwnd == m_AppWin)
             {
                 // Putty xterm chdir - apply to title
                 UpdateTitle();
             }
-            else if (eventType == NativeMethods.EVENT_SYSTEM_FOREGROUND && hwnd == m_AppWin)
+            else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHSTART )
+            {
+                Log.InfoFormat("[{0}] Switch start", hwnd);
+                this.isSwitchingViaAltTab = true;
+            }
+            else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHEND)
+            {
+                Log.InfoFormat("[{0}] Switch End", hwnd);
+                this.isSwitchingViaAltTab = false;
+            }
+            else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND && hwnd == m_AppWin)
             {
                 // if we got the EVENT_SYSTEM_FOREGROUND, and the hwnd is the putty terminal hwnd (m_AppWin)
                 // then bring the supperputty window to the foreground
@@ -192,6 +204,11 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 if (settingForeground)
                 {
                     settingForeground = false;
+                    return;
+                }
+                if (isSwitchingViaAltTab)
+                {
+                    // during alt-tab on winxp, an extra foreground event.  Make you have to hit alt-tab 2x  
                     return;
                 }
 
