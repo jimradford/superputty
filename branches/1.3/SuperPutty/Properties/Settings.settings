@@ -75,13 +75,13 @@
       <Value Profile="(Default)">F11</Value>
     </Setting>
     <Setting Name="Action_CloseTab_Shortcut" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Windows.Forms.Keys" Scope="User">
-      <Value Profile="(Default)">Ctrl+F4</Value>
+      <Value Profile="(Default)">None</Value>
     </Setting>
     <Setting Name="Action_NextTab_Shortcut" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Windows.Forms.Keys" Scope="User">
-      <Value Profile="(Default)">Ctrl+End</Value>
+      <Value Profile="(Default)">None</Value>
     </Setting>
     <Setting Name="Action_PrevTab_Shortcut" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Windows.Forms.Keys" Scope="User">
-      <Value Profile="(Default)">Ctrl+Home</Value>
+      <Value Profile="(Default)">None</Value>
     </Setting>
     <Setting Name="Action_Options_Shortcut" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Windows.Forms.Keys" Scope="User">
       <Value Profile="(Default)">F2</Value>

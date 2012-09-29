@@ -338,7 +338,7 @@ namespace SuperPutty.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Ctrl+F4")]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
         public global::System.Windows.Forms.Keys Action_CloseTab_Shortcut {
             get {
                 return ((global::System.Windows.Forms.Keys)(this["Action_CloseTab_Shortcut"]));
@@ -351,7 +351,7 @@ namespace SuperPutty.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Ctrl+End")]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
         public global::System.Windows.Forms.Keys Action_NextTab_Shortcut {
             get {
                 return ((global::System.Windows.Forms.Keys)(this["Action_NextTab_Shortcut"]));
@@ -364,7 +364,7 @@ namespace SuperPutty.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Ctrl+Home")]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
         public global::System.Windows.Forms.Keys Action_PrevTab_Shortcut {
             get {
                 return ((global::System.Windows.Forms.Keys)(this["Action_PrevTab_Shortcut"]));
