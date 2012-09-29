@@ -188,12 +188,10 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             }
             else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHSTART )
             {
-                Log.InfoFormat("[{0}] Switch start", hwnd);
                 this.isSwitchingViaAltTab = true;
             }
             else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHEND)
             {
-                Log.InfoFormat("[{0}] Switch End", hwnd);
                 this.isSwitchingViaAltTab = false;
             }
             else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND && hwnd == m_AppWin)
@@ -204,11 +202,6 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 if (settingForeground)
                 {
                     settingForeground = false;
-                    return;
-                }
-                if (isSwitchingViaAltTab)
-                {
-                    // during alt-tab on winxp, an extra foreground event.  Make you have to hit alt-tab 2x  
                     return;
                 }
 
@@ -237,7 +230,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     else
                     {
                         // give focus back
-                        this.ReFocusPuTTY("WinEventProc-FG");
+                        this.ReFocusPuTTY("WinEventProc-FG, AltTab=" + isSwitchingViaAltTab);
                     }
                 }
             }
