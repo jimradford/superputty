@@ -1133,8 +1133,25 @@ namespace SuperPutty.Utils
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern int GetWindowTextLength(IntPtr hWnd);
 
-        //[DllImport("user32.dll")]
-        //public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+
+            public override string ToString()
+            {
+                return String.Format(
+                    "[L={0}, T={1}, R={2}, B={3}, Width={4}, Height={5}]", 
+                    Left, Top, Right, Bottom, Right - Left, Bottom - Top);
+            }
+        }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]

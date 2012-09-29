@@ -1274,6 +1274,31 @@ namespace SuperPutty
 
         #endregion 
 
+        #region Diagnostics 
+
+        private void logWindowLocationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (IDockContent c in this.DockPanel.Documents)
+            {
+                ctlPuttyPanel panel = c as ctlPuttyPanel;
+                if (c != null)
+                {
+                    NativeMethods.RECT rect = new NativeMethods.RECT();
+                    NativeMethods.GetWindowRect(panel.AppPanel.AppWindowHandle, ref rect);
+                    Point p = panel.PointToScreen(new Point());
+                    Log.InfoFormat(
+                        "[{0,-20} {1,8}] WindowLocations: panel={2}, putty={3}, x={4}, y={5}",
+                        panel.Text + (panel == panel.DockPanel.ActiveDocument ? "*" : ""),
+                        panel.AppPanel.AppWindowHandle,
+                        panel.DisplayRectangle,
+                        rect, p.X, p.Y);
+                }
+            }
+        }
+
+
+        #endregion
+
         protected override void WndProc(ref Message m)
         {
             bool callBase = this.focusHelper.WndProcForFocus(ref m);
@@ -1289,6 +1314,8 @@ namespace SuperPutty
             Dynamic, 
             Mixed
         }
+
+
 
     }
 }
