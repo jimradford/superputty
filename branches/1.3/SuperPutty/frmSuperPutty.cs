@@ -251,7 +251,7 @@ namespace SuperPutty
             saveDialog.Filter = "XML Files|*.xml|All files|*.*";
             saveDialog.FileName = "Sessions.XML";
             saveDialog.InitialDirectory = Application.StartupPath;
-            if (saveDialog.ShowDialog() == DialogResult.OK)
+            if (saveDialog.ShowDialog(this) == DialogResult.OK)
             {
                 SessionData.SaveSessionsToFile(SuperPuTTY.GetAllSessions(), saveDialog.FileName);
             }
@@ -264,7 +264,7 @@ namespace SuperPutty
             openDialog.FileName = "Sessions.XML";
             openDialog.CheckFileExists = true;
             openDialog.InitialDirectory = Application.StartupPath;
-            if (openDialog.ShowDialog() == DialogResult.OK)
+            if (openDialog.ShowDialog(this) == DialogResult.OK)
             {
                 SuperPuTTY.ImportSessionsFromFile(openDialog.FileName);
             }
@@ -278,7 +278,7 @@ namespace SuperPutty
             openDialog.FileName = "export.xml";
             openDialog.CheckFileExists = true;
             openDialog.InitialDirectory = Application.StartupPath;
-            if (openDialog.ShowDialog() == DialogResult.OK)
+            if (openDialog.ShowDialog(this) == DialogResult.OK)
             {
                 SuperPuTTY.ImportSessionsFromPuttyCM(openDialog.FileName);
             }
@@ -385,6 +385,7 @@ namespace SuperPutty
             SuperPuTTY.Settings.ShowStatusBar = this.showStatusBarToolStripMenuItem.Checked;
             SuperPuTTY.Settings.ShowToolBarConnections = this.quickConnectionToolStripMenuItem.Checked;
             SuperPuTTY.Settings.ShowToolBarCommands = this.sendCommandsToolStripMenuItem.Checked;
+            SuperPuTTY.Settings.AlwaysOnTop = this.alwaysOnTopToolStripMenuItem.Checked;
 
             SuperPuTTY.Settings.Save();
 
@@ -402,6 +403,9 @@ namespace SuperPutty
 
             this.tsCommands.Visible = SuperPuTTY.Settings.ShowToolBarCommands;
             this.sendCommandsToolStripMenuItem.Checked = SuperPuTTY.Settings.ShowToolBarCommands;
+
+            this.TopMost = SuperPuTTY.Settings.AlwaysOnTop;
+            this.alwaysOnTopToolStripMenuItem.Checked = SuperPuTTY.Settings.AlwaysOnTop;
         }
 
         private void sessionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -782,7 +786,7 @@ namespace SuperPutty
         private void aboutSuperPuttyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AboutBox1 about = new AboutBox1();
-            about.ShowDialog();
+            about.ShowDialog(this);
             about = null;
         }
 
@@ -810,7 +814,7 @@ namespace SuperPutty
         private void puTTYScpLocationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             dlgFindPutty dialog = new dlgFindPutty();
-            dialog.ShowDialog();
+            dialog.ShowDialog(this);
         }
         #endregion
 

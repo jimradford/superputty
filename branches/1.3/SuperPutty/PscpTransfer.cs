@@ -204,7 +204,7 @@ namespace SuperPutty
              */
             if (String.IsNullOrEmpty(m_Session.Username))
             {
-                if (m_Login.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (m_Login.ShowDialog(SuperPuTTY.MainForm) == System.Windows.Forms.DialogResult.OK)
                 {
                     m_Session.Username = m_Login.Username;
                     m_Session.Password = m_Login.Password;
@@ -451,7 +451,7 @@ namespace SuperPutty
         {
             if (String.IsNullOrEmpty(m_Session.Username))
             {
-                if (m_Login.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (m_Login.ShowDialog(SuperPuTTY.MainForm) == System.Windows.Forms.DialogResult.OK)
                 {
                     m_Session.Username = m_Login.Username;
                     m_Session.Password = m_Login.Password;

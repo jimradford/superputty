@@ -62,7 +62,7 @@ namespace SuperPutty
                 {
                     case RequestResult.RetryAuthentication:
                         dlgLogin m_Login = new dlgLogin(m_Session);
-                        if (m_Login.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        if (m_Login.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                         {
                             m_Session.Username = m_Login.Username;
                             m_Session.Password = m_Login.Password;
