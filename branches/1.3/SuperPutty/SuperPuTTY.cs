@@ -622,7 +622,8 @@ namespace SuperPutty
         NextTab,
         PrevTab,
         Options,
-        FullScreen
+        FullScreen,
+        OpenSession
     } 
     #endregion
 

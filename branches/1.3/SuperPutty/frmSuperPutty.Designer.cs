@@ -53,6 +53,8 @@
             this.fromPuTTYCMExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
+            this.openSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripSeparator();
             this.editSessionsInNotepadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadSessionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -78,6 +80,8 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.diagnosticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.logWindowLocationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutSuperPuTTYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dockPanel1 = new WeifenLuo.WinFormsUI.Docking.DockPanel();
@@ -111,8 +115,6 @@
             this.notifyicon = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.exitSuperPuTTYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagnosticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.logWindowLocationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -143,6 +145,8 @@
             this.importSettingsToolStripMenuItem,
             this.toolStripMenuItem1,
             this.toolStripMenuItem7,
+            this.openSessionToolStripMenuItem,
+            this.toolStripMenuItem10,
             this.editSessionsInNotepadToolStripMenuItem,
             this.reloadSessionsToolStripMenuItem,
             this.toolStripMenuItem3,
@@ -196,6 +200,18 @@
             // 
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
             this.toolStripMenuItem7.Size = new System.Drawing.Size(200, 6);
+            // 
+            // openSessionToolStripMenuItem
+            // 
+            this.openSessionToolStripMenuItem.Name = "openSessionToolStripMenuItem";
+            this.openSessionToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+            this.openSessionToolStripMenuItem.Text = "Open Session";
+            this.openSessionToolStripMenuItem.Click += new System.EventHandler(this.openSessionToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem10
+            // 
+            this.toolStripMenuItem10.Name = "toolStripMenuItem10";
+            this.toolStripMenuItem10.Size = new System.Drawing.Size(200, 6);
             // 
             // editSessionsInNotepadToolStripMenuItem
             // 
@@ -386,6 +402,21 @@
             this.documentationToolStripMenuItem.Text = "Documentation";
             this.documentationToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
+            // diagnosticsToolStripMenuItem
+            // 
+            this.diagnosticsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.logWindowLocationsToolStripMenuItem});
+            this.diagnosticsToolStripMenuItem.Name = "diagnosticsToolStripMenuItem";
+            this.diagnosticsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.diagnosticsToolStripMenuItem.Text = "Diagnostics";
+            // 
+            // logWindowLocationsToolStripMenuItem
+            // 
+            this.logWindowLocationsToolStripMenuItem.Name = "logWindowLocationsToolStripMenuItem";
+            this.logWindowLocationsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.logWindowLocationsToolStripMenuItem.Text = "Log Window Locations";
+            this.logWindowLocationsToolStripMenuItem.Click += new System.EventHandler(this.logWindowLocationsToolStripMenuItem_Click);
+            // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
@@ -409,7 +440,7 @@
             this.dockPanel1.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
             this.dockPanel1.Location = new System.Drawing.Point(0, 0);
             this.dockPanel1.Name = "dockPanel1";
-            this.dockPanel1.Size = new System.Drawing.Size(1008, 634);
+            this.dockPanel1.Size = new System.Drawing.Size(1008, 609);
             dockPanelGradient1.EndColor = System.Drawing.Color.Black;
             dockPanelGradient1.StartColor = System.Drawing.Color.Black;
             autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
@@ -465,7 +496,7 @@
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.dockPanel1);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.statusStrip1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1008, 656);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1008, 631);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.LeftToolStripPanelVisible = false;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
@@ -478,8 +509,8 @@
             // toolStripContainer1.TopToolStripPanel
             // 
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
-            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsConnect);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsCommands);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsConnect);
             this.toolStripContainer1.TopToolStripPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
             // statusStrip1
@@ -488,7 +519,7 @@
             this.toolStripStatusLabelMessage,
             this.toolStripStatusLabelVersion,
             this.toolStripStatusLabelLayout});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 634);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 609);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
             this.statusStrip1.TabIndex = 4;
@@ -724,21 +755,6 @@
             this.exitSuperPuTTYToolStripMenuItem.Text = "Exit SuperPuTTY";
             this.exitSuperPuTTYToolStripMenuItem.Click += new System.EventHandler(this.exitSuperPuTTYToolStripMenuItem_Click);
             // 
-            // diagnosticsToolStripMenuItem
-            // 
-            this.diagnosticsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.logWindowLocationsToolStripMenuItem});
-            this.diagnosticsToolStripMenuItem.Name = "diagnosticsToolStripMenuItem";
-            this.diagnosticsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.diagnosticsToolStripMenuItem.Text = "Diagnostics";
-            // 
-            // logWindowLocationsToolStripMenuItem
-            // 
-            this.logWindowLocationsToolStripMenuItem.Name = "logWindowLocationsToolStripMenuItem";
-            this.logWindowLocationsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.logWindowLocationsToolStripMenuItem.Text = "Log Window Locations";
-            this.logWindowLocationsToolStripMenuItem.Click += new System.EventHandler(this.logWindowLocationsToolStripMenuItem_Click);
-            // 
             // frmSuperPutty
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -842,6 +858,8 @@
         private System.Windows.Forms.ToolStripMenuItem fullScreenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem diagnosticsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem logWindowLocationsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openSessionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem10;
     }
 }
 

@@ -39,6 +39,7 @@ using System.Runtime.InteropServices;
 using SuperPutty.Utils;
 using System.Configuration;
 using System.Collections;
+using SuperPutty.Gui;
 
 namespace SuperPutty
 {
@@ -294,6 +295,32 @@ namespace SuperPutty
             {
                 SuperPuTTY.ImportSessionsFromPuTTY();
             }
+        }
+
+        private void openSessionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            QuickSelector q = new QuickSelector();
+            QuickSelectorData data = new QuickSelectorData();
+            data.CaseSensitive = true;
+            foreach (SessionData sd in SuperPuTTY.Sessions)
+            {
+                data.ItemData.AddItemDataRow(
+                    sd.SessionName,
+                    sd.SessionId,
+                    sd.Proto == ConnectionProtocol.Cygterm || sd.Proto == ConnectionProtocol.Mintty ? Color.Blue : Color.Black);
+            }
+
+            QuickSelectorOptions opt = new QuickSelectorOptions();
+            opt.Sort = data.ItemData.DetailColumn.ColumnName;
+            opt.BaseText = "Open Session";
+
+            QuickSelector d = new QuickSelector();
+            d.Load += (s, evt) => { Activate(); };
+            if (d.ShowDialog(this, data, opt) == DialogResult.OK)
+            {
+                SuperPuTTY.OpenPuttySession(d.SelectedItem.Detail);
+            }
+
         }
 
         private void editSessionsInNotepadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -695,6 +722,8 @@ namespace SuperPutty
             SuperPuTTY.ReportStatus("Editing Options");
 
             dlgFindPutty dialog = new dlgFindPutty();
+            dialog.Load += (s, evt) => { Activate(); };
+
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 // try to apply settings to existing documents (don't worry about the ones docked on sides)
@@ -1182,6 +1211,9 @@ namespace SuperPutty
                         case SuperPuttyAction.Options:
                             this.optionsToolStripMenuItem.ShortcutKeys = keys;
                             break;
+                        case SuperPuttyAction.OpenSession:
+                            this.openSessionToolStripMenuItem.ShortcutKeys = keys;
+                            break;
                     }
                 }
                 catch (Exception ex)
@@ -1212,11 +1244,11 @@ namespace SuperPutty
                 case SuperPuttyAction.FullScreen:
                     this.ToggleFullScreen();
                     break;
+                case SuperPuttyAction.OpenSession:
+                    this.openSessionToolStripMenuItem.PerformClick();
+                    break;
                 case SuperPuttyAction.Options:
-                    this.BeginInvoke(new Action(() => {
-                        this.Activate();
-                        this.optionsToolStripMenuItem_Click(this, EventArgs.Empty);
-                    }));
+                    this.optionsToolStripMenuItem.PerformClick();
                     break;
                 default:
                     success = false;
@@ -1225,6 +1257,7 @@ namespace SuperPutty
 
             return success;
         }
+
 
         #endregion
 
@@ -1314,8 +1347,5 @@ namespace SuperPutty
             Dynamic, 
             Mixed
         }
-
-
-
     }
 }

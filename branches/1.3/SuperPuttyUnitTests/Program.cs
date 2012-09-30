@@ -12,7 +12,8 @@ namespace SuperPuttyUnitTests
         [STAThread]
         static void Main(string[] args)
         {
-            RunGui(args);
+            //RunGui(args);
+            TestQuickSelector();
         }
 
         static void RunConsole()
@@ -31,6 +32,12 @@ namespace SuperPuttyUnitTests
         static void RunGui(string[] args)
         {
             AppEntry.Main(args);
+        }
+
+        static void TestQuickSelector()
+        {
+            QuickSelectorTests t = new QuickSelectorTests();
+            t.Test();
         }
     }
 }

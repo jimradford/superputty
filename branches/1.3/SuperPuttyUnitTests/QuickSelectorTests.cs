@@ -18,6 +18,7 @@ namespace SuperPuttyUnitTests
             log4net.Config.BasicConfigurator.Configure();
         }
 
+
         [Test]
         public void Test()
         {
@@ -32,8 +33,12 @@ namespace SuperPuttyUnitTests
                     sd.Proto == ConnectionProtocol.Cygterm || sd.Proto == ConnectionProtocol.Mintty ? Color.Blue : Color.Black);
             }
 
+            QuickSelectorOptions opt = new QuickSelectorOptions();
+            opt.Sort = data.ItemData.DetailColumn.ColumnName;
+            opt.BaseText = "Open Session";
+
             QuickSelector d = new QuickSelector();
-            d.ShowDialog(null, data, "hello", "Name");
+            d.ShowDialog(null, data, opt);
         }
 
 
