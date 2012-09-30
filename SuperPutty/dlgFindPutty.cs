@@ -323,7 +323,7 @@ namespace SuperPutty
                 openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxPuttyLocation.Text);
                 openFileDialog1.FilterIndex = openFileDialog1.FileName.ToLower().StartsWith("putty") ? 1 : 2;
             }
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
             {
                 if (!String.IsNullOrEmpty(openFileDialog1.FileName))
                     textBoxPuttyLocation.Text = openFileDialog1.FileName;
@@ -339,7 +339,7 @@ namespace SuperPutty
             {
                 openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxPscpLocation.Text);
             }
-            openFileDialog1.ShowDialog();
+            openFileDialog1.ShowDialog(this);
             if (!String.IsNullOrEmpty(openFileDialog1.FileName))
                 textBoxPscpLocation.Text = openFileDialog1.FileName;
         }
@@ -354,7 +354,7 @@ namespace SuperPutty
             {
                 openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxMinttyLocation.Text);
             }
-            openFileDialog1.ShowDialog();
+            openFileDialog1.ShowDialog(this);
             if (!String.IsNullOrEmpty(openFileDialog1.FileName))
                 textBoxMinttyLocation.Text = openFileDialog1.FileName;
         }
@@ -369,7 +369,7 @@ namespace SuperPutty
                 // first time, try to import old putty settings from registry
                 SuperPuTTY.Settings.ImportFromRegistry();
                 dlgFindPutty dialog = new dlgFindPutty();
-                if (dialog.ShowDialog() == DialogResult.Cancel)
+                if (dialog.ShowDialog(SuperPuTTY.MainForm) == DialogResult.Cancel)
                 {
                     System.Environment.Exit(1);
                 }
@@ -406,7 +406,7 @@ namespace SuperPutty
         private void btnFont_Click(object sender, EventArgs e)
         {
             this.fontDialog.Font = this.btnFont.Font;
-            if (this.fontDialog.ShowDialog() == DialogResult.OK)
+            if (this.fontDialog.ShowDialog(this) == DialogResult.OK)
             {
                 this.btnFont.Font = this.fontDialog.Font;
                 this.btnFont.Text = ToShortString(this.fontDialog.Font);

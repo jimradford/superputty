@@ -246,7 +246,7 @@ namespace SuperPutty
                 return string.IsNullOrEmpty(error);
             };
             
-            if (form.ShowDialog() == DialogResult.OK)
+            if (form.ShowDialog(this) == DialogResult.OK)
             {
                 /* "node" will only be assigned if we're editing an existing session entry */
                 if (node == null)
