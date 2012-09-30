@@ -384,7 +384,6 @@ namespace SuperPutty
             {
                 ctlPuttyPanel sessionPanel = ctlPuttyPanel.NewPanel(session);
                 ApplyDockRestrictions(sessionPanel);
-                sessionPanel.FormClosed += HandleFormClosed;
                 sessionPanel.Show(MainForm.DockPanel, session.LastDockstate);
                 SuperPuTTY.ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
             }
@@ -413,7 +412,6 @@ namespace SuperPutty
 
                     panel = new RemoteFileListPanel(xfer, SuperPuTTY.MainForm.DockPanel, session);
                     ApplyDockRestrictions(panel);
-                    panel.FormClosed += HandleFormClosed;
                     if (!cancelShow)
                     {
                         panel.Show(MainForm.DockPanel, session.LastDockstate);
@@ -429,21 +427,6 @@ namespace SuperPutty
             if (SuperPuTTY.Settings.RestrictContentToDocumentTabs)
             {
                 panel.DockAreas = DockAreas.Document | DockAreas.Float;
-            }
-        }
-
-        static void HandleFormClosed(object sender, FormClosedEventArgs e)
-        {
-            DockContent panel = (DockContent) sender;
-
-            if (panel.DockHandler.Pane != null)
-            {
-                int idx = panel.DockHandler.Pane.Contents.IndexOf(panel);
-                if (idx > 0)
-                {
-                    IDockContent contentToActivate = panel.DockHandler.Pane.Contents[idx - 1];
-                    contentToActivate.DockHandler.Activate();
-                }
             }
         }
 

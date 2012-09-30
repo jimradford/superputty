@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace SuperPutty
 {
@@ -78,7 +79,19 @@ namespace SuperPutty
                 this.NextPanel.PreviousPanel = this.PreviousPanel;
             }
             SuperPuTTY.MainForm.CurrentPanel = this.PreviousPanel;
+
+            // manipulate tabs
+            if (this.DockHandler.Pane != null)
+            {
+                int idx = this.DockHandler.Pane.Contents.IndexOf(this);
+                if (idx > 0)
+                {
+                    IDockContent contentToActivate = this.DockHandler.Pane.Contents[idx - 1];
+                    contentToActivate.DockHandler.Activate();
+                }
+            }
         }
+
 
         public ToolWindowDocument PreviousPanel { get; set; }
         public ToolWindowDocument NextPanel { get; set; }
