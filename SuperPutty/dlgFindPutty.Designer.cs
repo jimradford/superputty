@@ -72,16 +72,19 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnFont = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
+            this.tabPageShortcuts = new System.Windows.Forms.TabPage();
+            this.dataGridViewShortcuts = new System.Windows.Forms.DataGridView();
+            this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.colClear = new System.Windows.Forms.DataGridViewButtonColumn();
             this.tabPageAdvanced = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.comboBoxActivatorType = new System.Windows.Forms.ComboBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
-            this.tabPageShortcuts = new System.Windows.Forms.TabPage();
-            this.dataGridViewShortcuts = new System.Windows.Forms.DataGridView();
-            this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.colClear = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.numericUpDownOpacity = new System.Windows.Forms.NumericUpDown();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -93,12 +96,13 @@
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tabPageShortcuts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).BeginInit();
             this.tabPageAdvanced.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.panelBottom.SuspendLayout();
-            this.tabPageShortcuts.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOpacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -326,7 +330,7 @@
             // checkMinimizeToTray
             // 
             this.checkMinimizeToTray.AutoSize = true;
-            this.checkMinimizeToTray.Location = new System.Drawing.Point(15, 19);
+            this.checkMinimizeToTray.Location = new System.Drawing.Point(71, 47);
             this.checkMinimizeToTray.Name = "checkMinimizeToTray";
             this.checkMinimizeToTray.Size = new System.Drawing.Size(106, 17);
             this.checkMinimizeToTray.TabIndex = 30;
@@ -489,6 +493,9 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.label13);
+            this.groupBox3.Controls.Add(this.label12);
+            this.groupBox3.Controls.Add(this.numericUpDownOpacity);
             this.groupBox3.Controls.Add(this.checkMinimizeToTray);
             this.groupBox3.Location = new System.Drawing.Point(358, 3);
             this.groupBox3.Name = "groupBox3";
@@ -545,6 +552,56 @@
             this.label11.Size = new System.Drawing.Size(52, 15);
             this.label11.TabIndex = 37;
             this.label11.Text = "Options:";
+            // 
+            // tabPageShortcuts
+            // 
+            this.tabPageShortcuts.Controls.Add(this.dataGridViewShortcuts);
+            this.tabPageShortcuts.Location = new System.Drawing.Point(4, 22);
+            this.tabPageShortcuts.Name = "tabPageShortcuts";
+            this.tabPageShortcuts.Size = new System.Drawing.Size(622, 247);
+            this.tabPageShortcuts.TabIndex = 3;
+            this.tabPageShortcuts.Text = "Shortcuts";
+            this.tabPageShortcuts.UseVisualStyleBackColor = true;
+            // 
+            // dataGridViewShortcuts
+            // 
+            this.dataGridViewShortcuts.AllowUserToAddRows = false;
+            this.dataGridViewShortcuts.AllowUserToDeleteRows = false;
+            this.dataGridViewShortcuts.AutoGenerateColumns = false;
+            this.dataGridViewShortcuts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewShortcuts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.nameDataGridViewTextBoxColumn,
+            this.keyDataGridViewTextBoxColumn,
+            this.modifiersDataGridViewTextBoxColumn,
+            this.shortcutStringDataGridViewTextBoxColumn,
+            this.colEdit,
+            this.colClear});
+            this.dataGridViewShortcuts.DataSource = this.keyboardShortcutBindingSource;
+            this.dataGridViewShortcuts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridViewShortcuts.Location = new System.Drawing.Point(0, 0);
+            this.dataGridViewShortcuts.Name = "dataGridViewShortcuts";
+            this.dataGridViewShortcuts.ReadOnly = true;
+            this.dataGridViewShortcuts.Size = new System.Drawing.Size(622, 247);
+            this.dataGridViewShortcuts.TabIndex = 0;
+            this.dataGridViewShortcuts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShortcuts_CellClick);
+            // 
+            // colEdit
+            // 
+            this.colEdit.HeaderText = "";
+            this.colEdit.Name = "colEdit";
+            this.colEdit.ReadOnly = true;
+            this.colEdit.Text = "Edit";
+            this.colEdit.UseColumnTextForButtonValue = true;
+            this.colEdit.Width = 50;
+            // 
+            // colClear
+            // 
+            this.colClear.HeaderText = "";
+            this.colClear.Name = "colClear";
+            this.colClear.ReadOnly = true;
+            this.colClear.Text = "Clear";
+            this.colClear.UseColumnTextForButtonValue = true;
+            this.colClear.Width = 50;
             // 
             // tabPageAdvanced
             // 
@@ -605,55 +662,37 @@
             this.panelBottom.Size = new System.Drawing.Size(630, 27);
             this.panelBottom.TabIndex = 39;
             // 
-            // tabPageShortcuts
+            // numericUpDownOpacity
             // 
-            this.tabPageShortcuts.Controls.Add(this.dataGridViewShortcuts);
-            this.tabPageShortcuts.Location = new System.Drawing.Point(4, 22);
-            this.tabPageShortcuts.Name = "tabPageShortcuts";
-            this.tabPageShortcuts.Size = new System.Drawing.Size(622, 247);
-            this.tabPageShortcuts.TabIndex = 3;
-            this.tabPageShortcuts.Text = "Shortcuts";
-            this.tabPageShortcuts.UseVisualStyleBackColor = true;
+            this.numericUpDownOpacity.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numericUpDownOpacity.Location = new System.Drawing.Point(71, 16);
+            this.numericUpDownOpacity.Name = "numericUpDownOpacity";
+            this.numericUpDownOpacity.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownOpacity.TabIndex = 32;
             // 
-            // dataGridViewShortcuts
+            // label12
             // 
-            this.dataGridViewShortcuts.AllowUserToAddRows = false;
-            this.dataGridViewShortcuts.AllowUserToDeleteRows = false;
-            this.dataGridViewShortcuts.AutoGenerateColumns = false;
-            this.dataGridViewShortcuts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewShortcuts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.nameDataGridViewTextBoxColumn,
-            this.keyDataGridViewTextBoxColumn,
-            this.modifiersDataGridViewTextBoxColumn,
-            this.shortcutStringDataGridViewTextBoxColumn,
-            this.colEdit,
-            this.colClear});
-            this.dataGridViewShortcuts.DataSource = this.keyboardShortcutBindingSource;
-            this.dataGridViewShortcuts.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridViewShortcuts.Location = new System.Drawing.Point(0, 0);
-            this.dataGridViewShortcuts.Name = "dataGridViewShortcuts";
-            this.dataGridViewShortcuts.ReadOnly = true;
-            this.dataGridViewShortcuts.Size = new System.Drawing.Size(622, 247);
-            this.dataGridViewShortcuts.TabIndex = 0;
-            this.dataGridViewShortcuts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShortcuts_CellClick);
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 16);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(46, 13);
+            this.label12.TabIndex = 35;
+            this.label12.Text = "Opacity:";
+            this.toolTip.SetToolTip(this.label12, "Determines how tabs are named and if they respond to the shell\'s title changing");
             // 
-            // colEdit
+            // label13
             // 
-            this.colEdit.HeaderText = "";
-            this.colEdit.Name = "colEdit";
-            this.colEdit.ReadOnly = true;
-            this.colEdit.Text = "Edit";
-            this.colEdit.UseColumnTextForButtonValue = true;
-            this.colEdit.Width = 50;
-            // 
-            // colClear
-            // 
-            this.colClear.HeaderText = "";
-            this.colClear.Name = "colClear";
-            this.colClear.ReadOnly = true;
-            this.colClear.Text = "Clear";
-            this.colClear.UseColumnTextForButtonValue = true;
-            this.colClear.Width = 50;
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(6, 47);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(40, 15);
+            this.label13.TabIndex = 36;
+            this.label13.Text = "Other:";
             // 
             // nameDataGridViewTextBoxColumn
             // 
@@ -719,14 +758,15 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tabPageShortcuts.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).EndInit();
             this.tabPageAdvanced.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.panelBottom.ResumeLayout(false);
-            this.tabPageShortcuts.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOpacity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -791,5 +831,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn shortcutStringDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewButtonColumn colEdit;
         private System.Windows.Forms.DataGridViewButtonColumn colClear;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.NumericUpDown numericUpDownOpacity;
     }
 }

@@ -129,19 +129,16 @@ namespace SuperPutty
                 FormUtils.RestoreFormPositionAndState(this, SuperPuTTY.Settings.WindowPosition, SuperPuTTY.Settings.WindowState);
             }
 
-            // show/hide toolbars and status bar
-            ApplySettingsToToolbars();
             this.ResizeEnd += new EventHandler(frmSuperPutty_ResizeEnd);     
        
             // tab switching
             this.tabSwitcher = new TabSwitcher(this.DockPanel);
-            this.tabSwitcher.TabSwitchStrategy = TabSwitcher.StrategyFromTypeName(SuperPuTTY.Settings.TabSwitcher);
 
             // full screen
             this.fullscreenViewState = new ViewState(this);
 
-            // keyboard shortcuts
-            this.UpdateShortcutsFromSettings();
+            // Apply Settings
+            this.ApplySettings();
         }
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
@@ -764,20 +761,26 @@ namespace SuperPutty
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                // try to apply settings to existing documents (don't worry about the ones docked on sides)
-                foreach (DockContent dockContent in this.DockPanel.Documents)
-                {
-                    SuperPuTTY.ApplyDockRestrictions(dockContent);
-                }
-
-                // apply tab switching strategy change
-                this.tabSwitcher.TabSwitchStrategy = TabSwitcher.StrategyFromTypeName(SuperPuTTY.Settings.TabSwitcher);
-
-                this.SaveLastWindowBounds();
-                this.UpdateShortcutsFromSettings();
+                ApplySettings();
             }
 
             SuperPuTTY.ReportStatus("Ready");
+        }
+
+        void ApplySettings()
+        {
+            // try to apply settings to existing documents (don't worry about the ones docked on sides)
+            foreach (DockContent dockContent in this.DockPanel.Documents)
+            {
+                SuperPuTTY.ApplyDockRestrictions(dockContent);
+            }
+
+            // apply tab switching strategy change
+            this.tabSwitcher.TabSwitchStrategy = TabSwitcher.StrategyFromTypeName(SuperPuTTY.Settings.TabSwitcher);
+
+            this.SaveLastWindowBounds();
+            this.UpdateShortcutsFromSettings();
+            this.Opacity = SuperPuTTY.Settings.Opacity;
         }
 
         #endregion
@@ -1255,6 +1258,9 @@ namespace SuperPutty
                             break;
                         case SuperPuttyAction.OpenSession:
                             this.openSessionToolStripMenuItem.ShortcutKeys = keys;
+                            break;
+                        case SuperPuttyAction.SwitchSession:
+                            this.switchSessionToolStripMenuItem.ShortcutKeys = keys;
                             break;
                     }
                 }

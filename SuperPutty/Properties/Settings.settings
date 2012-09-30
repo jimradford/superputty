@@ -95,5 +95,8 @@
     <Setting Name="AlwaysOnTop" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="Opacity" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
