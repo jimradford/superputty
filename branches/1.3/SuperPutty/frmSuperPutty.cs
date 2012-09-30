@@ -928,7 +928,7 @@ namespace SuperPutty
 
         private void tsSendCommandCombo_KeyDown(object sender, KeyEventArgs e)
         {
-            
+            //Log.DebugFormat("Keys={0}, control={1}, shift={2}", e.KeyCode, e.Control, e.Shift);
             if (e.KeyCode == Keys.Up)
             {
                 if (tsSendCommandCombo.Items.Count > 0)
@@ -970,6 +970,10 @@ namespace SuperPutty
             TrySendCommandsFromToolbar(!this.tbBtnMaskText.Checked);
         }
 
+        private void toggleCommandMaskToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.tbBtnMaskText.PerformClick();
+        }
 
         private void tbBtnMaskText_Click(object sender, EventArgs e)
         {
@@ -1384,5 +1388,6 @@ namespace SuperPutty
             Dynamic, 
             Mixed
         }
+
     }
 }
