@@ -175,6 +175,7 @@ namespace SuperPutty
             this.checkSessionsTreeShowLines.Checked = SuperPuTTY.Settings.SessionsTreeShowLines;
             this.btnFont.Font = SuperPuTTY.Settings.SessionsTreeFont;
             this.btnFont.Text = ToShortString(SuperPuTTY.Settings.SessionsTreeFont);
+            this.numericUpDownOpacity.Value = (decimal) SuperPuTTY.Settings.Opacity * 100;
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -278,6 +279,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.SessionsTreeShowLines = this.checkSessionsTreeShowLines.Checked;
                 SuperPuTTY.Settings.SessionsTreeFont = this.btnFont.Font;
                 SuperPuTTY.Settings.WindowActivator = (string) this.comboBoxActivatorType.SelectedItem;
+                SuperPuTTY.Settings.Opacity = (double) this.numericUpDownOpacity.Value / 100.0;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
