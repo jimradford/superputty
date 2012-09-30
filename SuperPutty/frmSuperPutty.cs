@@ -313,7 +313,6 @@ namespace SuperPutty
             opt.BaseText = "Open Session";
 
             QuickSelector d = new QuickSelector();
-            d.Load += (s, evt) => { Activate(); };
             if (d.ShowDialog(this, data, opt) == DialogResult.OK)
             {
                 SuperPuTTY.OpenPuttySession(d.SelectedItem.Detail);
@@ -346,7 +345,6 @@ namespace SuperPutty
             opt.ShowNameColumn = true;
 
             QuickSelector d = new QuickSelector();
-            d.Load += (s, evt) => { Activate(); };
             if (d.ShowDialog(this, data, opt) == DialogResult.OK)
             {
                 ctlPuttyPanel panel = (ctlPuttyPanel) d.SelectedItem.Tag;
@@ -757,8 +755,6 @@ namespace SuperPutty
             SuperPuTTY.ReportStatus("Editing Options");
 
             dlgFindPutty dialog = new dlgFindPutty();
-            dialog.Load += (s, evt) => { Activate(); };
-
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 ApplySettings();
@@ -1294,12 +1290,15 @@ namespace SuperPutty
                     this.ToggleFullScreen();
                     break;
                 case SuperPuttyAction.OpenSession:
+                    KeyEventWindowActivator.ActivateForm(this);
                     this.openSessionToolStripMenuItem.PerformClick();
                     break;
                 case SuperPuttyAction.SwitchSession:
+                    KeyEventWindowActivator.ActivateForm(this);
                     this.switchSessionToolStripMenuItem.PerformClick();
                     break;
                 case SuperPuttyAction.Options:
+                    KeyEventWindowActivator.ActivateForm(this);
                     this.optionsToolStripMenuItem.PerformClick();
                     break;
                 default:
