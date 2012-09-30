@@ -30,7 +30,7 @@ namespace SuperPuttyUnitTests
                 data.ItemData.AddItemDataRow(
                     sd.SessionName, 
                     sd.SessionId, 
-                    sd.Proto == ConnectionProtocol.Cygterm || sd.Proto == ConnectionProtocol.Mintty ? Color.Blue : Color.Black);
+                    sd.Proto == ConnectionProtocol.Cygterm || sd.Proto == ConnectionProtocol.Mintty ? Color.Blue : Color.Black, null);
             }
 
             QuickSelectorOptions opt = new QuickSelectorOptions();

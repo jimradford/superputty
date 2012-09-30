@@ -623,7 +623,8 @@ namespace SuperPutty
         PrevTab,
         Options,
         FullScreen,
-        OpenSession
+        OpenSession,
+        SwitchSession
     } 
     #endregion
 

@@ -43,8 +43,6 @@ namespace SuperPutty.Utils
 
         public TabSwitcher(DockPanel dockPanel)
         {
-            this.Documents = new List<ToolWindow>();
-
             this.DockPanel = dockPanel;
             this.DockPanel.ContentAdded += DockPanel_ContentAdded;
         }
@@ -100,7 +98,6 @@ namespace SuperPutty.Utils
                     {
                         ToolWindow window = (ToolWindow)e.Content;
                         this.AddDocument(window);
-                        window.FormClosed += window_FormClosed;
                     }
                 }));
         }
@@ -114,6 +111,7 @@ namespace SuperPutty.Utils
         void AddDocument(ToolWindow tab)
         {
             this.TabSwitchStrategy.AddTab(tab);
+            tab.FormClosed += window_FormClosed;
         }
 
         void RemoveDocument(ToolWindow tab)
@@ -133,28 +131,29 @@ namespace SuperPutty.Utils
             return this.TabSwitchStrategy.MoveToPrevTab();
         }
 
-
-        void LogDocs(string x)
-        {
-            Log.InfoFormat("===================== {0}", x);
-            foreach (ToolWindow doc in this.Documents)
-            {
-                Log.InfoFormat("{0} {1}", doc, doc == this.ActiveDocument ? "##" : "");
-            }
-        }
-
         public void Dispose()
         {
             this.DockPanel.ContentAdded -= DockPanel_ContentAdded;
-            foreach (ToolWindow win in this.Documents)
+            foreach (IDockContent content in this.DockPanel.Documents)
             {
-                win.FormClosed -= this.window_FormClosed;
+                ToolWindow win = content as ToolWindow;
+                if (win != null)
+                {
+                    win.FormClosed -= this.window_FormClosed;
+                }
+            }
+        }
+
+        public IList<IDockContent> Documents
+        {
+            get
+            {
+                return this.tabSwitchStrategy.GetDocuments();
             }
         }
 
         public ToolWindow ActiveDocument { get { return (ToolWindow)this.DockPanel.ActiveDocument; } }
         public DockPanel DockPanel { get; private set; }
-        public IList<ToolWindow> Documents { get; private set; }
         public bool IsSwitchingTabs { get; set; }
 
         ITabSwitchStrategy tabSwitchStrategy;
@@ -166,6 +165,7 @@ namespace SuperPutty.Utils
     public interface ITabSwitchStrategy : IDisposable
     {
         string Description { get; }
+        IList<IDockContent> GetDocuments();
         void Initialize(DockPanel panel);
         void AddTab(ToolWindow tab);
         void RemoveTab(ToolWindow tab);
@@ -196,7 +196,7 @@ namespace SuperPutty.Utils
         public bool MoveToNextTab()
         {
             bool res = false;
-            List<IDockContent> docs = GetDocuments();
+            IList<IDockContent> docs = GetDocuments();
             int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
             if (idx != -1)
             {
@@ -210,7 +210,7 @@ namespace SuperPutty.Utils
         public bool MoveToPrevTab()
         {
             bool res = false;
-            List<IDockContent> docs = GetDocuments();
+            IList<IDockContent> docs = GetDocuments();
             int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
             if (idx != -1)
             {
@@ -221,7 +221,7 @@ namespace SuperPutty.Utils
             return res;
         }
 
-        protected abstract List<IDockContent> GetDocuments();
+        public abstract IList<IDockContent> GetDocuments();
 
         public void SetCurrentTab(ToolWindow window)  { }
         public void Dispose() {}
@@ -239,7 +239,7 @@ namespace SuperPutty.Utils
         public VisualOrderTabSwitchStrategy() : 
             base("Visual: Left-to-Right, Top-to-Bottom") { }
 
-        protected override List<IDockContent> GetDocuments()
+        public override IList<IDockContent> GetDocuments()
         {
             List<IDockContent> docs = new List<IDockContent>();
             if (this.DockPanel.Contents.Count > 0 && this.DockPanel.Panes.Count > 0)
@@ -277,7 +277,7 @@ namespace SuperPutty.Utils
         public OpenOrderTabSwitchStrategy() :
             base("Open: In the order sessions are opened.") { }
 
-        protected override List<IDockContent> GetDocuments()
+        public override IList<IDockContent> GetDocuments()
         {
             return new List<IDockContent>(this.DockPanel.DocumentsToArray());
         }
@@ -285,7 +285,10 @@ namespace SuperPutty.Utils
 
     #endregion
 
+
     #region MRUTabSwitchStrategyOld
+
+    /**
     public class MRUTabSwitchStrategyOld : ITabSwitchStrategy
     {
         public string Description
@@ -420,7 +423,8 @@ namespace SuperPutty.Utils
             public TabNode Next { get; set; }
             public TabNode Prev { get; set; }
         }
-    }
+    }    */
+
     #endregion
 
     #region MRUTabSwitchStrategy
@@ -494,6 +498,11 @@ namespace SuperPutty.Utils
                     }
                 }
             }
+        }
+
+        public IList<IDockContent> GetDocuments()
+        {
+            return this.docs;
         }
 
         public void Dispose() { }

@@ -307,7 +307,8 @@ namespace SuperPutty
                 data.ItemData.AddItemDataRow(
                     sd.SessionName,
                     sd.SessionId,
-                    sd.Proto == ConnectionProtocol.Cygterm || sd.Proto == ConnectionProtocol.Mintty ? Color.Blue : Color.Black);
+                    sd.Proto == ConnectionProtocol.Cygterm || sd.Proto == ConnectionProtocol.Mintty ? Color.Blue : Color.Black, 
+                    null);
             }
 
             QuickSelectorOptions opt = new QuickSelectorOptions();
@@ -320,7 +321,40 @@ namespace SuperPutty
             {
                 SuperPuTTY.OpenPuttySession(d.SelectedItem.Detail);
             }
+        }
 
+        private void switchSessionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            QuickSelector q = new QuickSelector();
+            QuickSelectorData data = new QuickSelectorData();
+            data.CaseSensitive = true;
+
+            foreach (ToolWindow content in this.tabSwitcher.Documents)
+            {
+                ctlPuttyPanel panel = content as ctlPuttyPanel;
+                if (content != null)
+                {
+                    SessionData sd = panel.Session;
+                    data.ItemData.AddItemDataRow(
+                        panel.Text,
+                        sd.SessionId,
+                        sd.Proto == ConnectionProtocol.Cygterm || sd.Proto == ConnectionProtocol.Mintty ? Color.Blue : Color.Black,
+                        panel);
+                }
+            }
+
+            QuickSelectorOptions opt = new QuickSelectorOptions();
+            opt.Sort = data.ItemData.DetailColumn.ColumnName;
+            opt.BaseText = "Switch Session";
+            opt.ShowNameColumn = true;
+
+            QuickSelector d = new QuickSelector();
+            d.Load += (s, evt) => { Activate(); };
+            if (d.ShowDialog(this, data, opt) == DialogResult.OK)
+            {
+                ctlPuttyPanel panel = (ctlPuttyPanel) d.SelectedItem.Tag;
+                panel.Activate();
+            }
         }
 
         private void editSessionsInNotepadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1246,6 +1280,9 @@ namespace SuperPutty
                     break;
                 case SuperPuttyAction.OpenSession:
                     this.openSessionToolStripMenuItem.PerformClick();
+                    break;
+                case SuperPuttyAction.SwitchSession:
+                    this.switchSessionToolStripMenuItem.PerformClick();
                     break;
                 case SuperPuttyAction.Options:
                     this.optionsToolStripMenuItem.PerformClick();

@@ -17,7 +17,8 @@
             <xs:sequence>
               <xs:element name="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" type="xs:string" minOccurs="0" />
               <xs:element name="Detail" msprop:Generator_ColumnVarNameInTable="columnDetail" msprop:Generator_ColumnPropNameInRow="Detail" msprop:Generator_ColumnPropNameInTable="DetailColumn" msprop:Generator_UserColumnName="Detail" type="xs:string" minOccurs="0" />
-              <xs:element name="TextColor" msdata:DataType="System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_ColumnVarNameInTable="columnTextColor" msprop:Generator_ColumnPropNameInRow="TextColor" msprop:Generator_ColumnPropNameInTable="TextColorColumn" msprop:Generator_UserColumnName="TextColor" type="xs:anyType" minOccurs="0" />
+              <xs:element name="TextColor" msprop:Generator_ColumnVarNameInTable="columnTextColor" msprop:Generator_ColumnPropNameInRow="TextColor" msprop:Generator_ColumnPropNameInTable="TextColorColumn" msprop:Generator_UserColumnName="TextColor" type="xs:anyType" minOccurs="0" />
+              <xs:element name="Tag" msdata:DataType="System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_ColumnVarNameInTable="columnTag" msprop:Generator_ColumnPropNameInRow="Tag" msprop:Generator_ColumnPropNameInTable="TagColumn" msprop:Generator_UserColumnName="Tag" type="xs:anyType" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
