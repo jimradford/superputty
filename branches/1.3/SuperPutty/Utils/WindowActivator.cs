@@ -303,6 +303,11 @@ namespace SuperPutty.Utils
             }
 
         }
+
+        public static void ActivateForm(Form form)
+        {
+            new KeyEventWindowActivator().ActivateForm(form, null, form.Handle);
+        }
     }
     #endregion
 
