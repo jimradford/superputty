@@ -386,5 +386,18 @@ namespace SuperPutty.Properties {
                 this["Action_Options_Shortcut"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public global::System.Windows.Forms.Keys Action_OpenSession_Shortcut {
+            get {
+                return ((global::System.Windows.Forms.Keys)(this["Action_OpenSession_Shortcut"]));
+            }
+            set {
+                this["Action_OpenSession_Shortcut"] = value;
+            }
+        }
     }
 }
