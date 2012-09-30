@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using log4net;
 using SuperPutty.Data;
+using SuperPutty.Utils;
 
 namespace SuperPutty
 {
@@ -32,17 +33,23 @@ namespace SuperPutty
             {
                 // load docs into the ListView
                 this.listViewDocs.Items.Clear();
-                foreach (IDockContent doc in this.dockPanel.Documents)
+                int i = 0;
+                foreach (IDockContent doc in VisualOrderTabSwitchStrategy.GetDocuments(this.dockPanel))
                 {
+                    i++;
                     ctlPuttyPanel pp = doc as ctlPuttyPanel;
                     if (pp != null)
                     {
-                        ListViewItem item = this.listViewDocs.Items.Add(pp.Text);
-                        item.Selected = IsDocumentSelected(pp); 
-                        item.Tag = pp;
+                        string tabNum = pp == this.dockPanel.ActiveDocument ? i + "*" : i.ToString();
+                        ListViewItem item = this.listViewDocs.Items.Add(tabNum);
+                        item.SubItems.Add(new ListViewItem.ListViewSubItem(item, pp.Text));
                         item.SubItems.Add(new ListViewItem.ListViewSubItem(item, pp.Session.SessionId));
                         item.SubItems.Add(new ListViewItem.ListViewSubItem(item, pp.GetHashCode().ToString()));
+
+                        item.Selected = IsDocumentSelected(pp);
+                        item.Tag = pp;
                     }
+
                 }
                 this.BeginInvoke(new Action(delegate { this.listViewDocs.Focus(); }));
             }
