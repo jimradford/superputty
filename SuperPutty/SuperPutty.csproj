@@ -112,6 +112,10 @@
     <Compile Include="Gui\QuickSelector.Designer.cs">
       <DependentUpon>QuickSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gui\QuickSelectorData.cs">
+      <DependentUpon>QuickSelectorData.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Gui\QuickSelectorData.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

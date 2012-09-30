@@ -285,6 +285,8 @@ namespace SuperPutty.Gui {
             
             private global::System.Data.DataColumn columnTextColor;
             
+            private global::System.Data.DataColumn columnTag;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public ItemDataDataTable() {
@@ -344,6 +346,14 @@ namespace SuperPutty.Gui {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TagColumn {
+                get {
+                    return this.columnTag;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -379,12 +389,13 @@ namespace SuperPutty.Gui {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public ItemDataRow AddItemDataRow(string Name, string Detail, object TextColor) {
+            public ItemDataRow AddItemDataRow(string Name, string Detail, object TextColor, object Tag) {
                 ItemDataRow rowItemDataRow = ((ItemDataRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Name,
                         Detail,
-                        TextColor};
+                        TextColor,
+                        Tag};
                 rowItemDataRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowItemDataRow);
                 return rowItemDataRow;
@@ -410,6 +421,7 @@ namespace SuperPutty.Gui {
                 this.columnName = base.Columns["Name"];
                 this.columnDetail = base.Columns["Detail"];
                 this.columnTextColor = base.Columns["TextColor"];
+                this.columnTag = base.Columns["Tag"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -421,6 +433,8 @@ namespace SuperPutty.Gui {
                 base.Columns.Add(this.columnDetail);
                 this.columnTextColor = new global::System.Data.DataColumn("TextColor", typeof(object), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTextColor);
+                this.columnTag = new global::System.Data.DataColumn("Tag", typeof(object), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTag);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -611,6 +625,22 @@ namespace SuperPutty.Gui {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public object Tag {
+                get {
+                    try {
+                        return ((object)(this[this.tableItemData.TagColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Tag\' in table \'ItemData\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableItemData.TagColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsNameNull() {
                 return this.IsNull(this.tableItemData.NameColumn);
             }
@@ -643,6 +673,18 @@ namespace SuperPutty.Gui {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetTextColorNull() {
                 this[this.tableItemData.TextColorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTagNull() {
+                return this.IsNull(this.tableItemData.TagColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTagNull() {
+                this[this.tableItemData.TagColumn] = global::System.Convert.DBNull;
             }
         }
         
