@@ -1114,8 +1114,8 @@ namespace SuperPutty
                     }
                 }
 
-                // misc action handling
-                if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
+                // misc action handling (eat keyup and down)
+                if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN || wParam == (IntPtr) NativeMethods.WM_KEYUP)
                 {
                     Keys keys = (Keys)vkCode;
                     if (isControlDown) keys |= Keys.Control;
@@ -1125,10 +1125,11 @@ namespace SuperPutty
                     SuperPuttyAction action;
                     if (this.shortcuts.TryGetValue(keys, out action))
                     {
-                        if (ExecuteSuperPuttyAction(action))
+                        if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
                         {
-                            return (IntPtr)1;
+                            ExecuteSuperPuttyAction(action);
                         }
+                        return (IntPtr)1;
                     }
                 }
 
