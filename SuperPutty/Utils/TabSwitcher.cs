@@ -241,10 +241,15 @@ namespace SuperPutty.Utils
 
         public override IList<IDockContent> GetDocuments()
         {
+            return GetDocuments(this.DockPanel);
+        }
+
+        public static IList<IDockContent> GetDocuments(DockPanel dockPanel)
+        {
             List<IDockContent> docs = new List<IDockContent>();
-            if (this.DockPanel.Contents.Count > 0 && this.DockPanel.Panes.Count > 0)
+            if (dockPanel.Contents.Count > 0 && dockPanel.Panes.Count > 0)
             {
-                List<DockPane> panes = new List<DockPane>(this.DockPanel.Panes);
+                List<DockPane> panes = new List<DockPane>(dockPanel.Panes);
                 panes.Sort((x, y) =>
                 {
                     int res = x.Top.CompareTo(y.Top);
@@ -267,6 +272,7 @@ namespace SuperPutty.Utils
                 }
             }
             return docs;
+
         }
     }
     #endregion

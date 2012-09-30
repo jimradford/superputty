@@ -29,12 +29,13 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkSendToVisible = new System.Windows.Forms.CheckBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.listViewDocs = new System.Windows.Forms.ListView();
             this.colTab = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colSessionId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.checkSendToVisible = new System.Windows.Forms.CheckBox();
+            this.colNum = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -48,6 +49,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(404, 31);
             this.panel1.TabIndex = 0;
+            // 
+            // checkSendToVisible
+            // 
+            this.checkSendToVisible.AutoSize = true;
+            this.checkSendToVisible.Location = new System.Drawing.Point(7, 9);
+            this.checkSendToVisible.Name = "checkSendToVisible";
+            this.checkSendToVisible.Size = new System.Drawing.Size(151, 17);
+            this.checkSendToVisible.TabIndex = 2;
+            this.checkSendToVisible.Text = "Send To Visible Tabs Only";
+            this.checkSendToVisible.UseVisualStyleBackColor = true;
+            this.checkSendToVisible.CheckedChanged += new System.EventHandler(this.checkSendToVisible_CheckedChanged);
             // 
             // btnCancel
             // 
@@ -75,6 +87,7 @@
             // listViewDocs
             // 
             this.listViewDocs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colNum,
             this.colTab,
             this.colSessionId});
             this.listViewDocs.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -89,23 +102,17 @@
             // colTab
             // 
             this.colTab.Text = "Tab";
-            this.colTab.Width = 100;
+            this.colTab.Width = 90;
             // 
             // colSessionId
             // 
             this.colSessionId.Text = "Session Id";
-            this.colSessionId.Width = 300;
+            this.colSessionId.Width = 285;
             // 
-            // checkSendToVisible
+            // colNum
             // 
-            this.checkSendToVisible.AutoSize = true;
-            this.checkSendToVisible.Location = new System.Drawing.Point(7, 9);
-            this.checkSendToVisible.Name = "checkSendToVisible";
-            this.checkSendToVisible.Size = new System.Drawing.Size(151, 17);
-            this.checkSendToVisible.TabIndex = 2;
-            this.checkSendToVisible.Text = "Send To Visible Tabs Only";
-            this.checkSendToVisible.UseVisualStyleBackColor = true;
-            this.checkSendToVisible.CheckedChanged += new System.EventHandler(this.checkSendToVisible_CheckedChanged);
+            this.colNum.Text = "#";
+            this.colNum.Width = 25;
             // 
             // frmDocumentSelector
             // 
@@ -135,6 +142,7 @@
         private System.Windows.Forms.ColumnHeader colTab;
         private System.Windows.Forms.ColumnHeader colSessionId;
         private System.Windows.Forms.CheckBox checkSendToVisible;
+        private System.Windows.Forms.ColumnHeader colNum;
 
     }
 }
