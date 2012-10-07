@@ -1,3 +1,15 @@
+1.3.0.10
+- Added SwitchSession Dialog (File -> Switch Session)
+- Added OpenSession Dialog   (File -> Open Session)
+- Various Tweaks for shortcut handling
+- 196: 	Always on top, Transparent window (Added "Always on Top" menu in View)
+- 196: 	Always on top, Transparent window (Added Opacity Setting)
+- 217: 	putty session disappears on maximized window on secondary monitor (Workaround)
+- 227: 	User-specified strings trigger automatic masking of next command (Added shortcut, Ctrl-Shift-8 [ctrl-*] to toggle mask)
+- 228: 	Tab closing - standard behavior (Moved fix to include restored tabs)
+- 237: 	Add the option to select the hosts on which to run the "command" (mcs) (Added # column and marker for active tab)
+- 238: 	Ability to delete Layouts (Added rename and delete context menu items)
+
 1.3.0.9
 - 226: 	Problem with window (issue with 1st build on 1.3.0.8)
 - 230: 	SuperPuTTY 1.3.0.8, Strange output under cursor (issue with 1st build of 1.3.0.8)
