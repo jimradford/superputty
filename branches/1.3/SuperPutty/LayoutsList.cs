@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using SuperPutty.Data;
+using SuperPutty.Gui;
 
 namespace SuperPutty
 {
@@ -90,6 +91,48 @@ namespace SuperPutty
         {
             Point p = this.listBoxLayouts.PointToClient(Cursor.Position);
             return this.listBoxLayouts.IndexFromPoint(p.X, p.Y);
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LayoutData layout = (LayoutData)this.listBoxLayouts.SelectedItem;
+            if (layout != null)
+            {
+                if (DialogResult.Yes == MessageBox.Show(this, "Delete Layout (" + layout.Name + ")?", "Delete Layout", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                {
+                    SuperPuTTY.RemoveLayout(layout.Name, true);
+                }
+            }
+        }
+
+        private void renameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LayoutData layout = (LayoutData)this.listBoxLayouts.SelectedItem;
+            if (layout != null)
+            {
+                dlgRenameItem renameDialog = new dlgRenameItem();
+                renameDialog.DetailName = String.Empty;
+                renameDialog.ItemName = layout.Name;
+                renameDialog.ItemNameValidator = this.ValidateLayoutName;
+                if (DialogResult.OK == renameDialog.ShowDialog(this))
+                {
+                    SuperPuTTY.RenameLayout(layout, renameDialog.ItemName);
+                }
+            }
+            
+        }
+
+        bool ValidateLayoutName(string name, out string error)
+        {
+            LayoutData layout = SuperPuTTY.FindLayout(name);
+            if (layout != null)
+            {
+                error = "Layout exists with same name";
+                return false;
+            }
+
+            error = null;
+            return true;
         }
     }
 }

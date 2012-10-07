@@ -141,12 +141,41 @@ namespace SuperPutty
             }
         }
 
-        public static void RemoveLayout(String name)
+        public static void RemoveLayout(String name, bool deleteFile)
         {
             LayoutData layout = FindLayout(name);
             if (layout != null)
             {
                 layouts.Remove(layout);
+                if (deleteFile)
+                {
+                    File.Delete(layout.FilePath);
+                }
+            }
+        }
+
+        public static void RenameLayout(LayoutData layout, string newName)
+        {
+            if (layout != null)
+            {
+                LayoutData existing = FindLayout(newName);
+                if (existing == null)
+                {
+                    Log.InfoFormat("Renaming layout: {0} -> {1}", layout.Name, newName);
+                    // rename layout and file
+                    string fileOld = layout.FilePath;
+                    string fileNew = Path.Combine(Path.GetDirectoryName(layout.FilePath), newName) + ".xml";
+                    File.Move(fileOld, fileNew);
+                    layout.Name = newName;
+                    layout.FilePath = fileNew;
+
+                    // Notify
+                    layouts.ResetItem(layouts.IndexOf(layout));
+                }
+                else
+                {
+                    throw new ArgumentException("Layout with the same name exists: " + newName);
+                }
             }
         }
 
