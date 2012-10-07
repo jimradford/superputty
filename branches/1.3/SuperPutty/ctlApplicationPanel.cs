@@ -133,13 +133,17 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
         private void MoveWindow(string src)
         {
+            MoveWindow(src, 0, 0);
+        }
 
+        private void MoveWindow(string src, int x, int y)
+        {
             if (!SuperPuTTY.IsLayoutChanging)
             {
-                bool success = NativeMethods.MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, this.Visible);
-                if (Log.IsDebugEnabled)
+                bool success = NativeMethods.MoveWindow(m_AppWin, x, y, this.Width, this.Height, this.Visible);
+                if (Log.IsInfoEnabled)
                 {
-                    Log.DebugFormat("MoveWindow [{3,-15}{4,20}] w={0,4}, h={1,4}, visible={2}, success={5}", this.Width, this.Height, this.Visible, src, this.Name, success);
+                    Log.InfoFormat("MoveWindow [{3,-15}{4,20}] w={0,4}, h={1,4}, visible={2}, success={5}", this.Width, this.Height, this.Visible, src, this.Name, success);
                 }
             }
         }
@@ -180,7 +184,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         
         void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            Log.DebugFormat("eventType={0}, hwnd={1}", eventType, hwnd);
+            //Log.DebugFormat("eventType={0}, hwnd={1}", eventType, hwnd);
             if (eventType == (int) NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE && hwnd == m_AppWin)
             {
                 // Putty xterm chdir - apply to title
@@ -438,7 +442,21 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 // if not minimizing && visible
                 if (this.Height > 0 && this.Width > 0 && this.Visible)
                 {
-                    MoveWindow("OnResize");
+                    // if there is more than one screen and we're maximizing the window on the non-primary screen
+                    // and the non-primary screen has greater resolution than the primary, do an extra move window
+                    if (Screen.AllScreens.Length > 1 && SuperPuTTY.MainForm.WindowState == FormWindowState.Maximized)
+                    {
+                        Screen screen = Screen.FromControl(this);
+                        Screen primary = Screen.PrimaryScreen;
+                        int screenArea = screen.WorkingArea.Height * screen.WorkingArea.Width;
+                        int primaryArea = primary.WorkingArea.Height * primary.WorkingArea.Width;
+                        if (screen != primary && screenArea > primaryArea)
+                        {
+                            this.MoveWindow("2ndScreenFix", 0, 1);
+                        }
+                    }
+
+                    this.MoveWindow("OnResize");
                 }
             }
             base.OnResize(e);
