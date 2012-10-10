@@ -133,6 +133,19 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
         private void MoveWindow(string src)
         {
+            // if there is more than one screen and we're maximizing the window on the non-primary screen
+            // and the non-primary screen has greater resolution than the primary, do an extra move window
+            if (Screen.AllScreens.Length > 1 && SuperPuTTY.MainForm.WindowState == FormWindowState.Maximized)
+            {
+                Screen screen = Screen.FromControl(this);
+                Screen primary = Screen.PrimaryScreen;
+                int screenArea = screen.WorkingArea.Height * screen.WorkingArea.Width;
+                int primaryArea = primary.WorkingArea.Height * primary.WorkingArea.Width;
+                if (screen != primary && screenArea > primaryArea)
+                {
+                    this.MoveWindow("2ndScreenFix", 0, 1);
+                }
+            }
             MoveWindow(src, 0, 0);
         }
 
@@ -445,20 +458,6 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 // if not minimizing && visible
                 if (this.Height > 0 && this.Width > 0 && this.Visible)
                 {
-                    // if there is more than one screen and we're maximizing the window on the non-primary screen
-                    // and the non-primary screen has greater resolution than the primary, do an extra move window
-                    if (Screen.AllScreens.Length > 1 && SuperPuTTY.MainForm.WindowState == FormWindowState.Maximized)
-                    {
-                        Screen screen = Screen.FromControl(this);
-                        Screen primary = Screen.PrimaryScreen;
-                        int screenArea = screen.WorkingArea.Height * screen.WorkingArea.Width;
-                        int primaryArea = primary.WorkingArea.Height * primary.WorkingArea.Width;
-                        if (screen != primary && screenArea > primaryArea)
-                        {
-                            this.MoveWindow("2ndScreenFix", 0, 1);
-                        }
-                    }
-
                     this.MoveWindow("OnResize");
                 }
             }
