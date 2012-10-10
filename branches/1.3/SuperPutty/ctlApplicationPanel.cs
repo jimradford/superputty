@@ -224,17 +224,20 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
                     // focus back to putty via setting active dock panel
                     ctlPuttyPanel parent = (ctlPuttyPanel)this.Parent;
-                    if (parent.DockPanel.ActiveDocument != parent && parent.DockState == DockState.Document)
+                    if (parent != null && parent.DockPanel != null)
                     {
-                        string activeDoc = parent.DockPanel.ActiveDocument != null
-                            ? ((ToolWindow)parent.DockPanel.ActiveDocument).Text : "?";
-                        Log.InfoFormat("[{0}] Setting Active Document: {1} -> {2}", hwnd, activeDoc, parent.Text);
-                        parent.Show();
-                    }
-                    else
-                    {
-                        // give focus back
-                        this.ReFocusPuTTY("WinEventProc-FG, AltTab=" + isSwitchingViaAltTab);
+                        if (parent.DockPanel.ActiveDocument != parent && parent.DockState == DockState.Document)
+                        {
+                            string activeDoc = parent.DockPanel.ActiveDocument != null
+                                ? ((ToolWindow)parent.DockPanel.ActiveDocument).Text : "?";
+                            Log.InfoFormat("[{0}] Setting Active Document: {1} -> {2}", hwnd, activeDoc, parent.Text);
+                            parent.Show();
+                        }
+                        else
+                        {
+                            // give focus back
+                            this.ReFocusPuTTY("WinEventProc-FG, AltTab=" + isSwitchingViaAltTab);
+                        }
                     }
                 }
             }
