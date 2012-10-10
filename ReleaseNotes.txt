@@ -1,3 +1,8 @@
+1.3.0.11
+- 217: 	putty session disappears on maximized window on secondary monitor (Moved fix so handles case when restoring layout)
+- 242: 	Crash after a while (added extra null checks)
+- 243: 	Ignoring ShowToolBarCommands and ShowToolBarConnections settings (Re-added restore logic)
+
 1.3.0.10
 - Added SwitchSession Dialog (File -> Switch Session)
 - Added OpenSession Dialog   (File -> Open Session)
