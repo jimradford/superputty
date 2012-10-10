@@ -139,6 +139,7 @@ namespace SuperPutty
 
             // Apply Settings
             this.ApplySettings();
+            this.ApplySettingsToToolbars();
         }
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
