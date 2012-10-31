@@ -28,10 +28,11 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using SuperPutty.Data;
 
 namespace SuperPutty
 {
-    public partial class RemoteFileListPanel : ToolWindow
+    public partial class RemoteFileListPanel : ToolWindowDocument
     {
         private DockPanel m_DockPanel;
         private PscpTransfer m_Transfer;
@@ -61,15 +62,19 @@ namespace SuperPutty
                 {
                     case RequestResult.RetryAuthentication:
                         dlgLogin m_Login = new dlgLogin(m_Session);
-                        if (m_Login.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        if (m_Login.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                         {
                             m_Session.Username = m_Login.Username;
                             m_Session.Password = m_Login.Password;
                             LoadDirectory(path);
                         }
+                        else
+                        {
+                            this.BeginInvoke(new MethodInvoker(this.Close));
+                        }
                         break;
                     case RequestResult.ListingFollows:
-                        Console.WriteLine("Remote host returned {0} File entries", files.Count);
+                        Logger.Log(string.Format("Remote host returned {0} File entries", files.Count));
                         RefreshListView(files);
                         break;
                     case RequestResult.UnknownError:
@@ -80,6 +85,10 @@ namespace SuperPutty
                         break;
                     case RequestResult.SessionInvalid:
                         Logger.Log("Session is invalid");
+                        break;
+                    case RequestResult.CancelLogin:
+                        Logger.Log("User cancel login");
+                        this.BeginInvoke(new MethodInvoker(this.Close));
                         break;
                     default:
                         Logger.Log("Unknown result '{0}'", result);
@@ -301,5 +310,12 @@ namespace SuperPutty
         {
             LoadDirectory(m_Path);
         }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+
     }
 }

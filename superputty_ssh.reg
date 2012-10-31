@@ -1,0 +1,19 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\ssh]
+@="URL:SSH Protocol"
+"EditFlags"=dword:00000002
+"FriendlyTypeName"="@ieframe.dll,-907"
+"URL Protocol"=""
+"BrowserFlags"=dword:00000008
+
+[HKEY_CLASSES_ROOT\ssh\DefaultIcon]
+@="E:\\projects\\dotnet\\superputty\\1.2\\bin\\Debug\\SuperPutty.exe,0"
+
+[HKEY_CLASSES_ROOT\ssh\shell]
+@=""
+
+[HKEY_CLASSES_ROOT\ssh\shell\open]
+
+[HKEY_CLASSES_ROOT\ssh\shell\open\command]
+@="\"E:\\projects\\dotnet\\superputty\\1.2\\bin\\Debug\\SuperPutty.exe\" %1"

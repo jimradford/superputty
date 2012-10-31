@@ -25,6 +25,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace SuperPutty
 {
@@ -33,11 +34,12 @@ namespace SuperPutty
         public AboutBox1()
         {
             InitializeComponent();
-            this.Text = String.Format("About {0} {0}", AssemblyTitle);
+            this.Text = String.Format("About {0}", AssemblyTitle);
             this.labelProductName.Text = AssemblyProduct;
-            this.labelVersion.Text = String.Format("Version {0} {0}", AssemblyVersion);
+            this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
             this.labelCopyright.Text = AssemblyCopyright;
-            this.labelCompanyName.Text = AssemblyCompany;
+            this.linkLabelCompany.Text = AssemblyCompany;
+            this.linkLabelCompany2.Text = "http://code.google.com/p/superputty/";
             //this.textBoxDescription.Text = AssemblyDescription;
         }
 
@@ -120,5 +122,16 @@ namespace SuperPutty
             }
         }
         #endregion
+
+        private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            Process.Start(e.LinkText);
+        }
+
+        private void linkLabelCompany2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            LinkLabel link = (LinkLabel)sender;
+            Process.Start(link.Text);
+        }
     }
 }

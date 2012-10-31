@@ -27,6 +27,8 @@ using System.Text;
 using System.Diagnostics;
 using System.Threading;
 using System.Text.RegularExpressions;
+using SuperPutty.Data;
+
 
 namespace SuperPutty
 {
@@ -36,7 +38,8 @@ namespace SuperPutty
         ListingFollows,
         UnknownError,
         SessionInvalid,
-        InvalidArguments
+        InvalidArguments,
+        CancelLogin
     }
 
     public delegate void TransferUpdateCallback(bool fileComplete, bool cancelAll, FileTransferStatus status);
@@ -201,13 +204,21 @@ namespace SuperPutty
              */
             if (String.IsNullOrEmpty(m_Session.Username))
             {
-                if (m_Login.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (m_Login.ShowDialog(SuperPuTTY.MainForm) == System.Windows.Forms.DialogResult.OK)
                 {
                     m_Session.Username = m_Login.Username;
                     m_Session.Password = m_Login.Password;
 
                     if (m_Login.Remember)
-                        m_Session.SaveToRegistry(); // passwords are *never* saved and stored permanently
+                    {
+                        //m_Session.SaveToRegistry(); // passwords are *never* saved and stored permanently
+                        SuperPuTTY.SaveSessions();
+                    }
+                }
+                else
+                {
+                    Logger.Log("Cancel connection");
+                    callback(RequestResult.CancelLogin, null);
                 }
             }
 
@@ -221,15 +232,10 @@ namespace SuperPutty
                 //m_processDir.StartInfo.RedirectStandardInput = true;
                 m_processDir.StartInfo.RedirectStandardOutput = true;
                 m_processDir.StartInfo.CreateNoWindow = true;
-                m_processDir.StartInfo.FileName = frmSuperPutty.PscpExe;                
+                m_processDir.StartInfo.FileName = SuperPuTTY.Settings.PscpExe;                
                 // process the various options from the session object and convert them into arguments pscp can understand
-                string args = "-ls "; // default arguments
-                args += (!String.IsNullOrEmpty(m_Session.PuttySession)) ? "-load \"" + m_Session.PuttySession + "\" " : "";
-                args += (!String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0) ? "-pw " + m_Session.Password + " " : "";
-                args += "-P " + m_Session.Port + " ";
-                args += (!String.IsNullOrEmpty(m_Session.Username)) ? m_Session.Username + "@" : "";
-                args += m_Session.Host + ":" + path;
-                Logger.Log("Sending Command: '{0} {1}'", m_processDir.StartInfo.FileName, args);
+                string args = MakeArgs(m_Session, true, path);
+                Logger.Log("Sending Command: '{0} {1}'", m_processDir.StartInfo.FileName, MakeArgs(m_Session, false, path));
                 m_processDir.StartInfo.Arguments = args;                                
                 /*
                  * Handle output from spawned pscp.exe process, handle any data received and parse
@@ -421,6 +427,20 @@ namespace SuperPutty
             }
         }
 
+        static string MakeArgs(SessionData session, bool includePassword, string path)
+        {
+            string args = "-ls "; // default arguments
+            args += (!String.IsNullOrEmpty(session.PuttySession)) ? "-load \"" + session.PuttySession + "\" " : "";
+            args += (!String.IsNullOrEmpty(session.Password) && session.Password.Length > 0) 
+                ? "-pw " + (includePassword ? session.Password : "XXXXX") + " " 
+                : "";
+            args += "-P " + session.Port + " ";
+            args += (!String.IsNullOrEmpty(session.Username)) ? session.Username + "@" : "";
+            args += session.Host + ":" + path;
+
+            return args;
+        }
+
         /// <summary>
         /// Attempts to copy local files from the local filesystem to the selected remote target path
         /// </summary>
@@ -431,7 +451,7 @@ namespace SuperPutty
         {
             if (String.IsNullOrEmpty(m_Session.Username))
             {
-                if (m_Login.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (m_Login.ShowDialog(SuperPuTTY.MainForm) == System.Windows.Forms.DialogResult.OK)
                 {
                     m_Session.Username = m_Login.Username;
                     m_Session.Password = m_Login.Password;
@@ -448,7 +468,7 @@ namespace SuperPutty
                     processCopyToRemote.StartInfo.RedirectStandardError = true;                    
                     processCopyToRemote.StartInfo.RedirectStandardInput = true;
                     processCopyToRemote.StartInfo.RedirectStandardOutput = true;
-                    processCopyToRemote.StartInfo.FileName = frmSuperPutty.PscpExe;
+                    processCopyToRemote.StartInfo.FileName = SuperPuTTY.Settings.PscpExe;
                     processCopyToRemote.StartInfo.CreateNoWindow = true;
                     // process the various options from the session object and convert them into arguments pscp can understand
                     string args = "-r -agent "; // default arguments

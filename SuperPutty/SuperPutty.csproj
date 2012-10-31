@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,10 +10,29 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SuperPutty</RootNamespace>
     <AssemblyName>SuperPutty</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkSubset>
-    </TargetFrameworkSubset>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +42,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,9 +51,23 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>SuperPutty.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Apps-utilities-terminal.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Web" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -44,6 +78,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutBox1.cs">
@@ -52,9 +87,55 @@
     <Compile Include="AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Data\KeyboardShortcut.cs" />
+    <Compile Include="Gui\ImageListPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\ImageListPopup.designer.cs">
+      <DependentUpon>ImageListPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmDocumentSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDocumentSelector.Designer.cs">
+      <DependentUpon>frmDocumentSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\KeyboardShortcutEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\KeyboardShortcutEditor.Designer.cs">
+      <DependentUpon>KeyboardShortcutEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\QuickSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\QuickSelector.Designer.cs">
+      <DependentUpon>QuickSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\QuickSelectorData.cs">
+      <DependentUpon>QuickSelectorData.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Gui\QuickSelectorData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>QuickSelectorData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindowEx.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ToolWindowEx.Designer.cs">
+      <DependentUpon>ToolWindowEx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\ChildWindowFocusHelper.cs" />
+    <Compile Include="Utils\CygtermStartInfo.cs" />
     <Compile Include="ctlApplicationPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Data\LayoutData.cs" />
+    <Compile Include="Data\PuttyDataHelper.cs" />
+    <Compile Include="Data\SessionData.cs" />
+    <Compile Include="Data\SessionDataStartInfo.cs" />
     <Compile Include="DebugLogViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,13 +148,36 @@
     <Compile Include="dlgMouseFeedback.Designer.cs">
       <DependentUpon>dlgMouseFeedback.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gui\dlgRenameItem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\dlgRenameItem.Designer.cs">
+      <DependentUpon>dlgRenameItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmTransferStatus.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmTransferStatus.Designer.cs">
       <DependentUpon>frmTransferStatus.cs</DependentUpon>
     </Compile>
+    <Compile Include="LayoutsList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LayoutsList.Designer.cs">
+      <DependentUpon>LayoutsList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Log4netDebugLogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Log4netDebugLogForm.Designer.cs">
+      <DependentUpon>Log4netDebugLogForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Logger.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="RemoteFileListPanel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,8 +210,25 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\CommandLineOptions.cs" />
+    <Compile Include="Utils\FormUtils.cs" />
+    <Compile Include="Utils\HostConnectionString.cs" />
+    <Compile Include="Utils\MinttyStartInfo.cs" />
+    <Compile Include="Utils\NativeMethods.cs" />
+    <Compile Include="Utils\PortableSettingsProvider.cs" />
+    <Compile Include="Utils\PuttyStartInfo.cs" />
+    <Compile Include="Utils\SingleInstanceHelper.cs" />
+    <Compile Include="Utils\SingletonToolWindowHelper.cs" />
+    <Compile Include="Utils\DesktopWindowHelper.cs" />
+    <Compile Include="Utils\TabSwitcher.cs" />
+    <Compile Include="Utils\TextBoxFocusHelper.cs" />
+    <Compile Include="Utils\WindowActivator.cs" />
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\ImageListPopup.resx">
+      <DependentUpon>ImageListPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ctlApplicationPanel.resx">
       <DependentUpon>ctlApplicationPanel.cs</DependentUpon>
@@ -118,20 +239,42 @@
     <EmbeddedResource Include="dlgMouseFeedback.resx">
       <DependentUpon>dlgMouseFeedback.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Gui\dlgRenameItem.resx">
+      <DependentUpon>dlgRenameItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDocumentSelector.resx">
+      <DependentUpon>frmDocumentSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmTransferStatus.resx">
       <DependentUpon>frmTransferStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\KeyboardShortcutEditor.resx">
+      <DependentUpon>KeyboardShortcutEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\QuickSelector.resx">
+      <DependentUpon>QuickSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayoutsList.resx">
+      <DependentUpon>LayoutsList.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Log4netDebugLogForm.resx">
+      <DependentUpon>Log4netDebugLogForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="RemoteFileListPanel.resx">
       <DependentUpon>RemoteFileListPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgFindPutty.resx">
       <DependentUpon>dlgFindPutty.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgLogin.resx">
       <DependentUpon>dlgLogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSuperPutty.resx">
       <DependentUpon>frmSuperPutty.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgEditSession.resx">
       <DependentUpon>dlgEditSession.cs</DependentUpon>
@@ -157,9 +300,9 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="PscpTransfer.cs" />
-    <Compile Include="SessionData.cs" />
     <Compile Include="SessionTreeview.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -172,6 +315,8 @@
     <Compile Include="ctlPuttyPanel.Designer.cs">
       <DependentUpon>ctlPuttyPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="SuperPuTTY.cs" />
     <Compile Include="ToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -179,7 +324,73 @@
       <DependentUpon>ToolWindow.cs</DependentUpon>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Gui\QuickSelectorData.xsc">
+      <DependentUpon>QuickSelectorData.xsd</DependentUpon>
+    </None>
+    <None Include="Gui\QuickSelectorData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>QuickSelectorData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Gui\QuickSelectorData.xss">
+      <DependentUpon>QuickSelectorData.xsd</DependentUpon>
+    </None>
+    <None Include="Properties\DataSources\SuperPutty.Data.KeyboardShortcut.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Apps-utilities-terminal.ico" />
+    <Content Include="_Lib\log4net.dll" />
+    <Content Include="Resources\accept-gray.png" />
+    <Content Include="Resources\application_edit.png" />
+    <Content Include="Resources\Apps-terminal.ico" />
+    <Content Include="Resources\Apps-utilities-terminal.ico" />
+    <None Include="Resources\folder.png" />
+    <None Include="Resources\cross-black.png" />
+    <None Include="Resources\bullet_go.png" />
+    <None Include="Resources\lightning_go.png" />
+    <None Include="Resources\keyboard.png" />
+    <None Include="Resources\application_xp_terminal.png" />
+    <None Include="Resources\accept.png" />
+    <None Include="Resources\connect.png" />
+    <None Include="Resources\computer.png" />
+    <None Include="Resources\tick.png" />
+    <None Include="Resources\server_go.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>IF NOT EXIST $(SolutionDir)bin\Debug\themes mkdir $(SolutionDir)bin\Debug\themes 
+IF NOT EXIST $(SolutionDir)bin\Debug\themes\default xcopy /E  /Y $(ProjectDir)Resources\themes $(SolutionDir)bin\Debug\themes</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
