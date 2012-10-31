@@ -1,0 +1,55 @@
+Index: frmSuperPutty.cs
+===================================================================
+--- frmSuperPutty.cs	(revision 129)
++++ frmSuperPutty.cs	(working copy)
+@@ -68,6 +68,7 @@
+         private NativeMethods.LowLevelKMProc llmp;
+         private static IntPtr kbHookID = IntPtr.Zero;
+         private static IntPtr mHookID = IntPtr.Zero;
++        private bool forceClose;
+ 
+         int commandMRUIndex = 0;
+ 
+@@ -139,7 +140,7 @@
+ 
+         private void frmSuperPutty_FormClosing(object sender, FormClosingEventArgs e)
+         {
+-            if (SuperPuTTY.Settings.ExitConfirmation)
++            if (SuperPuTTY.Settings.ExitConfirmation && !forceClose)
+             {
+                 if (MessageBox.Show("Exit SuperPuTTY?", "Confirm Exit", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.Cancel)
+                 {
+@@ -774,5 +775,33 @@
+         #endregion
+ 
+ 
++        private void frmSuperPutty_Resize(object sender, EventArgs e)
++        {
++            if (FormWindowState.Minimized == this.WindowState && !mynotifyicon.Visible)
++            {
++                mynotifyicon.Visible = true;
++                this.ShowInTaskbar = false;
++
++            }
++            else if (FormWindowState.Normal == this.WindowState || FormWindowState.Maximized == this.WindowState)
++            {
++                mynotifyicon.Visible = false;
++            }
++        }
++
++        private void mynotifyicon_MouseClick(object sender, MouseEventArgs e)
++        {
++            if (e.Button == MouseButtons.Left)
++            {
++                this.ShowInTaskbar = true;
++                this.WindowState = FormWindowState.Maximized;
++            }
++        }
++
++        private void mynotifyicon_toolStripExit_Click(object sender, EventArgs e)
++        {
++            forceClose = true;
++            this.Close();
++        }
+     }
+ }
