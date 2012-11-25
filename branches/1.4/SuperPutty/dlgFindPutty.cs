@@ -173,6 +173,7 @@ namespace SuperPutty
             this.checkExpandTree.Checked = SuperPuTTY.Settings.ExpandSessionsTreeOnStartup;
             this.checkMinimizeToTray.Checked = SuperPuTTY.Settings.MinimizeToTray;
             this.checkSessionsTreeShowLines.Checked = SuperPuTTY.Settings.SessionsTreeShowLines;
+            this.checkConfirmTabClose.Checked = SuperPuTTY.Settings.MultipleTabCloseConfirmation;
             this.btnFont.Font = SuperPuTTY.Settings.SessionsTreeFont;
             this.btnFont.Text = ToShortString(SuperPuTTY.Settings.SessionsTreeFont);
             this.numericUpDownOpacity.Value = (decimal) SuperPuTTY.Settings.Opacity * 100;
@@ -270,6 +271,7 @@ namespace SuperPutty
             {
                 SuperPuTTY.Settings.SingleInstanceMode = this.checkSingleInstanceMode.Checked;
                 SuperPuTTY.Settings.RestrictContentToDocumentTabs = this.checkConstrainPuttyDocking.Checked;
+                SuperPuTTY.Settings.MultipleTabCloseConfirmation= this.checkConfirmTabClose.Checked;
                 SuperPuTTY.Settings.RestoreWindowLocation = this.checkRestoreWindow.Checked;
                 SuperPuTTY.Settings.ExitConfirmation = this.checkExitConfirmation.Checked;
                 SuperPuTTY.Settings.ExpandSessionsTreeOnStartup = this.checkExpandTree.Checked;

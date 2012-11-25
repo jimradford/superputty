@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
@@ -156,15 +157,18 @@ namespace SuperPutty
 
         private void closeOthersToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (IDockContent doc in new List<IDockContent>(this.DockPanel.DocumentsToArray()))
-            {
-                if (doc == this) { continue; }
-                ToolWindowDocument win = doc as ToolWindowDocument;
-                if (win != null)
-                {
-                    win.Close();
-                }
-            }
+            var docs = from doc in this.DockPanel.DocumentsToArray()
+                       where doc is ToolWindowDocument && doc != this
+                       select doc as ToolWindowDocument;
+            CloseDocs("Close Others", docs);
+        }
+
+        private void closeAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var docs = from doc in this.DockPanel.DocumentsToArray()
+                       where doc is ToolWindowDocument
+                       select doc as ToolWindowDocument;
+            CloseDocs("Close All", docs);
         }
 
         private void closeOthersToTheRightToolStripMenuItem_Click(object sender, EventArgs e)
@@ -174,6 +178,7 @@ namespace SuperPutty
             if (pane != null)
             {
                 // found the pane
+                List<ToolWindowDocument> docsToClose = new List<ToolWindowDocument>();
                 bool close = false;
                 foreach (IDockContent content in new List<IDockContent>(pane.Contents))
                 {
@@ -187,9 +192,33 @@ namespace SuperPutty
                         ToolWindowDocument win = content as ToolWindowDocument;
                         if (win != null)
                         {
-                            win.Close();
+                            docsToClose.Add(win);
                         }
                     }
+                }
+                if (docsToClose.Count > 0)
+                {
+                    CloseDocs("Close Other To the Right", docsToClose);
+                }
+            }
+        }
+
+        void CloseDocs(string source, IEnumerable<ToolWindowDocument> docsToClose)
+        {
+            int n = docsToClose.Count();
+            Log.InfoFormat("Closing mulitple docs: source={0}, count={1}, conf={2}", source, n, SuperPuTTY.Settings.MultipleTabCloseConfirmation);
+
+            bool okToClose = true;
+            if (SuperPuTTY.Settings.MultipleTabCloseConfirmation && n > 1)
+            {
+                okToClose = DialogResult.Yes == MessageBox.Show(this, string.Format("Close {0} Tabs?", n), source, MessageBoxButtons.YesNo);
+            }
+
+            if (okToClose)
+            {
+                foreach (ToolWindowDocument doc in docsToClose)
+                {
+                    doc.Close();
                 }
             }
         }
@@ -414,5 +443,6 @@ namespace SuperPutty
         }
 
         public string TextOverride { get; set; }
+
     }
 }
