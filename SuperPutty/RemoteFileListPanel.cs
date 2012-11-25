@@ -61,17 +61,21 @@ namespace SuperPutty
                 switch (result)
                 {
                     case RequestResult.RetryAuthentication:
-                        dlgLogin m_Login = new dlgLogin(m_Session);
-                        if (m_Login.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                        this.BeginInvoke(new Action(() =>
                         {
-                            m_Session.Username = m_Login.Username;
-                            m_Session.Password = m_Login.Password;
-                            LoadDirectory(path);
-                        }
-                        else
-                        {
-                            this.BeginInvoke(new MethodInvoker(this.Close));
-                        }
+                            dlgLogin m_Login = new dlgLogin(m_Session);
+                            if (m_Login.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                            {
+                                m_Session.Username = m_Login.Username;
+                                m_Session.Password = m_Login.Password;
+                                LoadDirectory(path);
+                            }
+                            else
+                            {
+                                this.Close();
+                            }
+                        }));
+
                         break;
                     case RequestResult.ListingFollows:
                         Logger.Log(string.Format("Remote host returned {0} File entries", files.Count));
