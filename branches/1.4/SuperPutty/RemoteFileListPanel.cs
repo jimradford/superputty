@@ -29,11 +29,14 @@ using System.Text;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using SuperPutty.Data;
+using log4net;
 
 namespace SuperPutty
 {
     public partial class RemoteFileListPanel : ToolWindowDocument
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(RemoteFileListPanel));
+
         private DockPanel m_DockPanel;
         private PscpTransfer m_Transfer;
         private SessionData m_Session;
@@ -41,7 +44,7 @@ namespace SuperPutty
         private dlgMouseFeedback m_MouseFollower;
         public RemoteFileListPanel(PscpTransfer transfer, DockPanel dockPanel, SessionData session)
         {
-            Logger.Log("Started new File Transfer Session for {0}", session.SessionName);
+            Log.InfoFormat("Started new File Transfer Session for {0}", session.SessionName);
             m_Session = session;
             m_DockPanel = dockPanel;
             m_Transfer = transfer;
@@ -55,7 +58,7 @@ namespace SuperPutty
 
         private bool LoadDirectory(string path)
         {
-            Logger.Log("Request directory listing for '{0}/{1}'", m_Session.SessionName, path);
+            Log.InfoFormat("Request directory listing for '{0}/{1}'", m_Session.SessionName, path);
             DirListingCallback dirCallback = delegate(RequestResult result, List<FileEntry> files)
             {
                 switch (result)
@@ -78,24 +81,24 @@ namespace SuperPutty
 
                         break;
                     case RequestResult.ListingFollows:
-                        Logger.Log(string.Format("Remote host returned {0} File entries", files.Count));
+                        Log.DebugFormat("Remote host returned {0} File entries", files.Count);
                         RefreshListView(files);
                         break;
                     case RequestResult.UnknownError:
-                        Logger.Log("Unknown Error trying to get file listing");
+                        Log.Info("Unknown Error trying to get file listing");
                         break;
                     case RequestResult.InvalidArguments:
-                        Logger.Log("Invalid Arguments Passed to scp");
+                        Log.Info("Invalid Arguments Passed to scp");
                         break;
                     case RequestResult.SessionInvalid:
-                        Logger.Log("Session is invalid");
+                        Log.Info("Session is invalid");
                         break;
                     case RequestResult.CancelLogin:
-                        Logger.Log("User cancel login");
+                        Log.Info("User cancel login");
                         this.BeginInvoke(new MethodInvoker(this.Close));
                         break;
                     default:
-                        Logger.Log("Unknown result '{0}'", result);
+                        Log.InfoFormat("Unknown result '{0}'", result);
                         break;
                 }
             };
@@ -266,7 +269,7 @@ namespace SuperPutty
                     RecurseDir(file, ref totalBytes, ref fileCount);
                 }
                 else
-                    Logger.Log("Dropped Unknown {0} on {1}", file, target);
+                    Log.WarnFormat("Dropped Unknown {0} on {1}", file, target);
             }
             //Logger.Log("Total Bytes: {0} Total Files: {1}", totalBytes, fileCount);
             frmTransferStatus frmStatus = new frmTransferStatus();
@@ -277,7 +280,7 @@ namespace SuperPutty
             {
                 if (cancelTransfer)
                 {
-                    Logger.Log("User requested to Cancel Transfer");
+                    Log.Info("User requested to Cancel Transfer");
                     m_Transfer.CancelTransfers();
                     frmStatus.Close();
                     LoadDirectory(target);
