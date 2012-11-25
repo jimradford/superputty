@@ -232,7 +232,7 @@ namespace SuperPutty
         private void buttonOk_Click(object sender, EventArgs e)
         {
             List<String> errors = new List<string>();
-            if (!String.IsNullOrEmpty(textBoxPscpLocation.Text) && File.Exists(textBoxPscpLocation.Text))
+            if (String.IsNullOrEmpty(textBoxPscpLocation.Text) || File.Exists(textBoxPscpLocation.Text))
             {
                 SuperPuTTY.Settings.PscpExe = textBoxPscpLocation.Text;
             }

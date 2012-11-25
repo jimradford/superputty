@@ -426,7 +426,11 @@ namespace SuperPutty
         public static void OpenScpSession(SessionData session)
         {
             Log.InfoFormat("Opening scp session, id={0}", session == null ? "" : session.SessionId);
-            if (session != null)
+            if (!IsScpEnabled)
+            {
+                SuperPuTTY.ReportStatus("Could not open session, pscp not found: {0} [SCP]", session.SessionId);
+            }
+            else if (session != null)
             {
                 RemoteFileListPanel panel = null;
                 bool cancelShow = false;
@@ -448,6 +452,10 @@ namespace SuperPutty
                 }
 
                 SuperPuTTY.ReportStatus("Opened session: {0} [SCP]", session.SessionId);
+            }
+            else
+            {
+                Log.Warn("Could not open null session");
             }
         }
 
