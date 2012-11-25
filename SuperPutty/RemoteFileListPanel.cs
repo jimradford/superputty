@@ -110,7 +110,7 @@ namespace SuperPutty
             {
                 listView1.BeginInvoke((MethodInvoker)delegate()
                 {
-                    RefreshListView(files);
+                    RefreshListView(new List<FileEntry>(files));
                 });
             }
             else
