@@ -141,12 +141,40 @@ namespace SuperPutty
                 FileEntry fe = (FileEntry)listView1.SelectedItems[0].Tag;
                 if (fe.IsFolder)
                 {
-                    m_Path += "/" + listView1.SelectedItems[0].Text;
+                    if (fe.Name == "..")
+                    {
+                        // strip off last path part (not handling escaped / case...)
+                        int idx = m_Path.LastIndexOf('/');
+                        if (idx != -1)
+                        {
+                            m_Path = m_Path.Substring(0, idx);
+                        }
+                        else
+                        {
+                            m_Path += "/" + fe.Name;
+                        }
+                    }
+                    else
+                    {
+                        m_Path += "/" + fe.Name;
+                    }
                     LoadDirectory(m_Path);
                 }
             }
         }
 
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            LoadDirectory(m_Path);
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        #region ListView Modes
         private void detailsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listView1.View = View.Details;
@@ -170,8 +198,10 @@ namespace SuperPutty
         private void listToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listView1.View = View.List;
-        }
+        } 
+        #endregion
 
+        #region Drag Drop
         private void listView1_DragOver(object sender, DragEventArgs e)
         {
             ListView listView = sender as ListView;
@@ -186,7 +216,7 @@ namespace SuperPutty
             ListViewHitTestInfo hti = listView.HitTest(p.X, p.Y);
             if (hti.Item != null)
             {
-                e.Effect = DragDropEffects.All;                
+                e.Effect = DragDropEffects.All;
                 if (hti.Item.ImageIndex == 0)
                     hti.Item.Selected = true;
             }
@@ -261,7 +291,7 @@ namespace SuperPutty
                 }
             };
             frmStatus.m_callback = callback;
-            m_Transfer.BeginCopyFiles(files, target, callback);            
+            m_Transfer.BeginCopyFiles(files, target, callback);
         }
 
         public static void RecurseDir(string sourceDir, ref long bytes, ref int count)
@@ -272,7 +302,7 @@ namespace SuperPutty
             {
                 FileInfo f = new FileInfo(fileName);
                 bytes += f.Length;
-                count++;              
+                count++;
             }
 
             // Recurse into subdirectories of this directory.
@@ -288,7 +318,7 @@ namespace SuperPutty
         }
 
         private void listView1_DragEnter(object sender, DragEventArgs e)
-        {            
+        {
             //m_MouseFollower.Show();
         }
 
@@ -305,17 +335,7 @@ namespace SuperPutty
             //    Logger.Log("Move Mouse");
             //}
         }
-
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            LoadDirectory(m_Path);
-        }
-
-        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-
+        
+        #endregion
     }
 }
