@@ -134,7 +134,7 @@
             this.Controls.Add(this.textBoxData);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "QuickSelector";
-            this.Opacity = 0.8D;
+            this.Opacity = 1.0D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "QuickSelector";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewData)).EndInit();
