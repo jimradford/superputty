@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace SuperPutty.Utils
 {
@@ -23,6 +24,8 @@ namespace SuperPutty.Utils
 
         public const int WM_GETTEXTLENGTH = 0XE;
         public const int WM_GETTEXT = 0XD;
+
+        public const int WM_HOTKEY_MSG_ID = 0x0312;
 
         public const int 
             SC_MAXIMIZE = 0xF030,
@@ -1045,9 +1048,24 @@ namespace SuperPutty.Utils
         }
         #endregion
 
+        public static class HotKeysConstants
+        {
+            public const int NOMOD = 0x0000;
+            public const int ALT = 0x0001;
+            public const int CTRL = 0x0002;
+            public const int SHIFT = 0x0004;
+            public const int WIN = 0x0008;
+        }
+
         #endregion
 
         #region Pinvoke/Win32 Methods
+
+        [DllImport("user32.dll")]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+
+        [DllImport("user32.dll")]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern long SetParent(IntPtr hWndChild, IntPtr hWndParent);
