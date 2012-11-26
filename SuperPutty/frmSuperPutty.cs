@@ -78,7 +78,7 @@ namespace SuperPutty
         private readonly TabSwitcher tabSwitcher;
         private readonly ViewState fullscreenViewState;
 
-        Dictionary<Keys, SuperPuttyAction> shortcuts = new Dictionary<Keys, SuperPuttyAction>();
+        Dictionary<int, GlobalHotkey> hotkeys = new Dictionary<int, GlobalHotkey>();
 
         public frmSuperPutty()
         {
@@ -1048,7 +1048,9 @@ namespace SuperPutty
             if (nCode >= 0 && IsForegroundWindow(this.Handle))
             {
                 int vkCode = Marshal.ReadInt32(lParam);
-                //Log.InfoFormat("KBHook={0}, wParam={1}, lParam={2}", nCode, wParam, vkCode);
+                Keys keys = (Keys)vkCode;
+                //Log.InfoFormat("### KBHook={0}, wParam={1}, lParam={2}, keys={3}, upDown={4}", 
+                //    nCode, wParam, vkCode, keys, (wParam == (IntPtr) NativeMethods.WM_KEYUP || wParam == (IntPtr) NativeMethods.WM_SYSKEYUP)?  "Up" : "Down" );
 
                 // Detect control key state for left and right control keys
                 if ((Keys)vkCode == Keys.LControlKey || (Keys)vkCode == Keys.RControlKey)
@@ -1110,73 +1112,6 @@ namespace SuperPutty
                         }
                     }
                 }
-
-                // misc action handling (eat keyup and down)
-                if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN || wParam == (IntPtr) NativeMethods.WM_KEYUP)
-                {
-                    Keys keys = (Keys)vkCode;
-                    if (isControlDown) keys |= Keys.Control;
-                    if (isShiftDown) keys |= Keys.Shift;
-                    if (isAltDown) keys |= Keys.Alt;
-
-                    SuperPuttyAction action;
-                    if (this.shortcuts.TryGetValue(keys, out action))
-                    {
-                        if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
-                        {
-                            ExecuteSuperPuttyAction(action);
-                        }
-                        return (IntPtr)1;
-                    }
-                }
-
-                /*
-                 * 
-                 if ((Keys)vkCode == Keys.F11 && !isShiftDown && !isControlDown)
-                {
-                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
-                    {
-                        this.BeginInvoke(new MethodInvoker(this.ToggleFullScreen));
-                    }
-                    // Eat the keystroke
-                    return (IntPtr)1;
-                }
-
-
-                // Operator has pressed Ctrl-F4, close the active PuTTY or file transfer panel
-                if (isControlDown && (Keys)vkCode == Keys.F4)
-                {
-                    if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
-                    {
-                        ToolWindow tw = DockPanel.ActiveDocument as ToolWindow;
-                        if (tw != null) { tw.Close(); }
-                    }
-
-                    // Eat the keystroke
-                    return (IntPtr)1;
-                }
-
-                // Operator has pressed Ctrl-End, Move to Next Tab
-                if (isControlDown && (Keys)vkCode == Keys.End && wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
-                {
-                    if (this.tabSwitcher.MoveToNextDocument())
-                    {
-                        // Eat the keystroke
-                        return (IntPtr)1;
-                    }
-                }
-
-                // Operator has pressed Ctrl-Home, Move to Prev Tab
-                if (isControlDown && (Keys)vkCode == Keys.Home && wParam == (IntPtr)NativeMethods.WM_KEYDOWN)
-                {
-                    if (this.tabSwitcher.MoveToPrevDocument())
-                    {
-                        // Eat the keystroke
-                        return (IntPtr)1;
-                    }
-                }*/
-
-
             }
                                 
             return NativeMethods.CallNextHookEx(kbHookID, nCode, wParam, lParam);
@@ -1230,7 +1165,11 @@ namespace SuperPutty
         void UpdateShortcutsFromSettings()
         {
             // remove old
-            this.shortcuts.Clear();
+            foreach (GlobalHotkey hotkey in this.hotkeys.Values)
+            {
+                hotkey.Dispose();
+            }
+            this.hotkeys.Clear();
             this.fullScreenToolStripMenuItem.ShortcutKeys = Keys.None;
             this.optionsToolStripMenuItem.ShortcutKeys = Keys.None;
 
@@ -1239,13 +1178,16 @@ namespace SuperPutty
             {
                 try
                 {
-                    SuperPuttyAction action = (SuperPuttyAction)Enum.Parse(typeof(SuperPuttyAction), ks.Name);
+                    // hotkey
                     Keys keys = ks.Key | ks.Modifiers;
                     if (keys != Keys.None)
                     {
-                        this.shortcuts.Add(keys, action);
+                        GlobalHotkey hotKey = new GlobalHotkey(this, ks);
+                        this.hotkeys.Add(hotKey.Id, hotKey);
                     }
 
+                    // sync menu items
+                    SuperPuttyAction action = (SuperPuttyAction)Enum.Parse(typeof(SuperPuttyAction), ks.Name);
                     switch (action)
                     {
                         case SuperPuttyAction.FullScreen:
@@ -1386,10 +1328,27 @@ namespace SuperPutty
 
         protected override void WndProc(ref Message m)
         {
-            bool callBase = this.focusHelper.WndProcForFocus(ref m);
-            if (callBase)
+            if (m.Msg == NativeMethods.WM_HOTKEY_MSG_ID)
             {
-                base.WndProc(ref m);
+                // handle hot keys
+                GlobalHotkey hotkey;
+                if (this.hotkeys.TryGetValue((int)m.WParam, out hotkey))
+                {
+                    Log.DebugFormat("Executing HotKey, Shortcut={0}", hotkey.Shortcut);
+                    this.ExecuteSuperPuttyAction((SuperPuttyAction) Enum.Parse(typeof(SuperPuttyAction), hotkey.Shortcut.Name));
+                    // reset key state for control-tab handling
+                    if (hotkey.IsControlSet) isControlDown = false;
+                    if (hotkey.IsShiftSet) isShiftDown = false;
+                    if (hotkey.IsAltSet) isAltDown = false;
+                }
+            }
+            else
+            {
+                bool callBase = this.focusHelper.WndProcForFocus(ref m);
+                if (callBase)
+                {
+                    base.WndProc(ref m);
+                }
             }
         }
 

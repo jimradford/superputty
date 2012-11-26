@@ -61,7 +61,7 @@ namespace SuperPutty.Data
 
         public override string ToString()
         {
-            return string.Format("[Shortcut name={0}, key={1}, modifiers={2}", this.Name, this.Key, this.Modifiers);
+            return string.Format("[Shortcut name={0}, key={1}, modifiers={2}]", this.Name, this.Key, this.Modifiers);
         }
 
         #region Utils
