@@ -1,5 +1,7 @@
-1.4.0.0
+1.4.0.1
+- 250: 	misfunction of Tab key (Back out global hot keys and fix IsForegroundWindow to account for child windows)
 
+1.4.0.0
 - 111: 	Intermittent exception in file transfer window (Added potential fix for InvalidOperationException)
 - 190: 	Close All (Added along with close confirmation user pref)
 - 229: 	FIle Transfer crash on X (Added proper cross thread call handling)
