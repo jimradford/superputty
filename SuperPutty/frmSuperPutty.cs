@@ -1166,7 +1166,10 @@ namespace SuperPutty
                     SuperPuttyAction action;
                     if (this.shortcuts.TryGetValue(keys, out action))
                     {
-                        ExecuteSuperPuttyAction(action);
+                        // post action to avoid getting errant keystrokes (e.g. allow current to be eaten)
+                        this.BeginInvoke(new Action(() => {
+                            ExecuteSuperPuttyAction(action);
+                        }));
                         return (IntPtr) 1;
                     }
                 }
