@@ -142,6 +142,41 @@ namespace SuperPutty
             // Apply Settings
             this.ApplySettings();
             this.ApplySettingsToToolbars();
+
+            this.DockPanel.ContentAdded += DockPanel_ContentAdded;
+            this.DockPanel.ContentRemoved += DockPanel_ContentRemoved;
+        }
+
+        void DockPanel_ContentAdded(object sender, DockContentEventArgs e)
+        {
+            ctlPuttyPanel p = e.Content as ctlPuttyPanel;
+            if (p != null)
+            {
+                p.TextChanged += puttyPanel_TextChanged;
+            }
+        }
+
+        void DockPanel_ContentRemoved(object sender, DockContentEventArgs e)
+        {
+            ctlPuttyPanel p = e.Content as ctlPuttyPanel;
+            if (p != null)
+            {
+                p.TextChanged -= puttyPanel_TextChanged;
+            }
+        }
+
+        void puttyPanel_TextChanged(object sender, EventArgs e)
+        {
+            ctlPuttyPanel p = (ctlPuttyPanel)sender;
+            if (p == this.DockPanel.ActiveDocument)
+            {
+                UpdateWindowText(p.Text);
+            }
+        }
+
+        void UpdateWindowText(string text)
+        {
+            this.Text = string.Format("SuperPuTTY - {0}", text);
         }
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
@@ -223,7 +258,7 @@ namespace SuperPutty
                     if (p != null)
                     {
                         p.SetFocusToChildApplication(caller);
-                        this.Text = string.Format("SuperPuTTY - {0}", p.Text);
+                        this.UpdateWindowText(p.Text);
                     }
                 }
             }
