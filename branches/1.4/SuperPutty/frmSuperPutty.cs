@@ -1100,7 +1100,7 @@ namespace SuperPutty
 
                     // If Ctrl-Tab has been pressed to move to an older panel then
                     // make it current panel when Ctrl key is finally released.
-                    if (!isControlDown && !isShiftDown)
+                    if (SuperPuTTY.Settings.EnableControlTabSwitching && !isControlDown && !isShiftDown)
                     {
                         this.tabSwitcher.CurrentDocument = (ToolWindow)this.DockPanel.ActiveDocument;
                     }
@@ -1114,7 +1114,7 @@ namespace SuperPutty
 
                     // If Ctrl-Shift-Tab has been pressed to move to an older panel then
                     // make it current panel when both keys are finally released.
-                    if (!isControlDown && !isShiftDown)
+                    if (SuperPuTTY.Settings.EnableControlTabSwitching && !isControlDown && !isShiftDown)
                     {
                         this.tabSwitcher.CurrentDocument = (ToolWindow)this.DockPanel.ActiveDocument;
                     }
@@ -1128,7 +1128,7 @@ namespace SuperPutty
                 }
 
                 // Operator has pressed Ctrl-Tab, make next PuTTY panel active
-                if (isControlDown && !isShiftDown && keys == Keys.Tab)
+                if (SuperPuTTY.Settings.EnableControlTabSwitching && isControlDown && !isShiftDown && keys == Keys.Tab)
                 {
                     if (isKeyDown && this.DockPanel.ActiveDocument is ToolWindowDocument)
                     {
@@ -1141,7 +1141,7 @@ namespace SuperPutty
                 }
 
                 // Operator has pressed Ctrl-Shift-Tab, make previous PuTTY panel active
-                if (isControlDown && isShiftDown && keys == Keys.Tab)
+                if (SuperPuTTY.Settings.EnableControlTabSwitching && isControlDown && isShiftDown && keys == Keys.Tab)
                 {
                     if (isKeyDown && this.DockPanel.ActiveDocument is ToolWindowDocument)
                     {
@@ -1154,7 +1154,8 @@ namespace SuperPutty
                 }
 
                 // misc action handling (eat keyup and down)
-                if (isKeyDown && 
+                if (SuperPuTTY.Settings.EnableKeyboadShortcuts && 
+                    isKeyDown && 
                     keys != Keys.LControlKey && keys != Keys.RControlKey && 
                     keys != Keys.LMenu && keys != Keys.RMenu && 
                     keys != Keys.LShiftKey && keys != Keys.RShiftKey) 
