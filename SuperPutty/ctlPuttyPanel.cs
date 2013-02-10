@@ -38,6 +38,7 @@ using SuperPutty.Utils;
 using System.Threading;
 using System.Configuration;
 using SuperPutty.Gui;
+using log4net.Core;
 
 
 namespace SuperPutty
@@ -63,10 +64,29 @@ namespace SuperPutty
             InitializeComponent();
 
             this.Text = session.SessionName;
+            this.TabText = session.SessionName;
             this.TextOverride = session.SessionName;
 
             CreatePanel();
             AdjustMenu();
+        }
+
+        public override string Text
+        {
+            get
+            {
+                return base.Text;
+            }
+            set
+            {
+                this.TabText = value != null ? value.Replace("&", "&&") : value;
+                base.Text = value;
+
+                if (Log.Logger.IsEnabledFor(Level.Trace))
+                {
+                    Log.DebugFormat("SetText: text={0}", value);
+                }
+            }
         }
 
         protected override void OnTextChanged(EventArgs e)
