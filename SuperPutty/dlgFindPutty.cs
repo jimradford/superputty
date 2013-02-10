@@ -174,6 +174,8 @@ namespace SuperPutty
             this.checkMinimizeToTray.Checked = SuperPuTTY.Settings.MinimizeToTray;
             this.checkSessionsTreeShowLines.Checked = SuperPuTTY.Settings.SessionsTreeShowLines;
             this.checkConfirmTabClose.Checked = SuperPuTTY.Settings.MultipleTabCloseConfirmation;
+            this.checkEnableControlTabSwitching.Checked = SuperPuTTY.Settings.EnableControlTabSwitching;
+            this.checkEnableKeyboardShortcuts.Checked = SuperPuTTY.Settings.EnableKeyboadShortcuts;
             this.btnFont.Font = SuperPuTTY.Settings.SessionsTreeFont;
             this.btnFont.Text = ToShortString(SuperPuTTY.Settings.SessionsTreeFont);
             this.numericUpDownOpacity.Value = (decimal) SuperPuTTY.Settings.Opacity * 100;
@@ -275,6 +277,8 @@ namespace SuperPutty
                 SuperPuTTY.Settings.RestoreWindowLocation = this.checkRestoreWindow.Checked;
                 SuperPuTTY.Settings.ExitConfirmation = this.checkExitConfirmation.Checked;
                 SuperPuTTY.Settings.ExpandSessionsTreeOnStartup = this.checkExpandTree.Checked;
+                SuperPuTTY.Settings.EnableControlTabSwitching = this.checkEnableControlTabSwitching.Checked;
+                SuperPuTTY.Settings.EnableKeyboadShortcuts = this.checkEnableKeyboardShortcuts.Checked;
                 SuperPuTTY.Settings.MinimizeToTray = this.checkMinimizeToTray.Checked;
                 SuperPuTTY.Settings.TabTextBehavior = (string) this.comboBoxTabText.SelectedItem;
                 SuperPuTTY.Settings.TabSwitcher = (string)this.comboBoxTabSwitching.SelectedItem.GetType().FullName;
