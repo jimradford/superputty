@@ -36,6 +36,7 @@ namespace SuperPutty.Data
     public enum ConnectionProtocol
     {
         SSH,
+        SSH2,
         Telnet,
         Rlogin,
         Raw,
