@@ -1304,6 +1304,13 @@ namespace SuperPutty
                     KeyEventWindowActivator.ActivateForm(this);
                     this.optionsToolStripMenuItem.PerformClick();
                     break;
+                case SuperPuttyAction.DuplicateSession:
+                    ctlPuttyPanel p = this.DockPanel.ActiveDocument as ctlPuttyPanel;
+                    if (p != null && p.Session != null) 
+                    {
+                        SuperPuTTY.OpenPuttySession(p.Session); 
+                    }
+                    break;
                 default:
                     success = false;
                     break;
