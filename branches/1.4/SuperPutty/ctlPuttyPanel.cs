@@ -168,6 +168,7 @@ namespace SuperPutty
                     pane.Contents.IndexOf(this) != pane.Contents.Count - 1;
             }
             this.closeOthersToolStripMenuItem.Enabled = this.DockPanel.DocumentsCount > 1;
+            this.closeAllToolStripMenuItem.Enabled = this.DockPanel.DocumentsCount > 1;
         }
 
         private void closeSessionToolStripMenuItem_Click(object sender, EventArgs e)
