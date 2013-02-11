@@ -51,6 +51,7 @@ namespace SuperPutty
         private bool isRenamingNode;
         TreeNode nodeRoot;
         ImageList imgIcons = new ImageList();
+        Func<SessionData, bool> filter;
 
         /// <summary>
         /// Instantiate the treeview containing the sessions
@@ -63,17 +64,18 @@ namespace SuperPutty
             m_DockPanel = dockPanel;
             InitializeComponent();
             this.treeView1.TreeViewNodeSorter = this;
+            this.treeView1.ImageList = GetImageList();
+            this.ApplySettings();
 
             // populate sessions in the treeview from the registry
-            LoadSessions();
+            this.LoadSessions();
+            this.ExpandInitialTree();
             SuperPuTTY.Sessions.ListChanged += new ListChangedEventHandler(Sessions_ListChanged);
             SuperPuTTY.Settings.SettingsSaving += new SettingsSavingEventHandler(Settings_SettingsSaving);
         }
 
-        protected override void OnLoad(EventArgs e)
+        void ExpandInitialTree()
         {
-            base.OnLoad(e);
-
             if (SuperPuTTY.Settings.ExpandSessionsTreeOnStartup)
             {
                 nodeRoot.ExpandAll();
@@ -91,8 +93,11 @@ namespace SuperPutty
                     }
                 }
             }
+        }
 
-            this.ApplySettings();
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
         }
 
         void Settings_SettingsSaving(object sender, CancelEventArgs e)
@@ -116,17 +121,24 @@ namespace SuperPutty
         /// <summary>
         /// Load the sessions from the registry and populate the treeview control
         /// </summary>
-        public void LoadSessions()
+        void LoadSessions()
         {
             treeView1.Nodes.Clear();
-            this.treeView1.ImageList = GetImageList();
 
             this.nodeRoot = treeView1.Nodes.Add("root", "PuTTY Sessions", ImageKeyFolder, ImageKeyFolder);
             this.nodeRoot.ContextMenuStrip = this.contextMenuStripFolder;
 
             foreach (SessionData session in SuperPuTTY.GetAllSessions())
             {
-                TreeNode nodeParent = this.nodeRoot;
+                TryAddSessionNode(session);
+            }
+        }
+
+        private void TryAddSessionNode(SessionData session)
+        {
+            TreeNode nodeParent = this.nodeRoot;
+            if (this.filter == null || this.filter(session))
+            {
                 if (session.SessionId != null && session.SessionId != session.SessionName)
                 {
                     // take session id and create folder nodes
@@ -146,8 +158,7 @@ namespace SuperPutty
             if (e.ListChangedType == ListChangedType.ItemAdded)
             {
                 SessionData session = sessions[e.NewIndex];
-                TreeNode nodeParent = FindOrCreateParentNode(session.SessionId);
-                AddSessionNode(nodeParent, session, false);
+                TryAddSessionNode(session);
             }
             else if (e.ListChangedType == ListChangedType.Reset)
             {
@@ -684,6 +695,24 @@ namespace SuperPutty
                 }
             }
         }
+
+        void GetAllNodes(TreeNode node, List<TreeNode> nodes)
+        {
+            if (node != null)
+            {
+                foreach (TreeNode child in node.Nodes)
+                {
+                    if (child.Nodes.Count == 0)
+                    {
+                        nodes.Add(child);
+                    }
+                    else
+                    {
+                        GetAllNodes(child, nodes);
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Drag Drop
@@ -877,6 +906,65 @@ namespace SuperPutty
             return imgIcons;
         }
         #endregion
+
+        #region Search
+        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Enter:
+                    this.ApplySearch(this.txtSearch.Text);
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+                case Keys.Escape:
+                    this.ClearSearch();
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+            }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            this.ApplySearch(this.txtSearch.Text);
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            this.ClearSearch();
+        }
+
+        private void ClearSearch()
+        {
+            this.txtSearch.Text = "";
+            this.ApplySearch("");
+        }
+        private void ApplySearch(string txt)
+        {
+            Log.InfoFormat("Applying Search: txt={0}.", txt);
+
+            // define filter
+            this.filter = (s) =>
+            {
+                return s.SessionName.Contains(txt);
+            };
+
+            // reload
+            this.LoadSessions();
+
+            // if "clear" show init state otherwise expand all to show all matches
+            if (string.IsNullOrEmpty(txt))
+            {
+                this.ExpandInitialTree();
+            }
+            else
+            {
+                this.treeView1.ExpandAll();
+            }
+        }
+        #endregion
+
     }
 
 }
