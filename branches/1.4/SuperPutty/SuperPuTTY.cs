@@ -644,7 +644,8 @@ namespace SuperPutty
         Options,
         FullScreen,
         OpenSession,
-        SwitchSession
+        SwitchSession,
+        DuplicateSession
     } 
     #endregion
 
