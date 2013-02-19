@@ -645,7 +645,10 @@ namespace SuperPutty
         FullScreen,
         OpenSession,
         SwitchSession,
-        DuplicateSession
+        DuplicateSession,
+        GotoCommandBar,
+        GotoConnectionBar,
+        FocusActiveSession
     } 
     #endregion
 
