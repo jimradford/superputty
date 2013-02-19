@@ -1,3 +1,13 @@
+1.4.0.2
+- 250: misfunction of Tab key  (Added options to disable control-tab window switching and keyboard shortcuts)
+- 263: Close All with one session opened (added check)
+- 266: Duplicate session with hot-key (added)
+- 278: Binding ctrl+space to "open session" results in a space in the input (Posting execute command avoid keystroke in sub windows)
+- 280: Escape & in tab title (Using TabText; added TextChanged handler to update main window title)
+- 284: Add SSH2 URI Support (added handling for SSH2.  maps to ssh)
+- 285: Input Box to search the session tree (Added search bar to session tree)
+- 293: Create new shortcuts 'Commands'  (Merged in patch; also added FocusActiveSession action)
+
 1.4.0.1
 - 250: 	misfunction of Tab key (Back out global hot keys and fix IsForegroundWindow to account for child windows)
 
