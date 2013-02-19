@@ -1167,6 +1167,8 @@ namespace SuperPutty
                     SuperPuttyAction action;
                     if (this.shortcuts.TryGetValue(keys, out action))
                     {
+                        // reset key states
+                        this.isControlDown = this.isAltDown = this.isShiftDown = false;
                         // post action to avoid getting errant keystrokes (e.g. allow current to be eaten)
                         this.BeginInvoke(new Action(() => {
                             ExecuteSuperPuttyAction(action);
@@ -1203,7 +1205,7 @@ namespace SuperPutty
         {
             IntPtr fgWindow = NativeMethods.GetForegroundWindow();
             if (parent.Handle == fgWindow) return true; // main form is FG
-            foreach (Form f in Application.OpenForms) { if (f.Handle == fgWindow) return true; }
+            //foreach (Form f in Application.OpenForms) { if (f.Handle == fgWindow) return true; }
             List<IntPtr> result = new List<IntPtr>();
             GCHandle listHandle = GCHandle.Alloc(result);
             try
