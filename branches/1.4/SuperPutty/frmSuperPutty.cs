@@ -1313,6 +1313,31 @@ namespace SuperPutty
                         SuperPuTTY.OpenPuttySession(p.Session); 
                     }
                     break;
+                case SuperPuttyAction.GotoCommandBar:
+                    KeyEventWindowActivator.ActivateForm(this);
+                    if (!this.tsCommands.Visible)
+                    {
+                        this.toggleCheckedState(this.sendCommandsToolStripMenuItem, EventArgs.Empty);
+                    }
+                    this.tsSendCommandCombo.Focus();
+                    break;
+                case SuperPuttyAction.GotoConnectionBar:
+                    KeyEventWindowActivator.ActivateForm(this);
+                    if (!this.tsConnect.Visible)
+                    {
+                        this.toggleCheckedState(this.quickConnectionToolStripMenuItem, EventArgs.Empty);
+                    }
+                    this.tbTxtBoxHost.Focus();
+                    break;
+                case SuperPuttyAction.FocusActiveSession:
+                    // focus on current super putty session...or at least try to
+                    KeyEventWindowActivator.ActivateForm(this);
+                    ctlPuttyPanel putty = this.DockPanel.ActiveDocument as ctlPuttyPanel;
+                    if (putty != null)
+                    {
+                        putty.SetFocusToChildApplication("ExecuteAction");
+                    }
+                    break;
                 default:
                     success = false;
                     break;
