@@ -443,7 +443,7 @@ namespace SuperPutty
 
         private void sessionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.layouts.Instance != null && !this.layouts.Instance.DockHandler.Pane.IsAutoHide)
+            if (this.layouts.IsVisibleAsToolWindow)
             {
                 this.sessions.ShowWindow(this.layouts.Instance.DockHandler.Pane, DockAlignment.Top, 0.5);
             }
@@ -461,7 +461,7 @@ namespace SuperPutty
 
         private void layoutsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.sessions.Instance != null && !this.sessions.Instance.DockHandler.Pane.IsAutoHide)
+            if (this.sessions.IsVisibleAsToolWindow)
             {
                 this.layouts.ShowWindow(this.sessions.Instance.DockHandler.Pane, DockAlignment.Bottom, 0.5);
             }
@@ -1435,6 +1435,8 @@ namespace SuperPutty
             Dynamic, 
             Mixed
         }
+
+
 
     }
 }

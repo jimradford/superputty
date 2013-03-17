@@ -53,6 +53,14 @@ namespace SuperPutty.Utils
             }
         }
 
+        public bool IsVisibleAsToolWindow
+        {
+            get
+            {
+                return this.Instance != null && this.Instance.DockHandler.Pane != null && !this.Instance.DockHandler.Pane.IsAutoHide;
+            }
+        }
+
         public T Initialize()
         {
             if (this.Initializer == null)
