@@ -318,6 +318,7 @@ namespace SuperPutty
                         else
                         {
                             panel.Text = tabName;
+                            panel.TextOverride = tabName;
                         }
                     }
                     else
