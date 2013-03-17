@@ -11,6 +11,8 @@ using SuperPutty.Properties;
 using SuperPutty.Utils;
 using WeifenLuo.WinFormsUI.Docking;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
+using System.Drawing;
 
 namespace SuperPutty
 {
@@ -66,6 +68,7 @@ namespace SuperPutty
                 // load data
                 LoadLayouts();
                 LoadSessions();
+                Images = LoadImageList("default");
 
                 // determine starting layout, if any.  CLI has priority
                 if (CommandLine.IsValid)
@@ -413,6 +416,7 @@ namespace SuperPutty
             {
                 ctlPuttyPanel sessionPanel = ctlPuttyPanel.NewPanel(session);
                 ApplyDockRestrictions(sessionPanel);
+                ApplyIconForWindow(sessionPanel, session);
                 sessionPanel.Show(MainForm.DockPanel, session.LastDockstate);
                 SuperPuTTY.ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
             }
@@ -445,6 +449,7 @@ namespace SuperPutty
 
                     panel = new RemoteFileListPanel(xfer, SuperPuTTY.MainForm.DockPanel, session);
                     ApplyDockRestrictions(panel);
+                    ApplyIconForWindow(panel, session);
                     if (!cancelShow)
                     {
                         panel.Show(MainForm.DockPanel, session.LastDockstate);
@@ -568,6 +573,82 @@ namespace SuperPutty
 
         #endregion
 
+        #region Icons
+
+        /// <summary>
+        /// Load Images from themes folder
+        /// </summary>
+        /// <param name="theme"></param>
+        public static ImageList LoadImageList(string theme)
+        {
+            ImageList imgIcons = new ImageList();
+
+            // Load the 2 standard icons in case no icons exist in icons directory, these will be used.
+            imgIcons.Images.Add(SessionTreeview.ImageKeyFolder, SuperPutty.Properties.Resources.folder);
+            imgIcons.Images.Add(SessionTreeview.ImageKeySession, SuperPutty.Properties.Resources.computer);
+
+            try
+            {
+                string themeFolder = Directory.GetCurrentDirectory();
+                themeFolder = Path.Combine(themeFolder, "themes");
+                themeFolder = Path.Combine(themeFolder, theme);
+                themeFolder = Path.Combine(themeFolder, "icons");
+
+                if (Directory.Exists(themeFolder))
+                {
+                    foreach (FileInfo fi in new DirectoryInfo(themeFolder).GetFiles())
+                    {
+                        if (Regex.IsMatch(fi.Extension, @"\.(bmp|jpg|jpeg|png)", RegexOptions.IgnoreCase))
+                        {
+                            Image img = Image.FromFile(fi.FullName);
+                            imgIcons.Images.Add(Path.GetFileNameWithoutExtension(fi.Name), img);
+                        }
+                    }
+                    Log.InfoFormat("Loaded {0} icons from theme directory.  dir={1}", imgIcons.Images.Count, themeFolder);
+                }
+                else
+                {
+                    Log.WarnFormat("theme directory not found, no images loaded. dir={0}", themeFolder);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error while loading icons.", ex);
+            }
+
+
+            return imgIcons;
+        }
+
+        public static Icon GetIconForSession(SessionData session)
+        {
+            Icon icon = null;
+            if (session != null && session.ImageKey != null && Images.Images.ContainsKey(session.ImageKey))
+            {
+                try
+                {
+                    Image img = Images.Images[session.ImageKey];
+                    Bitmap bmp = img as Bitmap;
+                    if (bmp != null)
+                    {
+                        icon = Icon.FromHandle(bmp.GetHicon());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Error getting icon for image", ex);
+                }
+            }
+            return icon;
+        }
+
+        static void ApplyIconForWindow(ToolWindow win, SessionData session)
+        {
+            win.Icon = GetIconForSession(session);
+        }
+
+        #endregion
+
         #region Properties
 
         public static bool IsFirstRun {
@@ -632,6 +713,9 @@ namespace SuperPutty
                 return Path.Combine(Settings.SettingsFolder, LayoutData.AutoRestoreLayoutFileName);
             }
         }
+
+        public static ImageList Images { get; private set; }
+
         #endregion
     }
 

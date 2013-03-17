@@ -317,6 +317,7 @@ namespace SuperPutty
                         }
                         else
                         {
+                            panel.Icon = SuperPuTTY.GetIconForSession(session);
                             panel.Text = tabName;
                             panel.TextOverride = tabName;
                         }

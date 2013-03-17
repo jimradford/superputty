@@ -90,13 +90,14 @@
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.comboSearchMode = new System.Windows.Forms.ComboBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.checkQuickSelectorCaseSensitiveSearch = new System.Windows.Forms.CheckBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.shortcutStringDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.keyboardShortcutBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.checkQuickSelectorCaseSensitiveSearch = new System.Windows.Forms.CheckBox();
-            this.label15 = new System.Windows.Forms.Label();
+            this.checkShowDocumentIcons = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
@@ -521,7 +522,7 @@
             this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabPageGeneral.Name = "tabPageGeneral";
             this.tabPageGeneral.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPageGeneral.Size = new System.Drawing.Size(596, 262);
+            this.tabPageGeneral.Size = new System.Drawing.Size(596, 275);
             this.tabPageGeneral.TabIndex = 0;
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
@@ -543,6 +544,7 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.checkShowDocumentIcons);
             this.groupBox3.Controls.Add(this.label15);
             this.groupBox3.Controls.Add(this.checkQuickSelectorCaseSensitiveSearch);
             this.groupBox3.Controls.Add(this.label13);
@@ -635,7 +637,7 @@
             this.tabPageShortcuts.Controls.Add(this.dataGridViewShortcuts);
             this.tabPageShortcuts.Location = new System.Drawing.Point(4, 22);
             this.tabPageShortcuts.Name = "tabPageShortcuts";
-            this.tabPageShortcuts.Size = new System.Drawing.Size(596, 262);
+            this.tabPageShortcuts.Size = new System.Drawing.Size(596, 275);
             this.tabPageShortcuts.TabIndex = 3;
             this.tabPageShortcuts.Text = "Shortcuts";
             this.tabPageShortcuts.UseVisualStyleBackColor = true;
@@ -658,7 +660,7 @@
             this.dataGridViewShortcuts.Location = new System.Drawing.Point(0, 0);
             this.dataGridViewShortcuts.Name = "dataGridViewShortcuts";
             this.dataGridViewShortcuts.ReadOnly = true;
-            this.dataGridViewShortcuts.Size = new System.Drawing.Size(596, 262);
+            this.dataGridViewShortcuts.Size = new System.Drawing.Size(596, 275);
             this.dataGridViewShortcuts.TabIndex = 0;
             this.dataGridViewShortcuts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShortcuts_CellClick);
             // 
@@ -686,7 +688,7 @@
             this.tabPageAdvanced.Controls.Add(this.groupBox4);
             this.tabPageAdvanced.Location = new System.Drawing.Point(4, 22);
             this.tabPageAdvanced.Name = "tabPageAdvanced";
-            this.tabPageAdvanced.Size = new System.Drawing.Size(596, 262);
+            this.tabPageAdvanced.Size = new System.Drawing.Size(596, 275);
             this.tabPageAdvanced.TabIndex = 2;
             this.tabPageAdvanced.Text = "Advanced";
             this.tabPageAdvanced.UseVisualStyleBackColor = true;
@@ -760,6 +762,26 @@
             this.label14.Text = "Search";
             this.toolTip.SetToolTip(this.label14, "Determines how tabs are named and if they respond to the shell\'s title changing");
             // 
+            // checkQuickSelectorCaseSensitiveSearch
+            // 
+            this.checkQuickSelectorCaseSensitiveSearch.AutoSize = true;
+            this.checkQuickSelectorCaseSensitiveSearch.Location = new System.Drawing.Point(71, 120);
+            this.checkQuickSelectorCaseSensitiveSearch.Name = "checkQuickSelectorCaseSensitiveSearch";
+            this.checkQuickSelectorCaseSensitiveSearch.Size = new System.Drawing.Size(133, 17);
+            this.checkQuickSelectorCaseSensitiveSearch.TabIndex = 37;
+            this.checkQuickSelectorCaseSensitiveSearch.Text = "Case Sensitive Search";
+            this.checkQuickSelectorCaseSensitiveSearch.UseVisualStyleBackColor = true;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(6, 99);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(121, 15);
+            this.label15.TabIndex = 38;
+            this.label15.Text = "Open/Switch Session:";
+            // 
             // nameDataGridViewTextBoxColumn
             // 
             this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
@@ -796,25 +818,15 @@
             // 
             this.keyboardShortcutBindingSource.DataSource = typeof(SuperPutty.Data.KeyboardShortcut);
             // 
-            // checkQuickSelectorCaseSensitiveSearch
+            // checkShowDocumentIcons
             // 
-            this.checkQuickSelectorCaseSensitiveSearch.AutoSize = true;
-            this.checkQuickSelectorCaseSensitiveSearch.Location = new System.Drawing.Point(71, 113);
-            this.checkQuickSelectorCaseSensitiveSearch.Name = "checkQuickSelectorCaseSensitiveSearch";
-            this.checkQuickSelectorCaseSensitiveSearch.Size = new System.Drawing.Size(133, 17);
-            this.checkQuickSelectorCaseSensitiveSearch.TabIndex = 37;
-            this.checkQuickSelectorCaseSensitiveSearch.Text = "Case Sensitive Search";
-            this.checkQuickSelectorCaseSensitiveSearch.UseVisualStyleBackColor = true;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.Location = new System.Drawing.Point(6, 90);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(121, 15);
-            this.label15.TabIndex = 38;
-            this.label15.Text = "Open/Switch Session:";
+            this.checkShowDocumentIcons.AutoSize = true;
+            this.checkShowDocumentIcons.Location = new System.Drawing.Point(71, 70);
+            this.checkShowDocumentIcons.Name = "checkShowDocumentIcons";
+            this.checkShowDocumentIcons.Size = new System.Drawing.Size(134, 17);
+            this.checkShowDocumentIcons.TabIndex = 39;
+            this.checkShowDocumentIcons.Text = "Show Document Icons";
+            this.checkShowDocumentIcons.UseVisualStyleBackColor = true;
             // 
             // dlgFindPutty
             // 
@@ -927,5 +939,6 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.CheckBox checkQuickSelectorCaseSensitiveSearch;
+        private System.Windows.Forms.CheckBox checkShowDocumentIcons;
     }
 }
