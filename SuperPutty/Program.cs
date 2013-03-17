@@ -147,8 +147,8 @@ namespace SuperPutty
                 sb.Append(e.Exception);
             }
 
-            MessageBox.Show(sb.ToString(), "Application_ThreadException", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Log.Error("Application_ThreadException", e.Exception);
+            MessageBox.Show(sb.ToString(), "Application_ThreadException", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
 
