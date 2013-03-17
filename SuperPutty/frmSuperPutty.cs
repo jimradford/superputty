@@ -518,6 +518,8 @@ namespace SuperPutty
             public Point ConnectionBarLocation { get; set; }
             public Point CommandBarLocation { get; set; }
 
+            public bool IsFullScreen { get; set; }
+
             public void SaveState()
             {
                 this.StatusBar = this.MainForm.showStatusBarToolStripMenuItem.Checked;
@@ -563,6 +565,8 @@ namespace SuperPutty
                     }
                     this.MainForm.WindowState = FormWindowState.Maximized;
                     this.MainForm.TopMost = true;
+
+                    this.IsFullScreen = true;
                 }
                 finally
                 {
@@ -603,6 +607,7 @@ namespace SuperPutty
                     this.MainForm.TopMost = false;
                     this.MainForm.WindowState = this.FormWindowState;
                     this.MainForm.FormBorderStyle = this.FormBorderStyle;
+                    this.IsFullScreen = false;
                 }
                 finally
                 {
@@ -1315,20 +1320,27 @@ namespace SuperPutty
                     }
                     break;
                 case SuperPuttyAction.GotoCommandBar:
-                    KeyEventWindowActivator.ActivateForm(this);
-                    if (!this.tsCommands.Visible)
+                    if (!this.fullscreenViewState.IsFullScreen)
                     {
-                        this.toggleCheckedState(this.sendCommandsToolStripMenuItem, EventArgs.Empty);
+                        KeyEventWindowActivator.ActivateForm(this);
+                        if (!this.tsCommands.Visible)
+                        {
+                            this.toggleCheckedState(this.sendCommandsToolStripMenuItem, EventArgs.Empty);
+                        }
+                        this.tsSendCommandCombo.Focus();
                     }
-                    this.tsSendCommandCombo.Focus();
                     break;
                 case SuperPuttyAction.GotoConnectionBar:
-                    KeyEventWindowActivator.ActivateForm(this);
-                    if (!this.tsConnect.Visible)
+                    // perhaps consider allowing this later...need to really have a better approach to the state saving/invoking the toggle.
+                    if (!this.fullscreenViewState.IsFullScreen)
                     {
-                        this.toggleCheckedState(this.quickConnectionToolStripMenuItem, EventArgs.Empty);
+                        KeyEventWindowActivator.ActivateForm(this);
+                        if (!this.tsConnect.Visible)
+                        {
+                            this.toggleCheckedState(this.quickConnectionToolStripMenuItem, EventArgs.Empty);
+                        }
+                        this.tbTxtBoxHost.Focus();
                     }
-                    this.tbTxtBoxHost.Focus();
                     break;
                 case SuperPuttyAction.FocusActiveSession:
                     // focus on current super putty session...or at least try to
