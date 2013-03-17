@@ -542,5 +542,18 @@ namespace SuperPutty.Properties {
                 this["SessionsSearchMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool QuickSelectorCaseSensitiveSearch {
+            get {
+                return ((bool)(this["QuickSelectorCaseSensitiveSearch"]));
+            }
+            set {
+                this["QuickSelectorCaseSensitiveSearch"] = value;
+            }
+        }
     }
 }

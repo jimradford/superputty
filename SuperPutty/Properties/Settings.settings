@@ -122,5 +122,8 @@
     <Setting Name="SessionsSearchMode" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)">CaseSensitive</Value>
     </Setting>
+    <Setting Name="QuickSelectorCaseSensitiveSearch" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
