@@ -82,7 +82,7 @@ namespace SuperPutty.Utils
             }
             catch (Win32Exception ex)
             {
-                Log.ErrorFormat("Could not get exe.  error={0}, process={1}", ex.Message, process.Id);
+                Log.WarnFormat("Could not get exe.  error={0}, process={1}", ex.Message, process.Id);
             }
             return exe;
         }
