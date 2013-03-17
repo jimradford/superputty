@@ -119,5 +119,8 @@
     <Setting Name="Action_FocusActiveSession_Shortcut" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Windows.Forms.Keys" Scope="User">
       <Value Profile="(Default)">None</Value>
     </Setting>
+    <Setting Name="SessionsSearchMode" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
+      <Value Profile="(Default)">CaseSensitive</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

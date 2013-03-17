@@ -529,5 +529,18 @@ namespace SuperPutty.Properties {
                 this["Action_FocusActiveSession_Shortcut"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("CaseSensitive")]
+        public string SessionsSearchMode {
+            get {
+                return ((string)(this["SessionsSearchMode"]));
+            }
+            set {
+                this["SessionsSearchMode"] = value;
+            }
+        }
     }
 }
