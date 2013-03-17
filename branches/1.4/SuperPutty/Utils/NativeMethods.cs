@@ -35,13 +35,18 @@ namespace SuperPutty.Utils
             ERROR_FILE_NOT_FOUND = 2,
             ERROR_ACCESS_DENIED = 5,
             GWL_STYLE = (-16);
+            
         public const uint
             WH_KEYBOARD_LL = 0x000d,
             WH_MOUSE_LL = 0x000e,
             WS_CAPTION = 0x00C00000,
             WS_BORDER = 0x00800000,
             WS_VSCROLL = 0x00200000,
-            WS_THICKFRAME = 0x00040000;
+            WS_THICKFRAME = 0x00040000,
+            WS_EX_APPWINDOW= 0x00040000,
+            WS_EX_TOOLWINDOW = 0x00000080,
+            WS_EX_NOACTIVATE = 0x08000000;
+
 
         [Flags]
         public enum AnimateWindowFlags
@@ -1275,6 +1280,13 @@ namespace SuperPutty.Utils
 
         [DllImport("user32.dll")]
         public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
+        public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr GetParent(IntPtr hWnd);
+
         #endregion
 
 
