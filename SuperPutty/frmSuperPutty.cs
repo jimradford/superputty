@@ -1039,16 +1039,16 @@ namespace SuperPutty
                 foreach (DockContent content in this.DockPanel.Documents)
                 {
                     ctlPuttyPanel puttyPanel = content as ctlPuttyPanel;
-                    int handle = puttyPanel.AppPanel.AppWindowHandle.ToInt32();
                     if (puttyPanel != null && this.sendCommandsDocumentSelector.IsDocumentSelected(puttyPanel))
                     {
-                        Log.InfoFormat("SendCommand: session={0}, command=[{1}]", puttyPanel.Session.SessionId, command);
+                        int handle = puttyPanel.AppPanel.AppWindowHandle.ToInt32();
+                        Log.InfoFormat("SendCommand: session={0}, command=[{1}], handle={2}", puttyPanel.Session.SessionId, command, handle);
                         foreach (char c in command)
                         {
                             NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)c, 0);
                         }
 
-                        NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int) Keys.Enter, 0);
+                        NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)Keys.Enter, 0);
                         //NativeMethods.SendMessage(handle, NativeMethods.WM_KEYUP, (int)Keys.Enter, 0);
                         sent++;
                     }
