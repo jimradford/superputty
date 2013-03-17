@@ -555,5 +555,18 @@ namespace SuperPutty.Properties {
                 this["QuickSelectorCaseSensitiveSearch"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowDocumentIcons {
+            get {
+                return ((bool)(this["ShowDocumentIcons"]));
+            }
+            set {
+                this["ShowDocumentIcons"] = value;
+            }
+        }
     }
 }

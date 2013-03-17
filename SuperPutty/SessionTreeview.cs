@@ -64,7 +64,7 @@ namespace SuperPutty
             m_DockPanel = dockPanel;
             InitializeComponent();
             this.treeView1.TreeViewNodeSorter = this;
-            this.treeView1.ImageList = GetImageList();
+            this.treeView1.ImageList = SuperPuTTY.Images;
             this.ApplySettings();
 
             // populate sessions in the treeview from the registry
@@ -855,56 +855,7 @@ namespace SuperPutty
             return valid;
         }
 
-        public ImageList GetImageList()
-        {
-            ImageList imageList = this.treeView1.ImageList;
-            try
-            {
-                imageList = LoadImageList("default");
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Could not load images from theme folder, using defaults", ex);
-            }
-            return imageList;
-        }
 
-        /// <summary>
-        /// Load Images from themes folder
-        /// </summary>
-        /// <param name="theme"></param>
-        public ImageList LoadImageList(string theme)
-        {
-            ImageList imgIcons = new ImageList();
-
-            // Load the 2 standard icons in case no icons exist in icons directory, these will be used.
-            imgIcons.Images.Add(ImageKeyFolder, SuperPutty.Properties.Resources.folder);
-            imgIcons.Images.Add(ImageKeySession, SuperPutty.Properties.Resources.computer);
-
-            string themeFolder = Directory.GetCurrentDirectory();
-            themeFolder = Path.Combine(themeFolder, "themes");
-            themeFolder = Path.Combine(themeFolder, theme);
-            themeFolder = Path.Combine(themeFolder, "icons");
-
-            if (Directory.Exists(themeFolder))
-            {
-                foreach (FileInfo fi in new DirectoryInfo(themeFolder).GetFiles())
-                {
-                    if (Regex.IsMatch(fi.Extension, @"\.(bmp|jpg|jpeg|png)", RegexOptions.IgnoreCase))
-                    {
-                        Image img = Image.FromFile(fi.FullName);
-                        imgIcons.Images.Add(Path.GetFileNameWithoutExtension(fi.Name), img);
-                    }
-                }
-                Log.InfoFormat("Loaded {0} icons from theme directory.  dir={1}", imgIcons.Images.Count, themeFolder);
-            }
-            else
-            {
-                Log.WarnFormat("theme directory not found, no images loaded. dir={0}", themeFolder);
-            }
-
-            return imgIcons;
-        }
         #endregion
 
         #region Search

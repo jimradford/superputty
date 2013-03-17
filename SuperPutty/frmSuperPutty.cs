@@ -821,6 +821,7 @@ namespace SuperPutty
             this.SaveLastWindowBounds();
             this.UpdateShortcutsFromSettings();
             this.Opacity = SuperPuTTY.Settings.Opacity;
+            this.DockPanel.ShowDocumentIcon = SuperPuTTY.Settings.ShowDocumentIcons;
         }
 
         #endregion

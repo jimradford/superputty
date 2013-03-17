@@ -125,5 +125,8 @@
     <Setting Name="QuickSelectorCaseSensitiveSearch" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="ShowDocumentIcons" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
