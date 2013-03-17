@@ -186,6 +186,7 @@ namespace SuperPutty
             this.btnFont.Font = SuperPuTTY.Settings.SessionsTreeFont;
             this.btnFont.Text = ToShortString(SuperPuTTY.Settings.SessionsTreeFont);
             this.numericUpDownOpacity.Value = (decimal) SuperPuTTY.Settings.Opacity * 100;
+            this.checkQuickSelectorCaseSensitiveSearch.Checked = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch;
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -294,6 +295,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.WindowActivator = (string) this.comboBoxActivatorType.SelectedItem;
                 SuperPuTTY.Settings.Opacity = (double) this.numericUpDownOpacity.Value / 100.0;
                 SuperPuTTY.Settings.SessionsSearchMode = (string) this.comboSearchMode.SelectedItem;
+                SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch = this.checkQuickSelectorCaseSensitiveSearch.Checked;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];

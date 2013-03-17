@@ -336,7 +336,8 @@ namespace SuperPutty
         {
             QuickSelector q = new QuickSelector();
             QuickSelectorData data = new QuickSelectorData();
-            data.CaseSensitive = true;
+            data.CaseSensitive = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch;
+
             foreach (SessionData sd in SuperPuTTY.Sessions)
             {
                 data.ItemData.AddItemDataRow(
@@ -361,7 +362,7 @@ namespace SuperPutty
         {
             QuickSelector q = new QuickSelector();
             QuickSelectorData data = new QuickSelectorData();
-            data.CaseSensitive = true;
+            data.CaseSensitive = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch;
 
             foreach (ToolWindow content in this.tabSwitcher.Documents)
             {

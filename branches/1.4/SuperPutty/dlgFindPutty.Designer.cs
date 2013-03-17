@@ -80,13 +80,8 @@
             this.label11 = new System.Windows.Forms.Label();
             this.tabPageShortcuts = new System.Windows.Forms.TabPage();
             this.dataGridViewShortcuts = new System.Windows.Forms.DataGridView();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.shortcutStringDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
             this.colClear = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.keyboardShortcutBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabPageAdvanced = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.comboBoxActivatorType = new System.Windows.Forms.ComboBox();
@@ -95,6 +90,13 @@
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.comboSearchMode = new System.Windows.Forms.ComboBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.shortcutStringDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.keyboardShortcutBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.checkQuickSelectorCaseSensitiveSearch = new System.Windows.Forms.CheckBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
@@ -104,11 +106,11 @@
             this.groupBox1.SuspendLayout();
             this.tabPageShortcuts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).BeginInit();
             this.tabPageAdvanced.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.panelBottom.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -496,7 +498,7 @@
             this.tabControl.Location = new System.Drawing.Point(5, 5);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(604, 288);
+            this.tabControl.Size = new System.Drawing.Size(604, 301);
             this.tabControl.TabIndex = 38;
             // 
             // tabPageGeneral
@@ -519,7 +521,7 @@
             this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabPageGeneral.Name = "tabPageGeneral";
             this.tabPageGeneral.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPageGeneral.Size = new System.Drawing.Size(596, 293);
+            this.tabPageGeneral.Size = new System.Drawing.Size(596, 262);
             this.tabPageGeneral.TabIndex = 0;
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
@@ -532,7 +534,7 @@
             this.tabPageGUI.Location = new System.Drawing.Point(4, 22);
             this.tabPageGUI.Name = "tabPageGUI";
             this.tabPageGUI.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPageGUI.Size = new System.Drawing.Size(596, 262);
+            this.tabPageGUI.Size = new System.Drawing.Size(596, 275);
             this.tabPageGUI.TabIndex = 1;
             this.tabPageGUI.Text = "GUI";
             this.tabPageGUI.UseVisualStyleBackColor = true;
@@ -541,13 +543,15 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.label15);
+            this.groupBox3.Controls.Add(this.checkQuickSelectorCaseSensitiveSearch);
             this.groupBox3.Controls.Add(this.label13);
             this.groupBox3.Controls.Add(this.label12);
             this.groupBox3.Controls.Add(this.numericUpDownOpacity);
             this.groupBox3.Controls.Add(this.checkMinimizeToTray);
             this.groupBox3.Location = new System.Drawing.Point(358, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(232, 250);
+            this.groupBox3.Size = new System.Drawing.Size(232, 266);
             this.groupBox3.TabIndex = 40;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Misc";
@@ -583,9 +587,9 @@
             this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.comboBoxTabSwitching);
             this.groupBox2.Controls.Add(this.label9);
-            this.groupBox2.Location = new System.Drawing.Point(3, 116);
+            this.groupBox2.Location = new System.Drawing.Point(3, 129);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(349, 137);
+            this.groupBox2.Size = new System.Drawing.Size(349, 140);
             this.groupBox2.TabIndex = 39;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Tabs and Docking";
@@ -601,7 +605,7 @@
             this.groupBox1.Controls.Add(this.checkExpandTree);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(349, 118);
+            this.groupBox1.Size = new System.Drawing.Size(349, 120);
             this.groupBox1.TabIndex = 38;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Session Tree";
@@ -631,7 +635,7 @@
             this.tabPageShortcuts.Controls.Add(this.dataGridViewShortcuts);
             this.tabPageShortcuts.Location = new System.Drawing.Point(4, 22);
             this.tabPageShortcuts.Name = "tabPageShortcuts";
-            this.tabPageShortcuts.Size = new System.Drawing.Size(596, 293);
+            this.tabPageShortcuts.Size = new System.Drawing.Size(596, 262);
             this.tabPageShortcuts.TabIndex = 3;
             this.tabPageShortcuts.Text = "Shortcuts";
             this.tabPageShortcuts.UseVisualStyleBackColor = true;
@@ -654,41 +658,9 @@
             this.dataGridViewShortcuts.Location = new System.Drawing.Point(0, 0);
             this.dataGridViewShortcuts.Name = "dataGridViewShortcuts";
             this.dataGridViewShortcuts.ReadOnly = true;
-            this.dataGridViewShortcuts.Size = new System.Drawing.Size(596, 293);
+            this.dataGridViewShortcuts.Size = new System.Drawing.Size(596, 262);
             this.dataGridViewShortcuts.TabIndex = 0;
             this.dataGridViewShortcuts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShortcuts_CellClick);
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.nameDataGridViewTextBoxColumn.Width = 200;
-            // 
-            // keyDataGridViewTextBoxColumn
-            // 
-            this.keyDataGridViewTextBoxColumn.DataPropertyName = "Key";
-            this.keyDataGridViewTextBoxColumn.HeaderText = "Key";
-            this.keyDataGridViewTextBoxColumn.Name = "keyDataGridViewTextBoxColumn";
-            this.keyDataGridViewTextBoxColumn.ReadOnly = true;
-            this.keyDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // modifiersDataGridViewTextBoxColumn
-            // 
-            this.modifiersDataGridViewTextBoxColumn.DataPropertyName = "Modifiers";
-            this.modifiersDataGridViewTextBoxColumn.HeaderText = "Modifiers";
-            this.modifiersDataGridViewTextBoxColumn.Name = "modifiersDataGridViewTextBoxColumn";
-            this.modifiersDataGridViewTextBoxColumn.ReadOnly = true;
-            this.modifiersDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // shortcutStringDataGridViewTextBoxColumn
-            // 
-            this.shortcutStringDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.shortcutStringDataGridViewTextBoxColumn.DataPropertyName = "ShortcutString";
-            this.shortcutStringDataGridViewTextBoxColumn.HeaderText = "Shortcut";
-            this.shortcutStringDataGridViewTextBoxColumn.Name = "shortcutStringDataGridViewTextBoxColumn";
-            this.shortcutStringDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // colEdit
             // 
@@ -708,17 +680,13 @@
             this.colClear.UseColumnTextForButtonValue = true;
             this.colClear.Width = 50;
             // 
-            // keyboardShortcutBindingSource
-            // 
-            this.keyboardShortcutBindingSource.DataSource = typeof(SuperPutty.Data.KeyboardShortcut);
-            // 
             // tabPageAdvanced
             // 
             this.tabPageAdvanced.Controls.Add(this.groupBox5);
             this.tabPageAdvanced.Controls.Add(this.groupBox4);
             this.tabPageAdvanced.Location = new System.Drawing.Point(4, 22);
             this.tabPageAdvanced.Name = "tabPageAdvanced";
-            this.tabPageAdvanced.Size = new System.Drawing.Size(596, 293);
+            this.tabPageAdvanced.Size = new System.Drawing.Size(596, 262);
             this.tabPageAdvanced.TabIndex = 2;
             this.tabPageAdvanced.Text = "Advanced";
             this.tabPageAdvanced.UseVisualStyleBackColor = true;
@@ -768,7 +736,7 @@
             this.panelBottom.Controls.Add(this.buttonCancel);
             this.panelBottom.Controls.Add(this.buttonOk);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBottom.Location = new System.Drawing.Point(5, 293);
+            this.panelBottom.Location = new System.Drawing.Point(5, 306);
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(604, 27);
             this.panelBottom.TabIndex = 39;
@@ -792,13 +760,69 @@
             this.label14.Text = "Search";
             this.toolTip.SetToolTip(this.label14, "Determines how tabs are named and if they respond to the shell\'s title changing");
             // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.nameDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // keyDataGridViewTextBoxColumn
+            // 
+            this.keyDataGridViewTextBoxColumn.DataPropertyName = "Key";
+            this.keyDataGridViewTextBoxColumn.HeaderText = "Key";
+            this.keyDataGridViewTextBoxColumn.Name = "keyDataGridViewTextBoxColumn";
+            this.keyDataGridViewTextBoxColumn.ReadOnly = true;
+            this.keyDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // modifiersDataGridViewTextBoxColumn
+            // 
+            this.modifiersDataGridViewTextBoxColumn.DataPropertyName = "Modifiers";
+            this.modifiersDataGridViewTextBoxColumn.HeaderText = "Modifiers";
+            this.modifiersDataGridViewTextBoxColumn.Name = "modifiersDataGridViewTextBoxColumn";
+            this.modifiersDataGridViewTextBoxColumn.ReadOnly = true;
+            this.modifiersDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // shortcutStringDataGridViewTextBoxColumn
+            // 
+            this.shortcutStringDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.shortcutStringDataGridViewTextBoxColumn.DataPropertyName = "ShortcutString";
+            this.shortcutStringDataGridViewTextBoxColumn.HeaderText = "Shortcut";
+            this.shortcutStringDataGridViewTextBoxColumn.Name = "shortcutStringDataGridViewTextBoxColumn";
+            this.shortcutStringDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // keyboardShortcutBindingSource
+            // 
+            this.keyboardShortcutBindingSource.DataSource = typeof(SuperPutty.Data.KeyboardShortcut);
+            // 
+            // checkQuickSelectorCaseSensitiveSearch
+            // 
+            this.checkQuickSelectorCaseSensitiveSearch.AutoSize = true;
+            this.checkQuickSelectorCaseSensitiveSearch.Location = new System.Drawing.Point(71, 113);
+            this.checkQuickSelectorCaseSensitiveSearch.Name = "checkQuickSelectorCaseSensitiveSearch";
+            this.checkQuickSelectorCaseSensitiveSearch.Size = new System.Drawing.Size(133, 17);
+            this.checkQuickSelectorCaseSensitiveSearch.TabIndex = 37;
+            this.checkQuickSelectorCaseSensitiveSearch.Text = "Case Sensitive Search";
+            this.checkQuickSelectorCaseSensitiveSearch.UseVisualStyleBackColor = true;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(6, 90);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(121, 15);
+            this.label15.TabIndex = 38;
+            this.label15.Text = "Open/Switch Session:";
+            // 
             // dlgFindPutty
             // 
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(614, 325);
+            this.ClientSize = new System.Drawing.Size(614, 338);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.panelBottom);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -823,13 +847,13 @@
             this.groupBox1.PerformLayout();
             this.tabPageShortcuts.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).EndInit();
             this.tabPageAdvanced.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.panelBottom.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -901,5 +925,7 @@
         private System.Windows.Forms.CheckBox checkEnableControlTabSwitching;
         private System.Windows.Forms.ComboBox comboSearchMode;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.CheckBox checkQuickSelectorCaseSensitiveSearch;
     }
 }
