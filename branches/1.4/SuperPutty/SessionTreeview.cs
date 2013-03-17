@@ -965,6 +965,25 @@ namespace SuperPutty
         }
         #endregion
 
+        #region Key Handling
+        private void treeView1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13 && IsSessionNode(this.treeView1.SelectedNode))
+            {
+                if (Control.ModifierKeys == Keys.None)
+                {
+                    treeView1_NodeMouseDoubleClick(null, null);
+                    e.Handled = true;
+                }
+                else if (Control.ModifierKeys == Keys.Shift)
+                {
+                    CreateOrEditSessionToolStripMenuItem_Click(this.settingsToolStripMenuItem, e);
+                    e.Handled = true;
+                }
+            }
+        }
+        #endregion
+
     }
 
 }
