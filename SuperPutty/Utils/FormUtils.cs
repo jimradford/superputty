@@ -63,5 +63,19 @@ namespace SuperPutty.Utils
             return false;
         }
 
+        public static T SafeParseEnum<T>(string val, bool ignoreCase, T defaultVal) 
+        {
+            T enumVal = defaultVal;
+            try
+            {
+                enumVal = (T) Enum.Parse(typeof(T), val, ignoreCase);
+            }
+            catch(Exception ex)
+            {
+                Log.Error(string.Format("Could not parse ({0}) of type ({1})", val, typeof(T).Name), ex);
+            }
+            return enumVal;
+        }
+
     }
 }

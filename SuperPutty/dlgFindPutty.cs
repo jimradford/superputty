@@ -163,6 +163,13 @@ namespace SuperPutty
             this.comboBoxActivatorType.Items.Add(typeof(SetFGAttachThreadWindowActivator).FullName);
             this.comboBoxActivatorType.SelectedItem = SuperPuTTY.Settings.WindowActivator;
 
+            // search types
+            foreach (string name in Enum.GetNames(typeof(SessionTreeview.SearchMode)))
+            {
+                this.comboSearchMode.Items.Add(name);
+            }
+            this.comboSearchMode.SelectedItem = SuperPuTTY.Settings.SessionsSearchMode;
+
             // default layouts
             InitLayouts();
 
@@ -286,6 +293,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.SessionsTreeFont = this.btnFont.Font;
                 SuperPuTTY.Settings.WindowActivator = (string) this.comboBoxActivatorType.SelectedItem;
                 SuperPuTTY.Settings.Opacity = (double) this.numericUpDownOpacity.Value / 100.0;
+                SuperPuTTY.Settings.SessionsSearchMode = (string) this.comboSearchMode.SelectedItem;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];

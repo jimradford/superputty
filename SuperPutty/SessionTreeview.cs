@@ -945,10 +945,8 @@ namespace SuperPutty
             Log.InfoFormat("Applying Search: txt={0}.", txt);
 
             // define filter
-            this.filter = (s) =>
-            {
-                return s.SessionName.Contains(txt);
-            };
+            SearchFilter searchFilter = new SearchFilter(SuperPuTTY.Settings.SessionsSearchMode, txt);
+            this.filter = searchFilter.IsMatch;
 
             // reload
             this.LoadSessions();
@@ -962,6 +960,50 @@ namespace SuperPutty
             {
                 this.treeView1.ExpandAll();
             }
+        }
+
+        public enum SearchMode
+        {
+            CaseSensitive, CaseInSensitive, Regex
+        }
+
+        public class SearchFilter
+        {
+            public SearchFilter(string mode, string filter)
+            {
+                this.Mode = FormUtils.SafeParseEnum(mode, true, SearchMode.CaseSensitive);
+                this.Filter = filter;
+                if (this.Mode == SearchMode.Regex)
+                {
+                    try
+                    {
+                        this.Regex = new Regex(filter);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("Could not parse pattern: " + filter, ex);
+                    }
+                }
+            }
+            public bool IsMatch(SessionData s)
+            {
+                if (this.Mode == SearchMode.CaseInSensitive)
+                {
+                    return s.SessionName.ToLower().Contains(this.Filter.ToLower());
+                }
+                else if (this.Mode == SearchMode.Regex)
+                {
+                    return this.Regex != null ? this.Regex.IsMatch(s.SessionName) : true;
+                }
+                else
+                {
+                    // case sensitive
+                    return s.SessionName.Contains(this.Filter);
+                }
+            }
+            public SearchMode Mode { get; set; }
+            public string Filter { get; set; }
+            public Regex Regex { get; set; }
         }
         #endregion
 
