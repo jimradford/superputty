@@ -568,5 +568,18 @@ namespace SuperPutty.Properties {
                 this["ShowDocumentIcons"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DockingRestrictFloatingWindows {
+            get {
+                return ((bool)(this["DockingRestrictFloatingWindows"]));
+            }
+            set {
+                this["DockingRestrictFloatingWindows"] = value;
+            }
+        }
     }
 }

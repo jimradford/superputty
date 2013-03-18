@@ -464,11 +464,27 @@ namespace SuperPutty
             }
         }
 
+        public static void ApplyDockRestrictions(DockPanel panel)
+        {
+            foreach (DockContent doc in panel.Documents)
+            {
+                if (doc is ToolWindowDocument)
+                {
+                    ApplyDockRestrictions(doc);
+                }
+            }
+        }
+
         public static void ApplyDockRestrictions(DockContent panel)
         {
             if (SuperPuTTY.Settings.RestrictContentToDocumentTabs)
             {
                 panel.DockAreas = DockAreas.Document | DockAreas.Float;
+            }
+
+            if (SuperPuTTY.Settings.DockingRestrictFloatingWindows)
+            {
+                panel.DockAreas = panel.DockAreas ^ DockAreas.Float;
             }
         }
 
