@@ -14,9 +14,6 @@ namespace SuperPutty.Utils
 
         private int m_shellHookNotify;
         private bool m_externalWindow = false;
-        private DateTime m_lastMouseDownOnTitleBar = DateTime.Now;
-        private TimeSpan m_delayUntilMouseMove = new TimeSpan(0, 0, 0, 0, 200); // 200ms
-        private Point m_mouseDownLocation = new Point(0, 0);
 
         private IDictionary<IntPtr, ctlPuttyPanel> childWindows = new Dictionary<IntPtr, ctlPuttyPanel>();
 
@@ -68,16 +65,6 @@ namespace SuperPutty.Utils
             this.MainForm.DockPanel.ContentRemoved -= DockPanel_ContentRemoved;
         }
 
-        private int GET_X_LPARAM(int lParam)
-        {
-            return (lParam & 0xffff);
-        }
-
-        private int GET_Y_LPARAM(int lParam)
-        {
-            return (lParam >> 16);
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -86,39 +73,41 @@ namespace SuperPutty.Utils
         public bool WndProcForFocus(ref Message m)
         {
             NativeMethods.WM wm = (NativeMethods.WM) m.Msg;
-            
-            /*if (wm != NativeMethods.WM.GETICON){
-                Log.InfoFormat("WndProcForFocus: " + m);
-            }*/
+
+            if (wm != NativeMethods.WM.GETICON && wm != NativeMethods.WM.NCHITTEST 
+                && wm != NativeMethods.WM.NCMOUSEMOVE && wm != NativeMethods.WM.NCMOUSELEAVE
+                && wm != NativeMethods.WM.GETTEXT && wm != NativeMethods.WM.GETTEXTLENGTH 
+                && wm != NativeMethods.WM.MOUSEMOVE && wm != NativeMethods.WM.SETCURSOR
+                && wm != NativeMethods.WM.WINDOWPOSCHANGING && wm != NativeMethods.WM.WINDOWPOSCHANGED)
+            {
+                Log.DebugFormat("WndProcForFocus: shellhook={3}, wm={0}, wParam={1}, lParam={2}", wm, m.WParam, m.LParam, m.Msg == m_shellHookNotify);
+            }
             switch (wm)
             {
-                case NativeMethods.WM.NCLBUTTONDOWN:
-                    // This is in conjunction with the WM_NCMOUSEMOVE. We cannot detect
-                    // WM_NCLBUTTONUP because it gets swallowed up on many occasions. As a result
-                    // we detect the button down and check the NCMOUSEMOVE to see if it has
-                    // changed location. If the mouse location is different, then we let
-                    // the resize handler deal with the focus. If not, then we assume that it
-                    // is a mouseup action.
-                    this.m_lastMouseDownOnTitleBar = DateTime.Now;
-                    m_mouseDownLocation = new Point(GET_X_LPARAM((int)m.LParam), GET_Y_LPARAM((int)m.LParam));
-                    break;
-                case NativeMethods.WM.NCMOUSEMOVE:
-                    Point currentLocation = new Point(GET_X_LPARAM((int)m.LParam), GET_Y_LPARAM((int)m.LParam));
-                    if ((this.m_lastMouseDownOnTitleBar - DateTime.Now < this.m_delayUntilMouseMove)
-                            && currentLocation == m_mouseDownLocation)
+                case NativeMethods.WM.ACTIVATE:
+                    // http://msdn.microsoft.com/en-us/library/windows/desktop/ms646274(v=vs.85).aspx
+                    /*
+                    if (m.WParam.ToInt32() > 0)
                     {
-                        //this.MainForm.FocusActiveDocument("MouseMove");
+                        NativeMethods.BringWindowToTop(this.MainForm.Handle);
+                        this.MainForm.FocusActiveDocument("ACTIVATE");
+                        return true;
                     }
+                     * */
+                    break;
+                case NativeMethods.WM.ACTIVATEAPP:
+                    // Never allow this window to display itself as inactive
+                    //NativeMethods.DefWindowProc(this.MainForm.Handle, m.Msg, (IntPtr)1, m.LParam);
+                    //m.Result = (IntPtr)1;
+                    //return false;
+                    //return true;
                     break;
                 case NativeMethods.WM.NCACTIVATE:
                     // Never allow this window to display itself as inactive
+                    // http://msdn.microsoft.com/en-us/library/windows/desktop/ms632633(v=vs.85).aspx
                     NativeMethods.DefWindowProc(this.MainForm.Handle, m.Msg, (IntPtr)1, m.LParam);
                     m.Result = (IntPtr)1;
                     return false;
-                case NativeMethods.WM.WINDOWPOSCHANGED:
-                    // after restore from clicking on task bar (non minimized, just not active)
-                    //this.MainForm.FocusActiveDocument();
-                    break;
                 case NativeMethods.WM.SYSCOMMAND:
                     // Check for maximizing and restoring from maxed.
                     // Removing the last 4 bits. This is necessary because
@@ -136,21 +125,29 @@ namespace SuperPutty.Utils
 
                     if (m.Msg == m_shellHookNotify)
                     {
+                        //Log.InfoFormat("ShellHook:  param={0}", m.WParam.ToInt32());
                         switch (m.WParam.ToInt32())
                         {
                             case 4:
+                            case 32772:
                                 IntPtr current = NativeMethods.GetForegroundWindow();
                                 if (current != this.MainForm.Handle && !this.ContainsChild(current))
                                 {
                                     m_externalWindow = true;
-                                }
+                                } 
                                 else if (m_externalWindow)
                                 {
                                     m_externalWindow = false;
                                     NativeMethods.BringWindowToTop(this.MainForm.Handle);
                                     this.MainForm.FocusActiveDocument("SHELLHOOK");
+                                    //return false;
                                 }
-                                //else if (current == this.MainForm.Handle)
+                                else if (current == this.MainForm.Handle)
+                                {
+                                    // round trip alt-tab or first alt-tab in 2x sequence...also when menus popup
+                                    //NativeMethods.SetForegroundWindow(this.MainForm.Handle);
+                                    //this.MainForm.FocusActiveDocument("SHELLHOOK2");
+                                }
                                 //{
                                 //    //Log.Info("### hwd=" + this.MainForm.Handle + ", m.h=" + m.HWnd + ", blah=" + DesktopWindow.GetFirstDesktopWindow().Title);
                                 //    foreach (DesktopWindow dw in DesktopWindow.GetDesktopWindows())
