@@ -143,6 +143,7 @@ namespace SuperPutty.Utils
 
     /// <summary>
     /// Uses all the tricks in the book at once to do it...shady
+    /// http://www.codeproject.com/Tips/76427/How-to-bring-window-to-top-with-SetForegroundWindo
     /// </summary>
     public class CombinedWindowActivator : WindowActivator
     {
@@ -302,6 +303,11 @@ namespace SuperPutty.Utils
                 //NativeMethods.SetForegroundWindow(hwnd);
             }
 
+        }
+        public static void SendTab()
+        {
+            NativeMethods.keybd_event(VK_TAB, 0xb8, 0, 0);
+            NativeMethods.keybd_event(VK_TAB, 0xb8, KEYEVENTF_KEYUP, 0);
         }
 
         public static void ActivateForm(Form form)
