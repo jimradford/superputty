@@ -623,11 +623,13 @@ namespace SuperPutty
         public static Icon GetIconForSession(SessionData session)
         {
             Icon icon = null;
-            if (session != null && session.ImageKey != null && Images.Images.ContainsKey(session.ImageKey))
+            if (session != null)
             {
+                string imageKey = (session.ImageKey == null || !Images.Images.ContainsKey(session.ImageKey))
+                    ? SessionTreeview.ImageKeySession : session.ImageKey;
                 try
                 {
-                    Image img = Images.Images[session.ImageKey];
+                    Image img = Images.Images[imageKey];
                     Bitmap bmp = img as Bitmap;
                     if (bmp != null)
                     {
