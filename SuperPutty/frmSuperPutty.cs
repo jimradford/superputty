@@ -640,6 +640,7 @@ namespace SuperPutty
             {
                 // default layout or null for hard-coded default
                 SuperPuTTY.LoadLayout(SuperPuTTY.StartingLayout);
+                SuperPuTTY.ApplyDockRestrictions(this.DockPanel);
             }
 
         }
@@ -809,11 +810,7 @@ namespace SuperPutty
 
         void ApplySettings()
         {
-            // try to apply settings to existing documents (don't worry about the ones docked on sides)
-            foreach (DockContent dockContent in this.DockPanel.Documents)
-            {
-                SuperPuTTY.ApplyDockRestrictions(dockContent);
-            }
+            SuperPuTTY.ApplyDockRestrictions(this.DockPanel);
 
             // apply tab switching strategy change
             this.tabSwitcher.TabSwitchStrategy = TabSwitcher.StrategyFromTypeName(SuperPuTTY.Settings.TabSwitcher);

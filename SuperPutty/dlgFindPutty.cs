@@ -188,6 +188,7 @@ namespace SuperPutty
             this.numericUpDownOpacity.Value = (decimal) SuperPuTTY.Settings.Opacity * 100;
             this.checkQuickSelectorCaseSensitiveSearch.Checked = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch;
             this.checkShowDocumentIcons.Checked = SuperPuTTY.Settings.ShowDocumentIcons;
+            this.checkRestrictFloatingWindows.Checked = SuperPuTTY.Settings.DockingRestrictFloatingWindows;
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -298,6 +299,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.SessionsSearchMode = (string) this.comboSearchMode.SelectedItem;
                 SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch = this.checkQuickSelectorCaseSensitiveSearch.Checked;
                 SuperPuTTY.Settings.ShowDocumentIcons = this.checkShowDocumentIcons.Checked;
+                SuperPuTTY.Settings.DockingRestrictFloatingWindows = this.checkRestrictFloatingWindows.Checked;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
