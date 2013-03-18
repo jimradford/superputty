@@ -1089,100 +1089,102 @@ namespace SuperPutty
         // Intercept keyboard messages for Ctrl-F4 and Ctrl-Tab handling
         private IntPtr KBHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0 && IsForegroundWindow(this))
+            if (nCode >= 0)
             {
                 int vkCode = Marshal.ReadInt32(lParam);
                 Keys keys = (Keys)vkCode;
+
+                // track key state globally for control/alt/shift is up/down
                 bool isKeyDown = (wParam == (IntPtr)NativeMethods.WM_KEYDOWN || wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN);
+                if (keys == Keys.LControlKey || keys == Keys.RControlKey) {  isControlDown = isKeyDown; }
+                if (keys == Keys.LShiftKey || keys == Keys.RShiftKey) { isShiftDown = isKeyDown; }
+                if (keys == Keys.LMenu || keys == Keys.RMenu) { isAltDown = isKeyDown; }
 
                 if (Log.Logger.IsEnabledFor(Level.Trace))
                 {
-                    Log.DebugFormat("### KBHook: nCode={0}, wParam={1}, lParam={2} ({4,-4} - {3})", nCode, wParam, vkCode, keys, isKeyDown ? "Down" : "Up");
+                    Log.DebugFormat("### KBHook: nCode={0}, wParam={1}, lParam={2} ({4,-4} - {3}) [{5}{6}{7}]", 
+                        nCode, wParam, vkCode, keys, isKeyDown ? "Down" : "Up",
+                        (isControlDown ? "Ctrl" : ""), (isAltDown ? "Alt" : ""), (isAltDown ? "Shift" : ""));
                 }
-                // Detect control key state for left and right control keys
-                if (keys == Keys.LControlKey || keys == Keys.RControlKey)
-                {
-                    // Set flag to indicate if Ctrl key is up or down
-                    isControlDown = isKeyDown;
 
-                    // If Ctrl-Tab has been pressed to move to an older panel then
-                    // make it current panel when Ctrl key is finally released.
-                    if (SuperPuTTY.Settings.EnableControlTabSwitching && !isControlDown && !isShiftDown)
+                if (IsForegroundWindow(this))
+                {
+                    // SuperPutty or Putty is the window in front...
+
+                    if (keys == Keys.LControlKey || keys == Keys.RControlKey)
                     {
-                        this.tabSwitcher.CurrentDocument = (ToolWindow)this.DockPanel.ActiveDocument;
-                    }
-                }
-
-                // Detect shift key state for left and right shift keys
-                if (keys == Keys.LShiftKey || keys == Keys.RShiftKey)
-                {
-                    // Set flag to indicate if Ctrl key is up or down
-                    isShiftDown = isKeyDown;
-
-                    // If Ctrl-Shift-Tab has been pressed to move to an older panel then
-                    // make it current panel when both keys are finally released.
-                    if (SuperPuTTY.Settings.EnableControlTabSwitching && !isControlDown && !isShiftDown)
-                    {
-                        this.tabSwitcher.CurrentDocument = (ToolWindow)this.DockPanel.ActiveDocument;
-                    }
-                }
-
-                // Detect alt key state
-                if (keys == Keys.LMenu || keys == Keys.RMenu)
-                {
-                    // Set flag to indicate if Alt key is up or down
-                    isAltDown = isKeyDown;
-                }
-
-                // Operator has pressed Ctrl-Tab, make next PuTTY panel active
-                if (SuperPuTTY.Settings.EnableControlTabSwitching && isControlDown && !isShiftDown && keys == Keys.Tab)
-                {
-                    if (isKeyDown && this.DockPanel.ActiveDocument is ToolWindowDocument)
-                    {
-                        if (this.tabSwitcher.MoveToNextDocument())
+                        // If Ctrl-Tab has been pressed to move to an older panel then
+                        // make it current panel when Ctrl key is finally released.
+                        if (SuperPuTTY.Settings.EnableControlTabSwitching && !isControlDown && !isShiftDown)
                         {
-                            // Eat the keystroke
+                            this.tabSwitcher.CurrentDocument = (ToolWindow)this.DockPanel.ActiveDocument;
+                        }
+                    }
+
+                    if (keys == Keys.LShiftKey || keys == Keys.RShiftKey)
+                    {
+                        // If Ctrl-Shift-Tab has been pressed to move to an older panel then
+                        // make it current panel when both keys are finally released.
+                        if (SuperPuTTY.Settings.EnableControlTabSwitching && !isControlDown && !isShiftDown)
+                        {
+                            this.tabSwitcher.CurrentDocument = (ToolWindow)this.DockPanel.ActiveDocument;
+                        }
+                    }
+
+                    if (SuperPuTTY.Settings.EnableControlTabSwitching && isControlDown && !isShiftDown && keys == Keys.Tab)
+                    {
+                        // Operator has pressed Ctrl-Tab, make next PuTTY panel active
+                        if (isKeyDown && this.DockPanel.ActiveDocument is ToolWindowDocument)
+                        {
+                            if (this.tabSwitcher.MoveToNextDocument())
+                            {
+                                // Eat the keystroke
+                                return (IntPtr)1;
+                            }
+                        }
+                    }
+
+                    if (SuperPuTTY.Settings.EnableControlTabSwitching && isControlDown && isShiftDown && keys == Keys.Tab)
+                    {
+                        // Operator has pressed Ctrl-Shift-Tab, make previous PuTTY panel active
+                        if (isKeyDown && this.DockPanel.ActiveDocument is ToolWindowDocument)
+                        {
+                            if (this.tabSwitcher.MoveToPrevDocument())
+                            {
+                                // Eat the keystroke
+                                return (IntPtr)1;
+                            }
+                        }
+                    }
+
+                    // misc action handling (eat keyup and down)
+                    if (SuperPuTTY.Settings.EnableKeyboadShortcuts &&
+                        isKeyDown &&
+                        keys != Keys.LControlKey && keys != Keys.RControlKey &&
+                        keys != Keys.LMenu && keys != Keys.RMenu &&
+                        keys != Keys.LShiftKey && keys != Keys.RShiftKey)
+                    {
+                        if (isControlDown) keys |= Keys.Control;
+                        if (isShiftDown) keys |= Keys.Shift;
+                        if (isAltDown) keys |= Keys.Alt;
+
+                        if (Log.Logger.IsEnabledFor(Level.Trace)) 
+                        {
+                            Log.DebugFormat("#### TryExecute shortcut: keys={0}", keys);
+                        }
+                        SuperPuttyAction action;
+                        if (this.shortcuts.TryGetValue(keys, out action))
+                        {
+                            // post action to avoid getting errant keystrokes (e.g. allow current to be eaten)
+                            this.BeginInvoke(new Action(() =>
+                            {
+                                ExecuteSuperPuttyAction(action);
+                            }));
                             return (IntPtr)1;
                         }
                     }
                 }
 
-                // Operator has pressed Ctrl-Shift-Tab, make previous PuTTY panel active
-                if (SuperPuTTY.Settings.EnableControlTabSwitching && isControlDown && isShiftDown && keys == Keys.Tab)
-                {
-                    if (isKeyDown && this.DockPanel.ActiveDocument is ToolWindowDocument)
-                    {
-                        if (this.tabSwitcher.MoveToPrevDocument())
-                        {
-                            // Eat the keystroke
-                            return (IntPtr)1;
-                        }
-                    }
-                }
-
-                // misc action handling (eat keyup and down)
-                if (SuperPuTTY.Settings.EnableKeyboadShortcuts && 
-                    isKeyDown && 
-                    keys != Keys.LControlKey && keys != Keys.RControlKey && 
-                    keys != Keys.LMenu && keys != Keys.RMenu && 
-                    keys != Keys.LShiftKey && keys != Keys.RShiftKey) 
-                {
-                    if (isControlDown) keys |= Keys.Control;
-                    if (isShiftDown) keys |= Keys.Shift;
-                    if (isAltDown) keys |= Keys.Alt;
-
-                    SuperPuttyAction action;
-                    if (this.shortcuts.TryGetValue(keys, out action))
-                    {
-                        // reset key states
-                        this.isControlDown = this.isAltDown = this.isShiftDown = false;
-                        // post action to avoid getting errant keystrokes (e.g. allow current to be eaten)
-                        this.BeginInvoke(new Action(() => {
-                            ExecuteSuperPuttyAction(action);
-                        }));
-                        return (IntPtr) 1;
-                    }
-                }
 
             }
                                 
