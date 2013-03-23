@@ -1,3 +1,18 @@
+1.4.0.3
+- 250: misfunction of Tab key  (Large change to key handling to address lost keyup events)
+- 264: Locked Tabs (Added option to restrict floating windows)
+- 267: Alt+Tab superputty window randomly does not come to foreground, tabs have no focus when it does (Cleanup, handle new message value)
+- 269: Icon in tab (Fix issue with missing session.ImageKey)
+- 269: Icon in tab (Enable from Options, GUI)
+- 291: Open in the Sessions or Layout Views (Added additional check for hidden tool windows)
+- 294: Could not get exe error for cygwin / mintty (change log level, error to warn)
+- 297: Make the search functions case insensitive (added to open/switch - change in options)
+- 297: Make the search functions case insensitive (added to session tree)
+- 299: activate a session by hitting the enter button instead of double clicking (enter open; shift-enter edit)
+- 300: Problem save to toolsbar (Disabling those actions while in fullscreen)
+- 301: Application Thread exit while sending command (Found bug while attempting to send to non-putty window [e.g. sessions])
+- 306: TabName not being reloaded from Saved layout (Fixed issue in restoring tabName)
+
 1.4.0.2
 - 250: misfunction of Tab key  (Added options to disable control-tab window switching and keyboard shortcuts)
 - 263: Close All with one session opened (added check)
