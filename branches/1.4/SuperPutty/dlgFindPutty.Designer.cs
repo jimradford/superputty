@@ -100,6 +100,9 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.checkPuttyEnableNewSessionMenu = new System.Windows.Forms.CheckBox();
+            this.label18 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
@@ -114,6 +117,7 @@
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.panelBottom.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -603,6 +607,7 @@
             // 
             // tabPageGUI
             // 
+            this.tabPageGUI.Controls.Add(this.groupBox6);
             this.tabPageGUI.Controls.Add(this.groupBox3);
             this.tabPageGUI.Controls.Add(this.groupBox2);
             this.tabPageGUI.Controls.Add(this.groupBox1);
@@ -626,11 +631,11 @@
             this.groupBox3.Controls.Add(this.label12);
             this.groupBox3.Controls.Add(this.numericUpDownOpacity);
             this.groupBox3.Controls.Add(this.checkMinimizeToTray);
-            this.groupBox3.Location = new System.Drawing.Point(477, 4);
+            this.groupBox3.Location = new System.Drawing.Point(477, 159);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox3.Size = new System.Drawing.Size(309, 337);
+            this.groupBox3.Size = new System.Drawing.Size(309, 182);
             this.groupBox3.TabIndex = 40;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Misc";
@@ -918,6 +923,43 @@
             this.panelBottom.Size = new System.Drawing.Size(805, 33);
             this.panelBottom.TabIndex = 39;
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox6.Controls.Add(this.checkPuttyEnableNewSessionMenu);
+            this.groupBox6.Controls.Add(this.label18);
+            this.groupBox6.Location = new System.Drawing.Point(477, 4);
+            this.groupBox6.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox6.Size = new System.Drawing.Size(309, 148);
+            this.groupBox6.TabIndex = 41;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Session Panel";
+            // 
+            // checkPuttyEnableNewSessionMenu
+            // 
+            this.checkPuttyEnableNewSessionMenu.AutoSize = true;
+            this.checkPuttyEnableNewSessionMenu.Location = new System.Drawing.Point(95, 20);
+            this.checkPuttyEnableNewSessionMenu.Margin = new System.Windows.Forms.Padding(4);
+            this.checkPuttyEnableNewSessionMenu.Name = "checkPuttyEnableNewSessionMenu";
+            this.checkPuttyEnableNewSessionMenu.Size = new System.Drawing.Size(198, 21);
+            this.checkPuttyEnableNewSessionMenu.TabIndex = 37;
+            this.checkPuttyEnableNewSessionMenu.Text = "Enable New Session Menu";
+            this.checkPuttyEnableNewSessionMenu.UseVisualStyleBackColor = true;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(8, 20);
+            this.label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(44, 17);
+            this.label18.TabIndex = 35;
+            this.label18.Text = "Other";
+            this.toolTip.SetToolTip(this.label18, "Determines how tabs are named and if they respond to the shell\'s title changing");
+            // 
             // dlgFindPutty
             // 
             this.AcceptButton = this.buttonOk;
@@ -957,6 +999,8 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.panelBottom.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1033,5 +1077,8 @@
         private System.Windows.Forms.CheckBox checkShowDocumentIcons;
         private System.Windows.Forms.CheckBox checkRestrictFloatingWindows;
         private System.Windows.Forms.CheckBox checkSessionsShowSearch;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.CheckBox checkPuttyEnableNewSessionMenu;
+        private System.Windows.Forms.Label label18;
     }
 }
