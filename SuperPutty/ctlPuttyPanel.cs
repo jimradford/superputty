@@ -131,36 +131,45 @@ namespace SuperPutty
 
         void CreateMenu()
         {
-            newSessionToolStripMenuItem.DropDownItems.Clear();
-            foreach (SessionData session in SuperPuTTY.GetAllSessions())
+            this.newSessionToolStripMenuItem.Enabled = SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu;
+            if (SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu)
             {
-                ToolStripMenuItem tsmiParent = newSessionToolStripMenuItem;
-                foreach (string part in SessionData.GetSessionNameParts(session.SessionId))
+                this.contextMenuStrip1.SuspendLayout();
+
+                // BBB: do i need to dispose each one?
+                newSessionToolStripMenuItem.DropDownItems.Clear();
+                foreach (SessionData session in SuperPuTTY.GetAllSessions())
                 {
-                    if (part == session.SessionName)
+                    ToolStripMenuItem tsmiParent = newSessionToolStripMenuItem;
+                    foreach (string part in SessionData.GetSessionNameParts(session.SessionId))
                     {
-                        ToolStripMenuItem newSessionTSMI = new ToolStripMenuItem();
-                        newSessionTSMI.Tag = session;
-                        newSessionTSMI.Text = session.SessionName;
-                        newSessionTSMI.Click += new System.EventHandler(newSessionTSMI_Click);
-                        tsmiParent.DropDownItems.Add(newSessionTSMI);
-                    }
-                    else
-                    {
-                        if (tsmiParent.DropDownItems.ContainsKey(part))
+                        if (part == session.SessionName)
                         {
-                            tsmiParent = (ToolStripMenuItem) tsmiParent.DropDownItems[part];
+                            ToolStripMenuItem newSessionTSMI = new ToolStripMenuItem();
+                            newSessionTSMI.Tag = session;
+                            newSessionTSMI.Text = session.SessionName;
+                            newSessionTSMI.Click += new System.EventHandler(newSessionTSMI_Click);
+                            tsmiParent.DropDownItems.Add(newSessionTSMI);
                         }
                         else
                         {
-                            ToolStripMenuItem newSessionFolder = new ToolStripMenuItem(part);
-                            newSessionFolder.Name = part;
-                            tsmiParent.DropDownItems.Add(newSessionFolder);
-                            tsmiParent = newSessionFolder;
+                            if (tsmiParent.DropDownItems.ContainsKey(part))
+                            {
+                                tsmiParent = (ToolStripMenuItem)tsmiParent.DropDownItems[part];
+                            }
+                            else
+                            {
+                                ToolStripMenuItem newSessionFolder = new ToolStripMenuItem(part);
+                                newSessionFolder.Name = part;
+                                tsmiParent.DropDownItems.Add(newSessionFolder);
+                                tsmiParent = newSessionFolder;
+                            }
                         }
                     }
                 }
+                this.contextMenuStrip1.ResumeLayout();
             }
+
             DockPane pane = GetDockPane();
             if (pane != null)
             {

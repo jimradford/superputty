@@ -190,6 +190,7 @@ namespace SuperPutty
             this.checkShowDocumentIcons.Checked = SuperPuTTY.Settings.ShowDocumentIcons;
             this.checkRestrictFloatingWindows.Checked = SuperPuTTY.Settings.DockingRestrictFloatingWindows;
             this.checkSessionsShowSearch.Checked = SuperPuTTY.Settings.SessionsShowSearch;
+            this.checkPuttyEnableNewSessionMenu.Checked = SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu;
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -302,6 +303,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.ShowDocumentIcons = this.checkShowDocumentIcons.Checked;
                 SuperPuTTY.Settings.DockingRestrictFloatingWindows = this.checkRestrictFloatingWindows.Checked;
                 SuperPuTTY.Settings.SessionsShowSearch = this.checkSessionsShowSearch.Checked;
+                SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu = this.checkPuttyEnableNewSessionMenu.Checked;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
