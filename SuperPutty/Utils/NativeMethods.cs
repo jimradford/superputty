@@ -27,6 +27,10 @@ namespace SuperPutty.Utils
 
         public const int WM_HOTKEY_MSG_ID = 0x0312;
 
+        public const int
+            VK_CONTROL = 0x11,
+            VK_SHIFT = 0x10;
+
         public const int 
             SC_MAXIMIZE = 0xF030,
             SC_RESTORE = 0xF120;
