@@ -129,6 +129,7 @@
       <DependentUpon>ToolWindowEx.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\ChildWindowFocusHelper.cs" />
+    <Compile Include="Utils\CommandData.cs" />
     <Compile Include="Utils\CygtermStartInfo.cs" />
     <Compile Include="ctlApplicationPanel.cs">
       <SubType>Component</SubType>

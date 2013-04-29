@@ -953,27 +953,21 @@ namespace SuperPutty
             this.sendCommandsDocumentSelector.Show();
         }
 
-        private void tbTextCommand_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                TrySendCommandsFromToolbar(true);
-                e.Handled = true;
-            }
-        }
-
         private void tsSendCommandCombo_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Enter)
+            Log.InfoFormat("### keyChar={0}, key={1}", e.KeyChar, (Keys)e.KeyChar);
+            return;
+            if (e.KeyChar == (char) Keys.Enter)
             {
-                TrySendCommandsFromToolbar(!this.tbBtnMaskText.Checked);
+                TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), !this.tbBtnMaskText.Checked);
                 e.Handled = true;
             }
+ 
         }
 
         private void tsSendCommandCombo_KeyDown(object sender, KeyEventArgs e)
         {
-            //Log.DebugFormat("Keys={0}, control={1}, shift={2}", e.KeyCode, e.Control, e.Shift);
+            Log.DebugFormat("### Keys={0}, control={1}, shift={2}, keyData={3}", e.KeyCode, e.Control, e.Shift, e.KeyData);
             if (e.KeyCode == Keys.Up)
             {
                 if (tsSendCommandCombo.Items.Count > 0)
@@ -1008,7 +1002,22 @@ namespace SuperPutty
                 }
                 e.Handled = true;
             }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                // send commands
+                TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), !this.tbBtnMaskText.Checked);
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+            else if ((e.Control && e.KeyCode != Keys.ControlKey))
+            {
+                // special keys
+                TrySendCommandsFromToolbar(new CommandData(e), !this.tbBtnMaskText.Checked);
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
         }
+
 
         private void tbBtnSendCommand_Click(object sender, EventArgs e)
         {
@@ -1036,8 +1045,13 @@ namespace SuperPutty
 
         int TrySendCommandsFromToolbar(bool saveHistory)
         {
+            return TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), saveHistory);
+        }
+
+        int TrySendCommandsFromToolbar(CommandData command, bool saveHistory)
+        {
             int sent = 0;
-            String command = this.tsSendCommandCombo.Text; //this.tbTextCommand.Text;
+            //String command = this.tsSendCommandCombo.Text; //this.tbTextCommand.Text;
             if (this.DockPanel.DocumentsCount > 0)
             {
                 foreach (DockContent content in this.DockPanel.Documents)
@@ -1047,12 +1061,15 @@ namespace SuperPutty
                     {
                         int handle = puttyPanel.AppPanel.AppWindowHandle.ToInt32();
                         Log.InfoFormat("SendCommand: session={0}, command=[{1}], handle={2}", puttyPanel.Session.SessionId, command, handle);
-                        foreach (char c in command)
+
+                        command.SendToTerminal(handle);
+                        /*
+                        foreach (Char c in command.Chars)
                         {
                             NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)c, 0);
                         }
 
-                        NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)Keys.Enter, 0);
+                        NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)Keys.Enter, 0);*/
                         //NativeMethods.SendMessage(handle, NativeMethods.WM_KEYUP, (int)Keys.Enter, 0);
                         sent++;
                     }
@@ -1061,9 +1078,10 @@ namespace SuperPutty
                 {
                     // success...clear text and save in mru
                     this.tsSendCommandCombo.Text = string.Empty;
-                    if (!string.IsNullOrEmpty(command) && saveHistory)
+                    if (command != null && !string.IsNullOrEmpty(command.Command) && saveHistory)
+
                     {
-                        this.tsSendCommandCombo.Items.Add(command);
+                        this.tsSendCommandCombo.Items.Add(command.ToString());
                     }
                 }
             }
@@ -1448,8 +1466,6 @@ namespace SuperPutty
             Dynamic, 
             Mixed
         }
-
-
 
     }
 }
