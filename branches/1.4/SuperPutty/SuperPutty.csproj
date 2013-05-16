@@ -89,6 +89,7 @@
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\KeyboardShortcut.cs" />
+    <Compile Include="Gui\BaseViewModel.cs" />
     <Compile Include="Gui\ImageListPopup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +108,7 @@
     <Compile Include="Gui\KeyboardShortcutEditor.Designer.cs">
       <DependentUpon>KeyboardShortcutEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gui\ListViewExtensions.cs" />
     <Compile Include="Gui\QuickSelector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,6 +124,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>QuickSelectorData.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Scp\BrowserCommon.cs" />
+    <Compile Include="Scp\BrowserViewModel.cs" />
+    <Compile Include="Scp\BrowserPresenter.cs" />
+    <Compile Include="Scp\BrowserView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Scp\BrowserView.Designer.cs">
+      <DependentUpon>BrowserView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Scp\LocalBrowserModel.cs" />
+    <Compile Include="Scp\PscpClient.cs" />
+    <Compile Include="Scp\RemoteBrowserModel.cs" />
     <Compile Include="ToolWindowEx.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -288,6 +302,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Scp\BrowserView.resx">
+      <DependentUpon>BrowserView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SessionTreeview.resx">
       <DependentUpon>SessionTreeview.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -365,6 +382,7 @@
       <DependentUpon>QuickSelectorData.xsd</DependentUpon>
     </None>
     <None Include="Properties\DataSources\SuperPutty.Data.KeyboardShortcut.datasource" />
+    <None Include="Properties\DataSources\SuperPutty.Scp.IBrowserModel.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -373,6 +391,11 @@
   <ItemGroup>
     <Content Include="Apps-utilities-terminal.ico" />
     <None Include="Resources\find.png" />
+    <None Include="Resources\application_view_detail.png" />
+    <None Include="Resources\application_view_gallery.png" />
+    <None Include="Resources\application_view_icons.png" />
+    <None Include="Resources\application_view_list.png" />
+    <None Include="Resources\application_view_tile.png" />
     <Content Include="_Lib\log4net.dll" />
     <Content Include="Resources\accept-gray.png" />
     <Content Include="Resources\application_edit.png" />

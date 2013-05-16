@@ -59,16 +59,21 @@ namespace SuperPutty
 
         private SessionData m_Session;
 
-        public dlgLogin(SessionData session)
+        public dlgLogin(string userName)
         {
-            m_Session = session;
             InitializeComponent();
 
-            if (!String.IsNullOrEmpty(m_Session.Username))
-                this.Username = m_Session.Username;
+            if (!String.IsNullOrEmpty(userName))
+                this.Username = userName;
 
             textBoxUsername.Text = this.Username;
         }
+
+        public dlgLogin(SessionData session) : this(session.Username)
+        {
+            m_Session = session;
+        }
+
 
         private void button1_Click(object sender, EventArgs e)
         {

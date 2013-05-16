@@ -10,16 +10,11 @@ using System.Drawing;
 
 namespace SuperPuttyUnitTests
 {
-    [TestFixture]
+    //[TestFixture]
     public class QuickSelectorTests
     {
-        static QuickSelectorTests()
-        {
-            log4net.Config.BasicConfigurator.Configure();
-        }
 
-
-        [Test]
+        [TestView]
         public void Test()
         {
             List<SessionData> sessions = SessionData.LoadSessionsFromFile("c:/Users/beau/SuperPuTTY/sessions.xml");

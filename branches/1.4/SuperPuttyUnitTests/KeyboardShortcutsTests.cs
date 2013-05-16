@@ -49,7 +49,7 @@ namespace SuperPuttyUnitTests
 
         }
 
-        [Test]
+        [TestView]
         public void DialogBasicTest()
         {
             KeyboardShortcutEditor form = new KeyboardShortcutEditor();

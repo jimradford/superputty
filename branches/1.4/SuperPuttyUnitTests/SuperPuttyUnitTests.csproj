@@ -44,7 +44,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -68,6 +68,7 @@
       <HintPath>NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -81,6 +82,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KeyboardShortcutsTests.cs" />
+    <Compile Include="Scp\ScpTests.cs" />
+    <Compile Include="Scp\LocalBrowserTests.cs" />
+    <Compile Include="Scp\RemoteBrowserTests.cs" />
+    <Compile Include="TestAppRunner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestAppRunner.Designer.cs">
+      <DependentUpon>TestAppRunner.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -119,6 +129,11 @@
     <Content Include="NUnit\nunit-gui-runner.dll" />
     <Content Include="NUnit\nunit.uiexception.dll" />
     <Content Include="NUnit\nunit.uikit.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestAppRunner.resx">
+      <DependentUpon>TestAppRunner.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
