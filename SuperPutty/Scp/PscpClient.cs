@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
-using log4net;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
-using SuperPutty.Data;
-using System.ComponentModel;
-using System.IO;
-using System.Globalization;
+using log4net;
 using log4net.Core;
+using SuperPutty.Data;
 
 namespace SuperPutty.Scp
 {
@@ -18,12 +17,13 @@ namespace SuperPutty.Scp
     /// Simplified version of PscpTransfer class
     /// - Movied LoginDialog calls outside
     /// - Made calls synchronous...move async outside
-    /// - Work around issue in Process.StandardOuput not reading "userName's password:"
+    /// - Work around issue in Process.StandardOuput/StandardError blocking on calls
     /// </summary>
     public class PscpClient
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(PscpClient));
 
+        #region Putty string constants
         /*
          * constant strings putty sends for various events, we use some of these to detect authentication
          * progress
@@ -71,112 +71,39 @@ namespace SuperPutty.Scp
          * 10.16 ‘Network error: Connection refused’ 
          * 10.17 ‘Network error: Connection timed out’ error: Connection timed out
          */
+        
+        #endregion
 
-        public PscpClient(string pscpLocation, SessionData session) 
+        public PscpClient(string pscpLocation, SessionData session) :
+            this(pscpLocation, session, 5000) { }
+
+        public PscpClient(string pscpLocation, SessionData session, int timeoutMs) 
         {
             this.PscpLocation = pscpLocation;
             this.Session = session;
-            this.TimeoutMs = 5000;
+            this.TimeoutMs = timeoutMs;
         }
+
+        #region ListDirectory (and helpers)
 
         public ListDirectoryResult ListDirectory(BrowserFileInfo path)
         {
-            ListDirectoryResult result = new ListDirectoryResult(path);
-
-            if (!File.Exists(PscpLocation))
+            lock (this)
             {
-                result.SetError(string.Format("Pscp missing, path={0}.", this.PscpLocation), null);
-            }
-            else if (this.Session.Username == null)
-            {
-                result.SetError("UserName is null", null);
-            }
-            else if (this.Session.Host == null)
-            {
-                result.SetError("Host is null", null);
-            }
-            else if (this.Session.Port < 0)
-            {
-                result.SetError("Invalid port: " + this.Session.Port, null);
-            }
-            else
-            {
-                // Setup the process list directory contents
-                ProcessStartInfo startInfo = new ProcessStartInfo
-                {
-                    FileName = this.PscpLocation,
-                    WorkingDirectory = Path.GetDirectoryName(this.PscpLocation),
-                    Arguments = ToArgs(this.Session, this.Session.Password, path.Path),
-                    CreateNoWindow = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false
-                };
-
-                // Start pscp
-                string args = ToArgs(this.Session, "XXXXX", path.Path);
-                Log.InfoFormat("Starting process: file={0}, args={1}", this.PscpLocation, args);
-                Process proc = new Process
-                {
-                    StartInfo = startInfo,
-                    EnableRaisingEvents = true
-                };
-                proc.Start();
-
-                // Async read output/err.  Inline actions to quick kill the process when pscp prompts user.
-                // NOTE: Using BeginReadOutput/ErrorReadLine doesn't work here.  Calls to read an empty stream
-                //       will block (e.g. "user's password:" prompt will block on reading err stream).  
-                AsyncStreamReader outReader = new AsyncStreamReader(
-                    "OUT",
-                    proc.StandardOutput,
-                    strOut =>
-                    {
-                        bool keepReading = true;
-                        if (strOut == PUTTY_INTERACTIVE_AUTH || strOut.Contains("'s password:"))
-                        {
-                            result.StatusCode = ResultStatusCode.RetryAuthentication;
-                            Log.Debug("Username/Password invalid or not sent");
-                            proc.Kill();
-                            keepReading = false;
-                        }
-                        return keepReading;
-                    });
-                AsyncStreamReader errReader = new AsyncStreamReader(
-                    "ERR",
-                    proc.StandardError,
-                    strErr =>
-                    {
-                        bool keepReading = true;
-                        if (strErr != null && strErr.Contains(PUTTY_NO_KEY))
-                        {
-                            result.SetError("Host key not cached.  Connect via putty to cache key then try again", null);
-                            proc.Kill();
-                            keepReading = false;
-                        }
-                        return keepReading;
-                    });
-
-                // start process and wait for results
-                Log.DebugFormat("WaitingForExit: timeout={0}", this.TimeoutMs);
-                if (proc.WaitForExit(this.TimeoutMs))
-                {
-                    Log.DebugFormat("Process exited normally, pid={0}, exitCode={1}", proc.Id, proc.ExitCode);
-
-                    string[] output = outReader.StopAndGetData();
-                    string[] err = errReader.StopAndGetData();
-
-                    string outputStr = String.Join("\r\n", output);
-                    if (proc.ExitCode == 0 && outputStr.Contains(PUTTY_UNABLE_TO_OPEN))
-                    {
-                        // bad path
-                        int idx = outputStr.IndexOf(PUTTY_UNABLE_TO_OPEN);
-                        result.SetErrorFormat(outputStr.Substring(idx));
-                    }
-                    else if (proc.ExitCode == 0)
+                //return this.DoListDirectory(path);
+                ListDirectoryResult result = new ListDirectoryResult(path);
+                
+                RunPscp(
+                    result,
+                    ToArgs(this.Session, this.Session.Password, path.Path),
+                    ToArgs(this.Session, "XXXXX", path.Path), 
+                    null, 
+                    null,
+                    (lines) =>
                     {
                         // successful list
                         ScpLineParser parser = new ScpLineParser();
-                        foreach (string rawLine in output)
+                        foreach (string rawLine in lines)
                         {
                             string line = rawLine.TrimEnd();
                             BrowserFileInfo fileInfo;
@@ -189,36 +116,10 @@ namespace SuperPutty.Scp
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        // some kind of error
-                        if (result.StatusCode != ResultStatusCode.Success)
-                        {
-                            Log.Debug("Skipping output check since proactively killed process.");
-                        }
-                        else if (output.Contains(PUTTY_ARGUMENTS_HELP_HEADER))
-                        {
-                            result.SetErrorFormat("Invalid arguments sent to pscp, args={0}, output={1}", args, output);
-                        }
-                        else if (err.Contains(PUTTY_HOST_DOES_NOT_EXIST))
-                        {
-                            result.SetErrorFormat("Host does not exist.  {0}:{1}", this.Session.Host, this.Session.Port);
-                        }
-                        else
-                        {
-                            result.SetErrorFormat("Unknown error.  exitCode={0}, out={1}, err={2}", proc.ExitCode, output, err);
-                        }
-                    }
-                }
-                else
-                {
-                    // timeout
-                    proc.Kill();
-                    result.SetErrorFormat("Process timed out, path={0}", path);
-                }
+                    });
+
+                return result;
             }
-            return result;
         }
 
         public static string MakePath(string parent, string child)
@@ -256,7 +157,7 @@ namespace SuperPutty.Scp
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("-ls ");
-            
+
             if (session.PuttySession != null)
             {
                 sb.AppendFormat("-load \"{0}\" ", session.PuttySession);
@@ -270,6 +171,288 @@ namespace SuperPutty.Scp
 
             return sb.ToString();
         }
+
+        #endregion
+
+        #region CopyFiles (and helpers)
+
+        public FileTransferResult CopyFiles(List<BrowserFileInfo> sourceFiles, BrowserFileInfo target, TransferUpdateCallback callback)
+        {
+            lock(this)
+            {
+                FileTransferResult result = new FileTransferResult();
+
+                string args = ToArgs(this.Session, this.Session.Password, sourceFiles, target);
+                string argsToLog = ToArgs(this.Session, this.Session.Password, sourceFiles, target);
+                ScpLineParser parser = new ScpLineParser();
+                RunPscp(
+                    result, args, argsToLog, 
+                    (line) => 
+                    { 
+                        if (callback != null)
+                        {
+                            FileTransferStatus status;
+                            if (parser.TryParseTransferStatus(line, out status))
+                            {
+                                callback(status.PercentComplete == 100, false, status);
+                            }
+                        }
+                    }, 
+                    null, null);
+
+                return result;
+            }
+        }
+
+        static string ToArgs(SessionData session, string password, List<BrowserFileInfo> source, BrowserFileInfo target)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("-r -agent ");  // default arguments
+            if (!String.IsNullOrEmpty(session.PuttySession))
+            {
+                sb.Append("-load \"").Append(session.PuttySession).Append("\" ");
+            }
+            if (!String.IsNullOrEmpty(session.Password))
+            {
+                sb.Append("-pw ").Append(session.Password).Append(" ");
+            }
+            sb.AppendFormat("-P {0} ", session.Port);
+
+            if (target.Source == SourceType.Remote)
+            {
+                // possible to send multiple files remotely at a time
+                foreach(BrowserFileInfo file in source)
+                {
+                    sb.Append(file.Path).Append(" ");
+                }
+                sb.AppendFormat(" {0}@{1}:{2}", session.Username, session.Host, target.Path);
+            }
+            else
+            {
+                if (source.Count > 1)
+                {
+                    Log.WarnFormat("Not possible to transfer multiple remote files locally at one time.  Tranfering first only!");
+                }
+                sb.AppendFormat(" {0}@{1}:{2} ", session.Username, session.Host, source[0].Path);
+                sb.Append(target.Path);
+            }
+
+            return sb.ToString();
+        }
+
+        #endregion
+
+        #region RunPscp - Main work method
+        /// <summary>
+        /// Run Pscp synchronously
+        /// </summary>
+        /// <param name="result">Result object where results </param>
+        /// <param name="args">The args to send to pscp</param>
+        /// <param name="argsToLog">The args that are logged or can be returned in status messages</param>
+        /// <param name="inlineOutHandler">Inline handler for output</param>
+        /// <param name="inlineErrHandler">Inline handler for error</param>
+        /// <param name="successOutHandler">Handler for output of successful operation</param>
+        void RunPscp(
+            PscpResult result, 
+            string args, string argsToLog, 
+            Action<string> inlineOutHandler, 
+            Action<string> inlineErrHandler, 
+            Action<string[]> successOutHandler)
+        {
+            if (!File.Exists(PscpLocation))
+            {
+                result.SetError(string.Format("Pscp missing, path={0}.", this.PscpLocation), null);
+            }
+            else if (this.Session.Username == null)
+            {
+                result.SetError("UserName is null", null);
+            }
+            else if (this.Session.Host == null)
+            {
+                result.SetError("Host is null", null);
+            }
+            else if (this.Session.Port < 0)
+            {
+                result.SetError("Invalid port: " + this.Session.Port, null);
+            }
+            else
+            {
+
+                Process proc = NewProcess(this.PscpLocation, args);
+                try
+                {
+                    // Start pscp
+                    Log.InfoFormat("Starting process: file={0}, args={1}", this.PscpLocation, argsToLog);
+                    proc.Start();
+
+                    // Timeout when no output is received
+                    Timer timeoutTimer = new Timer(
+                        (x) => 
+                        { 
+                            // timeout
+                            proc.Kill();
+                            result.SetErrorFormat("Process timed out, args={0}", argsToLog);
+                        }, 
+                        null, this.TimeoutMs, Timeout.Infinite);
+
+                    // Async read output/err.  Inline actions to quick kill the process when pscp prompts user.
+                    // NOTE: Using BeginReadOutput/ErrorReadLine doesn't work here.  Calls to read an empty stream
+                    //       will block (e.g. "user's password:" prompt will block on reading err stream).  
+                    AsyncStreamReader outReader = new AsyncStreamReader(
+                        "OUT",
+                        proc.StandardOutput,
+                        strOut =>
+                        {
+                            bool keepReading = true;
+                            if (strOut == PUTTY_INTERACTIVE_AUTH || strOut.Contains("'s password:"))
+                            {
+                                result.StatusCode = ResultStatusCode.RetryAuthentication;
+                                Log.Debug("Username/Password invalid or not sent");
+                                proc.Kill();
+                                keepReading = false;
+                            }
+                            else if (inlineOutHandler != null)
+                            {
+                                inlineOutHandler(strOut);
+                            }
+                            timeoutTimer.Change(this.TimeoutMs, Timeout.Infinite);
+                            return keepReading;
+                        });
+                    AsyncStreamReader errReader = new AsyncStreamReader(
+                        "ERR",
+                        proc.StandardError,
+                        strErr =>
+                        {
+                            bool keepReading = true;
+                            if (strErr != null && strErr.Contains(PUTTY_NO_KEY))
+                            {
+                                result.SetError("Host key not cached.  Connect via putty to cache key then try again", null);
+                                proc.Kill();
+                                keepReading = false;
+                            }
+                            else if (inlineErrHandler != null)
+                            {
+                                inlineErrHandler(strErr);
+                            }
+                            timeoutTimer.Change(this.TimeoutMs, Timeout.Infinite);
+                            return keepReading;
+                        });
+
+                    // start process and wait for results
+                    Log.DebugFormat("WaitingForExit");
+                    proc.WaitForExit();
+
+                    Log.DebugFormat("Process exited, pid={0}, exitCode={1}", proc.Id, proc.ExitCode);
+                    timeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    string[] output = outReader.StopAndGetData();
+                    string[] err = errReader.StopAndGetData();
+
+                    string outputStr = String.Join("\r\n", output);
+                    if (proc.ExitCode == 0 && outputStr.Contains(PUTTY_UNABLE_TO_OPEN))
+                    {
+                        // bad path
+                        int idx = outputStr.IndexOf(PUTTY_UNABLE_TO_OPEN);
+                        result.SetErrorFormat(outputStr.Substring(idx));
+                    }
+                    else if (proc.ExitCode == 0)
+                    {
+                        // successful operation
+                        if (successOutHandler != null)
+                        {
+                            successOutHandler(output);
+                        }
+                    }
+                    else
+                    {
+                        // some kind of error
+                        if (result.StatusCode != ResultStatusCode.Success)
+                        {
+                            Log.Debug("Skipping output check since proactively killed process.");
+                        }
+                        else if (output.Contains(PUTTY_ARGUMENTS_HELP_HEADER))
+                        {
+                            result.SetErrorFormat("Invalid arguments sent to pscp, args={0}, output={1}", args, output);
+                        }
+                        else if (err.Contains(PUTTY_HOST_DOES_NOT_EXIST))
+                        {
+                            result.SetErrorFormat("Host does not exist.  {0}:{1}", this.Session.Host, this.Session.Port);
+                        }
+                        else
+                        {
+                            result.SetErrorFormat("Unknown error.  exitCode={0}, out={1}, err={2}", proc.ExitCode, output, err);
+                        }
+                    }
+                }
+                finally
+                {
+                    SafeKillAndDispose(proc);
+                }
+
+            }
+        }
+
+        #endregion
+
+        #region Utility
+
+        /// <summary>
+        ///  Create a process for running pscp
+        /// </summary>
+        /// <param name="pscpLocation"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private static Process NewProcess(string pscpLocation, string args)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = pscpLocation,
+                WorkingDirectory = Path.GetDirectoryName(pscpLocation),
+                Arguments = args,
+                CreateNoWindow = true,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            };
+
+            Process proc = new Process
+            {
+                StartInfo = startInfo,
+                EnableRaisingEvents = true
+            };
+            return proc;
+        }
+
+        private static void SafeKillAndDispose(Process proc)
+        {
+            if (proc == null) return;
+
+            try
+            {
+                if (!proc.HasExited)
+                {
+                    proc.Kill();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error killing proc, pid=" + proc.Id, ex);
+            }
+            try
+            {
+                proc.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error disposing proc, pid=" + proc.Id, ex);
+            }
+        }
+
+        #endregion
+
+        public string PscpLocation { get; private set; }
+        public int TimeoutMs { get; private set; }
+        public SessionData Session {get; private set; }
 
         #region AsyncStreamReader
         /// <summary>
@@ -326,7 +509,7 @@ namespace SuperPutty.Scp
 
                     // after reading 1st line, assume we have a normal read and go by line
                     string line;
-                    while(keepReading && (line = this.Reader.ReadLine()) != null)
+                    while (keepReading && (line = this.Reader.ReadLine()) != null)
                     {
                         keepReading = AppendLineAndNotify(line);
                     }
@@ -346,7 +529,6 @@ namespace SuperPutty.Scp
             {
                 lock (this)
                 {
-                    Log.Info("STartAppend");
                     bool keepReading = true;
 
                     string cleanLine = line.Trim('\r', '\n');
@@ -359,7 +541,6 @@ namespace SuperPutty.Scp
                         keepReading = this.DataUpdatedHandler(cleanLine);
                     }
 
-                    Log.Info("EndAppend");
                     return keepReading;
                 }
             }
@@ -368,6 +549,8 @@ namespace SuperPutty.Scp
             {
                 if (this.Thread.IsAlive)
                 {
+                    // consider better way to know operation is done reading output...timed out join is ok but not great.
+                    this.Thread.Join(2000);
                     this.Thread.Abort();
                 }
 
@@ -382,13 +565,15 @@ namespace SuperPutty.Scp
             Func<string, bool> DataUpdatedHandler { get; set; }
             List<string> Lines { get; set; }
             Thread Thread { get; set; }
-        } 
+        }
         #endregion
 
         #region ScpLineParser
         public class ScpLineParser
         {
-            Regex regExPrimary = new Regex(@"^(?<Permissions>[cdrwx\-lSst]+)\s+(?<LinkCount>\d+)\s+(?<OwnerName>\w+)\s+(?<GroupName>\w+)\s+(?<BlockCount>\d+)\s+(?<Timestamp>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec).{9})\s{1}(?<FileName>.*)$");
+            Regex regExFileLine = new Regex(@"^(?<Permissions>[cdrwx\-lSst]+)\s+(?<LinkCount>\d+)\s+(?<OwnerName>\w+)\s+(?<GroupName>\w+)\s+(?<BlockCount>\d+)\s+(?<Timestamp>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec).{9})\s{1}(?<FileName>.*)$");
+            Regex regExStatus = new Regex(@".*|.*|.*|.*|.*");
+
             public bool TryParseFileLine(string line, out BrowserFileInfo fileInfo)
             {
                 bool success = false;
@@ -400,7 +585,7 @@ namespace SuperPutty.Scp
                 }
                 else
                 {
-                    Match match = regExPrimary.Match(line);
+                    Match match = regExFileLine.Match(line);
                     if (match.Success)
                     {
                         string name = match.Groups["FileName"].Value;
@@ -461,107 +646,35 @@ namespace SuperPutty.Scp
 
                 return success;
             }
-        } 
-        #endregion
 
-        public string PscpLocation { get; private set; }
-        public int TimeoutMs { get; private set; }
-        public SessionData Session {get; private set; }
-
-        private Thread m_PscpThread;
-
-
-        /// <summary>
-        /// Attempts to copy local files from the local filesystem to the selected remote target path
-        /// </summary>
-        /// <param name="files">An array containing full paths to files and or folders to copy</param>
-        /// <param name="target">The target path on the remote system</param>
-        /// <param name="callback">A callback to fire on success or error. On failure the files parameter will be null</param>
-        public void BeginCopyFiles(string[] files, string target, TransferUpdateCallback callback)
-        {
-            if (String.IsNullOrEmpty(Session.Username))
+            public bool TryParseTransferStatus(string rawLine, out FileTransferStatus status)
             {
-                /*
-                if (m_Login.ShowDialog(SuperPuTTY.MainForm) == System.Windows.Forms.DialogResult.OK)
-                {
-                    Session.Username = m_Login.Username;
-                    Session.Password = m_Login.Password;
-                }*/
-            }
+                bool success = false;
+                status = new FileTransferStatus();
 
-            // put the copy operation in the background since it could take a long long time
-            m_PscpThread = new Thread(delegate()
-            {
-                Process processCopyToRemote = new Process();
-                try
+                if (!String.IsNullOrEmpty(rawLine))
                 {
-                    processCopyToRemote.EnableRaisingEvents = true;
-                    processCopyToRemote.StartInfo.RedirectStandardError = true;
-                    processCopyToRemote.StartInfo.RedirectStandardInput = true;
-                    processCopyToRemote.StartInfo.RedirectStandardOutput = true;
-                    processCopyToRemote.StartInfo.FileName = SuperPuTTY.Settings.PscpExe;
-                    processCopyToRemote.StartInfo.CreateNoWindow = true;
-                    // process the various options from the session object and convert them into arguments pscp can understand
-                    string args = "-r -agent "; // default arguments
-                    args += (!String.IsNullOrEmpty(Session.PuttySession)) ? "-load \"" + Session.PuttySession + "\" " : "";
-                    //args += "-l " + Session.Username + " ";
-                    args += (!String.IsNullOrEmpty(Session.Password) && Session.Password.Length > 0) ? "-pw " + Session.Password + " " : "";
-                    args += "-P " + Session.Port + " ";
-                    args += "\"" + files[0] + "\" ";
-                    args += (!String.IsNullOrEmpty(Session.Username)) ? Session.Username + "@" : "";
-                    args += Session.Host + ":" + target;
-                    Logger.Log("Args: '{0} {1}'", processCopyToRemote.StartInfo.FileName, args);
-                    processCopyToRemote.StartInfo.Arguments = args;
-                    processCopyToRemote.StartInfo.UseShellExecute = false;
-
-                    processCopyToRemote.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
+                    string line = rawLine.TrimEnd();
+                    Match match = this.regExStatus.Match(line);
+                    if (match.Success)
                     {
-                        if (!String.IsNullOrEmpty(e.Data))
-                        {
-                            Match match = Regex.Match(e.Data.TrimEnd(), ".*|.*|.*|.*|.*");
-                            if (match.Success)
-                            {
-                                if (callback != null)
-                                {
-                                    FileTransferStatus status = new FileTransferStatus();
-                                    string[] update = e.Data.TrimEnd().Split('|');
-                                    status.Filename = update[0].Trim();
-                                    status.BytesTransferred = int.Parse(update[1].Replace("kB", "").Trim());
-                                    status.TransferRate = float.Parse(update[2].Replace("kB/s", "").Trim());
-                                    status.TimeLeft = update[3].Replace("ETA:", "").Trim();
-                                    status.PercentComplete = int.Parse(update[4].Replace("%", "").Trim());
-                                    //Logger.Log("File Transfer Data: " + e.Data);
-                                    callback(status.PercentComplete.Equals(100), false, status);
-                                }
-                            }
-                            else
-                            {
-                                Logger.Log("Unable to parse OutputData: {0}", e.Data.TrimEnd());
-                            }
-                        }
-                    };
+                        string[] update = line.Split('|');
 
-                    processCopyToRemote.Start();
-                    processCopyToRemote.BeginOutputReadLine();
-                    processCopyToRemote.WaitForExit();
+                        status.Filename = update[0].Trim();
+                        status.BytesTransferred = int.Parse(update[1].Replace("kB", "").Trim());
+                        status.TransferRate = float.Parse(update[2].Replace("kB/s", "").Trim());
+                        status.TimeLeft = update[3].Replace("ETA:", "").Trim();
+                        status.PercentComplete = int.Parse(update[4].Replace("%", "").Trim());
+                        success = true;
+                    }
+                    else
+                    {
+                        Log.WarnFormat("Unable to parse OutputData: {0}", line);
+                    }
                 }
-                catch (ThreadAbortException)
-                {
-                    if (!processCopyToRemote.HasExited)
-                        processCopyToRemote.Kill();
-                }
-            });
-
-            m_PscpThread.IsBackground = true;
-            m_PscpThread.Name = "File Upload";
-            m_PscpThread.Start();
+                return success;
+            }
         }
-
-        internal void CancelTransfers()
-        {
-            Logger.Log("Aborting Transfer in CancelTransfer");
-            m_PscpThread.Abort();
-        }
+        #endregion
     }
-
 }

@@ -7,6 +7,7 @@ using System.Configuration;
 using SuperPutty.Data;
 using SuperPutty.Scp;
 using System;
+using System.IO;
 
 namespace SuperPuttyUnitTests.Scp
 {
@@ -179,9 +180,9 @@ namespace SuperPuttyUnitTests.Scp
     }
 
     [TestFixture]
-    public class PscpClientTests 
+    public class PscpClientListDirTests 
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(PscpClientTests));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(PscpClientListDirTests));
 
         [Test]
         public void ListDirSuccess()
@@ -269,6 +270,65 @@ namespace SuperPuttyUnitTests.Scp
             Assert.AreEqual(0, res.Files.Count);
             Assert.IsTrue(res.ErrorMsg != null && res.ErrorMsg.StartsWith("Unable to open"));
             Log.InfoFormat("Result: {0}", res);
+        }
+    }
+
+    [TestFixture]
+    public class PscpClientTransferTests
+    {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(PscpClientTransferTests));
+
+        static PscpClientTransferTests()
+        {
+            Program.InitLoggingForUnitTests();
+        }
+
+        [Test]
+        public void LocalToRemote()
+        {
+            SessionData session = new SessionData
+            {
+                Username = ScpConfig.UserName,
+                Password = ScpConfig.Password,
+                Host = ScpConfig.KnownHost,
+                Port = 22
+            };
+
+            List<BrowserFileInfo> sourceFiles = new List<BrowserFileInfo> 
+            {
+                //new BrowserFileInfo(new FileInfo(Path.GetTempFileName()))
+                new BrowserFileInfo(new FileInfo( @"D:\Downloads\vs2012_winexp_enu.iso" ))
+            };
+            BrowserFileInfo target = new BrowserFileInfo
+            { 
+                Path = string.Format("/home/{0}/", session.Username), 
+                Source = SourceType.Remote
+            };
+
+            PscpClient client = new PscpClient(ScpConfig.PscpLocation, session, 5000);
+            PscpResult res = client.CopyFiles(
+                sourceFiles, 
+                target, 
+                (complete, cancelAll, status) => 
+                {
+                    Log.InfoFormat(
+                        "complete={0}, cancelAll={1}, fileName={2}, pctComplete={3}", 
+                        complete, cancelAll, status.Filename, status.PercentComplete);
+                });
+
+            Log.InfoFormat("Result: {0}", res);
+
+            /*
+            ListDirectoryResult res = client.ListDirectory(new BrowserFileInfo { Path = "." });
+
+            Assert.AreEqual(ResultStatusCode.Success, res.StatusCode);
+            Assert.Greater(res.Files.Count, 0);
+            foreach (BrowserFileInfo file in res.Files)
+            {
+                Log.Info(file);
+            }
+
+            Log.InfoFormat("Result: {0}", res);*/
         }
     }
 

@@ -70,6 +70,10 @@ namespace SuperPuttyUnitTests.Scp
             Assert.AreEqual(DateTimeKind.Local, dt.Kind);
         }
 
+    }
+
+    public class RemoteBrowserViewTester 
+    {
         [TestView]
         public void TestGUI()
         {
