@@ -78,17 +78,20 @@ namespace SuperPuttyUnitTests.Scp
 
             SessionData session = new SessionData
             {
-                Username = ScpConfig.Default.UserName,
-                Password = ScpConfig.Default.Password, 
-                Host = ScpConfig.Default.KnownHost, 
+                Username = ScpConfig.UserName,
+                Password = ScpConfig.Password, 
+                Host = ScpConfig.KnownHost, 
                 Port = 22
             };
 
             BrowserPresenter presenter = new BrowserPresenter(
-                new RemoteBrowserModel(ScpConfig.Default.PscpLocation), 
-                session);
+                new RemoteBrowserModel(ScpConfig.PscpLocation), 
+                session, 
+                new MockFileTransferPresenter());
 
-            BrowserView view = new BrowserView(presenter, "/home/" + ScpConfig.Default.UserName);
+            BrowserView view = new BrowserView(
+                presenter,
+                RemoteBrowserModel.NewDirectory("/home/" + ScpConfig.UserName));
             view.Dock = DockStyle.Fill;
 
             form.Controls.Add(view);

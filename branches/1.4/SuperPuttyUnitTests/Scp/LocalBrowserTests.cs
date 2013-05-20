@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Threading;
 using System.ComponentModel;
+using SuperPutty.Data;
 
 namespace SuperPuttyUnitTests.Scp
 {
@@ -44,7 +45,7 @@ namespace SuperPuttyUnitTests.Scp
         [Test]
         public void LocalListFiles()
         {
-            BrowserPresenter presenter = new BrowserPresenter(new LocalBrowserModel(), null);
+            BrowserPresenter presenter = new BrowserPresenter(new LocalBrowserModel(), null, null);
             IBrowserViewModel viewModel = presenter.ViewModel;
 
             // make mock dir
@@ -66,7 +67,7 @@ namespace SuperPuttyUnitTests.Scp
                     lock (this) { Monitor.Pulse(this);  }
                 }
             };
-            presenter.LoadDirectory(testDir);
+            presenter.LoadDirectory(new BrowserFileInfo(new DirectoryInfo(testDir)));
             lock (this)
             {
                 Monitor.Wait(this, 1000);
@@ -91,15 +92,18 @@ namespace SuperPuttyUnitTests.Scp
 
             Assert.AreEqual(1, viewModel.Files[7].Size);
         }
+    }
 
-
+    public class LocalBrowserViewTests
+    {
         [TestView]
         public void TestGUI()
         {
-            Log.Error("test", null);
-            BrowserPresenter presenter = new BrowserPresenter(new LocalBrowserModel(), null);
+            BrowserPresenter presenter = new BrowserPresenter(
+                new LocalBrowserModel(), new SessionData(), new MockFileTransferPresenter());
 
-            BrowserView view = new BrowserView(presenter, Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory));
+            string dir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            BrowserView view = new BrowserView(presenter, new BrowserFileInfo(new DirectoryInfo(dir)));
             view.Dock = DockStyle.Fill;
 
             Form form = new Form();
@@ -107,6 +111,5 @@ namespace SuperPuttyUnitTests.Scp
             form.Controls.Add(view);
             form.ShowDialog();
         }
-
     }
 }

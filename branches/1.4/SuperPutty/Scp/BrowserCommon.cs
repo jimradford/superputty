@@ -15,10 +15,15 @@ namespace SuperPutty.Scp
     {
         event EventHandler<AuthEventArgs> AuthRequest;
 
-        void LoadDirectory(string dir);
+        void LoadDirectory(BrowserFileInfo dir);
         void Refresh();
 
+        bool CanTransferFile(BrowserFileInfo source, BrowserFileInfo target);
+        void TransferFiles(FileTransferRequest fileTransfer);
+
         IBrowserViewModel ViewModel { get; }
+        BrowserFileInfo CurrentPath { get; }
+        SessionData Session { get; }
     }
     #endregion
     
@@ -43,10 +48,11 @@ namespace SuperPutty.Scp
     }
     #endregion
 
+
     #region ListDirectoryResult
     public class ListDirectoryResult
     {
-        public ListDirectoryResult(string path)
+        public ListDirectoryResult(BrowserFileInfo path)
         {
             this.Path = path;
             this.Files = new List<BrowserFileInfo>();
@@ -77,7 +83,18 @@ namespace SuperPutty.Scp
             }
         }
 
-        public string Path { get; private set; }
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("[").Append(GetType().Name);
+            sb.Append(" Path=").Append(this.Path.Path);
+            sb.Append(", StatusCode=").Append(this.StatusCode);
+            sb.Append(", ErrorMsg=").Append(this.ErrorMsg);
+            sb.Append("]");
+            return sb.ToString();
+        }
+
+        public BrowserFileInfo Path { get; private set; }
         public List<BrowserFileInfo> Files { get; set; }
 
         public ResultStatusCode StatusCode { get; set; }
@@ -119,6 +136,7 @@ namespace SuperPutty.Scp
             Type = FileType.Directory;
             CreateTime = drive.RootDirectory.CreationTime;
             LastModTime = drive.RootDirectory.LastWriteTime;
+            Source = SourceType.Local;
         }
 
         void Init(FileSystemInfo fsi)
@@ -128,6 +146,7 @@ namespace SuperPutty.Scp
             CreateTime = fsi.CreationTime;
             LastModTime = fsi.LastWriteTime;
             Permissions = GetPermissions(fsi.Attributes);
+            Source = SourceType.Local;
             try
             {
                 FileSecurity fs = File.GetAccessControl(fsi.FullName);
@@ -167,6 +186,7 @@ namespace SuperPutty.Scp
         public string Group { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime LastModTime { get; set; }
+        public SourceType Source { get; set; }
 
         public override string ToString()
         {
@@ -180,6 +200,7 @@ namespace SuperPutty.Scp
             sb.Append(", Group=").Append(this.Group);
             sb.AppendFormat(", CreateTime={0:s}", this.CreateTime);
             sb.AppendFormat(", LastModTime={0:s}", this.LastModTime);
+            sb.AppendFormat(", Source={0}", this.Source);
             sb.Append("]");
             return sb.ToString();
         }
@@ -203,6 +224,12 @@ namespace SuperPutty.Scp
         File
     }
 
+    public enum SourceType
+    {
+        Local, 
+        Remote
+    }
+
     public enum BrowserState
     {
         Ready,
@@ -213,23 +240,6 @@ namespace SuperPutty.Scp
     {
         Success,
         RetryAuthentication,
-        Error
-    }
-
-    public class FileTransfer
-    {
-        public BrowserFileInfo Source { get; set; }
-        public BrowserFileInfo Destination { get; set; }
-        public double PercentComplete { get; set; }
-        public FileTransferStatus Status { get; set; }
-    }
-
-    public enum FileTransferStatus2
-    {
-        Unknown,
-        Starting,
-        Running,
-        Complete,
         Error
     }
 }

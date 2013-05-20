@@ -20,10 +20,11 @@ namespace SuperPutty.Scp
         /// </summary>
         /// <param name="model">The pluggable biz logic model</param>
         /// <param name="session"></param>
-        public BrowserPresenter(IBrowserModel model, SessionData session)
+        public BrowserPresenter(IBrowserModel model, SessionData session, IFileTransferPresenter fileTransferPresenter)
         {
             this.Model = model;
             this.Session = session;
+            this.FileTransferPresenter = fileTransferPresenter;
 
             this.BackgroundWorker = new BackgroundWorker();
             this.BackgroundWorker.WorkerReportsProgress = true;
@@ -45,10 +46,12 @@ namespace SuperPutty.Scp
 
         void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            string path = (string) e.Argument;
-
-            this.BackgroundWorker.ReportProgress(5, "Requesting files...");
-            ListDirectoryResult result = this.Model.ListDirectory(this.Session, new BrowserFileInfo { Path = path });
+            BrowserFileInfo targetPath = (BrowserFileInfo)e.Argument;
+            this.BackgroundWorker.ReportProgress(5, "Requesting files for " + targetPath.Path);
+            
+            ListDirectoryResult result = this.Model.ListDirectory(this.Session, targetPath);
+            
+            this.BackgroundWorker.ReportProgress(80, "Remote call complete: " + result.StatusCode);
             e.Result = result;
         }
 
@@ -87,7 +90,8 @@ namespace SuperPutty.Scp
                             ? string.Format("{0} items", result.MountCount)
                             : string.Format("{0} files {1} directories", result.FileCount, result.DirCount);
                         this.ViewModel.Status = string.Format("{0} @ {1}", msg, DateTime.Now);
-                        this.ViewModel.CurrentPath = result.Path;
+                        this.CurrentPath = result.Path;
+                        this.ViewModel.CurrentPath = result.Path.Path;
                         BrowserViewModel.UpdateList(this.ViewModel.Files, result.Files);
                         break;
                     case ResultStatusCode.Error:
@@ -109,7 +113,7 @@ namespace SuperPutty.Scp
 
         #endregion
 
-        public void LoadDirectory(string path)
+        public void LoadDirectory(BrowserFileInfo dir)
         {
             if (this.BackgroundWorker.IsBusy)
             {
@@ -118,47 +122,26 @@ namespace SuperPutty.Scp
             else
             {
                 this.ViewModel.BrowserState = BrowserState.Working;
-                Log.InfoFormat("LoadDirectory, path={0}", path);
-                this.BackgroundWorker.RunWorkerAsync(path);
+                Log.InfoFormat("LoadDirectory, path={0}", dir);
+                this.BackgroundWorker.RunWorkerAsync(dir);
             }
         }
 
         public void Refresh()
         {
             // refresh current directory
-            this.LoadDirectory(this.ViewModel.CurrentPath);
+            this.LoadDirectory(this.CurrentPath);
         }
 
-        /*
-        public void LoadDirectorySync(string path)
+        public bool CanTransferFile(BrowserFileInfo source, BrowserFileInfo target)
         {
-            Log.InfoFormat("LoadDirectory, path={0}", path);
+            return this.FileTransferPresenter.CanTransferFile(source, target);
+        }
 
-            ListDirectoryResult result = this.Model.ListDirectory(new BrowserFileInfo { Path = path });
-
-            if (result.StatusCode == ResultStatusCode.Success)
-            {   
-                string msg = result.MountCount > 0
-                    ? string.Format("{0} items", result.MountCount)
-                    : string.Format("{0} files {1} directories", result.FileCount, result.DirCount);
-                
-                this.ViewModel.Status = string.Format("{0} @ {1}", msg, DateTime.Now);
-                this.ViewModel.CurrentPath = path;
-                BrowserViewModel.UpdateList(this.ViewModel.Files, result.Files);
-            }
-            else if (result.ErrorMsg != null)
-            {
-                Log.Error(result.ErrorMsg);
-                this.ViewModel.Status = result.ErrorMsg;
-            }
-            else if (result.Error != null)
-            {
-                string msg = string.Format("Error loading directory: {0}", result.Error.Message);
-                Log.Error(msg, result.Error);
-                this.ViewModel.Status = msg;
-            }
-        }*/
-
+        public void TransferFiles(FileTransferRequest fileTransferReqeust)
+        {
+            this.FileTransferPresenter.TransferFiles(fileTransferReqeust);
+        }
 
         protected void OnAuthRequest(AuthEventArgs evt)
         {
@@ -169,9 +152,13 @@ namespace SuperPutty.Scp
         }
 
         IBrowserModel Model { get; set; }
-        SessionData Session { get; set; }
+        IFileTransferPresenter FileTransferPresenter { get; set; }
+        
         BackgroundWorker BackgroundWorker { get; set; }
+
         public IBrowserViewModel ViewModel { get; protected set; }
+        public BrowserFileInfo CurrentPath { get; protected set; }
+        public SessionData Session { get; protected set; }
     } 
 
     #endregion

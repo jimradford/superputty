@@ -16,7 +16,7 @@ namespace SuperPutty.Scp
         {
             Log.InfoFormat("GetFilesForPath, path={0}", path.Path);
 
-            ListDirectoryResult result = new ListDirectoryResult(path.Path);
+            ListDirectoryResult result = new ListDirectoryResult(path);
             try
             {
                 LoadDirectory(path, result);
@@ -87,6 +87,7 @@ namespace SuperPutty.Scp
                 result.SetError(string.Format("Directory doesn't exist: {0}", path.Path), null);
             }
         }
+
 
     }
 }

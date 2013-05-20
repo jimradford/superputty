@@ -30,12 +30,13 @@ namespace SuperPuttyUnitTests
             this.comboAutoStart.SelectedItem = NoAutoStart;
 
             MethodInfo[] methods = TestViewAttribute.GetAllTestViews(Assembly.GetEntryAssembly());
+            Array.Reverse(methods);
             Log.InfoFormat("Found {0} test views", methods.Length);
             foreach (MethodInfo mi in methods)
             {
                 Log.InfoFormat("Adding TestView: type={0}, method={1}", mi.DeclaringType, mi.Name);
 
-                string item = string.Format("{0}-{1}", mi.DeclaringType, mi.Name);
+                string item = ToComboItem(mi);
                 this.comboAutoStart.Items.Add(item);
                 if (mi == methodAutoStart)
                 {
@@ -43,13 +44,19 @@ namespace SuperPuttyUnitTests
                 }
                 Button btn = new Button
                 {
-                    Text = string.Format("{0}.{1}", mi.DeclaringType.Name, mi.Name),
+                    Text = string.Format("{0}.{1}", mi.DeclaringType.FullName, mi.Name),
                     Tag = mi,
-                    Dock = DockStyle.Top
+                    Dock = DockStyle.Top, 
+                    TextAlign = System.Drawing.ContentAlignment.MiddleLeft
                 };
                 btn.Click += (s, e) => RunTestView((MethodInfo)((Button)s).Tag);
                 groupBoxViews.Controls.Add(btn);
             }
+        }
+
+        public static string ToComboItem(MethodInfo mi)
+        {
+            return string.Format("{0}-{1}", mi.DeclaringType, mi.Name);
         }
 
         void RunTestView(MethodInfo method)
@@ -58,6 +65,9 @@ namespace SuperPuttyUnitTests
             {
                 Object instance = Activator.CreateInstance(method.DeclaringType);
                 method.Invoke(instance, null);
+
+                // set as selected item
+                this.comboAutoStart.SelectedItem = ToComboItem(method);
             }
             catch (Exception ex)
             {
@@ -151,6 +161,14 @@ namespace SuperPuttyUnitTests
                     }
                 }
             }
+            methods.Sort((a, b) =>
+            {
+                if (a == b) return 0;
+                if (a == null) return 1;
+                if (b == null) return -1;
+                int i = Comparer<string>.Default.Compare(a.DeclaringType.FullName, b.DeclaringType.FullName);
+                return i == 0 ? Comparer<string>.Default.Compare(a.Name, b.Name) : i;
+            });
             return methods.ToArray();
         }
     }

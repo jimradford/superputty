@@ -36,8 +36,25 @@ namespace SuperPuttyUnitTests
         {
             log4net.Config.XmlConfigurator.Configure();
             Log.Info("Starting...");
+
+            AppDomain.CurrentDomain.UnhandledException += (CurrentDomain_UnhandledException);
+            Application.ThreadException += (Application_ThreadException);
             Application.EnableVisualStyles();
             Application.Run(new TestAppRunner());
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            string msg = String.Format("Unhandled Domain Exception: isTerminating={0}, ex={1}", e.IsTerminating, e.ExceptionObject);
+            Log.Error(msg);
+            MessageBox.Show(msg, "CurrentDomain_UnhandledException");
+        }
+
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            string msg = String.Format("ThreadException : ex={0}", e.Exception);
+            Log.Error(msg);
+            MessageBox.Show(msg, "Application_ThreadException");
         }
 
 

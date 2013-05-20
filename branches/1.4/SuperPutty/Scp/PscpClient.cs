@@ -10,6 +10,7 @@ using SuperPutty.Data;
 using System.ComponentModel;
 using System.IO;
 using System.Globalization;
+using log4net.Core;
 
 namespace SuperPutty.Scp
 {
@@ -71,14 +72,14 @@ namespace SuperPutty.Scp
          * 10.17 ‘Network error: Connection timed out’ error: Connection timed out
          */
 
-
-        public PscpClient(string pscpLocation) 
+        public PscpClient(string pscpLocation, SessionData session) 
         {
             this.PscpLocation = pscpLocation;
-            this.TimeoutMs = 50000;
+            this.Session = session;
+            this.TimeoutMs = 5000;
         }
 
-        public ListDirectoryResult ListDirectory(SessionData session, string path)
+        public ListDirectoryResult ListDirectory(BrowserFileInfo path)
         {
             ListDirectoryResult result = new ListDirectoryResult(path);
 
@@ -86,17 +87,17 @@ namespace SuperPutty.Scp
             {
                 result.SetError(string.Format("Pscp missing, path={0}.", this.PscpLocation), null);
             }
-            else if (session.Username == null)
+            else if (this.Session.Username == null)
             {
                 result.SetError("UserName is null", null);
             }
-            else if (session.Host == null)
+            else if (this.Session.Host == null)
             {
                 result.SetError("Host is null", null);
             }
-            else if (session.Port < 0)
+            else if (this.Session.Port < 0)
             {
-                result.SetError("Invalid port: " + session.Port, null);
+                result.SetError("Invalid port: " + this.Session.Port, null);
             }
             else
             {
@@ -105,7 +106,7 @@ namespace SuperPutty.Scp
                 {
                     FileName = this.PscpLocation,
                     WorkingDirectory = Path.GetDirectoryName(this.PscpLocation),
-                    Arguments = ToArgs(session, session.Password, path),
+                    Arguments = ToArgs(this.Session, this.Session.Password, path.Path),
                     CreateNoWindow = true,
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
@@ -113,7 +114,7 @@ namespace SuperPutty.Scp
                 };
 
                 // Start pscp
-                string args = ToArgs(session, "XXXXX", path);
+                string args = ToArgs(this.Session, "XXXXX", path.Path);
                 Log.InfoFormat("Starting process: file={0}, args={1}", this.PscpLocation, args);
                 Process proc = new Process
                 {
@@ -126,45 +127,56 @@ namespace SuperPutty.Scp
                 // NOTE: Using BeginReadOutput/ErrorReadLine doesn't work here.  Calls to read an empty stream
                 //       will block (e.g. "user's password:" prompt will block on reading err stream).  
                 AsyncStreamReader outReader = new AsyncStreamReader(
+                    "OUT",
                     proc.StandardOutput,
                     strOut =>
                     {
-                        if (strOut == PUTTY_INTERACTIVE_AUTH || strOut.Contains("password: "))
+                        bool keepReading = true;
+                        if (strOut == PUTTY_INTERACTIVE_AUTH || strOut.Contains("'s password:"))
                         {
                             result.StatusCode = ResultStatusCode.RetryAuthentication;
                             Log.Debug("Username/Password invalid or not sent");
                             proc.Kill();
+                            keepReading = false;
                         }
+                        return keepReading;
                     });
                 AsyncStreamReader errReader = new AsyncStreamReader(
+                    "ERR",
                     proc.StandardError,
                     strErr =>
                     {
+                        bool keepReading = true;
                         if (strErr != null && strErr.Contains(PUTTY_NO_KEY))
                         {
                             result.SetError("Host key not cached.  Connect via putty to cache key then try again", null);
                             proc.Kill();
+                            keepReading = false;
                         }
+                        return keepReading;
                     });
 
-                // Wait for exit - Process finished ok, finished w/error (killed), or timeout
+                // start process and wait for results
+                Log.DebugFormat("WaitingForExit: timeout={0}", this.TimeoutMs);
                 if (proc.WaitForExit(this.TimeoutMs))
                 {
                     Log.DebugFormat("Process exited normally, pid={0}, exitCode={1}", proc.Id, proc.ExitCode);
 
-                    string output = outReader.StopAndGetData().Trim();
-                    string err = errReader.StopAndGetData().Trim();
+                    string[] output = outReader.StopAndGetData();
+                    string[] err = errReader.StopAndGetData();
 
-                    if (proc.ExitCode == 0 && output.Contains(PUTTY_UNABLE_TO_OPEN))
+                    string outputStr = String.Join("\r\n", output);
+                    if (proc.ExitCode == 0 && outputStr.Contains(PUTTY_UNABLE_TO_OPEN))
                     {
-                        int idx = output.IndexOf(PUTTY_UNABLE_TO_OPEN);
-                        result.SetErrorFormat(output.Substring(idx));
+                        // bad path
+                        int idx = outputStr.IndexOf(PUTTY_UNABLE_TO_OPEN);
+                        result.SetErrorFormat(outputStr.Substring(idx));
                     }
                     else if (proc.ExitCode == 0)
                     {
                         // successful list
                         ScpLineParser parser = new ScpLineParser();
-                        foreach (string rawLine in output.Split('\n'))
+                        foreach (string rawLine in output)
                         {
                             string line = rawLine.TrimEnd();
                             BrowserFileInfo fileInfo;
@@ -172,7 +184,7 @@ namespace SuperPutty.Scp
                             {
                                 if (fileInfo.Name != ".")
                                 {
-                                    fileInfo.Path = MakePath(path, fileInfo.Name);
+                                    fileInfo.Path = MakePath(path.Path, fileInfo.Name);
                                     result.Add(fileInfo);
                                 }
                             }
@@ -185,13 +197,13 @@ namespace SuperPutty.Scp
                         {
                             Log.Debug("Skipping output check since proactively killed process.");
                         }
-                        else if (PUTTY_ARGUMENTS_HELP_HEADER == output)
+                        else if (output.Contains(PUTTY_ARGUMENTS_HELP_HEADER))
                         {
                             result.SetErrorFormat("Invalid arguments sent to pscp, args={0}, output={1}", args, output);
                         }
-                        else if (PUTTY_HOST_DOES_NOT_EXIST == err)
+                        else if (err.Contains(PUTTY_HOST_DOES_NOT_EXIST))
                         {
-                            result.SetErrorFormat("Host does not exist.  {0}:{1}", session.Host, session.Port);
+                            result.SetErrorFormat("Host does not exist.  {0}:{1}", this.Session.Host, this.Session.Port);
                         }
                         else
                         {
@@ -269,12 +281,12 @@ namespace SuperPutty.Scp
         {
             private static readonly ILog Log = LogManager.GetLogger(typeof(AsyncStreamReader));
 
-            StringBuilder sb = new StringBuilder();
-
-            public AsyncStreamReader(StreamReader reader, Action<string> dataUpdated)
+            public AsyncStreamReader(string name, StreamReader reader, Func<string, bool> dataUpdated)
             {
+                this.Name = name;
                 this.Reader = reader;
                 this.DataUpdatedHandler = dataUpdated;
+                this.Lines = new List<string>();
 
                 this.Thread = new Thread(this.ReadAll);
                 this.Thread.IsBackground = true;
@@ -285,35 +297,39 @@ namespace SuperPutty.Scp
             {
                 try
                 {
-                    int i = 0;
-                    while (this.Reader.Peek() != -1)
+                    bool keepReading = true;
+
+                    // read char-by-char at first 10 lines
+                    int linesRead = 0;
+                    StringBuilder sb = new StringBuilder();
+                    while (keepReading && this.Reader.Peek() != -1)
                     {
                         char c = (char)this.Reader.Read();
-                        lock (this)
+                        sb.Append(c);
+
+                        // add special case to fire readline if prompted with "user's password: "
+                        bool isPossibleHit =
+                            (c == '\n') ||
+                            (c == ':' && sb.Length > 12 && sb.ToString().EndsWith("'s password:"));
+
+                        //Log.InfoFormat("sb={0}, match={1}", sb, c == ':' && sb.Length > 12 && sb.ToString().EndsWith("'s password:"));
+                        if (isPossibleHit)
                         {
-                            sb.Append(c);
-                            //Log.InfoFormat("[{0}]", c);
-
-                            // scptest@localhost's password:
-                            // Store key in cache? (y/n)
-                            bool isPossibleHit =
-                                (sb.Length > 10 && c == ' ' && sb[i - 1] == ':') ||
-                                (sb.Length > 10 && c == ')' && sb[i - 2] == '/' && sb[i - 1] == 'n');
-                            if (isPossibleHit && this.DataUpdatedHandler != null)
+                            keepReading = AppendLineAndNotify(sb.ToString());
+                            if (++linesRead > 10)
                             {
-                                this.DataUpdatedHandler(sb.ToString());
-                            }
-                            i++;
-
-                            if (i > 200)
-                            {
-                                // if we got this far, we probably have normal operation...just read-to-end
-                                sb.Append(this.Reader.ReadToEnd());
                                 break;
                             }
+                            sb = new StringBuilder();
                         }
                     }
-                    Log.DebugFormat("Read completed.  len={0}", sb.Length);
+
+                    // after reading 1st line, assume we have a normal read and go by line
+                    string line;
+                    while(keepReading && (line = this.Reader.ReadLine()) != null)
+                    {
+                        keepReading = AppendLineAndNotify(line);
+                    }
                 }
                 catch (ThreadAbortException)
                 {
@@ -326,7 +342,29 @@ namespace SuperPutty.Scp
                 }
             }
 
-            public string StopAndGetData()
+            bool AppendLineAndNotify(string line)
+            {
+                lock (this)
+                {
+                    Log.Info("STartAppend");
+                    bool keepReading = true;
+
+                    string cleanLine = line.Trim('\r', '\n');
+                    this.Lines.Add(cleanLine);
+
+                    if (Log.Logger.IsEnabledFor(Level.Trace)) { Log.DebugFormat("[{0}] - {1}", Name, cleanLine); }
+
+                    if (this.DataUpdatedHandler != null)
+                    {
+                        keepReading = this.DataUpdatedHandler(cleanLine);
+                    }
+
+                    Log.Info("EndAppend");
+                    return keepReading;
+                }
+            }
+
+            public string[] StopAndGetData()
             {
                 if (this.Thread.IsAlive)
                 {
@@ -335,12 +373,14 @@ namespace SuperPutty.Scp
 
                 lock (this)
                 {
-                    return this.sb.ToString();
+                    return this.Lines.ToArray();
                 }
             }
 
+            public string Name { get; set; }
             StreamReader Reader { get; set; }
-            Action<string> DataUpdatedHandler { get; set; }
+            Func<string, bool> DataUpdatedHandler { get; set; }
+            List<string> Lines { get; set; }
             Thread Thread { get; set; }
         } 
         #endregion
@@ -372,6 +412,7 @@ namespace SuperPutty.Scp
                             Owner = match.Groups["OwnerName"].Value,
                             Group = match.Groups["GroupName"].Value,
                             Permissions = match.Groups["Permissions"].Value,
+                            Source = SourceType.Remote
                         };
                         fileInfo.Type = fileInfo.Name == ".."
                             ? FileType.ParentDirectory
@@ -425,284 +466,10 @@ namespace SuperPutty.Scp
 
         public string PscpLocation { get; private set; }
         public int TimeoutMs { get; private set; }
-
-        private dlgLogin m_Login;
-        private SessionData m_Session;
-
-        private PuttyClosedCallback m_PuttyClosed;
+        public SessionData Session {get; private set; }
 
         private Thread m_PscpThread;
-        public PuttyClosedCallback PuttyClosed
-        {
-            get { return m_PuttyClosed; }
-            set { m_PuttyClosed = value; }
-        }
 
-        public PscpClient(SessionData session)
-        {
-            m_Session = session;
-            m_Login = new dlgLogin(m_Session);
-        }
-
-        private bool m_DirIsBusy = false;
-        private Process m_processDir;
-        public void BeginGetDirectoryListing(string path, DirListingCallback callback)
-        {
-
-            if (m_Session == null)
-            {
-                callback(RequestResult.SessionInvalid, null);
-                return;
-            }
-
-            List<FileEntry> files = new List<FileEntry>();
-            Stopwatch timeoutWatch = new Stopwatch();
-
-            /* 
-             * Check that we have a username either stored from previous sessions, or loaded
-             * from the registry. If PPK Authentication is being used that will override
-             * any values entered in the login dialog
-             */
-            if (String.IsNullOrEmpty(m_Session.Username)) // || String.IsNullOrEmpty(m_Session.Password))
-            {
-                if (m_Login.ShowDialog(SuperPuTTY.MainForm) == System.Windows.Forms.DialogResult.OK)
-                {
-                    m_Session.Username = m_Login.Username;
-                    m_Session.Password = m_Login.Password;
-
-                    if (m_Login.Remember)
-                    {
-                        //m_Session.SaveToRegistry(); // passwords are *never* saved and stored permanently
-                        SuperPuTTY.SaveSessions();
-                    }
-                }
-                else
-                {
-                    Logger.Log("Cancel connection");
-                    callback(RequestResult.CancelLogin, null);
-                }
-            }
-
-            Thread threadListFiles = new Thread(delegate()
-            {
-                m_processDir = new Process();
-
-                m_processDir.EnableRaisingEvents = true;
-                m_processDir.StartInfo.UseShellExecute = false;
-                m_processDir.StartInfo.RedirectStandardError = true;
-                //m_processDir.StartInfo.RedirectStandardInput = true;
-                m_processDir.StartInfo.RedirectStandardOutput = true;
-                m_processDir.StartInfo.CreateNoWindow = true;
-                m_processDir.StartInfo.FileName = SuperPuTTY.Settings.PscpExe;
-                m_processDir.StartInfo.WorkingDirectory = Path.GetDirectoryName(SuperPuTTY.Settings.PscpExe);
-                // process the various options from the session object and convert them into arguments pscp can understand
-                string args = MakeArgs(m_Session, true, path);
-                Logger.Log("Sending Command: '{0} {1}'", m_processDir.StartInfo.FileName, MakeArgs(m_Session, false, path));
-                m_processDir.StartInfo.Arguments = args;
-                /*
-                 * Handle output from spawned pscp.exe process, handle any data received and parse
-                 * any lines that look like a directory listing.
-                 */
-                m_processDir.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
-                {
-                    if (!String.IsNullOrEmpty(e.Data))
-                    {
-                        if (e.Data.Equals(PUTTY_ARGUMENTS_HELP_HEADER))
-                        {
-                            m_processDir.CancelOutputRead();
-                            m_processDir.Kill();
-                            return;
-                        }
-                        else if (e.Data.StartsWith("Listing directory "))
-                        {
-                            // This just tells us the current directory, however since we're the ones that requested it
-                            // we already have this information. But this traps it so its not sent through the directory
-                            // entry parser.                            
-                        }
-                        else if (e.Data.Equals(PUTTY_INTERACTIVE_AUTH) || e.Data.Contains("password: "))
-                        {
-                            m_processDir.CancelOutputRead();
-                            if (!m_processDir.HasExited)
-                                m_processDir.Kill();
-                            Logger.Log("Username/Password invalid or not sent");
-                            callback(RequestResult.RetryAuthentication, null);
-                        }
-                        else
-                        {
-                            timeoutWatch.Reset();
-                            lock (files)
-                            {
-                                FileEntry file;
-                                if (TryParseFileLine(e.Data, out file))
-                                {
-                                    files.Add(file);
-                                }
-
-                                if (files.Count > 0)
-                                {
-                                    callback(RequestResult.ListingFollows, files);
-                                }
-                            }
-                        }
-                    }
-                };
-
-                m_processDir.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e)
-                {
-                    if (!String.IsNullOrEmpty(e.Data))
-                    {
-                        if (e.Data.Contains(PUTTY_NO_KEY))
-                        {
-                            m_processDir.CancelErrorRead();
-                            m_processDir.Kill();
-                            System.Windows.Forms.MessageBox.Show("The key of the host you are attempting to connect to has changed or is not cached \n" +
-                                "You must connect to this host with with a PuTTY ssh terminal to accept the key and store it in the cache", "Host Key not found or changed", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Stop);
-                        }
-                        else
-                        {
-                            Logger.Log("Error Data:\n\t'{0}'", e.Data.TrimEnd());
-                            // 'ssh_init: Host does not exist'
-                        }
-                    }
-                };
-
-                m_processDir.Exited += delegate(object sender, EventArgs e)
-                {
-                    if (m_processDir.ExitCode != 0)
-                    {
-                        Logger.Log("Process Exited (Failure): {0}", m_processDir.ExitCode);
-                        callback(RequestResult.UnknownError, null);
-                        if (m_PuttyClosed != null)
-                            m_PuttyClosed(true);
-                    }
-                    else
-                    {
-                        Logger.Log("Process Exited: {0}", m_processDir.ExitCode);
-                        if (m_PuttyClosed != null)
-                            m_PuttyClosed(false);
-                    }
-                    m_DirIsBusy = false;
-                };
-
-                try
-                {
-                    bool started = m_processDir.Start();
-                    Log.InfoFormat("Started={0}", started);
-                }
-                catch (Win32Exception e)
-                {
-                    if (e.NativeErrorCode == 2) // File Not Found
-                    {
-                        Logger.Log(e);
-                    }
-                    else if (e.NativeErrorCode == 4) // Acess Denied
-                    {
-                        Logger.Log(e);
-                    }
-                }
-
-                m_processDir.BeginErrorReadLine();
-                m_processDir.BeginOutputReadLine();
-                m_processDir.WaitForExit();
-            });
-
-            /* Only allow one directory list request at a time */
-            if (!m_DirIsBusy)
-            {
-                m_DirIsBusy = true;
-                threadListFiles.Name = "List Remote Directory";
-                threadListFiles.IsBackground = true;
-                threadListFiles.Start();
-            }
-            else
-            {
-                return;
-            }
-
-            Thread timeoutThread = new Thread(delegate()
-            {
-                while (m_DirIsBusy)
-                {
-                    /*
-                     * if no data received in 5 seconds we'll stop the process,
-                     * This allows us to capture any interactive prompts/messages
-                     * sent to us by putty.
-                     */
-                    if (timeoutWatch.Elapsed.Seconds >= 5)
-                    {
-                        Logger.Log("Timeout after {0} seconds", timeoutWatch.Elapsed.Seconds);
-
-                        if (!m_processDir.HasExited)
-                        {
-                            m_processDir.Kill();
-                        }
-                        m_processDir.CancelErrorRead();
-                        m_processDir.CancelOutputRead();
-                        return;
-                    }
-                    Thread.Sleep(1000);
-                }
-            });
-            timeoutThread.Name = "Timeout Watcher";
-            timeoutThread.IsBackground = true;
-            timeoutThread.Start();
-            timeoutWatch.Start();
-        }
-
-        private static bool TryParseFileLine(string line, out FileEntry FileNode)
-        {
-            Match match;
-            // 'drwxr-xr-x    6 jradford users        4096 Mar 28 22:07 legend'
-            match = Regex.Match(line.TrimEnd(), @"^(?<Permissions>[drwx\-lSs]+)\s+(?<LinkCount>\d{1,})\s+(?<OwnerName>\w+)\s+(?<GroupName>\w+)\s+(?<BlockCount>\d+)\s+(?<FileMonth>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s{1,2}(?<FileDay>\d{1,2})\s(?<FileHour>[0-9]{2}):(?<FileMinute>[0-9]{2})\s(?<FileName>.*)$");
-            if (!match.Success) // '-rw-r--r--   1 jradford jradford     1157 Jan 15  2002 localwww.gif'
-                match = Regex.Match(line.TrimEnd(), @"^(?<Permissions>[drwx\-lSs]+)\s+(?<LinkCount>\d+)\s+(?<OwnerName>\w+)\s+(?<GroupName>\w+)\s+(?<BlockCount>\d+)\s+(?<FileMonth>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s{1,2}(?<FileDay>\d{1,2})\s+(?<FileYear>[0-9]{4})\s(?<FileName>.*)$");
-
-            if (match.Success)
-            {
-                FileEntry node = new FileEntry();
-                node.SetPropertiesFromPermissionString(match.Groups["Permissions"].Value);
-
-                int.TryParse(match.Groups["LinkCount"].Value, out node.LinkCount);
-                node.OwnerName = match.Groups["OwnerName"].Value;
-                node.GroupName = match.Groups["GroupName"].Value;
-                int.TryParse(match.Groups["BlockCount"].Value, out node.BlockCount);
-
-                string dateStr = String.Format("{0} {1} {2} {3}:{4}:{5}",
-                    match.Groups["FileMonth"].Value,
-                    match.Groups["FileDay"].Value,
-                    String.IsNullOrEmpty(match.Groups["FileYear"].Value) ? DateTime.UtcNow.Year.ToString() : match.Groups["FileYear"].Value,
-                    String.IsNullOrEmpty(match.Groups["FileHour"].Value) ? "23" : match.Groups["FileHour"].Value,
-                    String.IsNullOrEmpty(match.Groups["FileMinute"].Value) ? "59" : match.Groups["FileMinute"].Value,
-                    String.IsNullOrEmpty(match.Groups["FileSeconds"].Value) ? "59" : match.Groups["FileSeconds"].Value);
-
-                DateTime.TryParse(dateStr, out node.TimeStamp);
-
-                node.Name = match.Groups["FileName"].Value;
-
-                FileNode = node;
-                return true;
-            }
-            else
-            {
-                Logger.Log("Could not parse directory listing entry: \n\t'{0}'", line.TrimEnd());
-                FileNode = new FileEntry();
-                return false;
-            }
-        }
-
-        static string MakeArgs(SessionData session, bool includePassword, string path)
-        {
-            string args = "-ls "; // default arguments
-            args += (!String.IsNullOrEmpty(session.PuttySession)) ? "-load \"" + session.PuttySession + "\" " : "";
-            args += (!String.IsNullOrEmpty(session.Password) && session.Password.Length > 0)
-                ? "-pw " + (includePassword ? session.Password : "XXXXX") + " "
-                : "";
-            args += "-P " + session.Port + " ";
-            args += (!String.IsNullOrEmpty(session.Username)) ? session.Username + "@" : "";
-            args += session.Host + ":" + path;
-
-            return args;
-        }
 
         /// <summary>
         /// Attempts to copy local files from the local filesystem to the selected remote target path
@@ -712,13 +479,14 @@ namespace SuperPutty.Scp
         /// <param name="callback">A callback to fire on success or error. On failure the files parameter will be null</param>
         public void BeginCopyFiles(string[] files, string target, TransferUpdateCallback callback)
         {
-            if (String.IsNullOrEmpty(m_Session.Username))
+            if (String.IsNullOrEmpty(Session.Username))
             {
+                /*
                 if (m_Login.ShowDialog(SuperPuTTY.MainForm) == System.Windows.Forms.DialogResult.OK)
                 {
-                    m_Session.Username = m_Login.Username;
-                    m_Session.Password = m_Login.Password;
-                }
+                    Session.Username = m_Login.Username;
+                    Session.Password = m_Login.Password;
+                }*/
             }
 
             // put the copy operation in the background since it could take a long long time
@@ -735,13 +503,13 @@ namespace SuperPutty.Scp
                     processCopyToRemote.StartInfo.CreateNoWindow = true;
                     // process the various options from the session object and convert them into arguments pscp can understand
                     string args = "-r -agent "; // default arguments
-                    args += (!String.IsNullOrEmpty(m_Session.PuttySession)) ? "-load \"" + m_Session.PuttySession + "\" " : "";
-                    //args += "-l " + m_Session.Username + " ";
-                    args += (!String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0) ? "-pw " + m_Session.Password + " " : "";
-                    args += "-P " + m_Session.Port + " ";
+                    args += (!String.IsNullOrEmpty(Session.PuttySession)) ? "-load \"" + Session.PuttySession + "\" " : "";
+                    //args += "-l " + Session.Username + " ";
+                    args += (!String.IsNullOrEmpty(Session.Password) && Session.Password.Length > 0) ? "-pw " + Session.Password + " " : "";
+                    args += "-P " + Session.Port + " ";
                     args += "\"" + files[0] + "\" ";
-                    args += (!String.IsNullOrEmpty(m_Session.Username)) ? m_Session.Username + "@" : "";
-                    args += m_Session.Host + ":" + target;
+                    args += (!String.IsNullOrEmpty(Session.Username)) ? Session.Username + "@" : "";
+                    args += Session.Host + ":" + target;
                     Logger.Log("Args: '{0} {1}'", processCopyToRemote.StartInfo.FileName, args);
                     processCopyToRemote.StartInfo.Arguments = args;
                     processCopyToRemote.StartInfo.UseShellExecute = false;

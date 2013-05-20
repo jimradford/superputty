@@ -211,7 +211,7 @@ namespace SuperPutty
 
                     if (m_Login.Remember)
                     {
-                        //m_Session.SaveToRegistry(); // passwords are *never* saved and stored permanently
+                        //Session.SaveToRegistry(); // passwords are *never* saved and stored permanently
                         SuperPuTTY.SaveSessions();
                     }
                 }
@@ -473,7 +473,7 @@ namespace SuperPutty
                     // process the various options from the session object and convert them into arguments pscp can understand
                     string args = "-r -agent "; // default arguments
                     args += (!String.IsNullOrEmpty(m_Session.PuttySession)) ? "-load \"" + m_Session.PuttySession + "\" " : "";
-                    //args += "-l " + m_Session.Username + " ";
+                    //args += "-l " + Session.Username + " ";
                     args += (!String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0) ? "-pw " + m_Session.Password + " " : "";
                     args += "-P " + m_Session.Port + " ";
                     args += "\"" + files[0] + "\" ";
