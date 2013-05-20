@@ -48,16 +48,10 @@ namespace SuperPutty.Scp
     }
     #endregion
 
+    #region PscpResult
 
-    #region ListDirectoryResult
-    public class ListDirectoryResult
+    public class PscpResult
     {
-        public ListDirectoryResult(BrowserFileInfo path)
-        {
-            this.Path = path;
-            this.Files = new List<BrowserFileInfo>();
-        }
-
         public void SetErrorFormat(string msgTemplate, params object[] args)
         {
             SetError(string.Format(msgTemplate, args), null);
@@ -68,6 +62,22 @@ namespace SuperPutty.Scp
             this.ErrorMsg = msg;
             this.Error = ex;
             this.StatusCode = ResultStatusCode.Error;
+        }
+
+        public ResultStatusCode StatusCode { get; set; }
+        public Exception Error { get; set; }
+        public string ErrorMsg { get; set; }
+    }
+
+    #endregion 
+
+    #region ListDirectoryResult
+    public class ListDirectoryResult : PscpResult
+    {
+        public ListDirectoryResult(BrowserFileInfo path)
+        {
+            this.Path = path;
+            this.Files = new List<BrowserFileInfo>();
         }
 
         public void Add(BrowserFileInfo fileInfo)
@@ -97,16 +107,26 @@ namespace SuperPutty.Scp
         public BrowserFileInfo Path { get; private set; }
         public List<BrowserFileInfo> Files { get; set; }
 
-        public ResultStatusCode StatusCode { get; set; }
-
-        public Exception Error { get; set; }
-        public string ErrorMsg { get; set; }
-
         public int FileCount { get; set; }
         public int DirCount { get; set; }
         public int MountCount { get; set; }
 
     } 
+    #endregion
+
+    #region FileTransferResult 
+    public class FileTransferResult : PscpResult
+    {
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("[").Append(GetType().Name);
+            sb.Append(", StatusCode=").Append(this.StatusCode);
+            sb.Append(", ErrorMsg=").Append(this.ErrorMsg);
+            sb.Append("]");
+            return sb.ToString();
+        }
+    }
     #endregion
 
     #region BrowserFileInfo
