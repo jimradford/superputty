@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using log4net;
 using SuperPutty.Data;
+using System.IO;
 
 namespace SuperPutty.Scp
 {
@@ -28,7 +29,7 @@ namespace SuperPutty.Scp
 
             if (session == null || session.Username == null)
             {
-                result = new ListDirectoryResult(path.Path);
+                result = new ListDirectoryResult(path);
                 result.ErrorMsg = "Session invalid";
                 result.StatusCode = ResultStatusCode.Error;
             }
@@ -39,13 +40,31 @@ namespace SuperPutty.Scp
                 {
                     targetPath = string.Format("/home/{0}", session.Username);
                     Log.InfoFormat("Defaulting path: {0}->{1}", path.Path, targetPath);
+                    path.Path = targetPath;
                 }
 
-                PscpClient client = new PscpClient(this.PscpLocation);
-                result = client.ListDirectory(session, targetPath);
+                PscpClient client = new PscpClient(this.PscpLocation, session);
+                result = client.ListDirectory(path);
             }
 
             return result;
+        }
+
+        public bool CanTransferFile(BrowserFileInfo source, BrowserFileInfo target)
+        {
+            return true;
+        }
+
+        public static BrowserFileInfo NewDirectory(string dir)
+        {
+            BrowserFileInfo file = new BrowserFileInfo
+            {
+                Name = Path.GetFileName(dir),
+                Path = dir, 
+                Type = FileType.Directory,
+                Source = SourceType.Remote
+            };
+            return file;
         }
 
         public SessionData Session { get; private set; }

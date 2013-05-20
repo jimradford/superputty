@@ -90,6 +90,7 @@
     </Compile>
     <Compile Include="Data\KeyboardShortcut.cs" />
     <Compile Include="Gui\BaseViewModel.cs" />
+    <Compile Include="Gui\DataGridViewProgressColumn.cs" />
     <Compile Include="Gui\ImageListPopup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -132,6 +133,14 @@
     </Compile>
     <Compile Include="Scp\BrowserView.Designer.cs">
       <DependentUpon>BrowserView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Scp\FileTransferCommon.cs" />
+    <Compile Include="Scp\FileTransferPresenter.cs" />
+    <Compile Include="Scp\FileTransferView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Scp\FileTransferView.Designer.cs">
+      <DependentUpon>FileTransferView.cs</DependentUpon>
     </Compile>
     <Compile Include="Scp\LocalBrowserModel.cs" />
     <Compile Include="Scp\PscpClient.cs" />
@@ -233,10 +242,12 @@
     <Compile Include="Utils\MinttyStartInfo.cs" />
     <Compile Include="Utils\NativeMethods.cs" />
     <Compile Include="Utils\PortableSettingsProvider.cs" />
+    <Compile Include="Utils\PropertyNotifiableObject.cs" />
     <Compile Include="Utils\PuttyStartInfo.cs" />
     <Compile Include="Utils\SingleInstanceHelper.cs" />
     <Compile Include="Utils\SingletonToolWindowHelper.cs" />
     <Compile Include="Utils\DesktopWindowHelper.cs" />
+    <Compile Include="Utils\SortableBindingList.cs" />
     <Compile Include="Utils\TabSwitcher.cs" />
     <Compile Include="Utils\TextBoxFocusHelper.cs" />
     <Compile Include="Utils\WindowActivator.cs" />
@@ -304,6 +315,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Scp\BrowserView.resx">
       <DependentUpon>BrowserView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scp\FileTransferView.resx">
+      <DependentUpon>FileTransferView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SessionTreeview.resx">
       <DependentUpon>SessionTreeview.cs</DependentUpon>
@@ -382,6 +396,7 @@
       <DependentUpon>QuickSelectorData.xsd</DependentUpon>
     </None>
     <None Include="Properties\DataSources\SuperPutty.Data.KeyboardShortcut.datasource" />
+    <None Include="Properties\DataSources\SuperPutty.Scp.FileTransferViewItem.datasource" />
     <None Include="Properties\DataSources\SuperPutty.Scp.IBrowserModel.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

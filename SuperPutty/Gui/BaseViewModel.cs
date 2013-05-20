@@ -4,50 +4,16 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using SuperPutty.Utils;
 
 namespace SuperPutty.Gui
 {
-
     #region BaseViewModel
     /// <summary>
-    /// Cool way to do INotifyPropertyChanged w/out code generation techniques (ide tool, postsharp)
-    /// http://stackoverflow.com/questions/1315621/implementing-inotifypropertychanged-does-a-better-way-exist
+    /// Base view model with utilities
     /// </summary>
-    public class BaseViewModel : INotifyPropertyChanged
+    public class BaseViewModel : PropertyNotifiableObject
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string name)
-        {
-            this.OnPropertyChanged(new PropertyChangedEventArgs(name));
-        }
-
-        protected void OnPropertyChanged(PropertyChangedEventArgs evt)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, evt);
-            }
-        }
-
-        protected virtual void OnPropertyChanged<T>(Expression<Func<T>> selectorExpression)
-        {
-            if (selectorExpression == null)
-                throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if (body == null)
-                throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(body.Member.Name);
-        }
-
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(selectorExpression);
-            return true;
-        }
 
         /// <summary>
         /// Clear the old list and replace with new but only fire an single Refresh event

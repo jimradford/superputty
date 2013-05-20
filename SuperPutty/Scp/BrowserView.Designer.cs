@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BrowserView));
             this.panelBottom = new System.Windows.Forms.Panel();
             this.labelBrowserState = new System.Windows.Forms.Label();
+            this.bindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.lblStatus = new System.Windows.Forms.Label();
             this.listViewFiles = new System.Windows.Forms.ListView();
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -52,11 +53,10 @@
             this.tileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsBtnRefresh = new System.Windows.Forms.ToolStripButton();
-            this.bindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panelBottom.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).BeginInit();
             this.panelTop.SuspendLayout();
             this.toolStripTools.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panelBottom
@@ -80,6 +80,10 @@
             this.labelBrowserState.Text = "<ConnState>";
             this.labelBrowserState.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // bindingSource
+            // 
+            this.bindingSource.DataSource = typeof(SuperPutty.Scp.IBrowserViewModel);
+            // 
             // lblStatus
             // 
             this.lblStatus.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource, "Status", true));
@@ -94,6 +98,7 @@
             // 
             // listViewFiles
             // 
+            this.listViewFiles.AllowDrop = true;
             this.listViewFiles.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listViewFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderName,
@@ -104,6 +109,7 @@
             this.columnHeaderGroup});
             this.listViewFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewFiles.FullRowSelect = true;
+            this.listViewFiles.HideSelection = false;
             this.listViewFiles.LargeImageList = this.imageListLarge;
             this.listViewFiles.Location = new System.Drawing.Point(0, 51);
             this.listViewFiles.Name = "listViewFiles";
@@ -114,6 +120,11 @@
             this.listViewFiles.UseCompatibleStateImageBehavior = false;
             this.listViewFiles.View = System.Windows.Forms.View.Details;
             this.listViewFiles.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewFiles_ColumnClick);
+            this.listViewFiles.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewFiles_ItemDrag);
+            this.listViewFiles.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewFiles_DragDrop);
+            this.listViewFiles.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewFiles_DragEnter);
+            this.listViewFiles.DragOver += new System.Windows.Forms.DragEventHandler(this.listViewFiles_DragOver);
+            this.listViewFiles.DragLeave += new System.EventHandler(this.listViewFiles_DragLeave);
             this.listViewFiles.DoubleClick += new System.EventHandler(this.listViewFiles_DoubleClick);
             // 
             // columnHeaderName
@@ -255,10 +266,6 @@
             this.tsBtnRefresh.Text = "Refresh";
             this.tsBtnRefresh.Click += new System.EventHandler(this.tsBtnRefresh_Click);
             // 
-            // bindingSource
-            // 
-            this.bindingSource.DataSource = typeof(SuperPutty.Scp.IBrowserViewModel);
-            // 
             // BrowserView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -270,11 +277,11 @@
             this.Name = "BrowserView";
             this.Size = new System.Drawing.Size(600, 603);
             this.panelBottom.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).EndInit();
             this.panelTop.ResumeLayout(false);
             this.panelTop.PerformLayout();
             this.toolStripTools.ResumeLayout(false);
             this.toolStripTools.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }

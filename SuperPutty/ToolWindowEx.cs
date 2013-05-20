@@ -62,6 +62,8 @@ namespace SuperPutty
         {
             base.OnFormClosed(e);
 
+            if (SuperPuTTY.MainForm == null) return;
+
             // only 1 panel
             if (SuperPuTTY.MainForm.CurrentPanel == this && this.NextPanel == this && this.PreviousPanel == this)
             {
