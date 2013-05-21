@@ -7,6 +7,7 @@ using System.Security.Principal;
 using log4net;
 using System.Security.AccessControl;
 using SuperPutty.Data;
+using System.Threading;
 
 namespace SuperPutty.Scp
 {
@@ -35,6 +36,7 @@ namespace SuperPutty.Scp
 
         BrowserState BrowserState { get; set; }
         BindingList<BrowserFileInfo> Files { get; }
+        SynchronizationContext Context { get; }
     }
     #endregion
 

@@ -44,19 +44,16 @@ namespace SuperPutty.Scp
             if (target.Type == FileType.File || target.Type == FileType.ParentDirectory)
             {
                 // can't drop on file or parent dir (..)
-                Log.Info("file or parentdir:" + target.Path);
                 canTransfer = false;
             }
             else if (target.Source == source.Source)
             {
                 // can't drop local-on-local or remote-on-remote
-                Log.Info("source" + target.Path);
                 canTransfer = false;
             }
             else if (target.Path == source.Path)
             {
                 // can't drop on self
-                Log.Info("path = path:" + target.Path);
                 canTransfer = false;
             }
             /*  Future...if/when local-on-local allowed
@@ -67,7 +64,6 @@ namespace SuperPutty.Scp
                 string targetDir = Path.GetFullPath(target.Path);
                 canTransfer = sourceDir != targetDir;
             }*/
-            Log.Info("CanTransfer: " + canTransfer);
             return canTransfer;
         }
 
@@ -117,13 +113,19 @@ namespace SuperPutty.Scp
 
         void transfer_Update(object sender, EventArgs e)
         {
-            if (this.ViewModel.Context.IsWaitNotificationRequired())
-            {
-                this.ViewModel.Context.Post((x) => transfer_Update(sender, e), e);
-                return;
-            }
-
             FileTransfer transfer = (FileTransfer)sender;
+            if (this.ViewModel.Context != null)
+            {
+                this.ViewModel.Context.Post((x) => ProcessTransferUpdate(transfer), e);
+            }
+            else
+            {
+                ProcessTransferUpdate(transfer);
+            }
+        }
+
+        void ProcessTransferUpdate(FileTransfer transfer)
+        {
 
             int idx = this.ViewModel.FindIndexById(transfer.Id);
             if (idx == -1)
@@ -167,6 +169,11 @@ namespace SuperPutty.Scp
                 {
                     this.fileTranfers.Remove(id);
                     transfer.Update -= (transfer_Update);
+                    int idx = this.ViewModel.FindIndexById(id);
+                    if (idx != -1)
+                    {
+                        this.ViewModel.FileTransfers.RemoveAt(idx);
+                    }
                 }
                 else
                 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using SuperPutty.Gui;
+using System.Threading;
 
 namespace SuperPutty.Scp
 {
@@ -19,6 +20,7 @@ namespace SuperPutty.Scp
             this.status = String.Empty;
             this.browserState = BrowserState.Ready;
             this.Files = new BindingList<BrowserFileInfo>();
+            this.Context = SynchronizationContext.Current;
         }
 
         public string CurrentPath
