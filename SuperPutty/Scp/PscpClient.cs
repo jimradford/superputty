@@ -176,27 +176,42 @@ namespace SuperPutty.Scp
 
         #region CopyFiles (and helpers)
 
+        /// <summary>
+        /// Copy files
+        /// </summary>
+        /// <param name="sourceFiles"></param>
+        /// <param name="target"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
         public FileTransferResult CopyFiles(List<BrowserFileInfo> sourceFiles, BrowserFileInfo target, TransferUpdateCallback callback)
         {
             lock(this)
             {
+                /// Known Issues:
+                /// - If a large exe (or other file that the OS will virus scan) is tranfered, the operation will timeout.
+                ///   After completion, the OS seems to block on the final write (while scanning).  During this time the process looks like it's
+                ///   hanging and the timeout logic kicks in.  Hacked in "completed" logic into inlineOut/Err handlers but this is awkward
+                
                 FileTransferResult result = new FileTransferResult();
 
                 string args = ToArgs(this.Session, this.Session.Password, sourceFiles, target);
-                string argsToLog = ToArgs(this.Session, this.Session.Password, sourceFiles, target);
+                string argsToLog = ToArgs(this.Session, "XXXXX", sourceFiles, target);
                 ScpLineParser parser = new ScpLineParser();
                 RunPscp(
                     result, args, argsToLog, 
                     (line) => 
-                    { 
+                    {
+                        bool completed = false;
                         if (callback != null)
                         {
                             FileTransferStatus status;
                             if (parser.TryParseTransferStatus(line, out status))
                             {
-                                callback(status.PercentComplete == 100, false, status);
+                                completed = status.PercentComplete == 100;
+                                callback(completed, false, status);
                             }
                         }
+                        return completed;
                     }, 
                     null, null);
 
@@ -213,9 +228,9 @@ namespace SuperPutty.Scp
             {
                 sb.Append("-load \"").Append(session.PuttySession).Append("\" ");
             }
-            if (!String.IsNullOrEmpty(session.Password))
+            if (!String.IsNullOrEmpty(password))
             {
-                sb.Append("-pw ").Append(session.Password).Append(" ");
+                sb.Append("-pw ").Append(password).Append(" ");
             }
             sb.AppendFormat("-P {0} ", session.Port);
 
@@ -260,9 +275,10 @@ namespace SuperPutty.Scp
         /// <param name="successOutHandler">Handler for output of successful operation</param>
         void RunPscp(
             PscpResult result, 
-            string args, string argsToLog, 
-            Action<string> inlineOutHandler, 
-            Action<string> inlineErrHandler, 
+            string args, 
+            string argsToLog, 
+            Func<string, bool> inlineOutHandler, 
+            Func<string, bool> inlineErrHandler, 
             Action<string[]> successOutHandler)
         {
             if (!File.Exists(this.Options.PscpLocation))
@@ -313,6 +329,7 @@ namespace SuperPutty.Scp
                         strOut =>
                         {
                             bool keepReading = true;
+                            bool completed = false;
                             if (strOut == PUTTY_INTERACTIVE_AUTH || strOut.Contains("'s password:"))
                             {
                                 result.StatusCode = ResultStatusCode.RetryAuthentication;
@@ -322,9 +339,9 @@ namespace SuperPutty.Scp
                             }
                             else if (inlineOutHandler != null)
                             {
-                                inlineOutHandler(strOut);
+                                completed = inlineOutHandler(strOut);
                             }
-                            timeoutTimer.Change(this.Options.TimeoutMs, Timeout.Infinite);
+                            timeoutTimer.Change(completed ? Timeout.Infinite : this.Options.TimeoutMs, Timeout.Infinite);
                             return keepReading;
                         });
                     errReader = new AsyncStreamReader(
@@ -333,6 +350,7 @@ namespace SuperPutty.Scp
                         strErr =>
                         {
                             bool keepReading = true;
+                            bool completed = false;
                             if (strErr != null && strErr.Contains(PUTTY_NO_KEY))
                             {
                                 result.SetError("Host key not cached.  Connect via putty to cache key then try again", null);
@@ -341,9 +359,9 @@ namespace SuperPutty.Scp
                             }
                             else if (inlineErrHandler != null)
                             {
-                                inlineErrHandler(strErr);
+                                completed = inlineErrHandler(strErr);
                             }
-                            timeoutTimer.Change(this.Options.TimeoutMs, Timeout.Infinite);
+                            timeoutTimer.Change(completed ? Timeout.Infinite : this.Options.TimeoutMs, Timeout.Infinite);
                             return keepReading;
                         });
 
@@ -706,7 +724,7 @@ namespace SuperPutty.Scp
     {
         public PscpOptions()
         {
-            this.TimeoutMs = 5000;
+            this.TimeoutMs = 10000;
         }
 
         public string PscpLocation { get; set; }

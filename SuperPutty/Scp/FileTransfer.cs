@@ -31,9 +31,7 @@ namespace SuperPutty.Scp
         {
             lock (this)
             {
-                if (this.TransferStatus == Status.Initializing ||
-                    this.TransferStatus == Status.Complete ||
-                    this.TransferStatus == Status.Canceled)
+                if (this.TransferStatus == Status.Initializing || CanRestart(this.TransferStatus))
                 {
                     Log.InfoFormat("Starting transfer, id={0}", this.Id);
 
@@ -56,7 +54,7 @@ namespace SuperPutty.Scp
         {
             lock (this)
             {
-                if (this.TransferStatus == Status.Running)
+                if (CanCancel(this.TransferStatus))
                 {
                     Log.InfoFormat("Canceling active transfer, id={0}", this.Id);
                     this.thread.Abort();
@@ -65,7 +63,7 @@ namespace SuperPutty.Scp
                 }
                 else
                 {
-                    Log.WarnFormat("Attempted to cancel inactive trandfer, id={0}", this.Id);
+                    Log.WarnFormat("Attempted to cancel inactive transfer, id={0}", this.Id);
                 }
             }
         }
@@ -76,15 +74,23 @@ namespace SuperPutty.Scp
             {
                 PscpClient client = new PscpClient(this.Options, this.Request.Session);
 
+                int estSizeKB = Int32.MaxValue;
                 FileTransferResult res = client.CopyFiles(
                     this.Request.SourceFiles,
                     this.Request.TargetFile,
                     (complete, cancelAll, s) =>
                     {
-                        this.UpdateStatus(
-                            s.PercentComplete,
-                            Status.Running,
-                            string.Format("{0}, {1} KB transfered ({2})", s.Filename, s.BytesTransferred / 1024, s.TimeLeft));
+                        estSizeKB = Math.Min(estSizeKB, s.BytesTransferred * 100 / s.PercentComplete);
+                        string units = estSizeKB > 1024*10 ? "MB" : "KB";
+                        int divisor = units == "MB" ? 1024 : 1;
+                        string msg = string.Format(
+                            "{0}, ({1} of {2} {3}, {4})", 
+                            s.Filename, 
+                            s.BytesTransferred / divisor, 
+                            estSizeKB / divisor,
+                            units,
+                            s.TimeLeft);
+                        this.UpdateStatus(s.PercentComplete, Status.Running, msg);
                     });
 
                 this.EndTime = DateTime.Now;
@@ -120,6 +126,16 @@ namespace SuperPutty.Scp
             {
                 this.Update(this, EventArgs.Empty);
             }
+        }
+
+        public static bool CanRestart(Status status)
+        {
+            return status == Status.Complete || status == Status.Canceled || status == Status.Error;
+        }
+
+        public static bool CanCancel(Status status)
+        {
+            return status == Status.Running;
         }
 
         public PscpOptions Options { get; private set; }
