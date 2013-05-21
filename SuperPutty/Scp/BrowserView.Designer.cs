@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BrowserView));
             this.panelBottom = new System.Windows.Forms.Panel();
             this.labelBrowserState = new System.Windows.Forms.Label();
-            this.bindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.lblStatus = new System.Windows.Forms.Label();
             this.listViewFiles = new System.Windows.Forms.ListView();
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -53,10 +52,12 @@
             this.tileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsBtnRefresh = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabelName = new System.Windows.Forms.ToolStripLabel();
+            this.bindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panelBottom.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).BeginInit();
             this.panelTop.SuspendLayout();
             this.toolStripTools.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panelBottom
@@ -77,12 +78,8 @@
             this.labelBrowserState.Name = "labelBrowserState";
             this.labelBrowserState.Size = new System.Drawing.Size(69, 22);
             this.labelBrowserState.TabIndex = 1;
-            this.labelBrowserState.Text = "<ConnState>";
+            this.labelBrowserState.Text = "<State>";
             this.labelBrowserState.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // bindingSource
-            // 
-            this.bindingSource.DataSource = typeof(SuperPutty.Scp.IBrowserViewModel);
             // 
             // lblStatus
             // 
@@ -196,8 +193,9 @@
             // 
             this.toolStripTools.AutoSize = false;
             this.toolStripTools.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsBtnRefresh,
             this.toolStripSplitButtonView,
-            this.tsBtnRefresh});
+            this.toolStripLabelName});
             this.toolStripTools.Location = new System.Drawing.Point(0, 0);
             this.toolStripTools.Name = "toolStripTools";
             this.toolStripTools.Size = new System.Drawing.Size(600, 25);
@@ -206,6 +204,7 @@
             // 
             // toolStripSplitButtonView
             // 
+            this.toolStripSplitButtonView.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolStripSplitButtonView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.detailsToolStripMenuItem,
             this.smallIconsToolStripMenuItem,
@@ -258,6 +257,7 @@
             // 
             // tsBtnRefresh
             // 
+            this.tsBtnRefresh.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.tsBtnRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsBtnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnRefresh.Image")));
             this.tsBtnRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -265,6 +265,16 @@
             this.tsBtnRefresh.Size = new System.Drawing.Size(23, 22);
             this.tsBtnRefresh.Text = "Refresh";
             this.tsBtnRefresh.Click += new System.EventHandler(this.tsBtnRefresh_Click);
+            // 
+            // toolStripLabelName
+            // 
+            this.toolStripLabelName.Name = "toolStripLabelName";
+            this.toolStripLabelName.Size = new System.Drawing.Size(55, 22);
+            this.toolStripLabelName.Text = "<Name>";
+            // 
+            // bindingSource
+            // 
+            this.bindingSource.DataSource = typeof(SuperPutty.Scp.IBrowserViewModel);
             // 
             // BrowserView
             // 
@@ -277,11 +287,11 @@
             this.Name = "BrowserView";
             this.Size = new System.Drawing.Size(600, 603);
             this.panelBottom.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).EndInit();
             this.panelTop.ResumeLayout(false);
             this.panelTop.PerformLayout();
             this.toolStripTools.ResumeLayout(false);
             this.toolStripTools.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -311,5 +321,6 @@
         private System.Windows.Forms.ImageList imageListSmall;
         private System.Windows.Forms.ImageList imageListLarge;
         private System.Windows.Forms.Label labelBrowserState;
+        private System.Windows.Forms.ToolStripLabel toolStripLabelName;
     }
 }

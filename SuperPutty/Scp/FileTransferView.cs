@@ -13,6 +13,8 @@ namespace SuperPutty.Scp
 {
     public partial class FileTransferView : UserControl
     {
+        private bool initialized = false;
+
         public FileTransferView()
         {
             InitializeComponent();
@@ -20,8 +22,16 @@ namespace SuperPutty.Scp
 
         public FileTransferView(IFileTransferPresenter presenter) : this()
         {
+            Initialize(presenter);
+        }
+
+        public void Initialize(IFileTransferPresenter presenter)
+        {
+            if (initialized) return;
+
             this.Presenter = presenter;
             this.bindingSource.DataSource = presenter.ViewModel.FileTransfers;
+            initialized = true;
         }
 
         #region Context Menu

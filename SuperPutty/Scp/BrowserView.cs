@@ -21,14 +21,10 @@ namespace SuperPutty.Scp
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(BrowserView));
 
+        bool initialized = false;
         public BrowserView(IBrowserPresenter presenter, BrowserFileInfo startingDir) : this()
         {
-            this.Presenter = presenter;
-            this.Presenter.AuthRequest += (Presenter_AuthRequest);
-            this.Bind(this.Presenter.ViewModel);
-
-            this.Presenter.LoadDirectory(startingDir);
-            this.ConfirmTransfer = true;
+            Initialize(presenter, startingDir);
         }
 
         public BrowserView()
@@ -37,6 +33,19 @@ namespace SuperPutty.Scp
 
             this.Comparer = new BrowserFileInfoComparer();
             this.listViewFiles.ListViewItemSorter = this.Comparer;
+        }
+
+        public void Initialize(IBrowserPresenter presenter, BrowserFileInfo startingDir)
+        {
+            if (this.initialized) return;
+
+            this.Presenter = presenter;
+            this.Presenter.AuthRequest += (Presenter_AuthRequest);
+            this.Bind(this.Presenter.ViewModel);
+
+            this.Presenter.LoadDirectory(startingDir);
+            this.ConfirmTransfer = true;
+            this.initialized = true;
         }
 
         void Presenter_AuthRequest(object sender, AuthEventArgs e)
@@ -64,6 +73,9 @@ namespace SuperPutty.Scp
         {
             // Bind the controls
             this.bindingSource.DataSource = model;
+
+            // can't bind toolbar
+            this.toolStripLabelName.Text = this.Presenter.ViewModel.Name;
 
             // Ugh, ListView not bindable, do it manually
             this.PopulateListView(model.Files);

@@ -13,6 +13,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Drawing;
+using SuperPutty.Scp;
 
 namespace SuperPutty
 {
@@ -428,6 +429,30 @@ namespace SuperPutty
         }
 
         public static void OpenScpSession(SessionData session)
+        {
+            Log.InfoFormat("Opening scp session, id={0}", session == null ? "" : session.SessionId);
+            if (!IsScpEnabled)
+            {
+                SuperPuTTY.ReportStatus("Could not open session, pscp not found: {0} [SCP]", session.SessionId);
+            }
+            else if (session != null)
+            {
+                PscpBrowserPanel panel = new PscpBrowserPanel(
+                    session, new PscpOptions { PscpLocation = Settings.PscpExe }, 
+                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+                ApplyDockRestrictions(panel);
+                ApplyIconForWindow(panel, session);
+                panel.Show(MainForm.DockPanel, session.LastDockstate);
+
+                SuperPuTTY.ReportStatus("Opened session: {0} [SCP]", session.SessionId);
+            }
+            else
+            {
+                Log.Warn("Could not open null session");
+            }
+        }
+
+        static void OpenScpSessionOld(SessionData session)
         {
             Log.InfoFormat("Opening scp session, id={0}", session == null ? "" : session.SessionId);
             if (!IsScpEnabled)

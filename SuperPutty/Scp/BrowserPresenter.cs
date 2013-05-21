@@ -15,12 +15,7 @@ namespace SuperPutty.Scp
 
         public event EventHandler<AuthEventArgs> AuthRequest;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model">The pluggable biz logic model</param>
-        /// <param name="session"></param>
-        public BrowserPresenter(IBrowserModel model, SessionData session, IFileTransferPresenter fileTransferPresenter)
+        public BrowserPresenter(string name, IBrowserModel model, SessionData session, IFileTransferPresenter fileTransferPresenter)
         {
             this.Model = model;
             this.Session = session;
@@ -35,8 +30,11 @@ namespace SuperPutty.Scp
             this.BackgroundWorker.ProgressChanged += (BackgroundWorker_ProgressChanged);
             this.BackgroundWorker.RunWorkerCompleted += (BackgroundWorker_RunWorkerCompleted);
 
-            this.ViewModel = new BrowserViewModel();
-            this.ViewModel.BrowserState = BrowserState.Ready;
+            this.ViewModel = new BrowserViewModel
+            {
+                Name = name, 
+                BrowserState = BrowserState.Ready
+            };
         }
 
         void FileTransfers_ListChanged(object sender, ListChangedEventArgs e)

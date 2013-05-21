@@ -31,6 +31,7 @@ namespace SuperPutty.Scp
     #region IBrowserViewModel
     public interface IBrowserViewModel : INotifyPropertyChanged
     {
+        string Name { get; set; }
         string CurrentPath { get; set; }
         string Status { get; set; }
 

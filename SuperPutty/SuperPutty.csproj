@@ -144,6 +144,12 @@
     </Compile>
     <Compile Include="Scp\FileTransferViewModel.cs" />
     <Compile Include="Scp\LocalBrowserModel.cs" />
+    <Compile Include="Scp\PscpBrowserPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Scp\PscpBrowserPanel.Designer.cs">
+      <DependentUpon>PscpBrowserPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Scp\PscpClient.cs" />
     <Compile Include="Scp\RemoteBrowserModel.cs" />
     <Compile Include="ToolWindowEx.cs">
@@ -319,6 +325,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Scp\FileTransferView.resx">
       <DependentUpon>FileTransferView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scp\PscpBrowserPanel.resx">
+      <DependentUpon>PscpBrowserPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SessionTreeview.resx">
       <DependentUpon>SessionTreeview.cs</DependentUpon>

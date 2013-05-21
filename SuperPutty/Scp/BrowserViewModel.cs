@@ -10,6 +10,7 @@ namespace SuperPutty.Scp
     /// </summary>
     public class BrowserViewModel : BaseViewModel, IBrowserViewModel
     {
+        string name;
         string currentPath;
         string status;
         BrowserState browserState;
@@ -21,6 +22,12 @@ namespace SuperPutty.Scp
             this.browserState = BrowserState.Ready;
             this.Files = new BindingList<BrowserFileInfo>();
             this.Context = SynchronizationContext.Current;
+        }
+
+        public string Name
+        {
+            get { return this.name; }
+            set { SetField(ref this.name, value, () => this.Name); }
         }
 
         public string CurrentPath
