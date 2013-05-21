@@ -155,7 +155,7 @@
             this.colId.HeaderText = "Id";
             this.colId.Name = "colId";
             this.colId.ReadOnly = true;
-            this.colId.Width = 40;
+            this.colId.Width = 30;
             // 
             // sessionDataGridViewTextBoxColumn
             // 
@@ -189,6 +189,7 @@
             this.startDataGridViewTextBoxColumn.HeaderText = "Start";
             this.startDataGridViewTextBoxColumn.Name = "startDataGridViewTextBoxColumn";
             this.startDataGridViewTextBoxColumn.ReadOnly = true;
+            this.startDataGridViewTextBoxColumn.Width = 80;
             // 
             // endDataGridViewTextBoxColumn
             // 
@@ -199,6 +200,7 @@
             this.endDataGridViewTextBoxColumn.HeaderText = "End";
             this.endDataGridViewTextBoxColumn.Name = "endDataGridViewTextBoxColumn";
             this.endDataGridViewTextBoxColumn.ReadOnly = true;
+            this.endDataGridViewTextBoxColumn.Width = 80;
             // 
             // progressDataGridViewTextBoxColumn
             // 
@@ -222,6 +224,7 @@
             // 
             this.messageDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.messageDataGridViewTextBoxColumn.DataPropertyName = "Message";
+            this.messageDataGridViewTextBoxColumn.FillWeight = 200F;
             this.messageDataGridViewTextBoxColumn.HeaderText = "Message";
             this.messageDataGridViewTextBoxColumn.Name = "messageDataGridViewTextBoxColumn";
             this.messageDataGridViewTextBoxColumn.ReadOnly = true;
@@ -230,10 +233,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 259);
             this.Controls.Add(this.grid);
             this.Name = "FileTransferView";
-            this.Text = "FileTransferView";
+            this.Size = new System.Drawing.Size(984, 259);
             ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();
             this.contextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).EndInit();

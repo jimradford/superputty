@@ -89,7 +89,7 @@ namespace SuperPuttyUnitTests.Scp
             };
 
             BrowserPresenter presenter = new BrowserPresenter(
-                new RemoteBrowserModel(ScpConfig.PscpLocation), 
+                new RemoteBrowserModel(ScpConfig.DefaultOptions), 
                 session, 
                 new MockFileTransferPresenter());
 

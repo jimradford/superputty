@@ -134,14 +134,15 @@
     <Compile Include="Scp\BrowserView.Designer.cs">
       <DependentUpon>BrowserView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Scp\FileTransferCommon.cs" />
+    <Compile Include="Scp\FileTransfer.cs" />
     <Compile Include="Scp\FileTransferPresenter.cs" />
     <Compile Include="Scp\FileTransferView.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Scp\FileTransferView.Designer.cs">
       <DependentUpon>FileTransferView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Scp\FileTransferViewModel.cs" />
     <Compile Include="Scp\LocalBrowserModel.cs" />
     <Compile Include="Scp\PscpClient.cs" />
     <Compile Include="Scp\RemoteBrowserModel.cs" />
