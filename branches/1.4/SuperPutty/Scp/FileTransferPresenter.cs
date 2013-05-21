@@ -141,31 +141,22 @@ namespace SuperPutty.Scp
                 viewItem.Message = transfer.TransferStatusMsg;
                 viewItem.Start = transfer.StartTime;
                 viewItem.End = transfer.EndTime;
-                viewItem.CanCancel = CanCancel(viewItem.Status);
-                viewItem.CanRestart = CanRestart(viewItem.Status);
-                viewItem.CanDelete = CanRestart(viewItem.Status);
+                viewItem.CanCancel = FileTransfer.CanCancel(viewItem.Status);
+                viewItem.CanRestart = FileTransfer.CanRestart(viewItem.Status);
+                viewItem.CanDelete = FileTransfer.CanRestart(viewItem.Status);
 
                 // notify on update
                 this.ViewModel.FileTransfers.ResetItem(idx);
             }
         }
 
-        bool CanRestart(FileTransfer.Status status)
-        {
-            return status == FileTransfer.Status.Complete || status == FileTransfer.Status.Canceled;
-        }
-
-        bool CanCancel(FileTransfer.Status status)
-        {
-            return status == FileTransfer.Status.Running;
-        }
 
         public void Remove(int id)
         {
             FileTransfer transfer = GetById(id);
             if (transfer != null)
             {
-                if (CanRestart(transfer.TransferStatus))
+                if (FileTransfer.CanRestart(transfer.TransferStatus))
                 {
                     this.fileTranfers.Remove(id);
                     transfer.Update -= (transfer_Update);
@@ -187,7 +178,7 @@ namespace SuperPutty.Scp
             FileTransfer transfer = GetById(id);
             if (transfer != null)
             {
-                if (CanCancel(transfer.TransferStatus))
+                if (FileTransfer.CanCancel(transfer.TransferStatus))
                 {
                     transfer.Cancel();
                 }
@@ -203,7 +194,7 @@ namespace SuperPutty.Scp
             FileTransfer transfer = GetById(id);
             if (transfer != null)
             {
-                if (CanRestart(transfer.TransferStatus))
+                if (FileTransfer.CanRestart(transfer.TransferStatus))
                 {
                     transfer.Start();
                 }
