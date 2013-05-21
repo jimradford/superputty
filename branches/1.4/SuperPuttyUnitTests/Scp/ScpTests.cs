@@ -195,7 +195,7 @@ namespace SuperPuttyUnitTests.Scp
                 Port = 22
             };
 
-            PscpClient client = new PscpClient(ScpConfig.PscpLocation, session);
+            PscpClient client = new PscpClient(ScpConfig.DefaultOptions, session);
 
             ListDirectoryResult res = client.ListDirectory(new BrowserFileInfo { Path = "." });
 
@@ -220,7 +220,7 @@ namespace SuperPuttyUnitTests.Scp
                 Port = 22
             };
 
-            PscpClient client = new PscpClient(ScpConfig.PscpLocation, session);
+            PscpClient client = new PscpClient(ScpConfig.DefaultOptions, session);
 
             ListDirectoryResult res = client.ListDirectory(new BrowserFileInfo { Path = "." });
 
@@ -241,7 +241,7 @@ namespace SuperPuttyUnitTests.Scp
                 Port = 22
             };
 
-            PscpClient client = new PscpClient(ScpConfig.PscpLocation, session);
+            PscpClient client = new PscpClient(ScpConfig.DefaultOptions, session);
 
             ListDirectoryResult res = client.ListDirectory(new BrowserFileInfo { Path = "." });
 
@@ -262,7 +262,7 @@ namespace SuperPuttyUnitTests.Scp
                 Port = 22
             };
 
-            PscpClient client = new PscpClient(ScpConfig.PscpLocation, session);
+            PscpClient client = new PscpClient(ScpConfig.DefaultOptions, session);
 
             ListDirectoryResult res = client.ListDirectory(new BrowserFileInfo { Path = "some_non_existant_dir" });
 
@@ -305,7 +305,8 @@ namespace SuperPuttyUnitTests.Scp
                 Source = SourceType.Remote
             };
 
-            PscpClient client = new PscpClient(ScpConfig.PscpLocation, session, 5000);
+            PscpOptions options = new PscpOptions { PscpLocation = ScpConfig.PscpLocation, TimeoutMs = 5000 };
+            PscpClient client = new PscpClient(options, session);
             PscpResult res = client.CopyFiles(
                 sourceFiles, 
                 target, 
@@ -339,5 +340,7 @@ namespace SuperPuttyUnitTests.Scp
         public static readonly string Password = ConfigurationManager.AppSettings["SuperPuTTY.ScpTests.Password"];
         public static readonly string KnownHost = ConfigurationManager.AppSettings["SuperPuTTY.ScpTests.KnownHost"];
         public static readonly string UnKnownHost = ConfigurationManager.AppSettings["SuperPuTTY.ScpTests.UnKnownHost"];
+
+        public static PscpOptions DefaultOptions = new PscpOptions { PscpLocation = ScpConfig.PscpLocation };
     }
 }

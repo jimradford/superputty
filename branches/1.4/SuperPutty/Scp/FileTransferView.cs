@@ -11,7 +11,7 @@ using System.IO;
 
 namespace SuperPutty.Scp
 {
-    public partial class FileTransferView : ToolWindowDocument
+    public partial class FileTransferView : UserControl
     {
         public FileTransferView()
         {
@@ -34,9 +34,9 @@ namespace SuperPutty.Scp
             {
                 // toggle on/off the actions based on view model
                 FileTransferViewItem item = (FileTransferViewItem) ((DataGridViewRow) grid.Rows[hit.RowIndex]).DataBoundItem;
-                this.runAgainToolStripMenuItem.Enabled = !item.IsActive;
-                this.cancelToolStripMenuItem.Enabled = item.IsActive;
-                this.deleteToolStripMenuItem.Enabled = !item.IsActive;
+                this.runAgainToolStripMenuItem.Enabled = item.CanRestart;
+                this.cancelToolStripMenuItem.Enabled = item.CanCancel;
+                this.deleteToolStripMenuItem.Enabled = item.CanDelete;
             }
             else
             {

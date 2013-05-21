@@ -12,9 +12,9 @@ namespace SuperPutty.Scp
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(RemoteBrowserModel));
 
-        public RemoteBrowserModel(string pscpLocation)
+        public RemoteBrowserModel(PscpOptions options)
         {
-            this.PscpLocation = pscpLocation;
+            this.Options = options;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace SuperPutty.Scp
                     path.Path = targetPath;
                 }
 
-                PscpClient client = new PscpClient(this.PscpLocation, session);
+                PscpClient client = new PscpClient(this.Options, session);
                 result = client.ListDirectory(path);
             }
 
@@ -68,10 +68,7 @@ namespace SuperPutty.Scp
         }
 
         public SessionData Session { get; private set; }
-        public string PscpLocation { get; private set; }
+        public PscpOptions Options { get; private set; }
     }
 
-    public interface IPscpClient
-    {
-    }
 }

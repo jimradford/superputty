@@ -68,6 +68,12 @@ namespace SuperPuttyUnitTests
 
                 // set as selected item
                 this.comboAutoStart.SelectedItem = ToComboItem(method);
+
+                // kill forms together
+                if (Form.ActiveForm != this)
+                {
+                    Form.ActiveForm.FormClosed += (s, e) => this.Close();
+                }
             }
             catch (Exception ex)
             {

@@ -18,6 +18,8 @@ namespace SuperPutty.Scp
     /// - Movied LoginDialog calls outside
     /// - Made calls synchronous...move async outside
     /// - Work around issue in Process.StandardOuput/StandardError blocking on calls
+    /// Alternate workaround...native process start w/correct stream reading behavior (e.g. peek doens't block)
+    /// http://stackoverflow.com/questions/6655613/why-does-standardoutput-read-block-when-startinfo-redirectstandardinput-is-set
     /// </summary>
     public class PscpClient
     {
@@ -74,14 +76,11 @@ namespace SuperPutty.Scp
         
         #endregion
 
-        public PscpClient(string pscpLocation, SessionData session) :
-            this(pscpLocation, session, 5000) { }
 
-        public PscpClient(string pscpLocation, SessionData session, int timeoutMs) 
+        public PscpClient(PscpOptions options, SessionData session) 
         {
-            this.PscpLocation = pscpLocation;
+            this.Options = options;
             this.Session = session;
-            this.TimeoutMs = timeoutMs;
         }
 
         #region ListDirectory (and helpers)
@@ -260,9 +259,9 @@ namespace SuperPutty.Scp
             Action<string> inlineErrHandler, 
             Action<string[]> successOutHandler)
         {
-            if (!File.Exists(PscpLocation))
+            if (!File.Exists(this.Options.PscpLocation))
             {
-                result.SetError(string.Format("Pscp missing, path={0}.", this.PscpLocation), null);
+                result.SetError(string.Format("Pscp missing, path={0}.", this.Options.PscpLocation), null);
             }
             else if (this.Session.Username == null)
             {
@@ -279,27 +278,30 @@ namespace SuperPutty.Scp
             else
             {
 
-                Process proc = NewProcess(this.PscpLocation, args);
+                Process proc = NewProcess(this.Options.PscpLocation, args);
+                Timer timeoutTimer = null;
+                AsyncStreamReader outReader = null;
+                AsyncStreamReader errReader = null;
                 try
                 {
                     // Start pscp
-                    Log.InfoFormat("Starting process: file={0}, args={1}", this.PscpLocation, argsToLog);
+                    Log.InfoFormat("Starting process: file={0}, args={1}", this.Options.PscpLocation, argsToLog);
                     proc.Start();
 
                     // Timeout when no output is received
-                    Timer timeoutTimer = new Timer(
+                    timeoutTimer = new Timer(
                         (x) => 
                         { 
                             // timeout
-                            proc.Kill();
+                            SafeKill(proc);
                             result.SetErrorFormat("Process timed out, args={0}", argsToLog);
                         }, 
-                        null, this.TimeoutMs, Timeout.Infinite);
+                        null, this.Options.TimeoutMs, Timeout.Infinite);
 
                     // Async read output/err.  Inline actions to quick kill the process when pscp prompts user.
                     // NOTE: Using BeginReadOutput/ErrorReadLine doesn't work here.  Calls to read an empty stream
                     //       will block (e.g. "user's password:" prompt will block on reading err stream).  
-                    AsyncStreamReader outReader = new AsyncStreamReader(
+                    outReader = new AsyncStreamReader(
                         "OUT",
                         proc.StandardOutput,
                         strOut =>
@@ -309,17 +311,17 @@ namespace SuperPutty.Scp
                             {
                                 result.StatusCode = ResultStatusCode.RetryAuthentication;
                                 Log.Debug("Username/Password invalid or not sent");
-                                proc.Kill();
+                                SafeKill(proc);
                                 keepReading = false;
                             }
                             else if (inlineOutHandler != null)
                             {
                                 inlineOutHandler(strOut);
                             }
-                            timeoutTimer.Change(this.TimeoutMs, Timeout.Infinite);
+                            timeoutTimer.Change(this.Options.TimeoutMs, Timeout.Infinite);
                             return keepReading;
                         });
-                    AsyncStreamReader errReader = new AsyncStreamReader(
+                    errReader = new AsyncStreamReader(
                         "ERR",
                         proc.StandardError,
                         strErr =>
@@ -328,14 +330,14 @@ namespace SuperPutty.Scp
                             if (strErr != null && strErr.Contains(PUTTY_NO_KEY))
                             {
                                 result.SetError("Host key not cached.  Connect via putty to cache key then try again", null);
-                                proc.Kill();
+                                SafeKill(proc);
                                 keepReading = false;
                             }
                             else if (inlineErrHandler != null)
                             {
                                 inlineErrHandler(strErr);
                             }
-                            timeoutTimer.Change(this.TimeoutMs, Timeout.Infinite);
+                            timeoutTimer.Change(this.Options.TimeoutMs, Timeout.Infinite);
                             return keepReading;
                         });
 
@@ -343,7 +345,7 @@ namespace SuperPutty.Scp
                     Log.DebugFormat("WaitingForExit");
                     proc.WaitForExit();
 
-                    Log.DebugFormat("Process exited, pid={0}, exitCode={1}", proc.Id, proc.ExitCode);
+                    Log.InfoFormat("Process exited, pid={0}, exitCode={1}", proc.Id, proc.ExitCode);
                     timeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
                     string[] output = outReader.StopAndGetData();
                     string[] err = errReader.StopAndGetData();
@@ -386,7 +388,8 @@ namespace SuperPutty.Scp
                 }
                 finally
                 {
-                    SafeKillAndDispose(proc);
+                    SafeKill(proc);
+                    SafeDispose(timeoutTimer, proc, outReader, errReader);
                 }
 
             }
@@ -423,10 +426,9 @@ namespace SuperPutty.Scp
             return proc;
         }
 
-        private static void SafeKillAndDispose(Process proc)
+        private static void SafeKill(Process proc)
         {
             if (proc == null) return;
-
             try
             {
                 if (!proc.HasExited)
@@ -438,20 +440,27 @@ namespace SuperPutty.Scp
             {
                 Log.Error("Error killing proc, pid=" + proc.Id, ex);
             }
-            try
+        }
+
+        private static void SafeDispose(params IDisposable[] disposables)
+        {
+            foreach (IDisposable disposable in disposables)
             {
-                proc.Dispose();
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Error disposing proc, pid=" + proc.Id, ex);
+                if (disposable == null) return;
+                try
+                {
+                    disposable.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Error disposing object: " + disposable, ex);
+                }
             }
         }
 
         #endregion
 
-        public string PscpLocation { get; private set; }
-        public int TimeoutMs { get; private set; }
+        public PscpOptions Options { get; private set; }
         public SessionData Session {get; private set; }
 
         #region AsyncStreamReader
@@ -460,7 +469,7 @@ namespace SuperPutty.Scp
         /// no data is available...even on peek!  
         /// http://zachsaw.blogspot.com/2011/07/streamreaderpeek-can-block-another-net.html
         /// </summary>
-        public class AsyncStreamReader
+        public class AsyncStreamReader : IDisposable
         {
             private static readonly ILog Log = LogManager.GetLogger(typeof(AsyncStreamReader));
 
@@ -565,6 +574,14 @@ namespace SuperPutty.Scp
             Func<string, bool> DataUpdatedHandler { get; set; }
             List<string> Lines { get; set; }
             Thread Thread { get; set; }
+
+            public void Dispose()
+            {
+                if (this.Thread.IsAlive)
+                {
+                    this.Thread.Abort();
+                }
+            }
         }
         #endregion
 
@@ -677,4 +694,17 @@ namespace SuperPutty.Scp
         }
         #endregion
     }
+
+    #region PscpOptions
+    public class PscpOptions
+    {
+        public PscpOptions()
+        {
+            this.TimeoutMs = 5000;
+        }
+
+        public string PscpLocation { get; set; }
+        public int TimeoutMs { get; set; }
+    } 
+    #endregion
 }

@@ -7,6 +7,9 @@ using SuperPutty.Scp;
 using log4net;
 using System.Threading;
 using System.Windows.Forms;
+using System.Drawing;
+using SuperPutty.Data;
+using System.IO;
 
 namespace SuperPuttyUnitTests.Scp
 {
@@ -20,7 +23,7 @@ namespace SuperPuttyUnitTests.Scp
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(MockFileTransferPresenter));
 
-        FileTransferPresenter filePresenter = new FileTransferPresenter();
+        FileTransferPresenter filePresenter = new FileTransferPresenter(ScpConfig.DefaultOptions);
 
         public MockFileTransferPresenter()
         {
@@ -40,6 +43,7 @@ namespace SuperPuttyUnitTests.Scp
 
         public FileTransferRequest LastRequest { get; set; }
         public FileTransferViewModel ViewModel { get; set; }
+        public PscpOptions Options { get; set; }
 
 
         public void Cancel(int id)
@@ -61,7 +65,7 @@ namespace SuperPuttyUnitTests.Scp
     public class FileTransferTestView
     {
         [TestView]
-        public void RunView()
+        public void RunMockView()
         {
             Form form = new Form();
 
@@ -91,11 +95,15 @@ namespace SuperPuttyUnitTests.Scp
                     Status = FileTransfer.Status.Canceled
                 });
 
-            FileTransferView view = new FileTransferView(presenter);
-            view.Show();
+            FileTransferView view = new FileTransferView(presenter) { Dock = DockStyle.Fill };
+            form.Controls.Add(view);
+            form.Size = new Size(1024, 250);
+            form.Show();
 
             Thread thread = new Thread(() =>
             {
+                Thread.Sleep(1000);
+                // simulate updates
                 int increment = 1;
                 while (true)
                 {
@@ -106,10 +114,56 @@ namespace SuperPuttyUnitTests.Scp
                         increment *= -1;
                     }
                     item.Progress += increment;
+
+                    if (view.IsDisposed) break;
+
+                    view.BeginInvoke(new Action(() => presenter.ViewModel.FileTransfers.ResetItem(0)), null);
                 }
             });
             thread.IsBackground = true;
             thread.Start();
+        }
+
+        [TestView]
+        public void RunCombinedView()
+        {
+            Form form = new Form();
+
+            SessionData session = new SessionData
+            {
+                SessionId = "Test/SessionId",
+                SessionName = "Test SessionName",
+                Username = ScpConfig.UserName,
+                Password = ScpConfig.Password, 
+                Host = ScpConfig.KnownHost, 
+                Port = 22
+            };
+
+            FileTransferPresenter fileTransferPresenter = new FileTransferPresenter(ScpConfig.DefaultOptions);
+
+            FileTransferView fileTransferView = new FileTransferView(fileTransferPresenter) { Dock = DockStyle.Bottom };
+            BrowserView localBrowserView = new BrowserView(
+                new BrowserPresenter(new LocalBrowserModel(), session, fileTransferPresenter), 
+                new BrowserFileInfo(new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.Desktop))));
+            localBrowserView.Dock = DockStyle.Fill;
+            
+            BrowserView remoteBrowserView = new BrowserView(
+                new BrowserPresenter(new RemoteBrowserModel(ScpConfig.DefaultOptions), session, fileTransferPresenter),
+                RemoteBrowserModel.NewDirectory("/home/" + ScpConfig.UserName));
+            remoteBrowserView.Dock = DockStyle.Fill;
+
+            SplitContainer browserPanel = new SplitContainer() 
+            { 
+                Dock = DockStyle.Fill, 
+                SplitterDistance = 75, 
+            };
+            browserPanel.Panel1.Controls.Add(localBrowserView);
+            browserPanel.Panel2.Controls.Add(remoteBrowserView);
+
+            form.Controls.Add(browserPanel);
+            form.Controls.Add(fileTransferView);
+            form.Size = new Size(1024, 768);
+            form.Show();
         }
     }
 }
