@@ -163,6 +163,7 @@
             this.sessionDataGridViewTextBoxColumn.HeaderText = "Session";
             this.sessionDataGridViewTextBoxColumn.Name = "sessionDataGridViewTextBoxColumn";
             this.sessionDataGridViewTextBoxColumn.ReadOnly = true;
+            this.sessionDataGridViewTextBoxColumn.Visible = false;
             // 
             // sourceDataGridViewTextBoxColumn
             // 
