@@ -17,6 +17,7 @@ namespace SuperPutty.Scp
     /// Simplified version of PscpTransfer class
     /// - Movied LoginDialog calls outside
     /// - Made calls synchronous...move async outside
+    /// - Make pieces unit-testable
     /// - Work around issue in Process.StandardOuput/StandardError blocking on calls
     /// Alternate workaround...native process start w/correct stream reading behavior (e.g. peek doens't block)
     /// http://stackoverflow.com/questions/6655613/why-does-standardoutput-read-block-when-startinfo-redirectstandardinput-is-set
@@ -223,9 +224,9 @@ namespace SuperPutty.Scp
                 // possible to send multiple files remotely at a time
                 foreach(BrowserFileInfo file in source)
                 {
-                    sb.Append(file.Path).Append(" ");
+                    sb.AppendFormat("\"{0}\" ", file.Path);
                 }
-                sb.AppendFormat(" {0}@{1}:{2}", session.Username, session.Host, target.Path);
+                sb.AppendFormat(" {0}@{1}:\"{2}\"", session.Username, session.Host, EscapeForUnix(target.Path));
             }
             else
             {
@@ -233,11 +234,16 @@ namespace SuperPutty.Scp
                 {
                     Log.WarnFormat("Not possible to transfer multiple remote files locally at one time.  Tranfering first only!");
                 }
-                sb.AppendFormat(" {0}@{1}:{2} ", session.Username, session.Host, source[0].Path);
-                sb.Append(target.Path);
+                sb.AppendFormat(" {0}@{1}:\"{2}\" ", session.Username, session.Host, EscapeForUnix(source[0].Path));
+                sb.AppendFormat("\"{0}\"", target.Path);
             }
 
             return sb.ToString();
+        }
+
+        static string EscapeForUnix(string path)
+        {
+            return path.Replace(" ", @"\ "); 
         }
 
         #endregion
