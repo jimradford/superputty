@@ -24,7 +24,9 @@ namespace SuperPutty.Scp
         {
             this.Model = model;
             this.Session = session;
+
             this.FileTransferPresenter = fileTransferPresenter;
+            this.FileTransferPresenter.ViewModel.FileTransfers.ListChanged += (FileTransfers_ListChanged);
 
             this.BackgroundWorker = new BackgroundWorker();
             this.BackgroundWorker.WorkerReportsProgress = true;
@@ -35,6 +37,22 @@ namespace SuperPutty.Scp
 
             this.ViewModel = new BrowserViewModel();
             this.ViewModel.BrowserState = BrowserState.Ready;
+        }
+
+        void FileTransfers_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.ItemChanged)
+            {
+                BindingList<FileTransferViewItem> list = (BindingList<FileTransferViewItem>)sender;
+                FileTransferViewItem item = list[e.NewIndex];
+                if (item.Status == FileTransfer.Status.Complete &&
+                    item.Target == this.CurrentPath.Path)
+                {
+                    Log.InfoFormat("Refreshing for FileTransferUpdate, path={0}", this.CurrentPath.Path);
+
+                    this.ViewModel.Context.Post((x) => { Log.Info("####"); this.Refresh(); }, null);
+                }
+            }
         }
 
         #region Async Work
@@ -130,6 +148,7 @@ namespace SuperPutty.Scp
         public void Refresh()
         {
             // refresh current directory
+            Log.InfoFormat("Refresh");
             this.LoadDirectory(this.CurrentPath);
         }
 

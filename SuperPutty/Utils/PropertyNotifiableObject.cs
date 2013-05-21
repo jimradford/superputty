@@ -27,7 +27,7 @@ namespace SuperPutty.Utils
             SynchronizationContext context = this.Context;
             if (handler != null)
             {
-                if (context != null && context.IsWaitNotificationRequired())
+                if (context != null)
                 {
                     context.Post((x) => handler(this, evt), null);
                 }
