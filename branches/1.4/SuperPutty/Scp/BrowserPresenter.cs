@@ -50,7 +50,7 @@ namespace SuperPutty.Scp
                 {
                     Log.InfoFormat("Refreshing for FileTransferUpdate, path={0}", this.CurrentPath.Path);
 
-                    this.ViewModel.Context.Post((x) => { Log.Info("####"); this.Refresh(); }, null);
+                    this.ViewModel.Context.Post((x) => this.Refresh(), null);
                 }
             }
         }
@@ -148,7 +148,7 @@ namespace SuperPutty.Scp
         public void Refresh()
         {
             // refresh current directory
-            Log.InfoFormat("Refresh");
+            Log.DebugFormat("Refresh");
             this.LoadDirectory(this.CurrentPath);
         }
 
