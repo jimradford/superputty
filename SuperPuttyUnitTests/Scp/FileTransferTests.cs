@@ -143,12 +143,12 @@ namespace SuperPuttyUnitTests.Scp
 
             FileTransferView fileTransferView = new FileTransferView(fileTransferPresenter) { Dock = DockStyle.Bottom };
             BrowserView localBrowserView = new BrowserView(
-                new BrowserPresenter(new LocalBrowserModel(), session, fileTransferPresenter), 
+                new BrowserPresenter("Local", new LocalBrowserModel(), session, fileTransferPresenter), 
                 new BrowserFileInfo(new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.Desktop))));
             localBrowserView.Dock = DockStyle.Fill;
             
             BrowserView remoteBrowserView = new BrowserView(
-                new BrowserPresenter(new RemoteBrowserModel(ScpConfig.DefaultOptions), session, fileTransferPresenter),
+                new BrowserPresenter("Remote", new RemoteBrowserModel(ScpConfig.DefaultOptions), session, fileTransferPresenter),
                 RemoteBrowserModel.NewDirectory("/home/" + ScpConfig.UserName));
             remoteBrowserView.Dock = DockStyle.Fill;
 
@@ -164,6 +164,24 @@ namespace SuperPuttyUnitTests.Scp
             form.Controls.Add(fileTransferView);
             form.Size = new Size(1024, 768);
             form.Show();
+        }
+
+        [TestView]
+        public void RunPscpBrowserPanel()
+        {
+            SessionData session = new SessionData
+            {
+                SessionId = "Test/SessionId",
+                SessionName = "Test SessionName",
+                Username = ScpConfig.UserName,
+                Password = ScpConfig.Password,
+                Host = ScpConfig.KnownHost,
+                Port = 22
+            };
+
+            PscpBrowserPanel panel = new PscpBrowserPanel(session, ScpConfig.DefaultOptions);
+            panel.Size = new Size(1024, 768);
+            panel.Show();
         }
     }
 }
