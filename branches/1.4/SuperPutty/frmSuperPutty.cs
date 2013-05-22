@@ -420,6 +420,7 @@ namespace SuperPutty
             SuperPuTTY.Settings.ShowToolBarConnections = this.quickConnectionToolStripMenuItem.Checked;
             SuperPuTTY.Settings.ShowToolBarCommands = this.sendCommandsToolStripMenuItem.Checked;
             SuperPuTTY.Settings.AlwaysOnTop = this.alwaysOnTopToolStripMenuItem.Checked;
+            SuperPuTTY.Settings.ShowMenuBar = this.showMenuBarToolStripMenuItem.Checked;
 
             SuperPuTTY.Settings.Save();
 
@@ -440,6 +441,9 @@ namespace SuperPutty
 
             this.TopMost = SuperPuTTY.Settings.AlwaysOnTop;
             this.alwaysOnTopToolStripMenuItem.Checked = SuperPuTTY.Settings.AlwaysOnTop;
+
+            this.menuStrip1.Visible = SuperPuTTY.Settings.ShowMenuBar;
+            this.showMenuBarToolStripMenuItem.Checked = SuperPuTTY.Settings.ShowMenuBar;
         }
 
         private void sessionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -506,6 +510,7 @@ namespace SuperPutty
 
             public frmSuperPutty MainForm { get; set; }
             public bool StatusBar { get; set; }
+            public bool MenuBar { get; set; }
             public bool ConnectionBar { get; set; }
             public bool CommandBar { get; set; }
             public bool SessionsWindow { get; set; }
@@ -523,6 +528,7 @@ namespace SuperPutty
             public void SaveState()
             {
                 this.StatusBar = this.MainForm.showStatusBarToolStripMenuItem.Checked;
+                this.MenuBar = this.MainForm.showMenuBarToolStripMenuItem.Checked;
 
                 this.ConnectionBar = this.MainForm.quickConnectionToolStripMenuItem.Checked;
                 this.CommandBar = this.MainForm.sendCommandsToolStripMenuItem.Checked;
@@ -602,7 +608,7 @@ namespace SuperPutty
                     else if (this.ConnectionBar) { this.MainForm.tsConnect.Visible = true; }
 
                     // menubar
-                    this.MainForm.menuStrip1.Show();
+                    if (this.MenuBar) { this.MainForm.menuStrip1.Show(); }
 
                     this.MainForm.TopMost = false;
                     this.MainForm.WindowState = this.FormWindowState;
@@ -1369,6 +1375,15 @@ namespace SuperPutty
         }
 
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+            if ((keyData & Keys.Alt) == Keys.Alt) 
+            {
+                menuStrip1.Visible = true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         #endregion
 
         #region Tray 
@@ -1458,5 +1473,8 @@ namespace SuperPutty
             Mixed
         }
 
+        private void menuStrip1_MenuDeactivate(object sender, EventArgs e) {
+            menuStrip1.Visible = SuperPuTTY.Settings.ShowMenuBar;
+        }
     }
 }

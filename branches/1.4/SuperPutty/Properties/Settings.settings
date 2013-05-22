@@ -137,5 +137,8 @@
     <Setting Name="PuttyPanelShowNewSessionMenu" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="ShowMenuBar" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
