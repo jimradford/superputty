@@ -95,6 +95,7 @@
             this.checkBoxRemember.TabIndex = 4;
             this.checkBoxRemember.Text = "Remember me";
             this.checkBoxRemember.UseVisualStyleBackColor = true;
+            this.checkBoxRemember.Visible = false;
             this.checkBoxRemember.CheckedChanged += new System.EventHandler(this.checkBoxRemember_CheckedChanged);
             // 
             // btnCancel
