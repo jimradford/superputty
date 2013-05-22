@@ -13,6 +13,10 @@
     # [TransferringFiles Transferring Files]
 
 
+===Known Issues===
+  * Conflict with TeamViewer's QuickConnect Feature (Issue 309)
+    "This issue is being caused by TeamViewer's QuickConnect feature that adds an additional button to every windows toolbar for easy sharing. Adding putty.exe to exception list under the advanced settings solves the problem for me." ([https://code.google.com/p/superputty/issues/detail?id=309#c5 phil.pav])
+
 ===External Articles===
   * A great guide on getting SuperPutty setup.  http://automation-nation.org/superputty-tutorial
 
