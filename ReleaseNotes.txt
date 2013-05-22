@@ -1,3 +1,10 @@
+1.4.0.4
+- New File Transfer implementation
+- 310: Hide search (Added option to hide)
+- 314: multi-second lag when right clicking on connection tab (Added option to disable menu; add suspend/resume layout)
+- 315: Unable to do ctrl-c from 'command' window (Added support for sending ctrl-c/ctrl-l, etc.)
+- 325: Auto-hide Main Menu (Merged in patch)
+
 1.4.0.3
 - 250: misfunction of Tab key  (Large change to key handling to address lost keyup events)
 - 264: Locked Tabs (Added option to restrict floating windows)
