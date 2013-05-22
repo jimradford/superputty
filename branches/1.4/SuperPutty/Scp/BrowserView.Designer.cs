@@ -45,13 +45,13 @@
             this.panelTop = new System.Windows.Forms.Panel();
             this.txtPath = new System.Windows.Forms.TextBox();
             this.toolStripTools = new System.Windows.Forms.ToolStrip();
+            this.tsBtnRefresh = new System.Windows.Forms.ToolStripButton();
             this.toolStripSplitButtonView = new System.Windows.Forms.ToolStripSplitButton();
             this.detailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.smallIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.largeIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsBtnRefresh = new System.Windows.Forms.ToolStripButton();
             this.toolStripLabelName = new System.Windows.Forms.ToolStripLabel();
             this.bindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panelBottom.SuspendLayout();
@@ -202,6 +202,17 @@
             this.toolStripTools.Stretch = true;
             this.toolStripTools.TabIndex = 4;
             // 
+            // tsBtnRefresh
+            // 
+            this.tsBtnRefresh.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.tsBtnRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsBtnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnRefresh.Image")));
+            this.tsBtnRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsBtnRefresh.Name = "tsBtnRefresh";
+            this.tsBtnRefresh.Size = new System.Drawing.Size(23, 22);
+            this.tsBtnRefresh.Text = "Refresh";
+            this.tsBtnRefresh.Click += new System.EventHandler(this.tsBtnRefresh_Click);
+            // 
             // toolStripSplitButtonView
             // 
             this.toolStripSplitButtonView.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -254,17 +265,6 @@
             this.listToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.listToolStripMenuItem.Text = "List";
             this.listToolStripMenuItem.Click += new System.EventHandler(this.listToolStripMenuItem_Click);
-            // 
-            // tsBtnRefresh
-            // 
-            this.tsBtnRefresh.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.tsBtnRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsBtnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnRefresh.Image")));
-            this.tsBtnRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsBtnRefresh.Name = "tsBtnRefresh";
-            this.tsBtnRefresh.Size = new System.Drawing.Size(23, 22);
-            this.tsBtnRefresh.Text = "Refresh";
-            this.tsBtnRefresh.Click += new System.EventHandler(this.tsBtnRefresh_Click);
             // 
             // toolStripLabelName
             // 
