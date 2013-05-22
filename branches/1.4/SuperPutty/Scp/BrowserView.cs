@@ -15,7 +15,13 @@ using System.IO;
 namespace SuperPutty.Scp
 {
     /// <summary>
+    /// Notes:
+    /// 
+    /// MVPVM
     /// http://www.codeproject.com/Articles/88390/MVP-VM-Model-View-Presenter-ViewModel-with-Data-Bi
+    /// DragDrop To Desktop
+    /// http://blogs.msdn.com/b/delay/archive/2009/10/26/creating-something-from-nothing-developer-friendly-virtual-file-implementation-for-net.aspx
+    /// http://www.codeproject.com/Articles/23139/Transferring-Virtual-Files-to-Windows-Explorer-in
     /// </summary>
     public partial class BrowserView : UserControl 
     {
