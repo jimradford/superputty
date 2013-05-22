@@ -416,11 +416,6 @@
   <ItemGroup>
     <Content Include="Apps-utilities-terminal.ico" />
     <None Include="Resources\find.png" />
-    <None Include="Resources\application_view_detail.png" />
-    <None Include="Resources\application_view_gallery.png" />
-    <None Include="Resources\application_view_icons.png" />
-    <None Include="Resources\application_view_list.png" />
-    <None Include="Resources\application_view_tile.png" />
     <Content Include="_Lib\log4net.dll" />
     <Content Include="Resources\accept-gray.png" />
     <Content Include="Resources\application_edit.png" />
