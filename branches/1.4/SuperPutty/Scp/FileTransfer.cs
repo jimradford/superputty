@@ -80,16 +80,25 @@ namespace SuperPutty.Scp
                     this.Request.TargetFile,
                     (complete, cancelAll, s) =>
                     {
-                        estSizeKB = Math.Min(estSizeKB, s.BytesTransferred * 100 / s.PercentComplete);
-                        string units = estSizeKB > 1024*10 ? "MB" : "KB";
-                        int divisor = units == "MB" ? 1024 : 1;
-                        string msg = string.Format(
-                            "{0}, ({1} of {2} {3}, {4})", 
-                            s.Filename, 
-                            s.BytesTransferred / divisor, 
-                            estSizeKB / divisor,
-                            units,
-                            s.TimeLeft);
+                        string msg;
+                        if (s.PercentComplete > 0)
+                        {
+                            estSizeKB = Math.Min(estSizeKB, s.BytesTransferred * 100 / s.PercentComplete);
+                            string units = estSizeKB > 1024 * 10 ? "MB" : "KB";
+                            int divisor = units == "MB" ? 1024 : 1;
+                            msg = string.Format(
+                                "{0}, ({1} of {2} {3}, {4})",
+                                s.Filename,
+                                s.BytesTransferred / divisor,
+                                estSizeKB / divisor,
+                                units,
+                                s.TimeLeft);
+                        }
+                        else
+                        {
+                            // < 1% completed
+                            msg = string.Format("{0}, ({1} KB, {2})", s.Filename, s.BytesTransferred, s.TimeLeft);
+                        }
                         this.UpdateStatus(s.PercentComplete, Status.Running, msg);
                     });
 
