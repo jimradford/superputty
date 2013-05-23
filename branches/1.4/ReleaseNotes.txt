@@ -1,5 +1,5 @@
 1.4.0.4
-- New File Transfer implementation
+- New File Transfer implementation (Issues: 245, 298, 302)
 - 310: Hide search (Added option to hide)
 - 314: multi-second lag when right clicking on connection tab (Added option to disable menu; add suspend/resume layout)
 - 315: Unable to do ctrl-c from 'command' window (Added support for sending ctrl-c/ctrl-l, etc.)
