@@ -88,6 +88,10 @@ namespace SuperPutty
             dlgFindPutty.PuttyCheck();
 
             InitializeComponent();
+            // force toolbar locations...designer likes to flip them around
+            this.tsConnect.Location = new System.Drawing.Point(0, 24);
+            this.tsCommands.Location = new System.Drawing.Point(0, 49);
+
             if (this.DesignMode) return;
 
             // setup connection bar
