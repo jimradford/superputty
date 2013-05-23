@@ -453,5 +453,18 @@ namespace SuperPutty.Data
             }
             return session;
         }
+
+        public override string ToString()
+        {
+
+            if (this.Proto == ConnectionProtocol.Cygterm || this.Proto == ConnectionProtocol.Mintty)
+            {
+                return string.Format("{0}://{1}", this.Proto.ToString().ToLower(), this.Host);
+            }
+            else
+            {
+                return string.Format("{0}://{1}:{2}", this.Proto.ToString().ToLower(), this.Host, this.Port);
+            }
+        }
     }
 }

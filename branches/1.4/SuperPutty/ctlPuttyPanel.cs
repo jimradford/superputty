@@ -149,6 +149,7 @@ namespace SuperPutty
                             newSessionTSMI.Tag = session;
                             newSessionTSMI.Text = session.SessionName;
                             newSessionTSMI.Click += new System.EventHandler(newSessionTSMI_Click);
+                            newSessionTSMI.ToolTipText = session.ToString();
                             tsmiParent.DropDownItems.Add(newSessionTSMI);
                         }
                         else

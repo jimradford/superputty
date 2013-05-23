@@ -544,6 +544,7 @@ namespace SuperPutty
                 addedNode = parentNode.Nodes.Add(session.SessionName, session.SessionName, ImageKeySession, ImageKeySession);
                 addedNode.Tag = session;
                 addedNode.ContextMenuStrip = this.contextMenuStripAddTreeItem;
+                addedNode.ToolTipText = session.ToString();
 
                 // Override with custom icon if valid
                 if (IsValidImage(session.ImageKey))
