@@ -42,6 +42,7 @@ using System.Collections;
 using SuperPutty.Gui;
 using System.Threading;
 using log4net.Core;
+using System.Text.RegularExpressions;
 
 namespace SuperPutty
 {
@@ -862,11 +863,6 @@ namespace SuperPutty
             }
         }
 
-        private void puTTYScpLocationToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            dlgFindPutty dialog = new dlgFindPutty();
-            dialog.ShowDialog(this);
-        }
         #endregion
 
         #region Toolbar
@@ -1458,6 +1454,61 @@ namespace SuperPutty
             }
         }
 
+        private void cleanUpStrayProcessesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Regex regex = new Regex(@"^(putty|pscp|cthelper|bash|mintty)$", RegexOptions.IgnoreCase);
+                IDictionary<string, List<Process>> procs = new Dictionary<string, List<Process>>();
+                foreach (Process p in Process.GetProcesses())
+                {
+                    if (regex.IsMatch(p.ProcessName))
+                    {
+                        List<Process> procList;
+                        if (!procs.TryGetValue(p.ProcessName, out procList))
+                        {
+                            procList = new List<Process>();
+                            procs.Add(p.ProcessName, procList);
+                        }
+                        procList.Add(p);
+                    }
+                }
+
+                StringBuilder sb = new StringBuilder();
+                foreach (KeyValuePair<string, List<Process>> plist in procs)
+                {
+                    sb.AppendFormat("{0} ({1})", plist.Key, plist.Value.Count).AppendLine();
+                }
+                if (procs.Count > 0 && DialogResult.OK == MessageBox.Show(this, sb.ToString(), "Kill Processes?", MessageBoxButtons.OKCancel))
+                {
+                    int success = 0;
+                    int error = 0;
+                    foreach (KeyValuePair<string, List<Process>> plist in procs)
+                    {
+                        foreach(Process procToKill in plist.Value)
+                        {
+                            try
+                            {
+                                procToKill.Kill();
+                                success++;
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.ErrorFormat("Error killing proc: {0} ({1})", procToKill.ProcessName, procToKill.Id, ex);
+                                error++;
+                            }
+                        }
+                    }
+                    MessageBox.Show(this, string.Format("Killed {0} processes, {1} errors", success, error), "Clean Up Complete");
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("");
+                Log.Error(msg, ex);
+                MessageBox.Show(this, msg, "Error Cleaning Processes");
+            }
+        }
 
         #endregion
 
