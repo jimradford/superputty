@@ -20,6 +20,8 @@ namespace SuperPutty.Data
         public string Name { get; set; }
         public string FilePath { get; set; }
 
+        public bool IsReadOnly { get; set; }
+
         public bool IsDefault {
             get { return this.Name == SuperPuTTY.Settings.DefaultLayoutName;  } 
         }
