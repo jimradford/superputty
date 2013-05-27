@@ -1,3 +1,6 @@
+1.4.0.5
+- 316: Add a caption when hovering over a session menu element showing the URL (in tree and new session menu)
+
 1.4.0.4
 - New File Transfer implementation (Issues: 245, 298, 302)
 - 310: Hide search (Added option to hide)
