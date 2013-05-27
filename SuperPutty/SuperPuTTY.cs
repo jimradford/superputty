@@ -200,7 +200,7 @@ namespace SuperPutty
         {
             if (!String.IsNullOrEmpty(Settings.SettingsFolder))
             {
-                LayoutData autoRestore = new LayoutData(AutoRestoreLayoutPath) { Name = LayoutData.AutoRestore };
+                LayoutData autoRestore = new LayoutData(AutoRestoreLayoutPath) { Name = LayoutData.AutoRestore, IsReadOnly = true };
                 if (Directory.Exists(LayoutsDir))
                 {
                     List<LayoutData> newLayouts = new List<LayoutData>();

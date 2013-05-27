@@ -28,9 +28,14 @@ namespace SuperPutty
 
         private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
         {
-            e.Cancel = IndexAtCursor() == -1;
+            int idx = IndexAtCursor();
+            e.Cancel = idx == -1;
+                        
+            LayoutData layout = (LayoutData) this.listBoxLayouts.Items[idx];
 
             loadInNewInstanceToolStripMenuItem.Enabled = !SuperPuTTY.Settings.SingleInstanceMode;
+            renameToolStripMenuItem.Enabled = !layout.IsReadOnly;
+            deleteToolStripMenuItem.Enabled = !layout.IsReadOnly;
         }
 
         private void listBoxLayouts_MouseDown(object sender, MouseEventArgs e)
