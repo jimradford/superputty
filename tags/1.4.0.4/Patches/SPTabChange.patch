@@ -1,0 +1,88 @@
+Index: ctlApplicationPanel.cs
+===================================================================
+--- ctlApplicationPanel.cs	(revision 217)
++++ ctlApplicationPanel.cs	(working copy)
+@@ -32,6 +32,7 @@
+ using log4net;
+ using System.Configuration;
+ using SuperPutty.Utils;
++using System.Text;
+ 
+ namespace SuperPutty
+ {
+@@ -96,8 +97,8 @@
+             //this.m_windowActivator = new SetFGCombinedWindowActivator();
+             this.m_winEventDelegate = new NativeMethods.WinEventDelegate(WinEventProc);
+             this.m_hWinEventHook = NativeMethods.SetWinEventHook(
+-                NativeMethods.EVENT_SYSTEM_FOREGROUND, 
+-                NativeMethods.EVENT_SYSTEM_FOREGROUND, 
++                NativeMethods.EVENT_SYSTEM_FOREGROUND,
++                NativeMethods.EVENT_OBJECT_NAMECHANGE, 
+                 IntPtr.Zero, 
+                 this.m_winEventDelegate, 0, 0, 
+                 NativeMethods.WINEVENT_OUTOFCONTEXT);
+@@ -172,6 +173,18 @@
+             // if we got the EVENT_SYSTEM_FOREGROUND, and the hwnd is the putty terminal hwnd (m_AppWin)
+             // then bring the supperputty window to the foreground
+ 
++            if (eventType == NativeMethods.EVENT_OBJECT_NAMECHANGE && hwnd == m_AppWin)
++            {
++
++                int length = NativeMethods.SendMessage(m_AppWin, NativeMethods.WM_GETTEXTLENGTH, 0, 0) + 1;
++                StringBuilder sb = new StringBuilder(length + 1);
++                NativeMethods.SendMessage(m_AppWin, NativeMethods.WM_GETTEXT, sb.Capacity, sb);
++                string controlText = sb.ToString();
++
++                this.Parent.Text = controlText;
++                //String text = get
++            }
++
+             if (eventType == NativeMethods.EVENT_SYSTEM_FOREGROUND && hwnd == m_AppWin)
+             {
+                 Log.DebugFormat("[{0}] HandlingForegroundEvent: settingFG={1}", hwnd, settingForeground);
+@@ -212,6 +225,13 @@
+             }
+         }
+ 
++        public static string getWindowTitle(IntPtr hWnd)
++        {
++            StringBuilder strbTitle = new StringBuilder(255);
++            int nLength = NativeMethods.GetWindowText(hWnd, strbTitle, strbTitle.Capacity + 1);
++            string strTitle = strbTitle.ToString();
++            return strTitle;
++        }
+ 
+         public event EventHandler InnerApplicationFocused;
+ 
+Index: Utils/NativeMethods.cs
+===================================================================
+--- Utils/NativeMethods.cs	(revision 217)
++++ Utils/NativeMethods.cs	(working copy)
+@@ -21,6 +21,9 @@
+         public const int WM_SYSKEYDOWN = 0x104;
+         public const int WM_SYSKEYUP = 0x105;
+ 
++        public const int WM_GETTEXTLENGTH = 0XE;
++        public const int WM_GETTEXT = 0XD;
++
+         public const int 
+             SC_MAXIMIZE = 0xF030,
+             SC_RESTORE = 0xF120;
+@@ -1071,6 +1074,9 @@
+         [DllImport("user32.dll", CharSet = CharSet.Auto)]
+         public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, int wParam, IntPtr lParam);
+ 
++        [DllImport("user32.dll", EntryPoint = "SendMessage", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
++        public static extern bool SendMessage(IntPtr hWnd, uint Msg, int wParam, StringBuilder lParam);
++
+         [DllImport("USER32.DLL", EntryPoint = "PostMessageW", SetLastError = true,
+              CharSet = CharSet.Unicode, ExactSpelling = true,
+              CallingConvention = CallingConvention.StdCall)]
+@@ -1137,6 +1143,7 @@
+ 
+         public const uint EVENT_SYSTEM_FOREGROUND = 3;
+         public const uint WINEVENT_OUTOFCONTEXT = 0;
++        public const uint EVENT_OBJECT_NAMECHANGE = 0x800C;
+ 
+         public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+ 
