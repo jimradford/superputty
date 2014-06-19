@@ -1,0 +1,242 @@
+1.4.0.5
+- 316: Add a caption when hovering over a session menu element showing the URL (in tree and new session menu)
+
+1.4.0.4
+- New File Transfer implementation (Issues: 245, 298, 302)
+- 310: Hide search (Added option to hide)
+- 314: multi-second lag when right clicking on connection tab (Added option to disable menu; add suspend/resume layout)
+- 315: Unable to do ctrl-c from 'command' window (Added support for sending ctrl-c/ctrl-l, etc.)
+- 325: Auto-hide Main Menu (Merged in patch)
+
+1.4.0.3
+- 250: misfunction of Tab key  (Large change to key handling to address lost keyup events)
+- 264: Locked Tabs (Added option to restrict floating windows)
+- 267: Alt+Tab superputty window randomly does not come to foreground, tabs have no focus when it does (Cleanup, handle new message value)
+- 269: Icon in tab (Fix issue with missing session.ImageKey)
+- 269: Icon in tab (Enable from Options, GUI)
+- 291: Open in the Sessions or Layout Views (Added additional check for hidden tool windows)
+- 294: Could not get exe error for cygwin / mintty (change log level, error to warn)
+- 297: Make the search functions case insensitive (added to open/switch - change in options)
+- 297: Make the search functions case insensitive (added to session tree)
+- 299: activate a session by hitting the enter button instead of double clicking (enter open; shift-enter edit)
+- 300: Problem save to toolsbar (Disabling those actions while in fullscreen)
+- 301: Application Thread exit while sending command (Found bug while attempting to send to non-putty window [e.g. sessions])
+- 306: TabName not being reloaded from Saved layout (Fixed issue in restoring tabName)
+
+1.4.0.2
+- 250: misfunction of Tab key  (Added options to disable control-tab window switching and keyboard shortcuts)
+- 263: Close All with one session opened (added check)
+- 266: Duplicate session with hot-key (added)
+- 278: Binding ctrl+space to "open session" results in a space in the input (Posting execute command avoid keystroke in sub windows)
+- 280: Escape & in tab title (Using TabText; added TextChanged handler to update main window title)
+- 284: Add SSH2 URI Support (added handling for SSH2.  maps to ssh)
+- 285: Input Box to search the session tree (Added search bar to session tree)
+- 293: Create new shortcuts 'Commands'  (Merged in patch; also added FocusActiveSession action)
+
+1.4.0.1
+- 250: 	misfunction of Tab key (Back out global hot keys and fix IsForegroundWindow to account for child windows)
+
+1.4.0.0
+- 111: 	Intermittent exception in file transfer window (Added potential fix for InvalidOperationException)
+- 190: 	Close All (Added along with close confirmation user pref)
+- 229: 	FIle Transfer crash on X (Added proper cross thread call handling)
+- 245: 	pscp multiple crashes (Added code to prevent opening scp from connection bar if pscp.exe location not set)
+- 245: 	pscp multiple crashes (Added check for disposed while refreshing)
+- 247: 	Wrong Path when using ".." in File Transfer Window - Leading to "no such file or directory" (Removed Click handler; handle ".." better)
+- 250: 	misfunction of Tab key (Using Global Hot keys for shortcuts)
+
+=============================================================================================
+1.3.0.11
+- 217: 	putty session disappears on maximized window on secondary monitor (Moved fix so handles case when restoring layout)
+- 242: 	Crash after a while (added extra null checks)
+- 243: 	Ignoring ShowToolBarCommands and ShowToolBarConnections settings (Re-added restore logic)
+
+1.3.0.10
+- Added SwitchSession Dialog (File -> Switch Session)
+- Added OpenSession Dialog   (File -> Open Session)
+- Various Tweaks for shortcut handling
+- 196: 	Always on top, Transparent window (Added "Always on Top" menu in View)
+- 196: 	Always on top, Transparent window (Added Opacity Setting)
+- 217: 	putty session disappears on maximized window on secondary monitor (Workaround)
+- 227: 	User-specified strings trigger automatic masking of next command (Added shortcut, Ctrl-Shift-8 [ctrl-*] to toggle mask)
+- 228: 	Tab closing - standard behavior (Moved fix to include restored tabs)
+- 237: 	Add the option to select the hosts on which to run the "command" (mcs) (Added # column and marker for active tab)
+- 238: 	Ability to delete Layouts (Added rename and delete context menu items)
+
+1.3.0.9
+- 226: 	Problem with window (issue with 1st build on 1.3.0.8)
+- 230: 	SuperPuTTY 1.3.0.8, Strange output under cursor (issue with 1st build of 1.3.0.8)
+- 228: 	Tab closing - standard behavior (Added FormClosed handler to activate right most form in pane)
+- 231: 	Superputty Error on first startup on new system (Handle error during update)
+- More logging
+
+1.3.0.8
+- 218: 	crash when start program (added message for missing .NET 3.5)
+- 219: 	New Session won't close on Cancel (Set CausesValidation=False on Cancel button)
+- 220: 	Crash on startup (Catch argument exception...Strg/Ctrl conflict)
+- 223: 	Critical hotkey bug preventing start-up (added check and error handling)
+
+1.3.0.7
+- 154: 	Configurable hotkeys to switch tabs (Configure from Options, Shortcuts)
+- 191: 	F11 et progress editor (Shortcut is configurable now)
+- 199: 	Unable to Connect Dialog (added code to not capture the error popup)
+- 214: 	Hosts moved to root (under Putty Sessions tree) are forever stuck there.  (Fix for bug introduced in 1.3.0.4)
+
+1.3.0.6
+- 180: 	Possibility to leave host name empty in SuperPutty session (made modifications throughout to support)
+- 203: 	Patch - Host icon changer for 1.3 svn
+- 207: 	Ctrl+Tab - Display focus changes but input focus remains on previous session. (added retry logic to focusing the putty)
+- 212: 	v1.3.0.5 & MRU option (like Windows Alt+Tab) - doesn't work (Added new implementation for MRU)
+- 213: 	icon becomes first icon in list if the file is removed and app restarted. (added check, use file name w/out extension)
+
+1.3.0.5
+- 169: 	Session tree font configuration (rearranged settings dialog, add few other changes)
+- 186: 	Send Commands - Send to Visible Only
+- 191: 	F11 et progress editor (Partial fix - check that control & shift are not pressed with F11)
+- 198: 	Checkbox to mask the Commands field input while typing (Replaces send with no history; masked text not saved in history)
+
+1.3.0.4
+- 188: 	Full screen issue (Fixed issue when SP goes FS from maximized; tweak to make smoother)
+- 193: 	Patch - folder move patch for issue 143 (should've added as new)
+- 195: 	"Sessions" and "Layouts" are always shown - command-line mode (if launched from cmdline, don't show sessions/layouts)
+- 197: 	Pass a env var to putty command line (added env var resolution)
+
+1.3.0.3
+-  88: 	Fullscreen Mode - Quick Hide toolbars/statusbar/toolwindows (F11)
+- 177: 	Session switching with Ctrl-Tab switches from right to left
+- 178: 	Close others, Close others to the right - added check
+- 179: 	Tooltips in the Tools -> Options Dialog
+- 181: 	Remove Folder dialog - add folder name to msgbox
+- 183: 	App crash when attempting to re-dock a floating putty window
+- 185: 	Custom Tab Name Changes After Command
+
+1.3.0.2
+- 155: 	Tab order for hotkey tabswitching gets jumbled up (Implemented Visual Order)
+- 168: 	Beta 1.3.0.1 - error at exit 
+- 175: 	Delete folder even if there are sessions in
+- 176: 	Close multiple tabs at once (Close Other, Close Others to the Right)
+
+
+1.3.0.1
+-  56: 	add support for sending the same commands to multiple opened sessions (added selector dialog and context menu "Accept Commands")
+- 146: 	Error in folder name validation (applied patch)
+- 152: 	Keyboard focus doesn't return to putty tab when switching via Alt-Tab (merged solution from akngo version)
+- 153:	dynamic view sessions (Enabled tooldtip on selected item and increase dropdown width)
+- 156:	Save settings and use the same everytime
+- 157:	Dock window does not get focus (Check for document dockstate)
+- 158:	Ability to have a multi-send command NOT logged in the history combo box (added 2nd button)
+- 162:	crash on opening session (applied fix from patch)
+- 164:	Export/Import of Sessions.XML issue (added "All Files")
+- 165: 	Patch - add putty title event change to SP tabs
+
+1.3.0.0
+- Initial build of switch tabs via keyboard shortcuts (ctrl-tab or ctrl-home/end) [roblowe53]
+- 144 - New Option: "Always start maximized" (Fixed bug in restore location)
+
+=============================================================================================
+1.2.0.14
+- 138 - After using context menu of tray icon to exit SuperPutty it can't be started again
+- 139 - Change of option "Restore Window Size and Location" is only recognized after restart
+- 140 -	Edit Session: "Default Settings" appears twice in combo box "PuTTY Session Profile"
+- 141 - Clear Window bar on closing session
+- 142 - TreeView: Wrong behavior of double click on +/- icon
+
+1.2.0.13
+- 136 - Layout crashes out if Session dock is autohidden (added check to prevent this)
+
+1.2.0.12
+- 123 - fullscreen window size should not be saved otherwise window mode becomes recorded fullscreen size
+- 125 - Tray icon size problem
+- 129 -	Context menu remains partly visible when invoking "Change Settings"
+- 132 - AboutBox: Urls are detected but nothing happens on mouse click
+- 133 - Possibility to have SuperPutty sessions w/o associated PuTTY Session Profile (empty allowed)
+- 134 -	Cannot open superputty (Fail to start if sessions.xml unparseable - added try/catch)
+- 135 - Setting to have the hostname not clear after opening a new session (overall round of clean up and tweaks)
+
+1.2.0.11
+- 126 - Error on (if you have no sessions)
+- 127 - New Session without name (icon problem)
+
+1.2.0.10
+- 45 - Minimize to Tray (merged in patch)
+- 107 -	Ability to change putty settings for current connection
+- 108 - Avoid additional item in task bar for modal dialogs (options, create/edit session ...)
+- 117 - Connect in New Instance
+- 116/119 - Minior Enhancement: Focus Window that is restarted automatically (Change for 107 addresses this)
+- 120 - Single Putty window can disappear -- window seems unrecoverable (rollback dock panel to 2.4)
+- More focus tweaking and logging
+- Support for MinTTY for local shell (from akngo fork)
+- Focus child on resize, restore, mouse move (from akngo fork)
+- Change icon (using mintty icon)
+
+1.2.0.9
+- 30 - Open Multiple sessions at one time (Sessions folder Connect All.  Warning if > 10 to open)
+- 97 - Embedded PuTTY frames can lose their visual tabs, leading to other erratic behavior (Method 1) (user confirmed fix in last build)
+- 106 - Putty sessions are collapsed at startup (added a user preference for this)
+- 109 - Add cancel button to file transfer login dialog
+- 110 -	Add close button or drop down menu to file transfer window
+- 112 - Option to enable/disable view of Sessions and Layouts tabs (View->Sessions, View->Layouts, View->Log Viewer)
+- More focus tweaking and logging
+- Sessions Tree - Added Connect in New Instace to open session in new instance of SuperPuTTY
+- Closed 7, 20, 73 - Fix in #92 seems to address all these issues.
+- Changed logging statements to remove password
+
+1.2.0.8
+- # 1 - When Application is in background, clicking on terminal session should bring application to front, not just focus app (possible fix from patch on issue #1)
+- #80 - Non standard port/telnet-ssh links
+- #99 - Center all windows on the screen
+- #103 - SCP Refresh button incorrect tooltip
+- #105 - Error on Layouts
+
+1.2.0.7
+- #13 - cant read all sessions already existed in putty.  (File, Import Sessions, From Putty settings)
+- #22 - Importing connection list from PuTTY Connection Manager to Superputty (File, Import Sessions, From Putty CM)
+- #44 - Open back previously opened session after crash or close of SuperPutty (Set Default Layout to '<AutoRestore>')
+- #94 - Visual Enhancments (Make main form icon default icon throughout application)
+- Added 'Connect External' in session tree view - Opens Putty session outside of SuperPuTTY.
+
+1.2.0.6
+- #92 - SuperPutty opens sessions in a new Putty Window
+- #96 - Problems when editing sessions w/non-standard ports
+
+1.2.0.5
+- #78 - To maximize putty screen size, add ability to hide connection & send command toolbar and status bar 
+- #82 - Menu items "Edit sessions" and "Reload sessions" 
+- #83 - Option to avoid expansion of complete tree
+- #84 - Issues when adding/editing nodes
+- #85 - Sessions default to not expanded
+- #87 - Ability to pass extra command line arguments to PuTTY 
+- Misc other clean up on add session logic
+
+1.2.0.4
+- #70 - New context menu item in tree: Create like (called it Copy As)
+- #75 - Send Commands Toolbar should be able to send just a <CR>
+- #76 - Send Commands Toolbar should clear previous command
+- #77 - sessions can be moved between folders and manually sorted trough drag and drop (drag and drop only)
+- #79 - Confirm on exit can be a preference 
+
+1.2.0.3
+- # 1 - When Application is in background, clicking on terminal session should bring application to front, not just focus app (fix from #68)
+- #27 - Single instance mode (enabled in options now)
+- #58 - Option to start maximized (restore position and state)
+- #65 - Upgrade to current version of WeifenLuo.WinFormsUI.Docking.dll (2.5)
+- #71 - Check that session or folder name is not empty (bug fix)
+- #72 - cygterm Appearance settings not honored (added '-load' flag support for cygterm)
+- #68 - Added PuTTY context menu items to PuttyPanel
+- #74 - SuperPutty 1.2.0.2 does not run under Program FIles
+
+1.2.0.2
+- #64 - Issue with PortableSettings w/numeric hostnames (disable settings)
+- #66 - Suppress beep when closing terminal session
+- Reload sessions after saving options
+
+1.2.0.1
+- Fix for #63 - The window's last line hides behind the status bar - Screenshot attached
+
+1.2.0.0
+- Merged various changes from patches on Issues
+- Moved Settings file to %USERPROFILE% or install dir (will need to reconfigure)
+- Connection tool bar
+- Send Command tool bar
+- Single instance support (edit SuperPutty.exe.config to enable)
+- Command Line interface (see issue 26...wiki page later with full usage

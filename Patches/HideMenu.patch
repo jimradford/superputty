@@ -1,0 +1,1429 @@
+Index: SuperPutty/App.config
+===================================================================
+--- SuperPutty/App.config	(revision 349)
++++ SuperPutty/App.config	(working copy)
+@@ -8,14 +8,14 @@
+   </configSections>
+ 
+   <appSettings>
+-    <add key="SuperPuTTY.SingleInstance" value="False" />
+-    <add key="SuperPuTTY.RefocusOnVisChanged" value="False" />
+-    <add key="SuperPuTTY.LoopWaitForHandle" value="True" />
+-    <add key="SuperPuTTY.ClosePuttyWaitTimeMs" value="100" />
+-    <add key="SuperPuTTY.ForceRoamingSettings" value="True" />
++    <add key="SuperPuTTY.SingleInstance" value="False"/>
++    <add key="SuperPuTTY.RefocusOnVisChanged" value="False"/>
++    <add key="SuperPuTTY.LoopWaitForHandle" value="True"/>
++    <add key="SuperPuTTY.ClosePuttyWaitTimeMs" value="100"/>
++    <add key="SuperPuTTY.ForceRoamingSettings" value="True"/>
+     <!-- <add key="SuperPuTTY.XMLEditor" value="C:\Program Files (x86)\Notepad++\notepad++.exe" /> -->
+-    <add key="SuperPuTTY.XMLEditor" value="notepad" />
+-    <add key="SuperPuTTY.MaxSessionsToOpen" value="10" />
++    <add key="SuperPuTTY.XMLEditor" value="notepad"/>
++    <add key="SuperPuTTY.MaxSessionsToOpen" value="10"/>
+   </appSettings>
+   
+   <log4net debug="false">
+@@ -33,7 +33,7 @@
+     </appender>
+ 
+     <appender name="RollingFileAppender" type="log4net.Appender.RollingFileAppender">
+-      <file type="log4net.Util.PatternString" value="${TEMP}/SuperPuTTY.%date{yyyyMMdd_HHmmss}.log" />
++      <file type="log4net.Util.PatternString" value="${TEMP}/SuperPuTTY.%date{yyyyMMdd_HHmmss}.log"/>
+       <!-- <file value="${TEMP}/SuperPuTTY.log"/> -->
+       <appendToFile value="true"/>
+       <rollingStyle value="Size"/>
+@@ -46,19 +46,19 @@
+     </appender>
+ 
+     <logger name="SuperPutty.ApplicationPanel">
+-      <level value="INFO" />
++      <level value="INFO"/>
+     </logger>
+-    <logger name="SuperPutty.SessionTreeview" >
+-      <level value="INFO" />
++    <logger name="SuperPutty.SessionTreeview">
++      <level value="INFO"/>
+     </logger>
+     <logger name="SuperPutty.Utils.SimpleMRUTabSwitchStrategy">
+-      <level value="DEBUG" />
++      <level value="DEBUG"/>
+     </logger>
+-    <logger name="SuperPutty.RemoteFileListPanel" >
+-      <level value="INFO" />
++    <logger name="SuperPutty.RemoteFileListPanel">
++      <level value="INFO"/>
+     </logger>
+     <logger name="SuperPutty.Utils.ChildWindowFocusHelper">
+-      <level value="INFO" />
++      <level value="INFO"/>
+     </logger>
+     
+     <root>
+@@ -72,19 +72,19 @@
+   <userSettings>
+     <SuperPutty.Properties.Settings>
+       <setting name="PuttyExe" serializeAs="String">
+-        <value />
++        <value/>
+       </setting>
+       <setting name="PscpExe" serializeAs="String">
+-        <value />
++        <value/>
+       </setting>
+       <setting name="SettingsFolder" serializeAs="String">
+-        <value />
++        <value/>
+       </setting>
+       <setting name="DefaultLayoutName" serializeAs="String">
+-        <value />
++        <value/>
+       </setting>
+       <setting name="ApplicationVersion" serializeAs="String">
+-        <value />
++        <value/>
+       </setting>
+       <setting name="SingleInstanceMode" serializeAs="String">
+         <value>False</value>
+@@ -120,7 +120,7 @@
+         <value>False</value>
+       </setting>
+       <setting name="MinttyExe" serializeAs="String">
+-        <value />
++        <value/>
+       </setting>
+       <setting name="TabTextBehavior" serializeAs="String">
+         <value>Static</value>
+@@ -206,6 +206,9 @@
+       <setting name="PuttyPanelShowNewSessionMenu" serializeAs="String">
+         <value>True</value>
+       </setting>
++      <setting name="ShowMenuBar" serializeAs="String">
++        <value>True</value>
++      </setting>
+     </SuperPutty.Properties.Settings>
+   </userSettings>
+-<startup><supportedRuntime version="v2.0.50727"/></startup></configuration>
++<startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/></startup></configuration>
+Index: SuperPutty/frmSuperPutty.cs
+===================================================================
+--- SuperPutty/frmSuperPutty.cs	(revision 349)
++++ SuperPutty/frmSuperPutty.cs	(working copy)
+@@ -420,6 +420,7 @@
+             SuperPuTTY.Settings.ShowToolBarConnections = this.quickConnectionToolStripMenuItem.Checked;
+             SuperPuTTY.Settings.ShowToolBarCommands = this.sendCommandsToolStripMenuItem.Checked;
+             SuperPuTTY.Settings.AlwaysOnTop = this.alwaysOnTopToolStripMenuItem.Checked;
++            SuperPuTTY.Settings.ShowMenuBar = this.showMenuBarToolStripMenuItem.Checked;
+ 
+             SuperPuTTY.Settings.Save();
+ 
+@@ -440,6 +441,9 @@
+ 
+             this.TopMost = SuperPuTTY.Settings.AlwaysOnTop;
+             this.alwaysOnTopToolStripMenuItem.Checked = SuperPuTTY.Settings.AlwaysOnTop;
++
++            this.menuStrip1.Visible = SuperPuTTY.Settings.ShowMenuBar;
++            this.showMenuBarToolStripMenuItem.Checked = SuperPuTTY.Settings.ShowMenuBar;
+         }
+ 
+         private void sessionsToolStripMenuItem_Click(object sender, EventArgs e)
+@@ -506,6 +510,7 @@
+ 
+             public frmSuperPutty MainForm { get; set; }
+             public bool StatusBar { get; set; }
++            public bool MenuBar { get; set; }
+             public bool ConnectionBar { get; set; }
+             public bool CommandBar { get; set; }
+             public bool SessionsWindow { get; set; }
+@@ -523,6 +528,7 @@
+             public void SaveState()
+             {
+                 this.StatusBar = this.MainForm.showStatusBarToolStripMenuItem.Checked;
++                this.MenuBar = this.MainForm.showMenuBarToolStripMenuItem.Checked;
+ 
+                 this.ConnectionBar = this.MainForm.quickConnectionToolStripMenuItem.Checked;
+                 this.CommandBar = this.MainForm.sendCommandsToolStripMenuItem.Checked;
+@@ -602,7 +608,7 @@
+                     else if (this.ConnectionBar) { this.MainForm.tsConnect.Visible = true; }
+ 
+                     // menubar
+-                    this.MainForm.menuStrip1.Show();
++                    if (this.MenuBar) { this.MainForm.menuStrip1.Show(); }
+ 
+                     this.MainForm.TopMost = false;
+                     this.MainForm.WindowState = this.FormWindowState;
+@@ -1378,6 +1384,14 @@
+         }
+ 
+ 
++        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
++            if (keyData.HasFlag(Keys.Alt)) {
++                menuStrip1.Visible = true;
++            }
++
++            return base.ProcessCmdKey(ref msg, keyData);
++        }
++
+         #endregion
+ 
+         #region Tray 
+@@ -1467,5 +1481,8 @@
+             Mixed
+         }
+ 
++        private void menuStrip1_MenuDeactivate(object sender, EventArgs e) {
++            menuStrip1.Visible = SuperPuTTY.Settings.ShowMenuBar;
++        }
+     }
+ }
+Index: SuperPutty/frmSuperPutty.Designer.cs
+===================================================================
+--- SuperPutty/frmSuperPutty.Designer.cs	(revision 349)
++++ SuperPutty/frmSuperPutty.Designer.cs	(working copy)
+@@ -73,6 +73,7 @@
+             this.sendCommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
+             this.showStatusBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
++            this.showMenuBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+             this.alwaysOnTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+             this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
+             this.fullScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+@@ -139,9 +140,10 @@
+             this.helpToolStripMenuItem});
+             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+             this.menuStrip1.Name = "menuStrip1";
+-            this.menuStrip1.Size = new System.Drawing.Size(1344, 28);
++            this.menuStrip1.Size = new System.Drawing.Size(1008, 24);
+             this.menuStrip1.TabIndex = 4;
+             this.menuStrip1.Text = "menuStrip1";
++            this.menuStrip1.MenuDeactivate += new System.EventHandler(this.menuStrip1_MenuDeactivate);
+             // 
+             // fileToolStripMenuItem
+             // 
+@@ -160,8 +162,8 @@
+             this.toolStripSeparator3,
+             this.toolStripMenuItem2});
+             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
+-            this.fileToolStripMenuItem.Text = "File";
++            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
++            this.fileToolStripMenuItem.Text = "&File";
+             // 
+             // importSettingsToolStripMenuItem
+             // 
+@@ -170,105 +172,105 @@
+             this.fromPuTTYSettingsToolStripMenuItem,
+             this.fromPuTTYCMExportToolStripMenuItem});
+             this.importSettingsToolStripMenuItem.Name = "importSettingsToolStripMenuItem";
+-            this.importSettingsToolStripMenuItem.Size = new System.Drawing.Size(242, 24);
+-            this.importSettingsToolStripMenuItem.Text = "Import Sessions";
++            this.importSettingsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
++            this.importSettingsToolStripMenuItem.Text = "&Import Sessions";
+             // 
+             // fromFileToolStripMenuItem
+             // 
+             this.fromFileToolStripMenuItem.Name = "fromFileToolStripMenuItem";
+-            this.fromFileToolStripMenuItem.Size = new System.Drawing.Size(229, 24);
+-            this.fromFileToolStripMenuItem.Text = "From File";
++            this.fromFileToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
++            this.fromFileToolStripMenuItem.Text = "From &File";
+             this.fromFileToolStripMenuItem.Click += new System.EventHandler(this.fromFileToolStripMenuItem_Click);
+             // 
+             // fromPuTTYSettingsToolStripMenuItem
+             // 
+             this.fromPuTTYSettingsToolStripMenuItem.Name = "fromPuTTYSettingsToolStripMenuItem";
+-            this.fromPuTTYSettingsToolStripMenuItem.Size = new System.Drawing.Size(229, 24);
+-            this.fromPuTTYSettingsToolStripMenuItem.Text = "From PuTTY Settings";
++            this.fromPuTTYSettingsToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
++            this.fromPuTTYSettingsToolStripMenuItem.Text = "From PuTTY &Settings";
+             this.fromPuTTYSettingsToolStripMenuItem.Click += new System.EventHandler(this.fromPuTTYSettingsToolStripMenuItem_Click);
+             // 
+             // fromPuTTYCMExportToolStripMenuItem
+             // 
+             this.fromPuTTYCMExportToolStripMenuItem.Name = "fromPuTTYCMExportToolStripMenuItem";
+-            this.fromPuTTYCMExportToolStripMenuItem.Size = new System.Drawing.Size(229, 24);
+-            this.fromPuTTYCMExportToolStripMenuItem.Text = "From PuTTY CM Export";
++            this.fromPuTTYCMExportToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
++            this.fromPuTTYCMExportToolStripMenuItem.Text = "From PuTTY &CM Export";
+             this.fromPuTTYCMExportToolStripMenuItem.Click += new System.EventHandler(this.fromPuTTYCMExportToolStripMenuItem_Click);
+             // 
+             // toolStripMenuItem1
+             // 
+             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+-            this.toolStripMenuItem1.Size = new System.Drawing.Size(242, 24);
+-            this.toolStripMenuItem1.Text = "Export Sessions";
++            this.toolStripMenuItem1.Size = new System.Drawing.Size(203, 22);
++            this.toolStripMenuItem1.Text = "&Export Sessions";
+             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+             // 
+             // toolStripMenuItem7
+             // 
+             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+-            this.toolStripMenuItem7.Size = new System.Drawing.Size(239, 6);
++            this.toolStripMenuItem7.Size = new System.Drawing.Size(200, 6);
+             // 
+             // openSessionToolStripMenuItem
+             // 
+             this.openSessionToolStripMenuItem.Name = "openSessionToolStripMenuItem";
+-            this.openSessionToolStripMenuItem.Size = new System.Drawing.Size(242, 24);
+-            this.openSessionToolStripMenuItem.Text = "Open Session";
++            this.openSessionToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
++            this.openSessionToolStripMenuItem.Text = "&Open Session";
+             this.openSessionToolStripMenuItem.Click += new System.EventHandler(this.openSessionToolStripMenuItem_Click);
+             // 
+             // switchSessionToolStripMenuItem
+             // 
+             this.switchSessionToolStripMenuItem.Name = "switchSessionToolStripMenuItem";
+-            this.switchSessionToolStripMenuItem.Size = new System.Drawing.Size(242, 24);
+-            this.switchSessionToolStripMenuItem.Text = "Switch Session";
++            this.switchSessionToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
++            this.switchSessionToolStripMenuItem.Text = "S&witch Session";
+             this.switchSessionToolStripMenuItem.Click += new System.EventHandler(this.switchSessionToolStripMenuItem_Click);
+             // 
+             // toolStripMenuItem10
+             // 
+             this.toolStripMenuItem10.Name = "toolStripMenuItem10";
+-            this.toolStripMenuItem10.Size = new System.Drawing.Size(239, 6);
++            this.toolStripMenuItem10.Size = new System.Drawing.Size(200, 6);
+             // 
+             // editSessionsInNotepadToolStripMenuItem
+             // 
+             this.editSessionsInNotepadToolStripMenuItem.Name = "editSessionsInNotepadToolStripMenuItem";
+-            this.editSessionsInNotepadToolStripMenuItem.Size = new System.Drawing.Size(242, 24);
+-            this.editSessionsInNotepadToolStripMenuItem.Text = "Edit Sessions in Notepad";
++            this.editSessionsInNotepadToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
++            this.editSessionsInNotepadToolStripMenuItem.Text = "E&dit Sessions in Notepad";
+             this.editSessionsInNotepadToolStripMenuItem.Click += new System.EventHandler(this.editSessionsInNotepadToolStripMenuItem_Click);
+             // 
+             // reloadSessionsToolStripMenuItem
+             // 
+             this.reloadSessionsToolStripMenuItem.Name = "reloadSessionsToolStripMenuItem";
+-            this.reloadSessionsToolStripMenuItem.Size = new System.Drawing.Size(242, 24);
+-            this.reloadSessionsToolStripMenuItem.Text = "Reload Sessions";
++            this.reloadSessionsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
++            this.reloadSessionsToolStripMenuItem.Text = "&Reload Sessions";
+             this.reloadSessionsToolStripMenuItem.Click += new System.EventHandler(this.reloadSessionsToolStripMenuItem_Click);
+             // 
+             // toolStripMenuItem3
+             // 
+             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+-            this.toolStripMenuItem3.Size = new System.Drawing.Size(239, 6);
++            this.toolStripMenuItem3.Size = new System.Drawing.Size(200, 6);
+             // 
+             // saveLayoutToolStripMenuItem
+             // 
+             this.saveLayoutToolStripMenuItem.Name = "saveLayoutToolStripMenuItem";
+             this.saveLayoutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+-            this.saveLayoutToolStripMenuItem.Size = new System.Drawing.Size(242, 24);
+-            this.saveLayoutToolStripMenuItem.Text = "Save Layout";
++            this.saveLayoutToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
++            this.saveLayoutToolStripMenuItem.Text = "&Save Layout";
+             this.saveLayoutToolStripMenuItem.Click += new System.EventHandler(this.saveLayoutToolStripMenuItem_Click);
+             // 
+             // saveLayoutAsToolStripMenuItem
+             // 
+             this.saveLayoutAsToolStripMenuItem.Name = "saveLayoutAsToolStripMenuItem";
+-            this.saveLayoutAsToolStripMenuItem.Size = new System.Drawing.Size(242, 24);
+-            this.saveLayoutAsToolStripMenuItem.Text = "Save Layout As";
++            this.saveLayoutAsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
++            this.saveLayoutAsToolStripMenuItem.Text = "Save Layout &As";
+             this.saveLayoutAsToolStripMenuItem.Click += new System.EventHandler(this.saveLayoutAsToolStripMenuItem_Click);
+             // 
+             // toolStripSeparator3
+             // 
+             this.toolStripSeparator3.Name = "toolStripSeparator3";
+-            this.toolStripSeparator3.Size = new System.Drawing.Size(239, 6);
++            this.toolStripSeparator3.Size = new System.Drawing.Size(200, 6);
+             // 
+             // toolStripMenuItem2
+             // 
+             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+-            this.toolStripMenuItem2.Size = new System.Drawing.Size(242, 24);
+-            this.toolStripMenuItem2.Text = "Exit";
++            this.toolStripMenuItem2.Size = new System.Drawing.Size(203, 22);
++            this.toolStripMenuItem2.Text = "E&xit";
+             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+             // 
+             // viewToolStripMenuItem
+@@ -281,38 +283,39 @@
+             this.toolbarsToolStripMenuItem,
+             this.toolStripMenuItem6,
+             this.showStatusBarToolStripMenuItem,
++            this.showMenuBarToolStripMenuItem,
+             this.alwaysOnTopToolStripMenuItem,
+             this.toolStripMenuItem9,
+             this.fullScreenToolStripMenuItem});
+             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(53, 24);
+-            this.viewToolStripMenuItem.Text = "View";
++            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
++            this.viewToolStripMenuItem.Text = "&View";
+             // 
+             // sessionsToolStripMenuItem
+             // 
+             this.sessionsToolStripMenuItem.Name = "sessionsToolStripMenuItem";
+-            this.sessionsToolStripMenuItem.Size = new System.Drawing.Size(177, 24);
+-            this.sessionsToolStripMenuItem.Text = "Sessions";
++            this.sessionsToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
++            this.sessionsToolStripMenuItem.Text = "&Sessions";
+             this.sessionsToolStripMenuItem.Click += new System.EventHandler(this.sessionsToolStripMenuItem_Click);
+             // 
+             // layoutsToolStripMenuItem
+             // 
+             this.layoutsToolStripMenuItem.Name = "layoutsToolStripMenuItem";
+-            this.layoutsToolStripMenuItem.Size = new System.Drawing.Size(177, 24);
+-            this.layoutsToolStripMenuItem.Text = "Layouts";
++            this.layoutsToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
++            this.layoutsToolStripMenuItem.Text = "&Layouts";
+             this.layoutsToolStripMenuItem.Click += new System.EventHandler(this.layoutsToolStripMenuItem_Click);
+             // 
+             // logViewerToolStripMenuItem
+             // 
+             this.logViewerToolStripMenuItem.Name = "logViewerToolStripMenuItem";
+-            this.logViewerToolStripMenuItem.Size = new System.Drawing.Size(177, 24);
+-            this.logViewerToolStripMenuItem.Text = "Log Viewer";
++            this.logViewerToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
++            this.logViewerToolStripMenuItem.Text = "L&og Viewer";
+             this.logViewerToolStripMenuItem.Click += new System.EventHandler(this.logViewerToolStripMenuItem_Click);
+             // 
+             // toolStripMenuItem8
+             // 
+             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
+-            this.toolStripMenuItem8.Size = new System.Drawing.Size(174, 6);
++            this.toolStripMenuItem8.Size = new System.Drawing.Size(151, 6);
+             // 
+             // toolbarsToolStripMenuItem
+             // 
+@@ -320,16 +323,16 @@
+             this.quickConnectionToolStripMenuItem,
+             this.sendCommandsToolStripMenuItem});
+             this.toolbarsToolStripMenuItem.Name = "toolbarsToolStripMenuItem";
+-            this.toolbarsToolStripMenuItem.Size = new System.Drawing.Size(177, 24);
+-            this.toolbarsToolStripMenuItem.Text = "Toolbars";
++            this.toolbarsToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
++            this.toolbarsToolStripMenuItem.Text = "&Toolbars";
+             // 
+             // quickConnectionToolStripMenuItem
+             // 
+             this.quickConnectionToolStripMenuItem.Checked = global::SuperPutty.Properties.Settings.Default.ShowToolBarConnections;
+             this.quickConnectionToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+             this.quickConnectionToolStripMenuItem.Name = "quickConnectionToolStripMenuItem";
+-            this.quickConnectionToolStripMenuItem.Size = new System.Drawing.Size(194, 24);
+-            this.quickConnectionToolStripMenuItem.Text = "Quick Connection";
++            this.quickConnectionToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
++            this.quickConnectionToolStripMenuItem.Text = "&Quick Connection";
+             this.quickConnectionToolStripMenuItem.Click += new System.EventHandler(this.toggleCheckedState);
+             // 
+             // sendCommandsToolStripMenuItem
+@@ -337,41 +340,51 @@
+             this.sendCommandsToolStripMenuItem.Checked = global::SuperPutty.Properties.Settings.Default.ShowToolBarCommands;
+             this.sendCommandsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+             this.sendCommandsToolStripMenuItem.Name = "sendCommandsToolStripMenuItem";
+-            this.sendCommandsToolStripMenuItem.Size = new System.Drawing.Size(194, 24);
+-            this.sendCommandsToolStripMenuItem.Text = "Send Commands";
++            this.sendCommandsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
++            this.sendCommandsToolStripMenuItem.Text = "&Send Commands";
+             this.sendCommandsToolStripMenuItem.Click += new System.EventHandler(this.toggleCheckedState);
+             // 
+             // toolStripMenuItem6
+             // 
+             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+-            this.toolStripMenuItem6.Size = new System.Drawing.Size(174, 6);
++            this.toolStripMenuItem6.Size = new System.Drawing.Size(151, 6);
+             // 
+             // showStatusBarToolStripMenuItem
+             // 
+             this.showStatusBarToolStripMenuItem.Checked = global::SuperPutty.Properties.Settings.Default.ShowStatusBar;
+             this.showStatusBarToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+             this.showStatusBarToolStripMenuItem.Name = "showStatusBarToolStripMenuItem";
+-            this.showStatusBarToolStripMenuItem.Size = new System.Drawing.Size(177, 24);
+-            this.showStatusBarToolStripMenuItem.Text = "Status Bar";
++            this.showStatusBarToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
++            this.showStatusBarToolStripMenuItem.Text = "St&atus Bar";
+             this.showStatusBarToolStripMenuItem.Click += new System.EventHandler(this.toggleCheckedState);
+             // 
++            // showMenuBarToolStripMenuItem
++            // 
++            this.showMenuBarToolStripMenuItem.Checked = true;
++            this.showMenuBarToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
++            this.showMenuBarToolStripMenuItem.Name = "showMenuBarToolStripMenuItem";
++            this.showMenuBarToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
++            this.showMenuBarToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
++            this.showMenuBarToolStripMenuItem.Text = "&Menu Bar";
++            this.showMenuBarToolStripMenuItem.Click += new System.EventHandler(this.toggleCheckedState);
++            // 
+             // alwaysOnTopToolStripMenuItem
+             // 
+             this.alwaysOnTopToolStripMenuItem.Name = "alwaysOnTopToolStripMenuItem";
+-            this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(177, 24);
+-            this.alwaysOnTopToolStripMenuItem.Text = "Always On Top";
++            this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
++            this.alwaysOnTopToolStripMenuItem.Text = "&Always On Top";
+             this.alwaysOnTopToolStripMenuItem.Click += new System.EventHandler(this.toggleCheckedState);
+             // 
+             // toolStripMenuItem9
+             // 
+             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
+-            this.toolStripMenuItem9.Size = new System.Drawing.Size(174, 6);
++            this.toolStripMenuItem9.Size = new System.Drawing.Size(151, 6);
+             // 
+             // fullScreenToolStripMenuItem
+             // 
+             this.fullScreenToolStripMenuItem.Name = "fullScreenToolStripMenuItem";
+-            this.fullScreenToolStripMenuItem.Size = new System.Drawing.Size(177, 24);
+-            this.fullScreenToolStripMenuItem.Text = "Full Screen";
++            this.fullScreenToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
++            this.fullScreenToolStripMenuItem.Text = "&Full Screen";
+             this.fullScreenToolStripMenuItem.Click += new System.EventHandler(this.fullScreenToolStripMenuItem_Click);
+             // 
+             // toolsToolStripMenuItem
+@@ -383,41 +396,41 @@
+             this.toolStripMenuItem4,
+             this.optionsToolStripMenuItem});
+             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(57, 24);
+-            this.toolsToolStripMenuItem.Text = "Tools";
++            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
++            this.toolsToolStripMenuItem.Text = "&Tools";
+             // 
+             // puTTYConfigurationToolStripMenuItem
+             // 
+             this.puTTYConfigurationToolStripMenuItem.Name = "puTTYConfigurationToolStripMenuItem";
+-            this.puTTYConfigurationToolStripMenuItem.Size = new System.Drawing.Size(326, 24);
+-            this.puTTYConfigurationToolStripMenuItem.Text = "PuTTY Configuration";
++            this.puTTYConfigurationToolStripMenuItem.Size = new System.Drawing.Size(274, 22);
++            this.puTTYConfigurationToolStripMenuItem.Text = "&PuTTY Configuration";
+             this.puTTYConfigurationToolStripMenuItem.Click += new System.EventHandler(this.puTTYConfigurationToolStripMenuItem_Click);
+             // 
+             // toolStripMenuItem11
+             // 
+             this.toolStripMenuItem11.Name = "toolStripMenuItem11";
+-            this.toolStripMenuItem11.Size = new System.Drawing.Size(323, 6);
++            this.toolStripMenuItem11.Size = new System.Drawing.Size(271, 6);
+             // 
+             // toggleCommandMaskToolStripMenuItem
+             // 
+             this.toggleCommandMaskToolStripMenuItem.Name = "toggleCommandMaskToolStripMenuItem";
+-            this.toggleCommandMaskToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+-            | System.Windows.Forms.Keys.D8)));
+-            this.toggleCommandMaskToolStripMenuItem.Size = new System.Drawing.Size(326, 24);
+-            this.toggleCommandMaskToolStripMenuItem.Text = "Toggle Command Mask";
++            this.toggleCommandMaskToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
++                        | System.Windows.Forms.Keys.D8)));
++            this.toggleCommandMaskToolStripMenuItem.Size = new System.Drawing.Size(274, 22);
++            this.toggleCommandMaskToolStripMenuItem.Text = "Toggle &Command Mask";
+             this.toggleCommandMaskToolStripMenuItem.Click += new System.EventHandler(this.toggleCommandMaskToolStripMenuItem_Click);
+             // 
+             // toolStripMenuItem4
+             // 
+             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+-            this.toolStripMenuItem4.Size = new System.Drawing.Size(323, 6);
++            this.toolStripMenuItem4.Size = new System.Drawing.Size(271, 6);
+             // 
+             // optionsToolStripMenuItem
+             // 
+             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+             this.optionsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
+-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(326, 24);
+-            this.optionsToolStripMenuItem.Text = "Options";
++            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(274, 22);
++            this.optionsToolStripMenuItem.Text = "&Options";
+             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+             // 
+             // helpToolStripMenuItem
+@@ -428,14 +441,14 @@
+             this.toolStripMenuItem5,
+             this.aboutSuperPuTTYToolStripMenuItem});
+             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(53, 24);
+-            this.helpToolStripMenuItem.Text = "Help";
++            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
++            this.helpToolStripMenuItem.Text = "&Help";
+             // 
+             // documentationToolStripMenuItem
+             // 
+             this.documentationToolStripMenuItem.Name = "documentationToolStripMenuItem";
+-            this.documentationToolStripMenuItem.Size = new System.Drawing.Size(201, 24);
+-            this.documentationToolStripMenuItem.Text = "Documentation";
++            this.documentationToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
++            this.documentationToolStripMenuItem.Text = "&Documentation";
+             this.documentationToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
+             // 
+             // diagnosticsToolStripMenuItem
+@@ -443,26 +456,26 @@
+             this.diagnosticsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+             this.logWindowLocationsToolStripMenuItem});
+             this.diagnosticsToolStripMenuItem.Name = "diagnosticsToolStripMenuItem";
+-            this.diagnosticsToolStripMenuItem.Size = new System.Drawing.Size(201, 24);
+-            this.diagnosticsToolStripMenuItem.Text = "Diagnostics";
++            this.diagnosticsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
++            this.diagnosticsToolStripMenuItem.Text = "D&iagnostics";
+             // 
+             // logWindowLocationsToolStripMenuItem
+             // 
+             this.logWindowLocationsToolStripMenuItem.Name = "logWindowLocationsToolStripMenuItem";
+-            this.logWindowLocationsToolStripMenuItem.Size = new System.Drawing.Size(229, 24);
+-            this.logWindowLocationsToolStripMenuItem.Text = "Log Window Locations";
++            this.logWindowLocationsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
++            this.logWindowLocationsToolStripMenuItem.Text = "&Log Window Locations";
+             this.logWindowLocationsToolStripMenuItem.Click += new System.EventHandler(this.logWindowLocationsToolStripMenuItem_Click);
+             // 
+             // toolStripMenuItem5
+             // 
+             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+-            this.toolStripMenuItem5.Size = new System.Drawing.Size(198, 6);
++            this.toolStripMenuItem5.Size = new System.Drawing.Size(172, 6);
+             // 
+             // aboutSuperPuTTYToolStripMenuItem
+             // 
+             this.aboutSuperPuTTYToolStripMenuItem.Name = "aboutSuperPuTTYToolStripMenuItem";
+-            this.aboutSuperPuTTYToolStripMenuItem.Size = new System.Drawing.Size(201, 24);
+-            this.aboutSuperPuTTYToolStripMenuItem.Text = "About SuperPuTTY";
++            this.aboutSuperPuTTYToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
++            this.aboutSuperPuTTYToolStripMenuItem.Text = "&About SuperPuTTY";
+             this.aboutSuperPuTTYToolStripMenuItem.Click += new System.EventHandler(this.aboutSuperPuttyToolStripMenuItem_Click);
+             // 
+             // dockPanel1
+@@ -475,9 +488,8 @@
+             this.dockPanel1.DockRightPortion = 200D;
+             this.dockPanel1.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
+             this.dockPanel1.Location = new System.Drawing.Point(0, 0);
+-            this.dockPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+             this.dockPanel1.Name = "dockPanel1";
+-            this.dockPanel1.Size = new System.Drawing.Size(1344, 792);
++            this.dockPanel1.Size = new System.Drawing.Size(1008, 614);
+             dockPanelGradient1.EndColor = System.Drawing.Color.Black;
+             dockPanelGradient1.StartColor = System.Drawing.Color.Black;
+             autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
+@@ -533,23 +545,21 @@
+             // 
+             this.toolStripContainer1.ContentPanel.Controls.Add(this.dockPanel1);
+             this.toolStripContainer1.ContentPanel.Controls.Add(this.statusStrip1);
+-            this.toolStripContainer1.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1344, 817);
++            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1008, 636);
+             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+             this.toolStripContainer1.LeftToolStripPanelVisible = false;
+             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
+-            this.toolStripContainer1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+             this.toolStripContainer1.Name = "toolStripContainer1";
+             this.toolStripContainer1.RightToolStripPanelVisible = false;
+-            this.toolStripContainer1.Size = new System.Drawing.Size(1344, 898);
++            this.toolStripContainer1.Size = new System.Drawing.Size(1008, 710);
+             this.toolStripContainer1.TabIndex = 5;
+             this.toolStripContainer1.Text = "toolStripContainer1";
+             // 
+             // toolStripContainer1.TopToolStripPanel
+             // 
++            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
++            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsCommands);
+             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsConnect);
+-            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsCommands);
+-            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
+             this.toolStripContainer1.TopToolStripPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+             // 
+             // statusStrip1
+@@ -558,17 +568,16 @@
+             this.toolStripStatusLabelMessage,
+             this.toolStripStatusLabelVersion,
+             this.toolStripStatusLabelLayout});
+-            this.statusStrip1.Location = new System.Drawing.Point(0, 792);
++            this.statusStrip1.Location = new System.Drawing.Point(0, 614);
+             this.statusStrip1.Name = "statusStrip1";
+-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
+-            this.statusStrip1.Size = new System.Drawing.Size(1344, 25);
++            this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
+             this.statusStrip1.TabIndex = 4;
+             this.statusStrip1.Text = "statusStrip";
+             // 
+             // toolStripStatusLabelMessage
+             // 
+             this.toolStripStatusLabelMessage.Name = "toolStripStatusLabelMessage";
+-            this.toolStripStatusLabelMessage.Size = new System.Drawing.Size(1133, 20);
++            this.toolStripStatusLabelMessage.Size = new System.Drawing.Size(840, 17);
+             this.toolStripStatusLabelMessage.Spring = true;
+             this.toolStripStatusLabelMessage.Text = "<Status Message>";
+             this.toolStripStatusLabelMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+@@ -577,13 +586,13 @@
+             // 
+             this.toolStripStatusLabelVersion.ForeColor = System.Drawing.SystemColors.ControlDark;
+             this.toolStripStatusLabelVersion.Name = "toolStripStatusLabelVersion";
+-            this.toolStripStatusLabelVersion.Size = new System.Drawing.Size(78, 20);
++            this.toolStripStatusLabelVersion.Size = new System.Drawing.Size(62, 17);
+             this.toolStripStatusLabelVersion.Text = "<Version>";
+             // 
+             // toolStripStatusLabelLayout
+             // 
+             this.toolStripStatusLabelLayout.Name = "toolStripStatusLabelLayout";
+-            this.toolStripStatusLabelLayout.Size = new System.Drawing.Size(113, 20);
++            this.toolStripStatusLabelLayout.Size = new System.Drawing.Size(91, 17);
+             this.toolStripStatusLabelLayout.Text = "<LayoutName>";
+             // 
+             // tsCommands
+@@ -597,9 +606,9 @@
+             this.toolStripSeparatorSendCommands,
+             this.tbBtnSelectDocs});
+             this.tsCommands.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+-            this.tsCommands.Location = new System.Drawing.Point(0, 56);
++            this.tsCommands.Location = new System.Drawing.Point(0, 24);
+             this.tsCommands.Name = "tsCommands";
+-            this.tsCommands.Size = new System.Drawing.Size(1344, 25);
++            this.tsCommands.Size = new System.Drawing.Size(1008, 25);
+             this.tsCommands.Stretch = true;
+             this.tsCommands.TabIndex = 6;
+             // 
+@@ -607,7 +616,7 @@
+             // 
+             this.tbTextSendCommands.Image = global::SuperPutty.Properties.Resources.application_xp_terminal;
+             this.tbTextSendCommands.Name = "tbTextSendCommands";
+-            this.tbTextSendCommands.Size = new System.Drawing.Size(100, 22);
++            this.tbTextSendCommands.Size = new System.Drawing.Size(85, 22);
+             this.tbTextSendCommands.Text = "Commands";
+             // 
+             // tsSendCommandCombo
+@@ -672,9 +681,9 @@
+             this.tbBtnConnect,
+             this.toolStripButtonClearFields});
+             this.tsConnect.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+-            this.tsConnect.Location = new System.Drawing.Point(0, 28);
++            this.tsConnect.Location = new System.Drawing.Point(0, 49);
+             this.tsConnect.Name = "tsConnect";
+-            this.tsConnect.Size = new System.Drawing.Size(1344, 28);
++            this.tsConnect.Size = new System.Drawing.Size(1008, 25);
+             this.tsConnect.Stretch = true;
+             this.tsConnect.TabIndex = 5;
+             this.tsConnect.Text = "Connect";
+@@ -683,7 +692,7 @@
+             // 
+             this.toolStripLabel1.Image = global::SuperPutty.Properties.Resources.computer;
+             this.toolStripLabel1.Name = "toolStripLabel1";
+-            this.toolStripLabel1.Size = new System.Drawing.Size(81, 25);
++            this.toolStripLabel1.Size = new System.Drawing.Size(68, 22);
+             this.toolStripLabel1.Text = "Protocol";
+             // 
+             // tbComboProtocol
+@@ -692,49 +701,49 @@
+             this.tbComboProtocol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+             this.tbComboProtocol.DropDownWidth = 75;
+             this.tbComboProtocol.Name = "tbComboProtocol";
+-            this.tbComboProtocol.Size = new System.Drawing.Size(70, 28);
++            this.tbComboProtocol.Size = new System.Drawing.Size(70, 23);
+             this.tbComboProtocol.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbItemConnect_KeyPress);
+             // 
+             // toolStripLabel2
+             // 
+             this.toolStripLabel2.Name = "toolStripLabel2";
+-            this.toolStripLabel2.Size = new System.Drawing.Size(40, 25);
++            this.toolStripLabel2.Size = new System.Drawing.Size(32, 22);
+             this.toolStripLabel2.Text = "Host";
+             // 
+             // tbTxtBoxHost
+             // 
+             this.tbTxtBoxHost.Name = "tbTxtBoxHost";
+-            this.tbTxtBoxHost.Size = new System.Drawing.Size(180, 28);
++            this.tbTxtBoxHost.Size = new System.Drawing.Size(180, 25);
+             this.tbTxtBoxHost.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbItemConnect_KeyPress);
+             // 
+             // toolStripLabel3
+             // 
+             this.toolStripLabel3.Name = "toolStripLabel3";
+-            this.toolStripLabel3.Size = new System.Drawing.Size(46, 25);
++            this.toolStripLabel3.Size = new System.Drawing.Size(37, 22);
+             this.toolStripLabel3.Text = "Login";
+             // 
+             // tbTxtBoxLogin
+             // 
+             this.tbTxtBoxLogin.Name = "tbTxtBoxLogin";
+-            this.tbTxtBoxLogin.Size = new System.Drawing.Size(100, 28);
++            this.tbTxtBoxLogin.Size = new System.Drawing.Size(100, 25);
+             this.tbTxtBoxLogin.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbItemConnect_KeyPress);
+             // 
+             // toolStripLabel4
+             // 
+             this.toolStripLabel4.Name = "toolStripLabel4";
+-            this.toolStripLabel4.Size = new System.Drawing.Size(71, 25);
++            this.toolStripLabel4.Size = new System.Drawing.Size(57, 22);
+             this.toolStripLabel4.Text = "Password";
+             // 
+             // tbTxtBoxPassword
+             // 
+             this.tbTxtBoxPassword.Name = "tbTxtBoxPassword";
+-            this.tbTxtBoxPassword.Size = new System.Drawing.Size(100, 28);
++            this.tbTxtBoxPassword.Size = new System.Drawing.Size(100, 25);
+             this.tbTxtBoxPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbItemConnect_KeyPress);
+             // 
+             // toolStripLabel5
+             // 
+             this.toolStripLabel5.Name = "toolStripLabel5";
+-            this.toolStripLabel5.Size = new System.Drawing.Size(58, 25);
++            this.toolStripLabel5.Size = new System.Drawing.Size(46, 22);
+             this.toolStripLabel5.Text = "Session";
+             // 
+             // tbComboSession
+@@ -743,7 +752,7 @@
+             this.tbComboSession.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+             this.tbComboSession.DropDownWidth = 250;
+             this.tbComboSession.Name = "tbComboSession";
+-            this.tbComboSession.Size = new System.Drawing.Size(110, 28);
++            this.tbComboSession.Size = new System.Drawing.Size(110, 25);
+             this.tbComboSession.Sorted = true;
+             this.tbComboSession.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbItemConnect_KeyPress);
+             // 
+@@ -753,7 +762,7 @@
+             this.tbBtnConnect.Image = global::SuperPutty.Properties.Resources.accept;
+             this.tbBtnConnect.ImageTransparentColor = System.Drawing.Color.Magenta;
+             this.tbBtnConnect.Name = "tbBtnConnect";
+-            this.tbBtnConnect.Size = new System.Drawing.Size(23, 25);
++            this.tbBtnConnect.Size = new System.Drawing.Size(23, 22);
+             this.tbBtnConnect.Text = "Connect";
+             this.tbBtnConnect.Click += new System.EventHandler(this.tbBtnConnect_Click);
+             // 
+@@ -763,7 +772,7 @@
+             this.toolStripButtonClearFields.Image = global::SuperPutty.Properties.Resources.cross_black;
+             this.toolStripButtonClearFields.ImageTransparentColor = System.Drawing.Color.Magenta;
+             this.toolStripButtonClearFields.Name = "toolStripButtonClearFields";
+-            this.toolStripButtonClearFields.Size = new System.Drawing.Size(23, 25);
++            this.toolStripButtonClearFields.Size = new System.Drawing.Size(23, 22);
+             this.toolStripButtonClearFields.Text = "Clear Fields";
+             this.toolStripButtonClearFields.Click += new System.EventHandler(this.toolStripButtonClearFields_Click);
+             // 
+@@ -788,24 +797,24 @@
+             this.notifyIconContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+             this.exitSuperPuTTYToolStripMenuItem});
+             this.notifyIconContextMenuStrip.Name = "notifyIconContextMenuStrip";
+-            this.notifyIconContextMenuStrip.Size = new System.Drawing.Size(185, 28);
++            this.notifyIconContextMenuStrip.Size = new System.Drawing.Size(161, 26);
+             // 
+             // exitSuperPuTTYToolStripMenuItem
+             // 
+             this.exitSuperPuTTYToolStripMenuItem.Name = "exitSuperPuTTYToolStripMenuItem";
+-            this.exitSuperPuTTYToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
++            this.exitSuperPuTTYToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+             this.exitSuperPuTTYToolStripMenuItem.Text = "Exit SuperPuTTY";
+             this.exitSuperPuTTYToolStripMenuItem.Click += new System.EventHandler(this.exitSuperPuTTYToolStripMenuItem_Click);
+             // 
+             // frmSuperPutty
+             // 
+-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
++            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+-            this.ClientSize = new System.Drawing.Size(1344, 898);
++            this.ClientSize = new System.Drawing.Size(1008, 710);
+             this.Controls.Add(this.toolStripContainer1);
+             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
++            this.KeyPreview = true;
+             this.Name = "frmSuperPutty";
+             this.Text = "SuperPuTTY";
+             this.Activated += new System.EventHandler(this.frmSuperPutty_Activated);
+@@ -907,6 +916,7 @@
+         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem11;
+         private System.Windows.Forms.ToolStripMenuItem toggleCommandMaskToolStripMenuItem;
+         private System.Windows.Forms.ToolStripMenuItem alwaysOnTopToolStripMenuItem;
++        private System.Windows.Forms.ToolStripMenuItem showMenuBarToolStripMenuItem;
+     }
+ }
+ 
+Index: SuperPutty/frmSuperPutty.resx
+===================================================================
+--- SuperPutty/frmSuperPutty.resx	(revision 349)
++++ SuperPutty/frmSuperPutty.resx	(working copy)
+@@ -112,36 +112,36 @@
+     <value>2.0</value>
+   </resheader>
+   <resheader name="reader">
+-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
++    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+   </resheader>
+   <resheader name="writer">
+-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
++    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+   </resheader>
+-  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
++  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+     <value>17, 17</value>
+   </metadata>
+-  <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
++  <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+     <value>468, 17</value>
+   </metadata>
+-  <metadata name="tsConnect.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
++  <metadata name="tsCommands.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
++    <value>690, 17</value>
++  </metadata>
++  <metadata name="tsConnect.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+     <value>584, 17</value>
+   </metadata>
+-  <metadata name="tsCommands.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+-    <value>690, 17</value>
+-  </metadata>
+-  <metadata name="openFileDialogLayout.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
++  <metadata name="openFileDialogLayout.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+     <value>132, 17</value>
+   </metadata>
+-  <metadata name="saveFileDialogLayout.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
++  <metadata name="saveFileDialogLayout.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+     <value>302, 17</value>
+   </metadata>
+-  <metadata name="notifyicon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
++  <metadata name="notifyicon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+     <value>813, 17</value>
+   </metadata>
+-  <metadata name="notifyIconContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
++  <metadata name="notifyIconContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+     <value>919, 17</value>
+   </metadata>
+-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
++  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+   <data name="notifyicon.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+     <value>
+         AAABAAEAEBAAAAEAIAAoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+@@ -165,7 +165,7 @@
+         ABYAAAAE
+ </value>
+   </data>
+-  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
++  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+     <value>48</value>
+   </metadata>
+   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+Index: SuperPutty/Gui/QuickSelectorData.Designer.cs
+===================================================================
+--- SuperPutty/Gui/QuickSelectorData.Designer.cs	(revision 349)
++++ SuperPutty/Gui/QuickSelectorData.Designer.cs	(working copy)
+@@ -1,7 +1,7 @@
+ ﻿//------------------------------------------------------------------------------
+ // <auto-generated>
+ //     This code was generated by a tool.
+-//     Runtime Version:4.0.30319.269
++//     Runtime Version:4.0.30319.296
+ //
+ //     Changes to this file may cause incorrect behavior and will be lost if
+ //     the code is regenerated.
+@@ -277,7 +277,7 @@
+         ///</summary>
+         [global::System.Serializable()]
+         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+-        public partial class ItemDataDataTable : global::System.Data.TypedTableBase<ItemDataRow> {
++        public partial class ItemDataDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
+             
+             private global::System.Data.DataColumn columnName;
+             
+@@ -403,6 +403,12 @@
+             
+             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
++            public virtual global::System.Collections.IEnumerator GetEnumerator() {
++                return this.Rows.GetEnumerator();
++            }
++            
++            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
++            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+             public override global::System.Data.DataTable Clone() {
+                 ItemDataDataTable cln = ((ItemDataDataTable)(base.Clone()));
+                 cln.InitVars();
+Index: SuperPutty/Properties/AssemblyInfo.cs
+===================================================================
+--- SuperPutty/Properties/AssemblyInfo.cs	(revision 349)
++++ SuperPutty/Properties/AssemblyInfo.cs	(working copy)
+@@ -32,5 +32,5 @@
+ // You can specify all the values or you can default the Build and Revision Numbers 
+ // by using the '*' as shown below:
+ // [assembly: AssemblyVersion("1.0.*")]
+-[assembly: AssemblyVersion("1.4.0.3")]
+-[assembly: AssemblyFileVersion("1.4.0.3")]
++[assembly: AssemblyVersion("1.4.1.0")]
++[assembly: AssemblyFileVersion("1.4.1.0")]
+Index: SuperPutty/Properties/Resources.Designer.cs
+===================================================================
+--- SuperPutty/Properties/Resources.Designer.cs	(revision 349)
++++ SuperPutty/Properties/Resources.Designer.cs	(working copy)
+@@ -1,7 +1,7 @@
+ ﻿//------------------------------------------------------------------------------
+ // <auto-generated>
+ //     This code was generated by a tool.
+-//     Runtime Version:4.0.30319.18033
++//     Runtime Version:4.0.30319.296
+ //
+ //     Changes to this file may cause incorrect behavior and will be lost if
+ //     the code is regenerated.
+@@ -60,9 +60,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap accept {
+             get {
+                 object obj = ResourceManager.GetObject("accept", resourceCulture);
+@@ -70,9 +67,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap accept_gray {
+             get {
+                 object obj = ResourceManager.GetObject("accept_gray", resourceCulture);
+@@ -80,9 +74,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap application_edit {
+             get {
+                 object obj = ResourceManager.GetObject("application_edit", resourceCulture);
+@@ -90,9 +81,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap application_xp_terminal {
+             get {
+                 object obj = ResourceManager.GetObject("application_xp_terminal", resourceCulture);
+@@ -100,9 +88,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap asterisk_gray {
+             get {
+                 object obj = ResourceManager.GetObject("asterisk_gray", resourceCulture);
+@@ -110,9 +95,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap bullet_go {
+             get {
+                 object obj = ResourceManager.GetObject("bullet_go", resourceCulture);
+@@ -120,9 +102,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap computer {
+             get {
+                 object obj = ResourceManager.GetObject("computer", resourceCulture);
+@@ -130,9 +109,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap connect {
+             get {
+                 object obj = ResourceManager.GetObject("connect", resourceCulture);
+@@ -140,9 +116,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap cross_black {
+             get {
+                 object obj = ResourceManager.GetObject("cross_black", resourceCulture);
+@@ -150,9 +123,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap find {
+             get {
+                 object obj = ResourceManager.GetObject("find", resourceCulture);
+@@ -160,9 +130,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap folder {
+             get {
+                 object obj = ResourceManager.GetObject("folder", resourceCulture);
+@@ -170,9 +137,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap keyboard {
+             get {
+                 object obj = ResourceManager.GetObject("keyboard", resourceCulture);
+@@ -180,9 +144,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap lightning_go {
+             get {
+                 object obj = ResourceManager.GetObject("lightning_go", resourceCulture);
+@@ -190,9 +151,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap server_go {
+             get {
+                 object obj = ResourceManager.GetObject("server_go", resourceCulture);
+@@ -200,9 +158,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap tick {
+             get {
+                 object obj = ResourceManager.GetObject("tick", resourceCulture);
+@@ -210,9 +165,6 @@
+             }
+         }
+         
+-        /// <summary>
+-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+-        /// </summary>
+         internal static System.Drawing.Bitmap time {
+             get {
+                 object obj = ResourceManager.GetObject("time", resourceCulture);
+Index: SuperPutty/Properties/Settings.Designer.cs
+===================================================================
+--- SuperPutty/Properties/Settings.Designer.cs	(revision 349)
++++ SuperPutty/Properties/Settings.Designer.cs	(working copy)
+@@ -1,7 +1,7 @@
+ ﻿//------------------------------------------------------------------------------
+ // <auto-generated>
+ //     This code was generated by a tool.
+-//     Runtime Version:4.0.30319.18033
++//     Runtime Version:4.0.30319.296
+ //
+ //     Changes to this file may cause incorrect behavior and will be lost if
+ //     the code is regenerated.
+@@ -12,7 +12,7 @@
+     
+     
+     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "11.0.0.0")]
++    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "10.0.0.0")]
+     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+         
+         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
+@@ -607,5 +607,17 @@
+                 this["PuttyPanelShowNewSessionMenu"] = value;
+             }
+         }
++        
++        [global::System.Configuration.UserScopedSettingAttribute()]
++        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
++        [global::System.Configuration.DefaultSettingValueAttribute("True")]
++        public bool ShowMenuBar {
++            get {
++                return ((bool)(this["ShowMenuBar"]));
++            }
++            set {
++                this["ShowMenuBar"] = value;
++            }
++        }
+     }
+ }
+Index: SuperPutty/Properties/Settings.settings
+===================================================================
+--- SuperPutty/Properties/Settings.settings	(revision 349)
++++ SuperPutty/Properties/Settings.settings	(working copy)
+@@ -137,5 +137,8 @@
+     <Setting Name="PuttyPanelShowNewSessionMenu" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
+       <Value Profile="(Default)">True</Value>
+     </Setting>
++    <Setting Name="ShowMenuBar" Type="System.Boolean" Scope="User">
++      <Value Profile="(Default)">True</Value>
++    </Setting>
+   </Settings>
+ </SettingsFile>
+\ No newline at end of file
+Index: SuperPutty/SuperPutty.csproj
+===================================================================
+--- SuperPutty/SuperPutty.csproj	(revision 349)
++++ SuperPutty/SuperPutty.csproj	(working copy)
+@@ -10,7 +10,7 @@
+     <AppDesignerFolder>Properties</AppDesignerFolder>
+     <RootNamespace>SuperPutty</RootNamespace>
+     <AssemblyName>SuperPutty</AssemblyName>
+-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
++    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+     <FileAlignment>512</FileAlignment>
+     <FileUpgradeFlags>
+     </FileUpgradeFlags>
+Index: SuperPuttySetup/SuperPuttySetup.vdproj
+===================================================================
+--- SuperPuttySetup/SuperPuttySetup.vdproj	(revision 349)
++++ SuperPuttySetup/SuperPuttySetup.vdproj	(working copy)
+@@ -15,32 +15,44 @@
+     {
+         "Entry"
+         {
++        "MsmKey" = "8:_3F221AF643F41A317FE94E9B76CE24D4"
++        "OwnerKey" = "8:_6A90690F908849E586464BBD9946DBA6"
++        "MsmSig" = "8:_UNDEFINED"
++        }
++        "Entry"
++        {
++        "MsmKey" = "8:_68F31303B12B15E3CB3DFD754F398C62"
++        "OwnerKey" = "8:_6A90690F908849E586464BBD9946DBA6"
++        "MsmSig" = "8:_UNDEFINED"
++        }
++        "Entry"
++        {
+         "MsmKey" = "8:_6A90690F908849E586464BBD9946DBA6"
+         "OwnerKey" = "8:_UNDEFINED"
+         "MsmSig" = "8:_UNDEFINED"
+         }
+         "Entry"
+         {
+-        "MsmKey" = "8:_731C40B599C241E68EDB470AEA5B0984"
++        "MsmKey" = "8:_DC526B598CEC43E785DB4277DE41924A"
+         "OwnerKey" = "8:_UNDEFINED"
+         "MsmSig" = "8:_UNDEFINED"
+         }
+         "Entry"
+         {
+-        "MsmKey" = "8:_910ADD8BC931141AE59D3A252079AD77"
++        "MsmKey" = "8:_UNDEFINED"
+         "OwnerKey" = "8:_6A90690F908849E586464BBD9946DBA6"
+         "MsmSig" = "8:_UNDEFINED"
+         }
+         "Entry"
+         {
+         "MsmKey" = "8:_UNDEFINED"
+-        "OwnerKey" = "8:_910ADD8BC931141AE59D3A252079AD77"
++        "OwnerKey" = "8:_3F221AF643F41A317FE94E9B76CE24D4"
+         "MsmSig" = "8:_UNDEFINED"
+         }
+         "Entry"
+         {
+         "MsmKey" = "8:_UNDEFINED"
+-        "OwnerKey" = "8:_6A90690F908849E586464BBD9946DBA6"
++        "OwnerKey" = "8:_68F31303B12B15E3CB3DFD754F398C62"
+         "MsmSig" = "8:_UNDEFINED"
+         }
+     }
+@@ -61,6 +73,27 @@
+         "PrivateKeyFile" = "8:"
+         "TimeStampServer" = "8:"
+         "InstallerBootstrapper" = "3:2"
++            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
++            {
++            "Enabled" = "11:TRUE"
++            "PromptEnabled" = "11:TRUE"
++            "PrerequisitesLocation" = "2:1"
++            "Url" = "8:"
++            "ComponentsUrl" = "8:"
++                "Items"
++                {
++                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
++                    {
++                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
++                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
++                    }
++                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
++                    {
++                    "Name" = "8:Windows Installer 3.1"
++                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
++                    }
++                }
++            }
+         }
+         "Release"
+         {
+@@ -77,6 +110,27 @@
+         "PrivateKeyFile" = "8:"
+         "TimeStampServer" = "8:"
+         "InstallerBootstrapper" = "3:2"
++            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
++            {
++            "Enabled" = "11:TRUE"
++            "PromptEnabled" = "11:TRUE"
++            "PrerequisitesLocation" = "2:1"
++            "Url" = "8:"
++            "ComponentsUrl" = "8:"
++                "Items"
++                {
++                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0"
++                    {
++                    "Name" = "8:Microsoft .NET Framework 4 (x86 and x64)"
++                    "ProductCode" = "8:.NETFramework,Version=v4.0"
++                    }
++                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
++                    {
++                    "Name" = "8:Windows Installer 3.1"
++                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
++                    }
++                }
++            }
+         }
+     }
+     "Deployable"
+@@ -98,7 +152,7 @@
+                 {
+                 "Name" = "8:.NET Framework"
+                 "Message" = "8:[VSDNETMSG]"
+-                "Version" = "8:3.5.30729"
++                "FrameworkVersion" = "8:.NETFramework,Version=v4.0"
+                 "AllowLaterVersions" = "11:FALSE"
+                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=76617"
+                 }
+@@ -106,38 +160,39 @@
+         }
+         "File"
+         {
+-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_731C40B599C241E68EDB470AEA5B0984"
++            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3F221AF643F41A317FE94E9B76CE24D4"
+             {
+-            "SourcePath" = "8:C:\\Windows\\System32\\msiexec.exe"
+-            "TargetName" = "8:msiexec.exe"
++            "AssemblyRegister" = "3:1"
++            "AssemblyIsInGAC" = "11:FALSE"
++            "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.9.0, Culture=neutral, PublicKeyToken=b32731d11ce58905"
++                "ScatterAssemblies"
++                {
++                }
++            "SourcePath" = "8:log4net.dll"
++            "TargetName" = "8:"
+             "Tag" = "8:"
+-            "Folder" = "8:_B5A3EFD788DF44489EDA93DCDB048226"
+-            "Condition" = "8:Not Installed"
++            "Folder" = "8:_668A9E2E61DF418DA9AE8FA086AC7233"
++            "Condition" = "8:"
+             "Transitive" = "11:FALSE"
+-            "Vital" = "11:FALSE"
++            "Vital" = "11:TRUE"
+             "ReadOnly" = "11:FALSE"
+             "Hidden" = "11:FALSE"
+-            "System" = "11:TRUE"
+-            "Permanent" = "11:TRUE"
++            "System" = "11:FALSE"
++            "Permanent" = "11:FALSE"
+             "SharedLegacy" = "11:FALSE"
+             "PackageAs" = "3:1"
+             "Register" = "3:1"
+             "Exclude" = "11:FALSE"
+-            "IsDependency" = "11:FALSE"
++            "IsDependency" = "11:TRUE"
+             "IsolateTo" = "8:"
+             }
+-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_910ADD8BC931141AE59D3A252079AD77"
++            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_68F31303B12B15E3CB3DFD754F398C62"
+             {
+             "AssemblyRegister" = "3:1"
+             "AssemblyIsInGAC" = "11:FALSE"
+-            "AssemblyAsmDisplayName" = "8:WeifenLuo.WinFormsUI.Docking, Version=2.3.1.41552, Culture=neutral, processorArchitecture=MSIL"
++            "AssemblyAsmDisplayName" = "8:WeifenLuo.WinFormsUI.Docking, Version=2.4.0.16114, Culture=neutral, processorArchitecture=MSIL"
+                 "ScatterAssemblies"
+                 {
+-                    "_910ADD8BC931141AE59D3A252079AD77"
+-                    {
+-                    "Name" = "8:WeifenLuo.WinFormsUI.Docking.dll"
+-                    "Attributes" = "3:512"
+-                    }
+                 }
+             "SourcePath" = "8:WeifenLuo.WinFormsUI.Docking.dll"
+             "TargetName" = "8:"
+@@ -157,6 +212,26 @@
+             "IsDependency" = "11:TRUE"
+             "IsolateTo" = "8:"
+             }
++            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DC526B598CEC43E785DB4277DE41924A"
++            {
++            "SourcePath" = "8:C:\\Windows\\System32\\msiexec.exe"
++            "TargetName" = "8:msiexec.exe"
++            "Tag" = "8:"
++            "Folder" = "8:_B5A3EFD788DF44489EDA93DCDB048226"
++            "Condition" = "8:Not Installed"
++            "Transitive" = "11:TRUE"
++            "Vital" = "11:FALSE"
++            "ReadOnly" = "11:FALSE"
++            "Hidden" = "11:FALSE"
++            "System" = "11:TRUE"
++            "Permanent" = "11:TRUE"
++            "SharedLegacy" = "11:FALSE"
++            "PackageAs" = "3:1"
++            "Register" = "3:1"
++            "Exclude" = "11:FALSE"
++            "IsDependency" = "11:FALSE"
++            "IsolateTo" = "8:"
++            }
+         }
+         "FileType"
+         {
+@@ -236,8 +311,9 @@
+         "Name" = "8:Microsoft Visual Studio"
+         "ProductName" = "8:SuperPutty"
+         "ProductCode" = "8:{E1D58EC8-5AC3-4D28-B6F1-B1B45B13799E}"
+-        "PackageCode" = "8:{FED09B8F-AF03-4DBD-B07B-81753AA61ABB}"
++        "PackageCode" = "8:{D0304DC2-5669-49B0-96FE-C1A12460E7C6}"
+         "UpgradeCode" = "8:{78FD8F78-9795-4468-AE9D-13A29E679578}"
++        "AspNetVersion" = "8:4.0.30319.0"
+         "RestartWWWService" = "11:FALSE"
+         "RemovePreviousVersions" = "11:TRUE"
+         "DetectNewerInstalledVersion" = "11:TRUE"
+@@ -363,7 +439,7 @@
+             "ShowCmd" = "3:1"
+             "IconIndex" = "3:0"
+             "Transitive" = "11:FALSE"
+-            "Target" = "8:_731C40B599C241E68EDB470AEA5B0984"
++            "Target" = "8:_DC526B598CEC43E785DB4277DE41924A"
+             "Folder" = "8:_B6A28DD7BBA341E4BD83235D9CC23BA5"
+             "WorkingFolder" = "8:_B5A3EFD788DF44489EDA93DCDB048226"
+             "Icon" = "8:"
+@@ -784,7 +860,7 @@
+         {
+             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6A90690F908849E586464BBD9946DBA6"
+             {
+-            "SourcePath" = "8:..\\SuperPutty\\obj\\Debug\\SuperPutty.exe"
++            "SourcePath" = "8:..\\SuperPutty\\obj\\Release\\SuperPutty.exe"
+             "TargetName" = "8:"
+             "Tag" = "8:"
+             "Folder" = "8:_668A9E2E61DF418DA9AE8FA086AC7233"
+Index: SuperPuttyUnitTests/app.config
+===================================================================
+--- SuperPuttyUnitTests/app.config	(revision 349)
++++ SuperPuttyUnitTests/app.config	(working copy)
+@@ -1,3 +1,3 @@
+ <?xml version="1.0"?>
+ <configuration>
+-<startup><supportedRuntime version="v2.0.50727"/></startup></configuration>
++<startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/></startup></configuration>
+Index: SuperPuttyUnitTests/SuperPuttyUnitTests.csproj
+===================================================================
+--- SuperPuttyUnitTests/SuperPuttyUnitTests.csproj	(revision 349)
++++ SuperPuttyUnitTests/SuperPuttyUnitTests.csproj	(working copy)
+@@ -10,7 +10,7 @@
+     <AppDesignerFolder>Properties</AppDesignerFolder>
+     <RootNamespace>SuperPuttyUnitTests</RootNamespace>
+     <AssemblyName>SuperPuttyUnitTests</AssemblyName>
+-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
++    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+     <TargetFrameworkProfile>
+     </TargetFrameworkProfile>
+     <FileAlignment>512</FileAlignment>
