@@ -28,11 +28,15 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using SuperPutty.Data;
+using log4net;
 
 namespace SuperPutty
 {
-    public partial class RemoteFileListPanel : ToolWindow
+    public partial class RemoteFileListPanel : ToolWindowDocument
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(RemoteFileListPanel));
+
         private DockPanel m_DockPanel;
         private PscpTransfer m_Transfer;
         private SessionData m_Session;
@@ -40,7 +44,7 @@ namespace SuperPutty
         private dlgMouseFeedback m_MouseFollower;
         public RemoteFileListPanel(PscpTransfer transfer, DockPanel dockPanel, SessionData session)
         {
-            Logger.Log("Started new File Transfer Session for {0}", session.SessionName);
+            Log.InfoFormat("Started new File Transfer Session for {0}", session.SessionName);
             m_Session = session;
             m_DockPanel = dockPanel;
             m_Transfer = transfer;
@@ -54,35 +58,47 @@ namespace SuperPutty
 
         private bool LoadDirectory(string path)
         {
-            Logger.Log("Request directory listing for '{0}/{1}'", m_Session.SessionName, path);
+            Log.InfoFormat("Request directory listing for '{0}/{1}'", m_Session.SessionName, path);
             DirListingCallback dirCallback = delegate(RequestResult result, List<FileEntry> files)
             {
                 switch (result)
                 {
                     case RequestResult.RetryAuthentication:
-                        dlgLogin m_Login = new dlgLogin(m_Session);
-                        if (m_Login.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        this.BeginInvoke(new Action(() =>
                         {
-                            m_Session.Username = m_Login.Username;
-                            m_Session.Password = m_Login.Password;
-                            LoadDirectory(path);
-                        }
+                            dlgLogin m_Login = new dlgLogin(m_Session);
+                            if (m_Login.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                            {
+                                m_Session.Username = m_Login.Username;
+                                m_Session.Password = m_Login.Password;
+                                LoadDirectory(path);
+                            }
+                            else
+                            {
+                                this.Close();
+                            }
+                        }));
+
                         break;
                     case RequestResult.ListingFollows:
-                        Console.WriteLine("Remote host returned {0} File entries", files.Count);
+                        Log.DebugFormat("Remote host returned {0} File entries", files.Count);
                         RefreshListView(files);
                         break;
                     case RequestResult.UnknownError:
-                        Logger.Log("Unknown Error trying to get file listing");
+                        Log.Info("Unknown Error trying to get file listing");
                         break;
                     case RequestResult.InvalidArguments:
-                        Logger.Log("Invalid Arguments Passed to scp");
+                        Log.Info("Invalid Arguments Passed to scp");
                         break;
                     case RequestResult.SessionInvalid:
-                        Logger.Log("Session is invalid");
+                        Log.Info("Session is invalid");
+                        break;
+                    case RequestResult.CancelLogin:
+                        Log.Info("User cancel login");
+                        this.BeginInvoke(new MethodInvoker(this.Close));
                         break;
                     default:
-                        Logger.Log("Unknown result '{0}'", result);
+                        Log.InfoFormat("Unknown result '{0}'", result);
                         break;
                 }
             };
@@ -93,11 +109,12 @@ namespace SuperPutty
 
         private void RefreshListView(List<FileEntry> files)
         {
+            if (this.IsDisposed) return;
             if (listView1.InvokeRequired)
             {
                 listView1.BeginInvoke((MethodInvoker)delegate()
                 {
-                    RefreshListView(files);
+                    RefreshListView(new List<FileEntry>(files));
                 });
             }
             else
@@ -132,12 +149,40 @@ namespace SuperPutty
                 FileEntry fe = (FileEntry)listView1.SelectedItems[0].Tag;
                 if (fe.IsFolder)
                 {
-                    m_Path += "/" + listView1.SelectedItems[0].Text;
+                    if (fe.Name == "..")
+                    {
+                        // strip off last path part (not handling escaped / case...)
+                        int idx = m_Path.LastIndexOf('/');
+                        if (idx != -1)
+                        {
+                            m_Path = m_Path.Substring(0, idx);
+                        }
+                        else
+                        {
+                            m_Path += "/" + fe.Name;
+                        }
+                    }
+                    else
+                    {
+                        m_Path += "/" + fe.Name;
+                    }
                     LoadDirectory(m_Path);
                 }
             }
         }
 
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            LoadDirectory(m_Path);
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        #region ListView Modes
         private void detailsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listView1.View = View.Details;
@@ -161,8 +206,10 @@ namespace SuperPutty
         private void listToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listView1.View = View.List;
-        }
+        } 
+        #endregion
 
+        #region Drag Drop
         private void listView1_DragOver(object sender, DragEventArgs e)
         {
             ListView listView = sender as ListView;
@@ -177,7 +224,7 @@ namespace SuperPutty
             ListViewHitTestInfo hti = listView.HitTest(p.X, p.Y);
             if (hti.Item != null)
             {
-                e.Effect = DragDropEffects.All;                
+                e.Effect = DragDropEffects.All;
                 if (hti.Item.ImageIndex == 0)
                     hti.Item.Selected = true;
             }
@@ -222,7 +269,7 @@ namespace SuperPutty
                     RecurseDir(file, ref totalBytes, ref fileCount);
                 }
                 else
-                    Logger.Log("Dropped Unknown {0} on {1}", file, target);
+                    Log.WarnFormat("Dropped Unknown {0} on {1}", file, target);
             }
             //Logger.Log("Total Bytes: {0} Total Files: {1}", totalBytes, fileCount);
             frmTransferStatus frmStatus = new frmTransferStatus();
@@ -233,7 +280,7 @@ namespace SuperPutty
             {
                 if (cancelTransfer)
                 {
-                    Logger.Log("User requested to Cancel Transfer");
+                    Log.Info("User requested to Cancel Transfer");
                     m_Transfer.CancelTransfers();
                     frmStatus.Close();
                     LoadDirectory(target);
@@ -252,7 +299,7 @@ namespace SuperPutty
                 }
             };
             frmStatus.m_callback = callback;
-            m_Transfer.BeginCopyFiles(files, target, callback);            
+            m_Transfer.BeginCopyFiles(files, target, callback);
         }
 
         public static void RecurseDir(string sourceDir, ref long bytes, ref int count)
@@ -263,7 +310,7 @@ namespace SuperPutty
             {
                 FileInfo f = new FileInfo(fileName);
                 bytes += f.Length;
-                count++;              
+                count++;
             }
 
             // Recurse into subdirectories of this directory.
@@ -279,7 +326,7 @@ namespace SuperPutty
         }
 
         private void listView1_DragEnter(object sender, DragEventArgs e)
-        {            
+        {
             //m_MouseFollower.Show();
         }
 
@@ -296,10 +343,7 @@ namespace SuperPutty
             //    Logger.Log("Move Mouse");
             //}
         }
-
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            LoadDirectory(m_Path);
-        }
+        
+        #endregion
     }
 }

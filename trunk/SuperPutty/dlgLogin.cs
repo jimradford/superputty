@@ -27,6 +27,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Security.Principal;
+using SuperPutty.Data;
+
 
 namespace SuperPutty
 {
@@ -57,16 +59,21 @@ namespace SuperPutty
 
         private SessionData m_Session;
 
-        public dlgLogin(SessionData session)
+        public dlgLogin(string userName)
         {
-            m_Session = session;
             InitializeComponent();
 
-            if (!String.IsNullOrEmpty(m_Session.Username))
-                this.Username = m_Session.Username;
+            if (!String.IsNullOrEmpty(userName))
+                this.Username = userName;
 
             textBoxUsername.Text = this.Username;
         }
+
+        public dlgLogin(SessionData session) : this(session.Username)
+        {
+            m_Session = session;
+        }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -90,6 +97,11 @@ namespace SuperPutty
         {
             if(!String.IsNullOrEmpty(textBoxUsername.Text))
                 textBoxPasssword.Focus();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
         }
     }
 }
