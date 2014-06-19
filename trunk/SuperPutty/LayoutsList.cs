@@ -30,7 +30,10 @@ namespace SuperPutty
         {
             int idx = IndexAtCursor();
             e.Cancel = idx == -1;
-                        
+
+            if (e.Cancel)
+                return;
+            
             LayoutData layout = (LayoutData) this.listBoxLayouts.Items[idx];
 
             loadInNewInstanceToolStripMenuItem.Enabled = !SuperPuTTY.Settings.SingleInstanceMode;
