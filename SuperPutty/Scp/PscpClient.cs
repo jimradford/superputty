@@ -330,7 +330,7 @@ namespace SuperPutty.Scp
                         {
                             bool keepReading = true;
                             bool completed = false;
-                            if (strOut == PUTTY_INTERACTIVE_AUTH || strOut.Contains("'s password:"))
+                            if (strOut == PUTTY_INTERACTIVE_AUTH || strOut.Contains("assword:"))
                             {
                                 result.StatusCode = ResultStatusCode.RetryAuthentication;
                                 Log.Debug("Username/Password invalid or not sent");
@@ -406,7 +406,7 @@ namespace SuperPutty.Scp
                         }
                         else
                         {
-                            result.SetErrorFormat("Unknown error.  exitCode={0}, out={1}, err={2}", proc.ExitCode, output, err);
+                            result.SetErrorFormat("Unknown error.  exitCode={0}, out='{1}', err='{2}'", proc.ExitCode, String.Join("|", output), String.Join("|", err));
                         }
                     }
                 }
