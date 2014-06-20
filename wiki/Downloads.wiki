@@ -1,0 +1,9 @@
+#summary Downloading the SuperPutty Application
+#labels Featured
+= Downloading SuperPutty =
+
+Current stable version:
+[http://www.jimradford.com/projects/superputty/downloads/SuperPutty-1.4.0.5.zip SuperPutty-1.4.0.5.zip]
+
+Previous versions:
+https://code.google.com/p/superputty/downloads/
