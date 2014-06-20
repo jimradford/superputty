@@ -1,5 +1,20 @@
 1.4.0.5
 - 316: Add a caption when hovering over a session menu element showing the URL (in tree and new session menu)
+- 386: Made several dialogs fixed (non-sizeable) (Fixes Issue 222)
+- 385: Updated About Box with new icon courtesy of strugarevic (Resolves issue #160)
+- 384: Fixed Issue 345: Wrong tooltip on Options/GUI -> "Tabs and Docking" checkboxes
+- 383: Fixed Issue 428: Typing a square bracket in search box results in error
+- 382: Fixed Issue 354: popup descriptions incorrect.
+- 381: Fixed Issue when connecting with pscp to transfer files where password request was not being recognized (it appears the format has changed from prior versions of pscp).
+- 380: Fixed Issue #431 Fix exception thrown when right clicking in LayoutsList outside of a valid session name
+- 376: update w/issue 316
+- 375: Helper to clean up unattached putty/pscp/bash/cthelper procs
+- 374: Ensure you can't delete/rename AutoRestore layout
+- 373: Forcing toolbar locations
+- 372: Added Pscp Related issues
+- 371: 316: Add a caption when hovering over a session menu element showing the URL (Add caption on menu and session tree)
+- 369: hide "remember be" checkbox (unused)
+- 368: Fix div by zero error 
 
 1.4.0.4
 - New File Transfer implementation (Issues: 245, 298, 302)
