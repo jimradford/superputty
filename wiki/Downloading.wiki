@@ -1,6 +1,8 @@
+#summary Downloading the SuperPutty Application
 =Downloading SuperPutty=
 
 Current stable version:
-SuperPutty-1.4.0.5
+[https://drive.google.com/file/d/0B7OaWKLFMlfGYnVweHp1dTJ2X00/edit?usp=sharing SuperPutty-1.4.0.5]
 
 Previous versions:
+[https://drive.google.com/folderview?id=0B7OaWKLFMlfGSDJ5anNzLWNOdkE&usp=sharing On Google Drive]
