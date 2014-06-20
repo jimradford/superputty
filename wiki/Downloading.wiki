@@ -1,3 +1,6 @@
 =Downloading SuperPutty=
 
-SuperPutty can be downloaded from http://code.google.com/p/superputty/downloads/list.  Select the desired version and the _ZIP_ file will be downloaded to your system.
+Current stable version:
+SuperPutty-1.4.0.5
+
+Previous versions:
