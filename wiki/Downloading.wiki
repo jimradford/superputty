@@ -2,7 +2,7 @@
 = Downloading SuperPutty =
 
 Current stable version:
-[https://drive.google.com/file/d/0B7OaWKLFMlfGYnVweHp1dTJ2X00/edit?usp=sharing SuperPutty-1.4.0.5]
+[http://www.jimradford.com/projects/superputty/downloads/SuperPutty-1.4.0.5.zip SuperPutty-1.4.0.5.zip]
 
 Previous versions:
 https://code.google.com/p/superputty/downloads/list
