@@ -90,19 +90,19 @@
             this.label11 = new System.Windows.Forms.Label();
             this.tabPageShortcuts = new System.Windows.Forms.TabPage();
             this.dataGridViewShortcuts = new System.Windows.Forms.DataGridView();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.shortcutStringDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
             this.colClear = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.keyboardShortcutBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabPageAdvanced = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.comboBoxActivatorType = new System.Windows.Forms.ComboBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.shortcutStringDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.keyboardShortcutBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
@@ -113,11 +113,11 @@
             this.groupBox1.SuspendLayout();
             this.tabPageShortcuts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).BeginInit();
             this.tabPageAdvanced.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.panelBottom.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -304,7 +304,6 @@
             this.checkConstrainPuttyDocking.Size = new System.Drawing.Size(193, 17);
             this.checkConstrainPuttyDocking.TabIndex = 25;
             this.checkConstrainPuttyDocking.Text = "Restrict Content to Document Tabs";
-            this.toolTip.SetToolTip(this.checkConstrainPuttyDocking, "Prevent sessions from being docked in tool windows (edges)");
             this.checkConstrainPuttyDocking.UseVisualStyleBackColor = true;
             // 
             // checkSingleInstanceMode
@@ -470,7 +469,6 @@
             this.checkConfirmTabClose.Size = new System.Drawing.Size(255, 17);
             this.checkConfirmTabClose.TabIndex = 38;
             this.checkConfirmTabClose.Text = "Ask for Confirmation When Closing Mulitple Tabs";
-            this.toolTip.SetToolTip(this.checkConfirmTabClose, "Prevent sessions from being docked in tool windows (edges)");
             this.checkConfirmTabClose.UseVisualStyleBackColor = true;
             // 
             // checkEnableControlTabSwitching
@@ -513,7 +511,7 @@
             this.checkRestrictFloatingWindows.Size = new System.Drawing.Size(149, 17);
             this.checkRestrictFloatingWindows.TabIndex = 39;
             this.checkRestrictFloatingWindows.Text = "Restrict Floating Windows";
-            this.toolTip.SetToolTip(this.checkRestrictFloatingWindows, "Prevent sessions from being docked in tool windows (edges)");
+            this.toolTip.SetToolTip(this.checkRestrictFloatingWindows, "Do not allow tabs to be undocked");
             this.checkRestrictFloatingWindows.UseVisualStyleBackColor = true;
             // 
             // checkSessionsShowSearch
@@ -524,7 +522,7 @@
             this.checkSessionsShowSearch.Size = new System.Drawing.Size(90, 17);
             this.checkSessionsShowSearch.TabIndex = 42;
             this.checkSessionsShowSearch.Text = "Show Search";
-            this.toolTip.SetToolTip(this.checkSessionsShowSearch, "Show lines in tree");
+            this.toolTip.SetToolTip(this.checkSessionsShowSearch, "Show search box above sessions");
             this.checkSessionsShowSearch.UseVisualStyleBackColor = true;
             // 
             // label18
@@ -584,7 +582,7 @@
             this.tabPageGUI.Location = new System.Drawing.Point(4, 22);
             this.tabPageGUI.Name = "tabPageGUI";
             this.tabPageGUI.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPageGUI.Size = new System.Drawing.Size(596, 288);
+            this.tabPageGUI.Size = new System.Drawing.Size(596, 287);
             this.tabPageGUI.TabIndex = 1;
             this.tabPageGUI.Text = "GUI";
             this.tabPageGUI.UseVisualStyleBackColor = true;
@@ -750,7 +748,7 @@
             this.tabPageShortcuts.Controls.Add(this.dataGridViewShortcuts);
             this.tabPageShortcuts.Location = new System.Drawing.Point(4, 22);
             this.tabPageShortcuts.Name = "tabPageShortcuts";
-            this.tabPageShortcuts.Size = new System.Drawing.Size(596, 288);
+            this.tabPageShortcuts.Size = new System.Drawing.Size(596, 287);
             this.tabPageShortcuts.TabIndex = 3;
             this.tabPageShortcuts.Text = "Shortcuts";
             this.tabPageShortcuts.UseVisualStyleBackColor = true;
@@ -773,41 +771,9 @@
             this.dataGridViewShortcuts.Location = new System.Drawing.Point(0, 0);
             this.dataGridViewShortcuts.Name = "dataGridViewShortcuts";
             this.dataGridViewShortcuts.ReadOnly = true;
-            this.dataGridViewShortcuts.Size = new System.Drawing.Size(596, 288);
+            this.dataGridViewShortcuts.Size = new System.Drawing.Size(596, 287);
             this.dataGridViewShortcuts.TabIndex = 0;
             this.dataGridViewShortcuts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShortcuts_CellClick);
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.nameDataGridViewTextBoxColumn.Width = 200;
-            // 
-            // keyDataGridViewTextBoxColumn
-            // 
-            this.keyDataGridViewTextBoxColumn.DataPropertyName = "Key";
-            this.keyDataGridViewTextBoxColumn.HeaderText = "Key";
-            this.keyDataGridViewTextBoxColumn.Name = "keyDataGridViewTextBoxColumn";
-            this.keyDataGridViewTextBoxColumn.ReadOnly = true;
-            this.keyDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // modifiersDataGridViewTextBoxColumn
-            // 
-            this.modifiersDataGridViewTextBoxColumn.DataPropertyName = "Modifiers";
-            this.modifiersDataGridViewTextBoxColumn.HeaderText = "Modifiers";
-            this.modifiersDataGridViewTextBoxColumn.Name = "modifiersDataGridViewTextBoxColumn";
-            this.modifiersDataGridViewTextBoxColumn.ReadOnly = true;
-            this.modifiersDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // shortcutStringDataGridViewTextBoxColumn
-            // 
-            this.shortcutStringDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.shortcutStringDataGridViewTextBoxColumn.DataPropertyName = "ShortcutString";
-            this.shortcutStringDataGridViewTextBoxColumn.HeaderText = "Shortcut";
-            this.shortcutStringDataGridViewTextBoxColumn.Name = "shortcutStringDataGridViewTextBoxColumn";
-            this.shortcutStringDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // colEdit
             // 
@@ -826,10 +792,6 @@
             this.colClear.Text = "Clear";
             this.colClear.UseColumnTextForButtonValue = true;
             this.colClear.Width = 50;
-            // 
-            // keyboardShortcutBindingSource
-            // 
-            this.keyboardShortcutBindingSource.DataSource = typeof(SuperPutty.Data.KeyboardShortcut);
             // 
             // tabPageAdvanced
             // 
@@ -892,6 +854,42 @@
             this.panelBottom.Size = new System.Drawing.Size(604, 27);
             this.panelBottom.TabIndex = 39;
             // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.nameDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // keyDataGridViewTextBoxColumn
+            // 
+            this.keyDataGridViewTextBoxColumn.DataPropertyName = "Key";
+            this.keyDataGridViewTextBoxColumn.HeaderText = "Key";
+            this.keyDataGridViewTextBoxColumn.Name = "keyDataGridViewTextBoxColumn";
+            this.keyDataGridViewTextBoxColumn.ReadOnly = true;
+            this.keyDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // modifiersDataGridViewTextBoxColumn
+            // 
+            this.modifiersDataGridViewTextBoxColumn.DataPropertyName = "Modifiers";
+            this.modifiersDataGridViewTextBoxColumn.HeaderText = "Modifiers";
+            this.modifiersDataGridViewTextBoxColumn.Name = "modifiersDataGridViewTextBoxColumn";
+            this.modifiersDataGridViewTextBoxColumn.ReadOnly = true;
+            this.modifiersDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // shortcutStringDataGridViewTextBoxColumn
+            // 
+            this.shortcutStringDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.shortcutStringDataGridViewTextBoxColumn.DataPropertyName = "ShortcutString";
+            this.shortcutStringDataGridViewTextBoxColumn.HeaderText = "Shortcut";
+            this.shortcutStringDataGridViewTextBoxColumn.Name = "shortcutStringDataGridViewTextBoxColumn";
+            this.shortcutStringDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // keyboardShortcutBindingSource
+            // 
+            this.keyboardShortcutBindingSource.DataSource = typeof(SuperPutty.Data.KeyboardShortcut);
+            // 
             // dlgFindPutty
             // 
             this.AcceptButton = this.buttonOk;
@@ -925,13 +923,13 @@
             this.groupBox1.PerformLayout();
             this.tabPageShortcuts.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).EndInit();
             this.tabPageAdvanced.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.panelBottom.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
