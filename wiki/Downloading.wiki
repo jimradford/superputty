@@ -1,4 +1,5 @@
 #summary Downloading the SuperPutty Application
+#labels Featured
 = Downloading SuperPutty =
 
 Current stable version:
