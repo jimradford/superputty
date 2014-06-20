@@ -1,0 +1,1038 @@
+Index: SuperPutty.sln
+===================================================================
+--- SuperPutty.sln	(revision 255)
++++ SuperPutty.sln	(working copy)
+@@ -1,10 +1,16 @@
+ ﻿
+ Microsoft Visual Studio Solution File, Format Version 11.00
+-# Visual C# Express 2010
++# Visual Studio 2010
+ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperPutty", "SuperPutty\SuperPutty.csproj", "{E03FA8D9-555B-4AD6-A310-6A72B20024D1}"
+ EndProject
+ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SuperPuttySetup", "SuperPuttySetup\SuperPuttySetup.vdproj", "{20C654D5-1C01-4D70-A7D7-803404AAD840}"
+ EndProject
++Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8D14D8CF-C2BE-49D5-A916-688E2C32232B}"
++	ProjectSection(SolutionItems) = preProject
++		SuperPutty\classILP.Designer.cs = SuperPutty\classILP.Designer.cs
++		SuperPutty\classILP.resx = SuperPutty\classILP.resx
++	EndProjectSection
++EndProject
+ Global
+ 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+ 		Debug|Any CPU = Debug|Any CPU
+Index: SuperPutty/classILP.cs
+===================================================================
+--- SuperPutty/classILP.cs	(revision 0)
++++ SuperPutty/classILP.cs	(working copy)
+@@ -0,0 +1,312 @@
++﻿// ImageListPopup by John O'Byrne
++// This class pops up window displaying the different images
++// contained in an ImageList and allows to select one.
++// History: 24/02/2003 : Initial Release
++//          25/02/2003 : Added Keyboard support (arrows + space or enter to validate)
++//                       Added Drag'n'Drop Support (disabled by default) - The selected Image
++//                       and its Id are available to the drop target
++
++using System;
++using System.Drawing;
++using System.Drawing.Imaging;
++using System.Drawing.Drawing2D;
++using System.Windows.Forms;
++
++namespace SuperPutty
++{
++    public delegate void ImageListPopupEventHandler(object sender, ImageListPopupEventArgs ilpea);
++
++    public class ImageListPopup : System.Windows.Forms.Form
++    {
++        #region Protected Member Variables
++        protected Bitmap _Bitmap = null;
++        protected ImageList _imageList = null;
++        protected int _nBitmapWidth = 0;
++        protected int _nBitmapHeight = 0;
++        protected int _nItemWidth = 0;
++        protected int _nItemHeight = 0;
++        protected int _nRows = 0;
++        protected int _nColumns = 0;
++        protected int _nHSpace = 0;
++        protected int _nVSpace = 0;
++        protected int _nCoordX = -1;
++        protected int _nCoordY = -1;
++        protected bool _bIsMouseDown = false;
++        #endregion
++
++        #region Public Properties
++        public Color BackgroundColor = Color.FromArgb(255, 255, 255);
++        public Color BackgroundOverColor = Color.FromArgb(241, 238, 231);
++        public Color HLinesColor = Color.FromArgb(222, 222, 222);
++        public Color VLinesColor = Color.FromArgb(165, 182, 222);
++        public Color BorderColor = Color.FromArgb(0, 16, 123);
++        public bool EnableDragDrop = false;
++        #endregion
++
++        #region Events
++        public event ImageListPopupEventHandler ItemClick = null;
++        #endregion
++
++        #region Constructor
++        public ImageListPopup()
++        {
++            // Window Style
++            
++            FormBorderStyle = FormBorderStyle.None;
++            WindowState = FormWindowState.Minimized;
++            base.Show();
++            base.Hide();
++            WindowState = FormWindowState.Normal;
++            ShowInTaskbar = false;
++            
++            MaximizeBox = false;
++            MinimizeBox = false;
++            ControlBox = false;
++            //TopMost = true;
++        }
++        #endregion
++
++        #region Public Methods
++        public bool Init(ImageList imageList, int nHSpace, int nVSpace, int nColumns, int nRows)
++        {
++            _imageList = imageList;
++            _nColumns = nColumns;
++            _nRows = nRows;
++            _nHSpace = nHSpace;
++            _nVSpace = nVSpace;
++            _nItemWidth = _imageList.ImageSize.Width + nHSpace;
++            _nItemHeight = _imageList.ImageSize.Height + nVSpace;
++            _nBitmapWidth = _nColumns * _nItemWidth + 1;
++            _nBitmapHeight = _nRows * _nItemHeight + 1;
++            this.Width = _nBitmapWidth;
++            this.Height = _nBitmapHeight;
++
++
++            _Bitmap = new Bitmap(_nBitmapWidth, _nBitmapHeight);
++            Graphics grfx = Graphics.FromImage(_Bitmap);
++            grfx.FillRectangle(new SolidBrush(BackgroundColor), 0, 0, _nBitmapWidth, _nBitmapHeight);
++            for (int i = 0; i < _nColumns; i++)
++                grfx.DrawLine(new Pen(VLinesColor), i * _nItemWidth, 0, i * _nItemWidth, _nBitmapHeight - 1);
++            for (int i = 0; i < _nRows; i++)
++                grfx.DrawLine(new Pen(HLinesColor), 0, i * _nItemHeight, _nBitmapWidth - 1, i * _nItemHeight);
++
++            grfx.DrawRectangle(new Pen(BorderColor), 0, 0, _nBitmapWidth - 1, _nBitmapHeight - 1);
++
++            for (int i = 0; i < _nColumns; i++)
++                for (int j = 0; j < _nRows; j++)
++                    if ((j * _nColumns + i) < imageList.Images.Count)
++                        imageList.Draw(grfx,
++                                        i * _nItemWidth + _nHSpace / 2,
++                                        j * _nItemHeight + nVSpace / 2,
++                                        imageList.ImageSize.Width,
++                                        imageList.ImageSize.Height,
++                                        j * _nColumns + i);
++
++            return true;
++        }
++
++        public void Show(int x, int y)
++        {
++            this.Left = x;
++            this.Top = y;
++            base.Show();
++        }
++        #endregion
++
++        #region Overrides
++        protected override void OnMouseLeave(EventArgs ea)
++        {
++            // We repaint the popup if the mouse is no more over it
++            base.OnMouseLeave(ea);
++            _nCoordX = -1;
++            _nCoordY = -1;
++            Invalidate();
++        }
++
++        protected override void OnDeactivate(EventArgs ea)
++        {
++            // If the form loses focus, we hide it
++            this.Hide();
++        }
++
++        protected override void OnKeyDown(KeyEventArgs kea)
++        {
++            if (_nCoordX == -1 || _nCoordY == -1)
++            {
++                _nCoordX = 0;
++                _nCoordY = 0;
++                Invalidate();
++            }
++            else
++            {
++                switch (kea.KeyCode)
++                {
++                    case Keys.Down:
++                        if (_nCoordY < _nRows - 1)
++                        {
++                            _nCoordY++;
++                            Invalidate();
++                        }
++                        break;
++                    case Keys.Up:
++                        if (_nCoordY > 0)
++                        {
++                            _nCoordY--;
++                            Invalidate();
++                        }
++                        break;
++                    case Keys.Right:
++                        if (_nCoordX < _nColumns - 1)
++                        {
++                            _nCoordX++;
++                            Invalidate();
++                        }
++                        break;
++                    case Keys.Left:
++                        if (_nCoordX > 0)
++                        {
++                            _nCoordX--;
++                            Invalidate();
++                        }
++                        break;
++                    case Keys.Enter:
++                    case Keys.Space:
++                        // We fire the event only when the mouse is released
++                        int nImageId = _nCoordY * _nColumns + _nCoordX;
++                        if (ItemClick != null && nImageId >= 0 && nImageId < _imageList.Images.Count)
++                        {
++                            ItemClick(this, new ImageListPopupEventArgs(_imageList.Images.Keys[nImageId]));
++                            _nCoordX = -1;
++                            _nCoordY = -1;
++                            Hide();
++                        }
++                        break;
++                    case Keys.Escape:
++                        _nCoordX = -1;
++                        _nCoordY = -1;
++                        Hide();
++                        break;
++                }
++            }
++        }
++
++        protected override void OnMouseMove(MouseEventArgs mea)
++        {
++            // Update the popup only if the image selection has changed
++            if (ClientRectangle.Contains(new Point(mea.X, mea.Y)))
++            {
++                if (EnableDragDrop && _bIsMouseDown)
++                {
++                    int nImage = _nCoordY * _nColumns + _nCoordX;
++                    DataObject data = new DataObject();
++                    data.SetData(DataFormats.Text, nImage.ToString());
++                    data.SetData(DataFormats.Bitmap, _imageList.Images[nImage]);
++                    DragDropEffects dde = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Move);
++                    _bIsMouseDown = false;
++                }
++
++                if (((mea.X / _nItemWidth) != _nCoordX) || ((mea.Y / _nItemHeight) != _nCoordY))
++                {
++                    _nCoordX = mea.X / _nItemWidth;
++                    _nCoordY = mea.Y / _nItemHeight;
++                    Invalidate();
++                }
++            }
++            else
++            {
++                _nCoordX = -1;
++                _nCoordY = -1;
++                Invalidate();
++            }
++            base.OnMouseMove(mea);
++        }
++
++        protected override void OnMouseDown(MouseEventArgs mea)
++        {
++            base.OnMouseDown(mea);
++            _bIsMouseDown = true;
++            Invalidate();
++        }
++
++        protected override void OnMouseUp(MouseEventArgs mea)
++        {
++            base.OnMouseDown(mea);
++            _bIsMouseDown = false;
++
++            // We fire the event only when the mouse is released
++            int nImageId = _nCoordY * _nColumns + _nCoordX;
++            if (ItemClick != null && nImageId >= 0 && nImageId < _imageList.Images.Count)
++            {
++                ItemClick(this, new ImageListPopupEventArgs(_imageList.Images.Keys[nImageId]));
++                Hide();
++            }
++        }
++
++        protected override void OnPaintBackground(PaintEventArgs pea)
++        {
++            Graphics grfx = pea.Graphics;
++            grfx.PageUnit = GraphicsUnit.Pixel;
++
++            // Basic double buffering technique
++            Bitmap offscreenBitmap = new Bitmap(_nBitmapWidth, _nBitmapHeight);
++            Graphics offscreenGrfx = Graphics.FromImage(offscreenBitmap);
++            // We blit the precalculated bitmap on the offscreen Graphics
++            offscreenGrfx.DrawImage(_Bitmap, 0, 0);
++
++            if (_nCoordX != -1 && _nCoordY != -1 && (_nCoordY * _nColumns + _nCoordX) < _imageList.Images.Count)
++            {
++                // We draw the selection rectangle
++                offscreenGrfx.FillRectangle(new SolidBrush(BackgroundOverColor), _nCoordX * _nItemWidth + 1, _nCoordY * _nItemHeight + 1, _nItemWidth - 1, _nItemHeight - 1);
++                if (_bIsMouseDown)
++                {
++                    // Mouse Down aspect for the image
++                    _imageList.Draw(offscreenGrfx,
++                        _nCoordX * _nItemWidth + _nHSpace / 2 + 1,
++                        _nCoordY * _nItemHeight + _nVSpace / 2 + 1,
++                        _imageList.ImageSize.Width,
++                        _imageList.ImageSize.Height,
++                        _nCoordY * _nColumns + _nCoordX);
++                }
++                else
++                {
++                    // Normal aspect for the image
++                    _imageList.Draw(offscreenGrfx,
++                        _nCoordX * _nItemWidth + _nHSpace / 2,
++                        _nCoordY * _nItemHeight + _nVSpace / 2,
++                        _imageList.ImageSize.Width,
++                        _imageList.ImageSize.Height,
++                        _nCoordY * _nColumns + _nCoordX);
++                }
++                // Border selection Rectangle
++                offscreenGrfx.DrawRectangle(new Pen(BorderColor), _nCoordX * _nItemWidth, _nCoordY * _nItemHeight, _nItemWidth, _nItemHeight);
++            }
++
++            // We blit the offscreen image on the screen
++            grfx.DrawImage(offscreenBitmap, 0, 0);
++        }
++        #endregion
++
++        private void InitializeComponent()
++        {
++            this.SuspendLayout();
++            // 
++            // ImageListPopup
++            // 
++            this.ClientSize = new System.Drawing.Size(284, 262);
++            this.Name = "ImageListPopup";
++            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
++            this.ResumeLayout(false);
++
++        }
++    }
++    public class ImageListPopupEventArgs : EventArgs
++    {
++        public string SelectedItem;
++
++        public ImageListPopupEventArgs(string selectedItem)
++        {
++            SelectedItem = selectedItem;
++        }
++    }
++
++}
+\ No newline at end of file
+Index: SuperPutty/classILP.Designer.cs
+===================================================================
+--- SuperPutty/classILP.Designer.cs	(revision 0)
++++ SuperPutty/classILP.Designer.cs	(working copy)
+@@ -0,0 +1,36 @@
++﻿namespace SuperPutty
++{
++    partial class Component1
++    {
++        /// <summary>
++        /// Required designer variable.
++        /// </summary>
++        private System.ComponentModel.IContainer components = null;
++
++        /// <summary> 
++        /// Clean up any resources being used.
++        /// </summary>
++        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
++        /*protected override void Dispose(bool disposing)
++        {
++            if (disposing && (components != null))
++            {
++                components.Dispose();
++            }
++            base.Dispose(disposing);
++        }*/
++
++        #region Component Designer generated code
++
++        /// <summary>
++        /// Required method for Designer support - do not modify
++        /// the contents of this method with the code editor.
++        /// </summary>
++        private void InitializeComponent()
++        {
++            components = new System.ComponentModel.Container();
++        }
++
++        #endregion
++    }
++}
+Index: SuperPutty/classILP.resx
+===================================================================
+--- SuperPutty/classILP.resx	(revision 0)
++++ SuperPutty/classILP.resx	(working copy)
+@@ -0,0 +1,120 @@
++﻿<?xml version="1.0" encoding="utf-8"?>
++<root>
++  <!-- 
++    Microsoft ResX Schema 
++    
++    Version 2.0
++    
++    The primary goals of this format is to allow a simple XML format 
++    that is mostly human readable. The generation and parsing of the 
++    various data types are done through the TypeConverter classes 
++    associated with the data types.
++    
++    Example:
++    
++    ... ado.net/XML headers & schema ...
++    <resheader name="resmimetype">text/microsoft-resx</resheader>
++    <resheader name="version">2.0</resheader>
++    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
++    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
++    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
++    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
++    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
++        <value>[base64 mime encoded serialized .NET Framework object]</value>
++    </data>
++    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
++        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
++        <comment>This is a comment</comment>
++    </data>
++                
++    There are any number of "resheader" rows that contain simple 
++    name/value pairs.
++    
++    Each data row contains a name, and value. The row also contains a 
++    type or mimetype. Type corresponds to a .NET class that support 
++    text/value conversion through the TypeConverter architecture. 
++    Classes that don't support this are serialized and stored with the 
++    mimetype set.
++    
++    The mimetype is used for serialized objects, and tells the 
++    ResXResourceReader how to depersist the object. This is currently not 
++    extensible. For a given mimetype the value must be set accordingly:
++    
++    Note - application/x-microsoft.net.object.binary.base64 is the format 
++    that the ResXResourceWriter will generate, however the reader can 
++    read any of the formats listed below.
++    
++    mimetype: application/x-microsoft.net.object.binary.base64
++    value   : The object must be serialized with 
++            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
++            : and then encoded with base64 encoding.
++    
++    mimetype: application/x-microsoft.net.object.soap.base64
++    value   : The object must be serialized with 
++            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
++            : and then encoded with base64 encoding.
++
++    mimetype: application/x-microsoft.net.object.bytearray.base64
++    value   : The object must be serialized into a byte array 
++            : using a System.ComponentModel.TypeConverter
++            : and then encoded with base64 encoding.
++    -->
++  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
++    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
++    <xsd:element name="root" msdata:IsDataSet="true">
++      <xsd:complexType>
++        <xsd:choice maxOccurs="unbounded">
++          <xsd:element name="metadata">
++            <xsd:complexType>
++              <xsd:sequence>
++                <xsd:element name="value" type="xsd:string" minOccurs="0" />
++              </xsd:sequence>
++              <xsd:attribute name="name" use="required" type="xsd:string" />
++              <xsd:attribute name="type" type="xsd:string" />
++              <xsd:attribute name="mimetype" type="xsd:string" />
++              <xsd:attribute ref="xml:space" />
++            </xsd:complexType>
++          </xsd:element>
++          <xsd:element name="assembly">
++            <xsd:complexType>
++              <xsd:attribute name="alias" type="xsd:string" />
++              <xsd:attribute name="name" type="xsd:string" />
++            </xsd:complexType>
++          </xsd:element>
++          <xsd:element name="data">
++            <xsd:complexType>
++              <xsd:sequence>
++                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
++                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
++              </xsd:sequence>
++              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
++              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
++              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
++              <xsd:attribute ref="xml:space" />
++            </xsd:complexType>
++          </xsd:element>
++          <xsd:element name="resheader">
++            <xsd:complexType>
++              <xsd:sequence>
++                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
++              </xsd:sequence>
++              <xsd:attribute name="name" type="xsd:string" use="required" />
++            </xsd:complexType>
++          </xsd:element>
++        </xsd:choice>
++      </xsd:complexType>
++    </xsd:element>
++  </xsd:schema>
++  <resheader name="resmimetype">
++    <value>text/microsoft-resx</value>
++  </resheader>
++  <resheader name="version">
++    <value>2.0</value>
++  </resheader>
++  <resheader name="reader">
++    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
++  </resheader>
++  <resheader name="writer">
++    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
++  </resheader>
++</root>
+\ No newline at end of file
+Index: SuperPutty/Data/SessionData.cs
+===================================================================
+--- SuperPutty/Data/SessionData.cs	(revision 255)
++++ SuperPutty/Data/SessionData.cs	(working copy)
+@@ -85,9 +85,22 @@
+                     SessionId = value;
+                 }
+             }
++        }
++
++        private string _ImageKey;
++        [XmlAttribute]
++        public string ImageKey
++        {
++            get { return _ImageKey; }
++            set
++            {
++                if (frmSuperPutty.IconList.Images.Count > 0 && frmSuperPutty.IconList.Images.IndexOfKey("sp_folder.png") != 0)
++                    _ImageKey = value;
++                else
++                    _ImageKey = "sp_computer";
++            }
+         }
+ 
+-
+         private string _Host;
+         [XmlAttribute]
+         public string Host
+Index: SuperPutty/dlgEditSession.cs
+===================================================================
+--- SuperPutty/dlgEditSession.cs	(revision 255)
++++ SuperPutty/dlgEditSession.cs	(working copy)
+@@ -39,12 +39,17 @@
+ 
+         private SessionData Session;
+         private String OldHostname;
+-        private bool isInitialized = false;
++        private bool isInitialized = false;
++
++        ImageListPopup _imgPopup = new ImageListPopup();
+ 
+         public dlgEditSession(SessionData session)
+         {
+             Session = session;
+-            InitializeComponent();
++            InitializeComponent();
++
++            // Set dlgEditSession to use the main forms shared imagelist
++            this.buttonImageSelect.ImageList = frmSuperPutty.IconList;
+ 
+             // get putty saved settings from the registry to populate
+             // the dropdown
+@@ -100,7 +105,13 @@
+                 this.Text = "Create new session";
+                 radioButtonSSH.Checked = true;
+             }
+-            this.isInitialized = true;
++            this.isInitialized = true;
++
++            // Load up the existing image (if any) into the icon select button
++            if (Session.ImageKey != null && Session.ImageKey != "")
++                this.buttonImageSelect.ImageKey = Session.ImageKey;
++            else
++                this.buttonImageSelect.ImageKey = "sp_computer";
+         }
+ 
+         protected override void OnLoad(EventArgs e)
+@@ -151,7 +162,8 @@
+             Session.ExtraArgs = textBoxExtraArgs.Text.Trim();
+             Session.Port = int.Parse(textBoxPort.Text.Trim());
+             Session.Username = textBoxUsername.Text.Trim();
+-            Session.SessionId = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
++            Session.SessionId = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
++            Session.ImageKey = buttonImageSelect.ImageKey;
+ 
+             for (int i = 0; i < groupBox1.Controls.Count; i++)
+             {
+@@ -256,6 +268,14 @@
+                     this.buttonSave.Enabled = true;
+                 }
+             }
++        }
++
++        private void OnItemClicked(object sender, ImageListPopupEventArgs e)
++        {
++            if (sender.Equals(_imgPopup))
++            {
++                buttonImageSelect.ImageKey = e.SelectedItem;
++            }
+         }
+ 
+         public SessionNameValidationHandler SessionNameValidator { get; set; }
+@@ -277,6 +297,28 @@
+                     break;
+             }
+             return port;
++        }
++
++        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
++        {
++
++        }
++
++        private void buttonImageSelect_Click(object sender, EventArgs e)
++        {
++            int col;
++            int row;
++            col = (buttonImageSelect.ImageList.Images.Count / (buttonImageSelect.ImageList.Images.Count / 3));
++            row = (buttonImageSelect.ImageList.Images.Count / (buttonImageSelect.ImageList.Images.Count / 3));
++
++            _imgPopup = new ImageListPopup();
++            _imgPopup.BackgroundColor = Color.FromArgb(241, 241, 241);
++            _imgPopup.BackgroundOverColor = Color.FromArgb(102, 154, 204);
++
++            _imgPopup.Init(frmSuperPutty.IconList , 8, 8, 5, 4);
++            _imgPopup.ItemClick += new ImageListPopupEventHandler(OnItemClicked);
++            Point pt = PointToScreen(new Point(buttonImageSelect.Left, buttonImageSelect.Bottom));
++            _imgPopup.Show(pt.X, pt.Y);
+         }
+     }
+ }
+Index: SuperPutty/dlgEditSession.Designer.cs
+===================================================================
+--- SuperPutty/dlgEditSession.Designer.cs	(revision 255)
++++ SuperPutty/dlgEditSession.Designer.cs	(working copy)
+@@ -53,6 +53,7 @@
+             this.label5 = new System.Windows.Forms.Label();
+             this.textBoxUsername = new System.Windows.Forms.TextBox();
+             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
++            this.buttonImageSelect = new System.Windows.Forms.Button();
+             this.groupBox1.SuspendLayout();
+             this.groupBox2.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+@@ -60,8 +61,8 @@
+             // 
+             // textBoxSessionName
+             // 
+-            this.textBoxSessionName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+-                        | System.Windows.Forms.AnchorStyles.Right)));
++            this.textBoxSessionName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
++            | System.Windows.Forms.AnchorStyles.Right)));
+             this.textBoxSessionName.Location = new System.Drawing.Point(9, 33);
+             this.textBoxSessionName.Name = "textBoxSessionName";
+             this.textBoxSessionName.Size = new System.Drawing.Size(410, 20);
+@@ -91,8 +92,8 @@
+             // 
+             // textBoxHostname
+             // 
+-            this.textBoxHostname.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+-                        | System.Windows.Forms.AnchorStyles.Right)));
++            this.textBoxHostname.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
++            | System.Windows.Forms.AnchorStyles.Right)));
+             this.textBoxHostname.Location = new System.Drawing.Point(9, 74);
+             this.textBoxHostname.Name = "textBoxHostname";
+             this.textBoxHostname.Size = new System.Drawing.Size(324, 20);
+@@ -122,8 +123,8 @@
+             // 
+             // groupBox1
+             // 
+-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+-                        | System.Windows.Forms.AnchorStyles.Right)));
++            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
++            | System.Windows.Forms.AnchorStyles.Right)));
+             this.groupBox1.Controls.Add(this.radioButtonMintty);
+             this.groupBox1.Controls.Add(this.radioButtonCygterm);
+             this.groupBox1.Controls.Add(this.radioButtonSerial);
+@@ -233,8 +234,8 @@
+             // 
+             // textBoxExtraArgs
+             // 
+-            this.textBoxExtraArgs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+-                        | System.Windows.Forms.AnchorStyles.Right)));
++            this.textBoxExtraArgs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
++            | System.Windows.Forms.AnchorStyles.Right)));
+             this.textBoxExtraArgs.Location = new System.Drawing.Point(150, 222);
+             this.textBoxExtraArgs.Name = "textBoxExtraArgs";
+             this.textBoxExtraArgs.Size = new System.Drawing.Size(296, 20);
+@@ -286,20 +287,19 @@
+             // 
+             // comboBoxPuttyProfile
+             // 
+-            this.comboBoxPuttyProfile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+-                        | System.Windows.Forms.AnchorStyles.Right)));
++            this.comboBoxPuttyProfile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
++            | System.Windows.Forms.AnchorStyles.Right)));
+             this.comboBoxPuttyProfile.FormattingEnabled = true;
+             this.comboBoxPuttyProfile.Location = new System.Drawing.Point(150, 170);
+             this.comboBoxPuttyProfile.Name = "comboBoxPuttyProfile";
+             this.comboBoxPuttyProfile.Size = new System.Drawing.Size(296, 21);
+             this.comboBoxPuttyProfile.TabIndex = 4;
+-            this.comboBoxPuttyProfile.Text = "";
+             this.comboBoxPuttyProfile.TextChanged += new System.EventHandler(this.sessionForm_TextChanged);
+             // 
+             // groupBox2
+             // 
+-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+-                        | System.Windows.Forms.AnchorStyles.Right)));
++            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
++            | System.Windows.Forms.AnchorStyles.Right)));
+             this.groupBox2.Controls.Add(this.label1);
+             this.groupBox2.Controls.Add(this.textBoxSessionName);
+             this.groupBox2.Controls.Add(this.label2);
+@@ -324,8 +324,8 @@
+             // 
+             // textBoxUsername
+             // 
+-            this.textBoxUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+-                        | System.Windows.Forms.AnchorStyles.Right)));
++            this.textBoxUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
++            | System.Windows.Forms.AnchorStyles.Right)));
+             this.textBoxUsername.Location = new System.Drawing.Point(150, 196);
+             this.textBoxUsername.Name = "textBoxUsername";
+             this.textBoxUsername.Size = new System.Drawing.Size(296, 20);
+@@ -336,6 +336,15 @@
+             this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+             this.errorProvider.ContainerControl = this;
+             // 
++            // buttonImageSelect
++            // 
++            this.buttonImageSelect.Location = new System.Drawing.Point(15, 251);
++            this.buttonImageSelect.Name = "buttonImageSelect";
++            this.buttonImageSelect.Size = new System.Drawing.Size(36, 35);
++            this.buttonImageSelect.TabIndex = 16;
++            this.buttonImageSelect.UseVisualStyleBackColor = true;
++            this.buttonImageSelect.Click += new System.EventHandler(this.buttonImageSelect_Click);
++            // 
+             // dlgEditSession
+             // 
+             this.AcceptButton = this.buttonSave;
+@@ -343,6 +352,7 @@
+             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+             this.CancelButton = this.buttonCancel;
+             this.ClientSize = new System.Drawing.Size(458, 292);
++            this.Controls.Add(this.buttonImageSelect);
+             this.Controls.Add(this.label6);
+             this.Controls.Add(this.textBoxExtraArgs);
+             this.Controls.Add(this.textBoxUsername);
+@@ -395,6 +405,7 @@
+         private System.Windows.Forms.ErrorProvider errorProvider;
+         private System.Windows.Forms.Label label6;
+         private System.Windows.Forms.TextBox textBoxExtraArgs;
+-        private System.Windows.Forms.RadioButton radioButtonMintty;
++        private System.Windows.Forms.RadioButton radioButtonMintty;
++        private System.Windows.Forms.Button buttonImageSelect;
+     }
+ }
+\ No newline at end of file
+Index: SuperPutty/frmSuperPutty.cs
+===================================================================
+--- SuperPutty/frmSuperPutty.cs	(revision 255)
++++ SuperPutty/frmSuperPutty.cs	(working copy)
+@@ -38,6 +38,7 @@
+ using System.Runtime.InteropServices;
+ using SuperPutty.Utils;
+ using System.Configuration;
++using System.Collections;
+ 
+ namespace SuperPutty
+ {
+@@ -47,6 +48,20 @@
+ 
+         private static string XmlEditor = ConfigurationManager.AppSettings["SuperPuTTY.XmlEditor"];
+ 
++        private static ImageList _imgIcons = new ImageList();
++
++        public static ImageList IconList
++        {
++            get
++            {
++                return _imgIcons;
++            }
++
++            set
++            {
++                _imgIcons = value;
++            }
++        }
+         internal DockPanel DockPanel { get { return this.dockPanel1; } }
+ 
+         public ToolWindowDocument CurrentPanel { get; set; }
+@@ -79,7 +94,9 @@
+         {
+             // Verify Putty is set; Prompt user if necessary; exit otherwise
+             dlgFindPutty.PuttyCheck();
+-            
++
++            GetImages("default");
++
+             InitializeComponent();
+             if (this.DesignMode) return;
+ 
+@@ -1182,5 +1199,38 @@
+             Mixed
+         }
+ 
++        public void GetImages(string Theme = "default")
++        {
++            _imgIcons = new ImageList();
++
++            // Load the 2 standard icons in case no icons exist in icons directory, these will be used.
++            // SP Computer icon
++            Image Icon = global::SuperPutty.Properties.Resources.computer;
++            _imgIcons.Images.Add("sp_computer", Icon);
++            // SP Folder icon
++            Icon = global::SuperPutty.Properties.Resources.folder;
++            _imgIcons.Images.Add("sp_folder", Icon);
++
++            string[] filter = { ".bmp", ".jpg", ".jpeg", ".png" };
++            if (!Directory.Exists(System.IO.Directory.GetCurrentDirectory() + "\\themes\\" + Theme + "\\icons"))
++                return;
++
++            DirectoryInfo directoryInfo = new DirectoryInfo(System.IO.Directory.GetCurrentDirectory() + "\\themes\\" + Theme + "\\icons");
++            FileInfo[] fileInfo = directoryInfo.GetFiles();
++            ArrayList arrayList = new ArrayList();
++
++            foreach (FileInfo fi in fileInfo)
++                foreach (string s in filter)
++                    if (s == fi.Extension)
++                        arrayList.Add(fi.FullName);
++
++            //adding files to image list:
++            for (int i = 0; i < arrayList.Count; i++)
++            {
++                // Add all images to the imagelist
++                Image img = Image.FromFile(arrayList[i].ToString());
++                _imgIcons.Images.Add(System.IO.Path.GetFileName(arrayList[i].ToString()), img);
++            }
++        }
+     }
+ }
+Index: SuperPutty/frmSuperPutty.Designer.cs
+===================================================================
+--- SuperPutty/frmSuperPutty.Designer.cs	(revision 255)
++++ SuperPutty/frmSuperPutty.Designer.cs	(working copy)
+@@ -503,7 +503,7 @@
+             this.tbBtnConnect,
+             this.toolStripButtonClearFields});
+             this.tsConnect.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+-            this.tsConnect.Location = new System.Drawing.Point(3, 24);
++            this.tsConnect.Location = new System.Drawing.Point(3, 49);
+             this.tsConnect.Name = "tsConnect";
+             this.tsConnect.Size = new System.Drawing.Size(868, 25);
+             this.tsConnect.TabIndex = 5;
+@@ -608,7 +608,7 @@
+             this.toolStripSeparatorSendCommands,
+             this.tbBtnSelectDocs});
+             this.tsCommands.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+-            this.tsCommands.Location = new System.Drawing.Point(3, 49);
++            this.tsCommands.Location = new System.Drawing.Point(3, 24);
+             this.tsCommands.Name = "tsCommands";
+             this.tsCommands.Size = new System.Drawing.Size(574, 25);
+             this.tsCommands.TabIndex = 6;
+Index: SuperPutty/frmSuperPutty.resx
+===================================================================
+--- SuperPutty/frmSuperPutty.resx	(revision 255)
++++ SuperPutty/frmSuperPutty.resx	(working copy)
+@@ -166,7 +166,7 @@
+ </value>
+   </data>
+   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+-    <value>48</value>
++    <value>62</value>
+   </metadata>
+   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+     <value>
+Index: SuperPutty/Program.cs
+===================================================================
+--- SuperPutty/Program.cs	(revision 255)
++++ SuperPutty/Program.cs	(working copy)
+@@ -79,14 +79,18 @@
+             {
+ 
+                 Log.Info("Starting");
++
++                Application.SetCompatibleTextRenderingDefault(false);
++
++                // Need to have images loaded before LoadSession() so ordering was needed here
++                frmSuperPutty mainForm = new frmSuperPutty();
+                 SuperPuTTY.Initialize(args);
+ 
+                 AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+                 Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+                 Application.EnableVisualStyles();
+-                Application.SetCompatibleTextRenderingDefault(false);
+ 
+-                frmSuperPutty mainForm = new frmSuperPutty();
++                //frmSuperPutty mainForm = new frmSuperPutty();
+                 SetDefaultIcon(mainForm);
+                 Application.Run(SuperPuTTY.MainForm = mainForm);
+                 SuperPuTTY.Shutdown();
+Index: SuperPutty/Properties/Resources.Designer.cs
+===================================================================
+--- SuperPutty/Properties/Resources.Designer.cs	(revision 255)
++++ SuperPutty/Properties/Resources.Designer.cs	(working copy)
+@@ -123,6 +123,13 @@
+             }
+         }
+         
++        internal static System.Drawing.Bitmap folder {
++            get {
++                object obj = ResourceManager.GetObject("folder", resourceCulture);
++                return ((System.Drawing.Bitmap)(obj));
++            }
++        }
++        
+         internal static System.Drawing.Bitmap keyboard {
+             get {
+                 object obj = ResourceManager.GetObject("keyboard", resourceCulture);
+Index: SuperPutty/Properties/Resources.resx
+===================================================================
+--- SuperPutty/Properties/Resources.resx	(revision 255)
++++ SuperPutty/Properties/Resources.resx	(working copy)
+@@ -157,8 +157,11 @@
+   <data name="asterisk_gray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+     <value>..\Resources\asterisk_gray.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+   </data>
+-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+   <data name="cross_black" type="System.Resources.ResXFileRef, System.Windows.Forms">
+     <value>..\Resources\cross-black.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+   </data>
++  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
++  <data name="folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
++    <value>..\Resources\folder.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
++  </data>
+ </root>
+\ No newline at end of file
+Index: SuperPutty/Resources/folder.png
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: SuperPutty/Resources/folder.png
+===================================================================
+--- SuperPutty/Resources/folder.png	(revision 0)
++++ SuperPutty/Resources/folder.png	(working copy)
+
+Property changes on: SuperPutty/Resources/folder.png
+___________________________________________________________________
+Added: svn:mime-type
+## -0,0 +1 ##
++application/octet-stream
+\ No newline at end of property
+Index: SuperPutty/SessionTreeview.cs
+===================================================================
+--- SuperPutty/SessionTreeview.cs	(revision 255)
++++ SuperPutty/SessionTreeview.cs	(working copy)
+@@ -114,6 +114,7 @@
+         public void LoadSessions()
+         {
+             treeView1.Nodes.Clear();
++            this.treeView1.ImageList = frmSuperPutty.IconList;
+ 
+             this.nodeRoot = treeView1.Nodes.Add("root", "PuTTY Sessions", 0);
+             this.nodeRoot.ContextMenuStrip = this.contextMenuStripFolder;
+@@ -266,6 +267,8 @@
+                     // handle renames
+                     node.Text = session.SessionName;
+                     node.Name = session.SessionName;
++                    node.ImageKey = session.ImageKey;
++                    node.SelectedImageKey = session.ImageKey;
+                     if (session.SessionId != session.OldSessionId)
+                     {
+                         try
+@@ -524,6 +527,13 @@
+                 addedNode = parentNode.Nodes.Add(session.SessionName, session.SessionName, 1, 1);
+                 addedNode.Tag = session;
+                 addedNode.ContextMenuStrip = this.contextMenuStripAddTreeItem;
++
++                // Add node icon
++                if (session.ImageKey != null & session.ImageKey != "")
++                    addedNode.ImageKey = session.ImageKey;
++                else
++                    addedNode.ImageKey = "sp_computer";
++                addedNode.SelectedImageKey = addedNode.ImageKey;
+             }
+ 
+             return addedNode;
+@@ -539,7 +549,7 @@
+             else
+             {
+                 SuperPuTTY.ReportStatus("Adding new folder, {1}.  parent={0}", parentNode.Text, nodeName);
+-                nodeNew = parentNode.Nodes.Add(nodeName, nodeName, 0);
++                nodeNew = parentNode.Nodes.Add(nodeName, nodeName,"sp_folder");
+                 nodeNew.ContextMenuStrip = this.contextMenuStripFolder;
+             }
+             return nodeNew;
+Index: SuperPutty/SuperPutty.csproj
+===================================================================
+--- SuperPutty/SuperPutty.csproj	(revision 255)
++++ SuperPutty/SuperPutty.csproj	(working copy)
+@@ -43,6 +43,7 @@
+     <ErrorReport>prompt</ErrorReport>
+     <WarningLevel>4</WarningLevel>
+     <UseVSHostingProcess>true</UseVSHostingProcess>
++    <PlatformTarget>x86</PlatformTarget>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+     <DebugType>pdbonly</DebugType>
+@@ -86,6 +87,12 @@
+     <Compile Include="AboutBox1.Designer.cs">
+       <DependentUpon>AboutBox1.cs</DependentUpon>
+     </Compile>
++    <Compile Include="classILP.cs">
++      <SubType>Form</SubType>
++    </Compile>
++    <Compile Include="classILP.designer.cs">
++      <DependentUpon>classILP.cs</DependentUpon>
++    </Compile>
+     <Compile Include="frmDocumentSelector.cs">
+       <SubType>Form</SubType>
+     </Compile>
+@@ -196,7 +203,11 @@
+     <Compile Include="Utils\WindowActivator.cs" />
+     <EmbeddedResource Include="AboutBox1.resx">
+       <DependentUpon>AboutBox1.cs</DependentUpon>
++      <SubType>Designer</SubType>
+     </EmbeddedResource>
++    <EmbeddedResource Include="classILP.resx">
++      <DependentUpon>classILP.cs</DependentUpon>
++    </EmbeddedResource>
+     <EmbeddedResource Include="ctlApplicationPanel.resx">
+       <DependentUpon>ctlApplicationPanel.cs</DependentUpon>
+     </EmbeddedResource>
+@@ -323,6 +334,8 @@
+     <Content Include="Resources\application_edit.png" />
+     <Content Include="Resources\Apps-terminal.ico" />
+     <Content Include="Resources\Apps-utilities-terminal.ico" />
++    <None Include="Resources\folder.png" />
++    <None Include="Resources\folder.bmp" />
+     <None Include="Resources\cross-black.png" />
+     <None Include="Resources\bullet_go.png" />
+     <None Include="Resources\lightning_go.png" />

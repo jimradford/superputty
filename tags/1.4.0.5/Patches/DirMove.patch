@@ -1,0 +1,77 @@
+Index: SuperPutty/SessionTreeview.cs
+===================================================================
+--- SuperPutty/SessionTreeview.cs	(revision 242)
++++ SuperPutty/SessionTreeview.cs	(working copy)
+@@ -565,7 +565,8 @@
+             parentNodeNames.Reverse();
+             String sessionId = String.Join(SessionIdDelim, parentNodeNames.ToArray());
+             //Log.InfoFormat("sessionId={0}", sessionId);
+-            session.SessionId = sessionId;
++            //session.SessionId = sessionId;
++            if (session != null) session.SessionId = sessionId;
+             //SuperPuTTY.SaveSessions();
+             //session.SaveToRegistry();
+         }
+@@ -666,7 +667,8 @@
+             TreeNode node = e.Item as TreeNode;
+ 
+             // Start the drag-and-drop operation with a cloned copy of the node.
+-            if (node != null && IsSessionNode(node))
++            //if (node != null && IsSessionNode(node))
++            if (node != null && tree.Nodes[0] != node)
+             {
+                 this.treeView1.DoDragDrop(node, DragDropEffects.Copy);
+             }
+@@ -692,7 +694,7 @@
+ 
+                 TreeNode node = tree.GetNodeAt(pt);
+                 // Is the mouse over a valid node?
+-                if (node != null)
++                if (node != null && node != nodePayload && nodePayload.Nodes.Find(node.Text, true).Length == 0)
+                 {
+                     tree.SelectedNode = node;
+                     // folder that is not the same parent and new node name is not already present
+@@ -725,10 +727,26 @@
+                 TreeNode nodePayload = (TreeNode)e.Data.GetData(typeof(TreeNode));
+                 TreeNode nodeNew = (TreeNode)nodePayload.Clone();
+ 
++                // If node was expanded before, ensure new node is also expanded when moved
++                if (nodePayload.IsExpanded)
++                {
++                    nodeNew.Expand();
++                }
++
++                // remove old
++                nodePayload.Remove();
++
+                 // add new
++                UpdateSessionId(nodeNew, (SessionData)nodeNew.Tag); //
+                 node.Nodes.Add(nodeNew);
+-                UpdateSessionId(nodeNew, (SessionData)nodeNew.Tag);
+ 
++                // If this a folder, reset it's childrens sessionIds
++                if (IsFolderNode(nodeNew))
++                {
++                    resetFoldersChildrenPaths(nodeNew);
++                    
++                }
++
+                 // remove old
+                 nodePayload.Remove();
+ 
+@@ -744,6 +762,15 @@
+ 
+         #endregion
+ 
++        public void resetFoldersChildrenPaths(TreeNode nodePayload)
++        {
++            // Reset folders children nodes sessionId (path)
++            foreach (TreeNode node in nodePayload.Nodes)
++            {
++                UpdateSessionId(node, (SessionData)node.Tag);
++            }
++        }
++
+         private void timerDelayedSave_Tick(object sender, EventArgs e)
+         {
+             // stop timer

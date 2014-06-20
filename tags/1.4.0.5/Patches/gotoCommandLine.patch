@@ -1,0 +1,39 @@
+Index: branches/1.4/SuperPutty/frmSuperPutty.cs
+===================================================================
+--- frmSuperPutty.cs	(revision 326)
++++ frmSuperPutty.cs	(working copy)
+@@ -550,7 +550,10 @@
+                     // toolbars
+                     this.MainForm.tsCommands.Visible = false;
+                     this.MainForm.tsConnect.Visible = false;
++                    this.MainForm.quickConnectionToolStripMenuItem.Checked = false;
++                    this.MainForm.sendCommandsToolStripMenuItem.Checked = false;
+ 
++
+                     // menubar
+                     this.MainForm.menuStrip1.Hide();
+ 
+@@ -590,12 +593,23 @@
+                         // both visible so set locations
+                         this.MainForm.tsConnect.Visible = true;
+                         this.MainForm.tsConnect.Location = this.ConnectionBarLocation;
++
+                         this.MainForm.tsCommands.Visible = true;
+                         this.MainForm.tsCommands.Location = this.CommandBarLocation;
+                     }
+                     else if (this.CommandBar) { this.MainForm.tsCommands.Visible = true; }
+                     else if (this.ConnectionBar) { this.MainForm.tsConnect.Visible = true; }
+ 
++                    this.MainForm.sendCommandsToolStripMenuItem.Checked = this.CommandBar;
++                    this.MainForm.quickConnectionToolStripMenuItem.Checked = this.ConnectionBar;
++
++                    // save
++                    SuperPuTTY.Settings.ShowToolBarConnections = this.MainForm.quickConnectionToolStripMenuItem.Checked;
++                    SuperPuTTY.Settings.ShowToolBarCommands = this.MainForm.sendCommandsToolStripMenuItem.Checked;
++
++                    SuperPuTTY.Settings.Save();
++
++
+                     // menubar
+                     this.MainForm.menuStrip1.Show();
+ 
