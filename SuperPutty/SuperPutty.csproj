@@ -125,6 +125,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>QuickSelectorData.xsd</DependentUpon>
     </Compile>
+    <Compile Include="HttpRequest.cs" />
     <Compile Include="Scp\BrowserCommon.cs" />
     <Compile Include="Scp\BrowserViewModel.cs" />
     <Compile Include="Scp\BrowserPresenter.cs" />

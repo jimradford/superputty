@@ -103,6 +103,7 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
+            this.checkBoxCheckForUpdates = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
@@ -868,6 +869,7 @@
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Controls.Add(this.checkBoxCheckForUpdates);
             this.groupBox4.Controls.Add(this.checkEnableKeyboardShortcuts);
             this.groupBox4.Controls.Add(this.checkEnableControlTabSwitching);
             this.groupBox4.Controls.Add(this.checkSingleInstanceMode);
@@ -889,6 +891,17 @@
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(604, 27);
             this.panelBottom.TabIndex = 39;
+            // 
+            // checkBoxCheckForUpdates
+            // 
+            this.checkBoxCheckForUpdates.AutoSize = true;
+            this.checkBoxCheckForUpdates.Location = new System.Drawing.Point(286, 69);
+            this.checkBoxCheckForUpdates.Name = "checkBoxCheckForUpdates";
+            this.checkBoxCheckForUpdates.Size = new System.Drawing.Size(180, 17);
+            this.checkBoxCheckForUpdates.TabIndex = 30;
+            this.checkBoxCheckForUpdates.Text = "Automatically Check for Updates";
+            this.toolTip.SetToolTip(this.checkBoxCheckForUpdates, "Check for Updates when Application starts");
+            this.checkBoxCheckForUpdates.UseVisualStyleBackColor = true;
             // 
             // dlgFindPutty
             // 
@@ -1010,5 +1023,6 @@
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.CheckBox checkPuttyEnableNewSessionMenu;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.CheckBox checkBoxCheckForUpdates;
     }
 }
