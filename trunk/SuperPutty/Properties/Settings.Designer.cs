@@ -620,5 +620,21 @@ namespace SuperPutty.Properties {
                 this["ShowMenuBar"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoUpdateCheck
+        {
+            get
+            {
+                return ((bool)(this["AutoUpdateCheck"]));
+            }
+            set
+            {
+                this["AutoUpdateCheck"] = value;
+            }
+        }
     }
 }

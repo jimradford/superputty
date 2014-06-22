@@ -118,6 +118,17 @@ namespace SuperPutty
             SuperPuTTY.StatusEvent += new Action<string>(delegate(String msg) { this.toolStripStatusLabelMessage.Text = msg; });
             SuperPuTTY.ReportStatus("Ready");
 
+
+            // Check for updates if enabled. (disabled if compiled with DEBUG)
+            if (SuperPuTTY.Settings.AutoUpdateCheck)
+            {
+#if DEBUG
+                Log.Info("Automatic Update Check Disabled in DEBUG mode");
+#else
+                Log.Info("Checking for updates");
+                this.checkForUpdatesToolStripMenuItem_Click(this, new EventArgs());
+#endif
+            }
             // Hook into LayoutChanging/Changed
             SuperPuTTY.LayoutChanging += new EventHandler<LayoutChangedEventArgs>(SuperPuTTY_LayoutChanging);
 
@@ -136,8 +147,8 @@ namespace SuperPutty
                 FormUtils.RestoreFormPositionAndState(this, SuperPuTTY.Settings.WindowPosition, SuperPuTTY.Settings.WindowState);
             }
 
-            this.ResizeEnd += new EventHandler(frmSuperPutty_ResizeEnd);     
-       
+            this.ResizeEnd += new EventHandler(frmSuperPutty_ResizeEnd);
+
             // tab switching
             this.tabSwitcher = new TabSwitcher(this.DockPanel);
 
@@ -348,7 +359,7 @@ namespace SuperPutty
                 data.ItemData.AddItemDataRow(
                     sd.SessionName,
                     sd.SessionId,
-                    sd.Proto == ConnectionProtocol.Cygterm || sd.Proto == ConnectionProtocol.Mintty ? Color.Blue : Color.Black, 
+                    sd.Proto == ConnectionProtocol.Cygterm || sd.Proto == ConnectionProtocol.Mintty ? Color.Blue : Color.Black,
                     null);
             }
 
@@ -391,7 +402,7 @@ namespace SuperPutty
             QuickSelector d = new QuickSelector();
             if (d.ShowDialog(this, data, opt) == DialogResult.OK)
             {
-                ctlPuttyPanel panel = (ctlPuttyPanel) d.SelectedItem.Tag;
+                ctlPuttyPanel panel = (ctlPuttyPanel)d.SelectedItem.Tag;
                 panel.Activate();
             }
         }
@@ -410,7 +421,7 @@ namespace SuperPutty
         {
             this.Close();
         }
-        #endregion 
+        #endregion
 
         #region View Menu
 
@@ -747,7 +758,7 @@ namespace SuperPutty
                 String file = this.saveFileDialogLayout.FileName;
                 SaveLayout(file, string.Format("Saving layout as: {0}", file));
                 SuperPuTTY.AddLayout(file);
-            } 
+            }
         }
 
         void SaveLayout(string file, string statusMsg)
@@ -877,7 +888,7 @@ namespace SuperPutty
 
         private void tbItemConnect_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char) Keys.Enter)
+            if (e.KeyChar == (char)Keys.Enter)
             {
                 TryConnectFromToolbar();
                 e.Handled = true;
@@ -893,9 +904,9 @@ namespace SuperPutty
             {
                 HostConnectionString connStr = new HostConnectionString(host);
                 bool isScp = "SCP" == protoString;
-                ConnectionProtocol proto = isScp 
-                    ? ConnectionProtocol.SSH 
-                    : connStr.Protocol.GetValueOrDefault((ConnectionProtocol) Enum.Parse(typeof(ConnectionProtocol), protoString));
+                ConnectionProtocol proto = isScp
+                    ? ConnectionProtocol.SSH
+                    : connStr.Protocol.GetValueOrDefault((ConnectionProtocol)Enum.Parse(typeof(ConnectionProtocol), protoString));
                 SessionData session = new SessionData
                 {
                     Host = connStr.Host,
@@ -976,7 +987,7 @@ namespace SuperPutty
                     }
                     if (commandMRUIndex >= 0)
                     {
-                        tsSendCommandCombo.Text = (string) tsSendCommandCombo.Items[commandMRUIndex];
+                        tsSendCommandCombo.Text = (string)tsSendCommandCombo.Items[commandMRUIndex];
                         tsSendCommandCombo.SelectionStart = tsSendCommandCombo.Text.Length;
                     }
                 }
@@ -1076,7 +1087,6 @@ namespace SuperPutty
                     // success...clear text and save in mru
                     this.tsSendCommandCombo.Text = string.Empty;
                     if (command != null && !string.IsNullOrEmpty(command.Command) && saveHistory)
-
                     {
                         this.tsSendCommandCombo.Items.Add(command.ToString());
                     }
@@ -1108,13 +1118,13 @@ namespace SuperPutty
 
                 // track key state globally for control/alt/shift is up/down
                 bool isKeyDown = (wParam == (IntPtr)NativeMethods.WM_KEYDOWN || wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN);
-                if (keys == Keys.LControlKey || keys == Keys.RControlKey) {  isControlDown = isKeyDown; }
+                if (keys == Keys.LControlKey || keys == Keys.RControlKey) { isControlDown = isKeyDown; }
                 if (keys == Keys.LShiftKey || keys == Keys.RShiftKey) { isShiftDown = isKeyDown; }
                 if (keys == Keys.LMenu || keys == Keys.RMenu) { isAltDown = isKeyDown; }
 
                 if (Log.Logger.IsEnabledFor(Level.Trace))
                 {
-                    Log.DebugFormat("### KBHook: nCode={0}, wParam={1}, lParam={2} ({4,-4} - {3}) [{5}{6}{7}]", 
+                    Log.DebugFormat("### KBHook: nCode={0}, wParam={1}, lParam={2} ({4,-4} - {3}) [{5}{6}{7}]",
                         nCode, wParam, vkCode, keys, isKeyDown ? "Down" : "Up",
                         (isControlDown ? "Ctrl" : ""), (isAltDown ? "Alt" : ""), (isAltDown ? "Shift" : ""));
                 }
@@ -1180,7 +1190,7 @@ namespace SuperPutty
                         if (isShiftDown) keys |= Keys.Shift;
                         if (isAltDown) keys |= Keys.Alt;
 
-                        if (Log.Logger.IsEnabledFor(Level.Trace)) 
+                        if (Log.Logger.IsEnabledFor(Level.Trace))
                         {
                             Log.DebugFormat("#### TryExecute shortcut: keys={0}", keys);
                         }
@@ -1199,7 +1209,7 @@ namespace SuperPutty
 
 
             }
-                                
+
             return NativeMethods.CallNextHookEx(kbHookID, nCode, wParam, lParam);
         }
 
@@ -1329,9 +1339,9 @@ namespace SuperPutty
                     break;
                 case SuperPuttyAction.DuplicateSession:
                     ctlPuttyPanel p = this.DockPanel.ActiveDocument as ctlPuttyPanel;
-                    if (p != null && p.Session != null) 
+                    if (p != null && p.Session != null)
                     {
-                        SuperPuTTY.OpenPuttySession(p.Session); 
+                        SuperPuTTY.OpenPuttySession(p.Session);
                     }
                     break;
                 case SuperPuttyAction.GotoCommandBar:
@@ -1375,8 +1385,9 @@ namespace SuperPutty
         }
 
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
-            if ((keyData & Keys.Alt) == Keys.Alt) 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if ((keyData & Keys.Alt) == Keys.Alt)
             {
                 menuStrip1.Visible = true;
             }
@@ -1386,7 +1397,7 @@ namespace SuperPutty
 
         #endregion
 
-        #region Tray 
+        #region Tray
         private void frmSuperPutty_Resize(object sender, EventArgs e)
         {
             if (SuperPuTTY.Settings.MinimizeToTray)
@@ -1430,9 +1441,9 @@ namespace SuperPutty
             this.Close();
         }
 
-        #endregion 
+        #endregion
 
-        #region Diagnostics 
+        #region Diagnostics
 
         private void logWindowLocationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1485,7 +1496,7 @@ namespace SuperPutty
                     int error = 0;
                     foreach (KeyValuePair<string, List<Process>> plist in procs)
                     {
-                        foreach(Process procToKill in plist.Value)
+                        foreach (Process procToKill in plist.Value)
                         {
                             try
                             {
@@ -1509,7 +1520,37 @@ namespace SuperPutty
                 MessageBox.Show(this, msg, "Error Cleaning Processes");
             }
         }
+        private void menuStrip1_MenuDeactivate(object sender, EventArgs e)
+        {
+            menuStrip1.Visible = SuperPuTTY.Settings.ShowMenuBar;
+        }
 
+        private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Log.Info("Checking for application update");
+            httpRequest r = new httpRequest();
+            r.MakeRequest("https://code.google.com/p/superputty/wiki/Downloads?" + SuperPuTTY.Version, delegate(bool success, string content)
+            {
+                if (success)
+                {
+                    if (!content.Contains("Current stable version (" + SuperPuTTY.Version + "):"))
+                    {
+                        Log.Info("New Application version found! " + content.TrimEnd());
+
+                        if (MessageBox.Show("An updated version of SuperPuTTY is Available Would you like to visit the download page?",
+                            "SuperPutty Update Found",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button1,
+                            MessageBoxOptions.DefaultDesktopOnly) == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            Process.Start("https://code.google.com/p/superputty/wiki/Downloads");
+                        }
+                    }
+                }
+            });
+
+        }
         #endregion
 
         protected override void WndProc(ref Message m)
@@ -1524,12 +1565,9 @@ namespace SuperPutty
         public enum TabTextBehavior
         {
             Static,
-            Dynamic, 
+            Dynamic,
             Mixed
         }
 
-        private void menuStrip1_MenuDeactivate(object sender, EventArgs e) {
-            menuStrip1.Visible = SuperPuTTY.Settings.ShowMenuBar;
-        }
     }
 }

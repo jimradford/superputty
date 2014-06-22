@@ -191,7 +191,7 @@ namespace SuperPutty
             this.checkRestrictFloatingWindows.Checked = SuperPuTTY.Settings.DockingRestrictFloatingWindows;
             this.checkSessionsShowSearch.Checked = SuperPuTTY.Settings.SessionsShowSearch;
             this.checkPuttyEnableNewSessionMenu.Checked = SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu;
-
+            this.checkBoxCheckForUpdates.Checked = SuperPuTTY.Settings.AutoUpdateCheck;
             if (SuperPuTTY.IsFirstRun)
             {
                 this.ShowIcon = true;
