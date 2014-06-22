@@ -2,7 +2,7 @@
 #labels Featured
 = Downloading SuperPutty =
 
-Current stable version:
+Current stable version (1.4.0.5):
 [http://www.jimradford.com/projects/superputty/downloads/SuperPutty-1.4.0.5.zip SuperPutty-1.4.0.5.zip]
 
 Previous versions:
