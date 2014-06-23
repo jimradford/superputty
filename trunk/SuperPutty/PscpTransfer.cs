@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2009 Jim Radford http://www.jimradford.com
+ * Copyright (c) 2009 - 2014 Jim Radford http://www.jimradford.com
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -441,9 +441,7 @@ namespace SuperPutty
             return args;
         }
 
-        /// <summary>
-        /// Attempts to copy local files from the local filesystem to the selected remote target path
-        /// </summary>
+        /// <summary>Attempts to copy files from the local filesystem to the selected remote target path</summary>
         /// <param name="files">An array containing full paths to files and or folders to copy</param>
         /// <param name="target">The target path on the remote system</param>
         /// <param name="callback">A callback to fire on success or error. On failure the files parameter will be null</param>
@@ -530,7 +528,6 @@ namespace SuperPutty
         {
             Logger.Log("Aborting Transfer in CancelTransfer");
             m_PscpThread.Abort();
-
         }
     }
 }

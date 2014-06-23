@@ -223,7 +223,7 @@ namespace SuperPutty
             else
             {
                 layouts.Add(String.Empty);
-                // auto restore in inte layouts collection already
+                // auto restore is in the layouts collection already
                 foreach (LayoutData layout in SuperPuTTY.Layouts)
                 {
                     layouts.Add(layout.Name);

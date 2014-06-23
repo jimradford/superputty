@@ -34,7 +34,7 @@ namespace SuperPutty
         public DebugLogViewer()
         {
             InitializeComponent();
-            Logger.OnLog += new LogCallback(Logger_OnLog);
+            Logger.OnLog += Logger_OnLog;
         }
 
         void Logger_OnLog(string logLine)
