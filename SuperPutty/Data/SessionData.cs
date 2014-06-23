@@ -45,14 +45,12 @@ namespace SuperPutty.Data
         Mintty
     }
 
+    /// <summary>The main class containing configuration settings for a session</summary>
     public class SessionData : IComparable, ICloneable
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SessionData));
 
-
-        /// <summary>
-        /// Full session id (includes path for session tree)
-        /// </summary>
+        /// <summary>Full session id (includes path for session tree)e.g. FolderName/SessionName</summary>
         private string _SessionId;
         [XmlAttribute]
         public string SessionId
@@ -89,6 +87,7 @@ namespace SuperPutty.Data
         }
 
         private string _ImageKey;
+        /// <summary>A string containing the key of the image associated with this session</summary>
         [XmlAttribute]
         public string ImageKey
         {
@@ -152,14 +151,6 @@ namespace SuperPutty.Data
             set { _ExtraArgs = value; }
         }
 
-        /* Unused...ignore for now
-        private string _LastPath = ".";
-        public string LastPath
-        {
-            get { return _LastPath; }
-            set { _LastPath = value; }
-        }*/
-
         private DockState m_LastDockstate = DockState.Document;
         [XmlIgnore]
         public DockState LastDockstate
@@ -176,6 +167,12 @@ namespace SuperPutty.Data
             set { m_AutoStartSession = value; }
         }
 
+        /// <summary>Construct a new session data object</summary>
+        /// <param name="sessionName">A string representing the name of the session</param>
+        /// <param name="hostName">The hostname or ip address of the remote host</param>
+        /// <param name="port">The port on the remote host</param>
+        /// <param name="protocol">The protocol to use when connecting to the remote host</param>
+        /// <param name="sessionConfig">the name of the saved configuration settings from putty to use</param>
         public SessionData(string sessionName, string hostName, int port, ConnectionProtocol protocol, string sessionConfig)
         {
             SessionName = sessionName;
@@ -185,85 +182,14 @@ namespace SuperPutty.Data
             PuttySession = sessionConfig;
         }
         
+        /// <summary>Default constructor, instantiate a new <seealso cref="SessionData"/> object</summary>
         public SessionData()
         {
 
         }
 
-        internal void SaveToRegistry()
-        {
-            if (!String.IsNullOrEmpty(this.SessionName)
-                && !String.IsNullOrEmpty(this.Host)
-                && this.Port >= 0)
-            {
-
-                // detect if session was renamed
-                if (!String.IsNullOrEmpty(this.OldName) && this.OldName != this.SessionName)
-                {
-                    RegistryRemove(this.OldName);
-                }
-
-                RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Jim Radford\SuperPuTTY\Sessions\" + this.SessionName, true);
-                if (key == null)
-                {
-                    key = Registry.CurrentUser.CreateSubKey(@"Software\Jim Radford\SuperPuTTY\Sessions\" + this.SessionName);
-                }
-
-                if (key != null)
-                {                   
-                    key.SetValue("Host", this.Host);
-                    key.SetValue("Port", this.Port);
-                    key.SetValue("Proto", this.Proto);
-                    key.SetValue("PuttySession", this.PuttySession);
-                    
-                    if(!String.IsNullOrEmpty(this.Username))
-                        key.SetValue("Login", this.Username);
-
-                    //key.SetValue("Last Path", this.LastPath);
-
-                    if(this.LastDockstate != DockState.Hidden && this.LastDockstate != DockState.Unknown)
-                        key.SetValue("Last Dock", (int)this.LastDockstate);                    
-
-                    key.SetValue("Auto Start", this.AutoStartSession);
-
-                    if (this.SessionId != null)
-                    {
-                        key.SetValue("SessionId", this.SessionId);
-                    }
-                    key.Close();
-                }
-                else
-                {
-                    Logger.Log("Unable to create registry key for " + this.SessionName);
-                }
-            }
-        }
-
-        void RegistryRemove(string sessionName)
-        {
-            if (!String.IsNullOrEmpty(sessionName))
-            {
-                Log.DebugFormat("Removing session, name={0}", sessionName);
-                RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Jim Radford\SuperPuTTY\Sessions", true);
-                try
-                {
-                    if (key.OpenSubKey(sessionName) != null)
-                    {
-                        key.DeleteSubKeyTree(sessionName);
-                        key.Close();
-                    }
-                }
-                catch (UnauthorizedAccessException e)
-                {
-                    Logger.Log(e);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Read any existing saved sessions from the registry, decode and populate a list containing the data
-        /// </summary>
-        /// <returns>A list containing the entries retrieved from the registry</returns>
+        /// <summary>Read any existing saved sessions from the registry, decode and populate a list containing the data</summary>
+        /// <returns>A list containing the configuration entries retrieved from the registry</returns>
         public static List<SessionData> LoadSessionsFromRegistry()
         {
             Log.Info("LoadSessionsFromRegistry...");
@@ -294,6 +220,9 @@ namespace SuperPutty.Data
             return sessionList;
         }
 
+        /// <summary>Load session configuration data from the specified XML file</summary>
+        /// <param name="fileName">The filename containing the settings</param>
+        /// <returns>A <seealso cref="List"/> containing the session configuration data</returns>
         public static List<SessionData> LoadSessionsFromFile(string fileName)
         {
             List<SessionData> sessions = new List<SessionData>();
@@ -341,7 +270,9 @@ namespace SuperPutty.Data
             }
         }
 
-
+        /// <summary>Save session configuration to the specified XML file</summary>
+        /// <param name="sessions">A <seealso cref="List"/> containing the session configuration data</param>
+        /// <param name="fileName">A path to a filename to save the data in</param>
         public static void SaveSessionsToFile(List<SessionData> sessions, string fileName)
         {
             Log.InfoFormat("Saving {0} sessions to {1}", sessions.Count, fileName);
@@ -421,11 +352,17 @@ namespace SuperPutty.Data
             return parts.Length > 0 ? parts[parts.Length - 1] : sessionId;
         }
 
+        /// <summary>Split the SessionID into its parent/child parts</summary>
+        /// <param name="sessionId">The SessionID</param>
+        /// <returns>A string array containing the individual path components</returns>
         public static string[] GetSessionNameParts(string sessionId)
         {
             return sessionId.Split('/');
         }
 
+        /// <summary>Get the parent ID of the specified session</summary>
+        /// <param name="sessionId">the ID of the session</param>
+        /// <returns>A string containing the parent sessions ID</returns>
         public static string GetSessionParentId(string sessionId)
         {
             string parentPath = null;
@@ -440,7 +377,8 @@ namespace SuperPutty.Data
             return parentPath;
         }
 
-
+        /// <summary>Create a deep copy of the SessionData object</summary>
+        /// <returns>A clone of the <seealso cref="SessionData"/> object</returns>
         public object Clone()
         {
             SessionData session = new SessionData();
@@ -454,9 +392,10 @@ namespace SuperPutty.Data
             return session;
         }
 
+        /// <summary>Return a string containing a uri to the protocol://host:port of this sesssions defined host</summary>
+        /// <returns>A string in uri format containing connection information to this sessions host</returns>
         public override string ToString()
         {
-
             if (this.Proto == ConnectionProtocol.Cygterm || this.Proto == ConnectionProtocol.Mintty)
             {
                 return string.Format("{0}://{1}", this.Proto.ToString().ToLower(), this.Host);

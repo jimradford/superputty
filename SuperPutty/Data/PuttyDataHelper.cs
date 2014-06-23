@@ -10,6 +10,7 @@ using System.IO;
 
 namespace SuperPutty.Data
 {
+    /// <summary>Helper methods used mostly for importing settings and session data from other applications</summary>
     public class PuttyDataHelper
     {
         public static readonly ILog Log = LogManager.GetLogger(typeof(PuttyDataHelper));

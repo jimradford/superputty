@@ -38,19 +38,7 @@ namespace SuperPutty
         {
             Log.InfoFormat(
                 "Initializing.  Version={0}, UserSettings={1}, SettingsFolder={2}", 
-                Version, Settings.SettingsFilePath, Settings.SettingsFolder);
-
-            /* no longer needed b/c of portable settings!
-            // handle settings upgrade
-            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            if (Settings.ApplicationVersion != version)
-            {
-                Log.InfoFormat("Upgrading Settings to {0}", version);
-                Settings.Upgrade();
-                Settings.ApplicationVersion = version;
-                Settings.Save();
-            }
-             */
+                Version, Settings.SettingsFilePath, Settings.SettingsFolder);           
 
             if (!SuperPuTTY.IsFirstRun)
             {
@@ -112,14 +100,15 @@ namespace SuperPutty
             Log.Info("Initialized");
         }
 
-
-
+        /// <summary>Called when application is shutting down, sends message to log.</summary>
         public static void Shutdown()
         {
             Log.Info("Shutting down...");
-            //SaveSessions();
         }
 
+        /// <summary>Send status message to toolstrip</summary>
+        /// <param name="status">A string containing the message</param>
+        /// <param name="args">optional arguments <seealso cref="String.Format"/></param>
         public static void ReportStatus(String status, params Object[] args)
         {
             String msg = (args.Length > 0) ? String.Format(status, args) : status;
@@ -298,13 +287,16 @@ namespace SuperPutty
 
         #region Sessions
 
-        public static string SessionsFileName
+        /// <summary>Returns A string containing the path to the saved sessions database on disk</summary>
+        private static string SessionsFileName
         {
             get
             {
                 return Path.Combine(Settings.SettingsFolder, "Sessions.XML");
             }
         }
+
+        /// <summary>Load sessions database from file into the application</summary>
         public static void LoadSessions()
         {
             string fileName = SessionsFileName;
@@ -336,25 +328,34 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>Save in-application Session Database to XML File</summary>
         public static void SaveSessions()
         {
             Log.InfoFormat("Saving all sessions");
             SessionData.SaveSessionsToFile(GetAllSessions(), SessionsFileName);
         }
 
-        public static SessionData RemoveSession(string sessionId)
+        /// <summary>
+        /// Remove a session from the in-application sessions database. 
+        /// </summary>
+        /// <param name="sessionId">The <seealso cref="SessionData.SessionID"/> of the session to remove</param>
+        /// <returns>true on success, or false on failure or if session did not exist</returns>
+        public static bool RemoveSession(string sessionId)
         {
             SessionData session = GetSessionById(sessionId);
             if (session != null)
             {
                 sessionsMap.Remove(sessionId);
                 sessionsList.Remove(session);
-            }
-            Log.InfoFormat("Removed Session, id={0}, success={1}", sessionId, session != null);
-
-            return session;
+                Log.InfoFormat("Removed Session, id={0}, success={1}", sessionId, session != null);
+                return true;
+            }            
+            return false;
         }
 
+        /// <summary>Get a Session by its <seealso cref="SessionData.SessionID"/></summary>
+        /// <param name="sessionId">A string which represents a session</param>
+        /// <returns>A <seealso cref="SessionData"/> object containing the session details</returns>
         public static SessionData GetSessionById(string sessionId)
         {
             SessionData session = null;
@@ -383,6 +384,9 @@ namespace SuperPutty
             return session;
         }
 
+        /// <summary>Add a new session to the in-application session database</summary>
+        /// <param name="session">A <seealso cref="SessionData"/> object containing the configuration of a session</param>
+        /// <returns>true on success, false on failure</returns>
         public static bool AddSession(SessionData session)
         {
             bool success = false;
@@ -400,16 +404,22 @@ namespace SuperPutty
             return success;
         }
 
+        /// <summary>Get a list of all sessions from the in-application database</summary>
+        /// <returns>A <seealso cref="List"/> of <seealso cref="SessionData"/> objects</returns>
         public static List<SessionData> GetAllSessions()
         {
             return sessionsMap.Values.ToList();
         }
 
+        /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty window</summary>
+        /// <param name="sessionId">A string containing the <seealso cref="SessionData.SessionID"/> of the session</param>
         public static void OpenPuttySession(string sessionId)
         {
             OpenPuttySession(GetSessionById(sessionId));
         }
 
+        /// <summary>Open a new putty window with its settings being passed in a <seealso cref="SessionData"/> object</summary>
+        /// <param name="session">The <seealso cref="SessionData"/> object containing the settings</param>
         public static void OpenPuttySession(SessionData session)
         {
             Log.InfoFormat("Opening putty session, id={0}", session == null ? "" : session.SessionId);
@@ -423,11 +433,15 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty scp window</summary>
+        /// <param name="sessionId">A string containing the <seealso cref="SessionData.SessionID"/> of the session</param>
         public static void OpenScpSession(string sessionId)
         {
             OpenScpSession(GetSessionById(sessionId));
         }
 
+        /// <summary>Open a new putty scp window with its settings being passed in a <seealso cref="SessionData"/> object</summary>
+        /// <param name="session">The <seealso cref="SessionData"/> object containing the settings</param>
         public static void OpenScpSession(SessionData session)
         {
             Log.InfoFormat("Opening scp session, id={0}", session == null ? "" : session.SessionId);
@@ -452,43 +466,8 @@ namespace SuperPutty
             }
         }
 
-        static void OpenScpSessionOld(SessionData session)
-        {
-            Log.InfoFormat("Opening scp session, id={0}", session == null ? "" : session.SessionId);
-            if (!IsScpEnabled)
-            {
-                SuperPuTTY.ReportStatus("Could not open session, pscp not found: {0} [SCP]", session.SessionId);
-            }
-            else if (session != null)
-            {
-                RemoteFileListPanel panel = null;
-                bool cancelShow = false;
-                if (session != null)
-                {
-                    PuttyClosedCallback callback = delegate(bool error)
-                    {
-                        cancelShow = error;
-                    };
-                    PscpTransfer xfer = new PscpTransfer(session);
-                    xfer.PuttyClosed = callback;
-
-                    panel = new RemoteFileListPanel(xfer, SuperPuTTY.MainForm.DockPanel, session);
-                    ApplyDockRestrictions(panel);
-                    ApplyIconForWindow(panel, session);
-                    if (!cancelShow)
-                    {
-                        panel.Show(MainForm.DockPanel, session.LastDockstate);
-                    }
-                }
-
-                SuperPuTTY.ReportStatus("Opened session: {0} [SCP]", session.SessionId);
-            }
-            else
-            {
-                Log.Warn("Could not open null session");
-            }
-        }
-
+        /// <summary>Apply docking restrictions to a <seealso cref="ToolWindowDocument"/> window such as preventing a window opening from outside the tabbed interface</summary>
+        /// <param name="panel">The <seealso cref="DockPanel"/> to apply the restrictions to</param>
         public static void ApplyDockRestrictions(DockPanel panel)
         {
             foreach (DockContent doc in panel.Documents)
@@ -500,6 +479,8 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>Apply docking restrictions to a panel, such as restricting a panel from floating</summary>
+        /// <param name="panel">The <seealso cref="DockContent"/> panel to apply the restrictions to</param>
         public static void ApplyDockRestrictions(DockContent panel)
         {
             if (SuperPuTTY.Settings.RestrictContentToDocumentTabs)
@@ -534,6 +515,8 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>Import sessions from the specified file into the in-application database</summary>
+        /// <param name="fileName">A string containing the path of the filename that holds session configuration</param>
         public static void ImportSessionsFromFile(string fileName)
         {
             if (fileName == null) { return; }
@@ -545,6 +528,7 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>Import sessions from Windows Registry which were set by PuTTY or KiTTY and load them into the in-application sessions database</summary>
         public static void ImportSessionsFromPuTTY()
         {
             Log.InfoFormat("Importing sessions from PuTTY/KiTTY");
@@ -552,6 +536,7 @@ namespace SuperPutty
             ImportSessions(sessions, "ImportedFromPuTTY");
         }
 
+        /// <summary>Import sessions from Windows Registry which were set by PuttYCM and load them into the in-application sessions database</summary>
         public static void ImportSessionsFromPuttyCM(string fileExport)
         {
             Log.InfoFormat("Importing sessions from PuttyCM");
@@ -559,6 +544,9 @@ namespace SuperPutty
             ImportSessions(sessions, "ImportedFromPuTTYCM");
         }
 
+        /// <summary>Import sessions from a from a <seealso cref="List"/> object into the specified folder</summary>
+        /// <param name="sessions">A <seealso cref="List"/> of <seealso cref="SessionData"/> objects</param>
+        /// <param name="folder">The destination folder name</param>
         public static void ImportSessions(List<SessionData> sessions, string folder)
         {
             foreach (SessionData session in sessions)
@@ -573,6 +561,7 @@ namespace SuperPutty
             SaveSessions();
         }
 
+        /// <summary>Import sessions from older version of SuperPuTTY from the Windows Registry</summary>
         public static void ImportSessionsFromSuperPutty1030()
         {
             try
@@ -595,6 +584,10 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>Generate a unique session ID to prevent collisions in the in-application data store, used when importing and merging sessions from
+        /// another application or an older versin of SuperPuTTY</summary>
+        /// <param name="sessionId">A string containing the sessionID of the session being imported</param>
+        /// <returns>A string containing a unique sessionID</returns>
         public static string MakeUniqueSessionId(string sessionId)
         {
             String newSessionId = sessionId;
@@ -616,10 +609,8 @@ namespace SuperPutty
 
         #region Icons
 
-        /// <summary>
-        /// Load Images from themes folder
-        /// </summary>
-        /// <param name="theme"></param>
+        /// <summary>Load Images from themes folder</summary>
+        /// <param name="theme">the name of the theme folder</param>
         public static ImageList LoadImageList(string theme)
         {
             ImageList imgIcons = new ImageList();
@@ -661,6 +652,9 @@ namespace SuperPutty
             return imgIcons;
         }
 
+        /// <summary>Get the Icon defined for the specified session</summary>
+        /// <param name="session">The session configuration data</param>
+        /// <returns>The Icon configured for the session</returns>
         public static Icon GetIconForSession(SessionData session)
         {
             Icon icon = null;
@@ -685,7 +679,7 @@ namespace SuperPutty
             return icon;
         }
 
-        static void ApplyIconForWindow(ToolWindow win, SessionData session)
+        private static void ApplyIconForWindow(ToolWindow win, SessionData session)
         {
             win.Icon = GetIconForSession(session);
         }
@@ -693,7 +687,7 @@ namespace SuperPutty
         #endregion
 
         #region Properties
-
+        /// <summary>true if the application has not defined where the required putty program is located</summary>
         public static bool IsFirstRun {
             get
             {
@@ -705,11 +699,13 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>true if the application has not defined where the putty scp program is located</summary>
         public static bool IsScpEnabled
         {
             get { return File.Exists(SuperPuTTY.Settings.PscpExe); }
         }
 
+        /// <summary>Returns a string containing the current version of SuperPuTTY</summary>
         public static string Version
         {
             get
@@ -717,24 +713,19 @@ namespace SuperPutty
                 return Assembly.GetExecutingAssembly().GetName().Version.ToString();
             }
         }
-        public static frmSuperPutty MainForm { get; set; }
 
         internal static Settings Settings { get { return Settings.Default; } }
-
+        public static frmSuperPutty MainForm { get; set; }        
         public static string LayoutsDir { get { return Path.Combine(Settings.SettingsFolder, "layouts"); } }
-
-
         public static LayoutData CurrentLayout { get; private set; }
-
         public static LayoutData StartingLayout { get; private set; }
         public static SessionDataStartInfo StartingSession { get; private set; }
-
         public static BindingList<LayoutData> Layouts { get { return layouts; } }
-
         public static BindingList<SessionData> Sessions { get { return sessionsList; } }
-
         public static CommandLineOptions CommandLine { get; private set; }
+        public static ImageList Images { get; private set; }
 
+        /// <summary>true of KiTTY is being used instead of putty</summary>
         public static bool IsKiTTY
         {
             get
@@ -749,6 +740,7 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>The path to the default AutoRestore layout configuration</summary>
         public static string AutoRestoreLayoutPath
         {
             get
@@ -756,9 +748,6 @@ namespace SuperPutty
                 return Path.Combine(Settings.SettingsFolder, LayoutData.AutoRestoreLayoutFileName);
             }
         }
-
-        public static ImageList Images { get; private set; }
-
         #endregion
     }
 
