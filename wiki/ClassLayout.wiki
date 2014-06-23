@@ -1,6 +1,0 @@
-﻿#summary Developer Documentation - Class Layout
-
-= Introduction =
-The current class diagram for SuperPutty
-
-http://superputty.googlecode.com/svn/wiki/SuperPuttyClassLayout-Pre.png
