@@ -1547,6 +1547,13 @@ namespace SuperPutty
                             Process.Start("https://code.google.com/p/superputty/wiki/Downloads");
                         }
                     }
+                    else
+                    {
+                        if (sender.ToString().Equals(checkForUpdatesToolStripMenuItem.Text))
+                        {
+                            MessageBox.Show("You are running the latest version of SuperPutty", "SuperPuTTY Update Check", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
                 }
             });
 
