@@ -140,5 +140,11 @@
     <Setting Name="ShowMenuBar" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="PscpHomePrefix" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/home/</Value>
+    </Setting>
+    <Setting Name="AutoUpdateCheck" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

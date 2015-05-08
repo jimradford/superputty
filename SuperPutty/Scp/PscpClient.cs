@@ -728,6 +728,7 @@ namespace SuperPutty.Scp
         }
 
         public string PscpLocation { get; set; }
+        public string PscpHomePrefix { get; set; }
         public int TimeoutMs { get; set; }
     } 
     #endregion

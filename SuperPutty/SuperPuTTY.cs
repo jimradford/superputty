@@ -452,7 +452,7 @@ namespace SuperPutty
             else if (session != null)
             {
                 PscpBrowserPanel panel = new PscpBrowserPanel(
-                    session, new PscpOptions { PscpLocation = Settings.PscpExe }, 
+                    session, new PscpOptions { PscpLocation = Settings.PscpExe, PscpHomePrefix = Settings.PscpHomePrefix }, 
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
                 ApplyDockRestrictions(panel);
                 ApplyIconForWindow(panel, session);
