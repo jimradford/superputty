@@ -43,6 +43,7 @@ using SuperPutty.Gui;
 using System.Threading;
 using log4net.Core;
 using System.Text.RegularExpressions;
+using System.Runtime.Serialization.Json;
 
 namespace SuperPutty
 {
@@ -84,11 +85,12 @@ namespace SuperPutty
         Dictionary<Keys, SuperPuttyAction> shortcuts = new Dictionary<Keys, SuperPuttyAction>();
 
         public frmSuperPutty()
-        {
+        {                        
             // Verify Putty is set; Prompt user if necessary; exit otherwise
             dlgFindPutty.PuttyCheck();
 
             InitializeComponent();
+
             // force toolbar locations...designer likes to flip them around
             this.tsConnect.Location = new System.Drawing.Point(0, 24);
             this.tsCommands.Location = new System.Drawing.Point(0, 49);
@@ -1529,22 +1531,27 @@ namespace SuperPutty
         {
             Log.Info("Checking for application update");
             httpRequest r = new httpRequest();
-            r.MakeRequest("https://code.google.com/p/superputty/wiki/Downloads?" + SuperPuTTY.Version, delegate(bool success, string content)
+            r.MakeRequest("https://api.github.com/repos/jimradford/superputty/releases/latest", delegate(bool success, string content)
             {
                 if (success)
                 {
-                    if (!content.Contains("Current stable version (" + SuperPuTTY.Version + "):"))
+                    DataContractJsonSerializer js = new DataContractJsonSerializer(typeof(GitRelease));
+                    MemoryStream ms = new MemoryStream(System.Text.ASCIIEncoding.ASCII.GetBytes(content));
+                    GitRelease  latest = (GitRelease)js.ReadObject(ms);                                        
+                    ms.Close();
+                    
+                    if (!latest.version.Trim().Contains(SuperPuTTY.Version))
                     {
-                        Log.Info("New Application version found! " + content.TrimEnd());
+                        Log.Info("New Application version found! " + latest.version);
 
-                        if (MessageBox.Show("An updated version of SuperPuTTY is Available Would you like to visit the download page?",
+                        if (MessageBox.Show("An updated version of SuperPuTTY (" + latest.version + ") is Available Would you like to visit the download page to upgrade?",
                             "SuperPutty Update Found",
                             MessageBoxButtons.YesNo,
                             MessageBoxIcon.Question,
                             MessageBoxDefaultButton.Button1,
                             MessageBoxOptions.DefaultDesktopOnly) == System.Windows.Forms.DialogResult.Yes)
                         {
-                            Process.Start("https://code.google.com/p/superputty/wiki/Downloads");
+                            Process.Start(latest.release_url);
                         }
                     }
                     else
@@ -1554,6 +1561,12 @@ namespace SuperPutty
                             MessageBox.Show("You are running the latest version of SuperPutty", "SuperPuTTY Update Check", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
+                }
+                else
+                {
+                    // error occurred while making api request
+                    var foo = r;
+                    Console.WriteLine(r);
                 }
             });
 

@@ -68,6 +68,8 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -89,6 +91,7 @@
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\KeyboardShortcut.cs" />
+    <Compile Include="GitRelease.cs" />
     <Compile Include="Gui\BaseViewModel.cs" />
     <Compile Include="Gui\DataGridViewProgressColumn.cs" />
     <Compile Include="Gui\ImageListPopup.cs">
@@ -436,8 +439,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF NOT EXIST $(SolutionDir)bin\Debug\themes mkdir $(SolutionDir)bin\Debug\themes 
-IF NOT EXIST $(SolutionDir)bin\Debug\themes\default xcopy /E  /Y $(ProjectDir)Resources\themes $(SolutionDir)bin\Debug\themes</PostBuildEvent>
+    <PostBuildEvent>IF NOT EXIST $(SolutionDir)bin\Release\themes mkdir $(SolutionDir)bin\Release\themes 
+IF NOT EXIST $(SolutionDir)bin\Release\themes\default xcopy /E  /Y $(ProjectDir)Resources\themes $(SolutionDir)bin\Release\themes</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

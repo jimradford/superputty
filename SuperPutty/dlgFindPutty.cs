@@ -192,6 +192,8 @@ namespace SuperPutty
             this.checkSessionsShowSearch.Checked = SuperPuTTY.Settings.SessionsShowSearch;
             this.checkPuttyEnableNewSessionMenu.Checked = SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu;
             this.checkBoxCheckForUpdates.Checked = SuperPuTTY.Settings.AutoUpdateCheck;
+            this.textBoxHomeDirPrefix.Text = SuperPuTTY.Settings.PscpHomePrefix;
+
             if (SuperPuTTY.IsFirstRun)
             {
                 this.ShowIcon = true;
@@ -305,6 +307,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.SessionsShowSearch = this.checkSessionsShowSearch.Checked;
                 SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu = this.checkPuttyEnableNewSessionMenu.Checked;
                 SuperPuTTY.Settings.AutoUpdateCheck = this.checkBoxCheckForUpdates.Checked;
+                SuperPuTTY.Settings.PscpHomePrefix = this.textBoxHomeDirPrefix.Text;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
@@ -391,7 +394,7 @@ namespace SuperPutty
         /// </summary>
         public static void PuttyCheck()
         {
-            if (String.IsNullOrEmpty(SuperPuTTY.Settings.PuttyExe) || SuperPuTTY.IsFirstRun)
+            if (String.IsNullOrEmpty(SuperPuTTY.Settings.PuttyExe) || SuperPuTTY.IsFirstRun || !File.Exists(SuperPuTTY.Settings.PuttyExe))
             {
                 // first time, try to import old putty settings from registry
                 SuperPuTTY.Settings.ImportFromRegistry();
