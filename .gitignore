@@ -1,0 +1,7 @@
+bin/*
+SuperPutty/obj/*
+SuperPuttySetup/Debug/*
+SuperPuttySetup/Release/*
+SuperPuttyUnitTests/bin/*
+SuperPuttyUnitTests/obj/*
+SuperPutty.v12.suo
