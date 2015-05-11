@@ -857,7 +857,7 @@ namespace SuperPutty
 
         private void superPuttyWebsiteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("http://code.google.com/p/superputty/");
+            Process.Start("https://github.com/jimradford/superputty/");
         }
 
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -871,7 +871,7 @@ namespace SuperPutty
                 DialogResult result = MessageBox.Show("Local documentation could not be found. Would you like to view the documentation online instead?", "Documentation Not Found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    Process.Start("http://code.google.com/p/superputty/wiki/Documentation");
+                    Process.Start("https://github.com/jimradford/superputty/wiki/Documentation");
                 }
             }
         }

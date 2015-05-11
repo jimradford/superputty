@@ -1,3 +1,7 @@
+1.4.0.7
+- 490: Fixed issue #490 sending a blank command (<enter>) in command toolbar now sends a carriage return to each session window
+- 517: Fixed issue #517 About Box now referenced new Github Project
+
 1.4.0.6
 - Moved Project from Google Code to Github
 - 510: Fixed issue #530 Home directory prefix is now a configurable option
