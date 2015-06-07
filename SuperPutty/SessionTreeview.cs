@@ -33,6 +33,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using SuperPutty.Gui;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 
 namespace SuperPutty
@@ -355,6 +356,23 @@ namespace SuperPutty
         }
 
         /// <summary>
+        /// Open the filezilla program with the sesion data, for sftp connection. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void fileZillaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // open filezilla with the session info (https://wiki.filezilla-project.org/Command-line_arguments_%28Client%29)
+            SessionData session = (SessionData)treeView1.SelectedNode.Tag;
+            String pw = session.Password;
+            String userPw = (!String.IsNullOrEmpty(session.Username))? ((!String.IsNullOrEmpty(pw))?session.Username +":"+pw +"@": session.Username + "@") :"";
+            String rp = String.IsNullOrEmpty(session.RemotePath) ? "" : session.RemotePath;
+            String lp = String.IsNullOrEmpty(session.LocalPath) ? "" : " --local=\"" + session.LocalPath + "\" ";
+            String param = "sftp://" + userPw + session.Host + rp + lp;
+            Process.Start(SuperPuTTY.Settings.FileZillaExe, param);                      
+        }
+
+        /// <summary>
         /// Shortcut for double clicking an entries node.
         /// </summary>
         /// <param name="sender"></param>
@@ -525,7 +543,8 @@ namespace SuperPutty
         private void contextMenuStripAddTreeItem_Opening(object sender, CancelEventArgs e)
         {
             // disable file transfers if pscp isn't configured.
-            fileBrowserToolStripMenuItem.Enabled = SuperPuTTY.IsScpEnabled;
+            this.fileBrowserToolStripMenuItem.Enabled = SuperPuTTY.IsScpEnabled;
+            this.fileZillaToolStripMenuItem.Enabled = SuperPuTTY.IsFilezillaEnabled;
 
             connectInNewSuperPuTTYToolStripMenuItem.Enabled = !SuperPuTTY.Settings.SingleInstanceMode;
         }

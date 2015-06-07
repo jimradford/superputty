@@ -23,13 +23,34 @@ namespace SuperPutty.Scp
         }
 
         public PscpBrowserPanel(SessionData session, PscpOptions options) :
-            this(session, options, Environment.GetFolderPath(Environment.SpecialFolder.Desktop))
+            // default value of localStartingDir moved to localPath in PscpBrowserPanel(SessionData session, PscpOptions options, string localStartingDir)            
+            this(session, options, "") 
         { }
 
         public PscpBrowserPanel(SessionData session, PscpOptions options, string localStartingDir) : this()
         {
             this.Name = session.SessionName;
             this.TabText = session.SessionName;
+            
+            //set the remote path
+            String remotePath = "";            
+            if (String.IsNullOrEmpty(session.RemotePath)){                
+                remotePath = options.PscpHomePrefix + session.Username;
+            }else{                
+                remotePath = session.RemotePath;
+            }
+
+            //set the local path
+            String localPath = "";
+            if (String.IsNullOrEmpty(localStartingDir)){
+                if (String.IsNullOrEmpty(session.LocalPath)){
+                    localPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                }else{
+                    localPath = session.LocalPath;
+                }
+            }else{
+                localPath = localStartingDir;
+            }
 
             this.fileTransferPresenter = new FileTransferPresenter(options);
             this.localBrowserPresenter = new BrowserPresenter(
@@ -37,8 +58,8 @@ namespace SuperPutty.Scp
             this.remoteBrowserPresenter = new BrowserPresenter(
                 "Remote", new RemoteBrowserModel(options), session, fileTransferPresenter);
 
-            this.browserViewLocal.Initialize(this.localBrowserPresenter, new BrowserFileInfo(new DirectoryInfo(localStartingDir)));
-            this.browserViewRemote.Initialize(this.remoteBrowserPresenter, RemoteBrowserModel.NewDirectory(options.PscpHomePrefix + session.Username));
+            this.browserViewLocal.Initialize(this.localBrowserPresenter, new BrowserFileInfo(new DirectoryInfo(localPath)));
+            this.browserViewRemote.Initialize(this.remoteBrowserPresenter, RemoteBrowserModel.NewDirectory(remotePath));
             this.fileTransferView.Initialize(this.fileTransferPresenter);
         }
     }

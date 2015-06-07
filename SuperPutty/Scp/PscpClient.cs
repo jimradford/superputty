@@ -162,7 +162,8 @@ namespace SuperPutty.Scp
             {
                 sb.AppendFormat("-load \"{0}\" ", session.PuttySession);
             }
-            if (!string.IsNullOrEmpty(session.Password))
+            //fix: use the parameter "password"
+            if (!string.IsNullOrEmpty(password))
             {
                 sb.AppendFormat("-pw {0} ", password);
             }

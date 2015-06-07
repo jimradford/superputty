@@ -306,7 +306,8 @@ namespace SuperPutty
             saveDialog.InitialDirectory = Application.StartupPath;
             if (saveDialog.ShowDialog(this) == DialogResult.OK)
             {
-                SessionData.SaveSessionsToFile(SuperPuTTY.GetAllSessions(), saveDialog.FileName);
+                //return a copy of sessions withs the extraArgs encripted (only the -pw command)
+                SessionData.SaveSessionsToFile(SuperPuTTY.GetAllSessions(true), saveDialog.FileName);
             }
         }
 
