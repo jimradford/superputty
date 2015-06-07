@@ -43,6 +43,7 @@
             this.connectInNewSuperPuTTYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.fileBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileZillaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripFolder = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.newSessionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -107,7 +108,8 @@
             this.connectExternalToolStripMenuItem,
             this.connectInNewSuperPuTTYToolStripMenuItem,
             this.toolStripSeparator2,
-            this.fileBrowserToolStripMenuItem});
+            this.fileBrowserToolStripMenuItem,
+            this.fileZillaToolStripMenuItem});
             this.contextMenuStripAddTreeItem.Name = "contextMenuStripAddTreeItem";
             this.contextMenuStripAddTreeItem.ShowImageMargin = false;
             this.contextMenuStripAddTreeItem.Size = new System.Drawing.Size(182, 192);
@@ -178,6 +180,18 @@
             this.fileBrowserToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.fileBrowserToolStripMenuItem.Text = "File Transfer";
             this.fileBrowserToolStripMenuItem.Click += new System.EventHandler(this.fileBrowserToolStripMenuItem_Click);
+        
+            // 
+            // fileZillaToolStripMenuItem
+            // 
+            this.fileZillaToolStripMenuItem.Name = "fileBrowserToolStripMenuItem";
+            this.fileZillaToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.fileZillaToolStripMenuItem.Text = "FileZilla";
+            this.fileZillaToolStripMenuItem.Click += new System.EventHandler(this.fileZillaToolStripMenuItem_Click);
+        
+
+            
+
             // 
             // contextMenuStripFolder
             // 
@@ -357,6 +371,7 @@
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem fileBrowserToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fileZillaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripFolder;

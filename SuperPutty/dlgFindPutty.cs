@@ -65,6 +65,8 @@ namespace SuperPutty
             string puttyExe = SuperPuTTY.Settings.PuttyExe;
             string pscpExe = SuperPuTTY.Settings.PscpExe;
 
+            textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe);
+
             // check for location of putty/pscp
             if (!String.IsNullOrEmpty(puttyExe) && File.Exists(puttyExe))
             {
@@ -193,6 +195,7 @@ namespace SuperPutty
             this.checkPuttyEnableNewSessionMenu.Checked = SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu;
             this.checkBoxCheckForUpdates.Checked = SuperPuTTY.Settings.AutoUpdateCheck;
             this.textBoxHomeDirPrefix.Text = SuperPuTTY.Settings.PscpHomePrefix;
+            this.textBoxGlobalPassword.Text = SuperPuTTY.Settings.PasswordImportExport;
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -207,6 +210,33 @@ namespace SuperPutty
                 this.Shortcuts.Add(ks);
             }
             this.dataGridViewShortcuts.DataSource = this.Shortcuts;
+        }
+        
+        private String getPathExe(String PathInProgramFile, String settingValue)
+        {
+
+            if (!String.IsNullOrEmpty(settingValue) && File.Exists(settingValue))
+            {
+                return settingValue;
+            }
+
+            if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("ProgramFiles(x86)")))
+            {
+                if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles(x86)") + PathInProgramFile))
+                {
+                    return Environment.GetEnvironmentVariable("ProgramFiles(x86)") + PathInProgramFile;
+                }
+            }
+
+            if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("ProgramFiles")))
+            {
+                if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles") + PathInProgramFile))
+                {
+                    return Environment.GetEnvironmentVariable("ProgramFiles") + PathInProgramFile;
+                }
+            }
+
+            return "";
         }
 
         private void InitLayouts()
@@ -248,6 +278,12 @@ namespace SuperPutty
         private void buttonOk_Click(object sender, EventArgs e)
         {
             List<String> errors = new List<string>();
+
+            if (String.IsNullOrEmpty(textBoxFilezillaLocation.Text) || File.Exists(textBoxFilezillaLocation.Text))
+            {
+                SuperPuTTY.Settings.FileZillaExe = textBoxFilezillaLocation.Text;
+            }
+
             if (String.IsNullOrEmpty(textBoxPscpLocation.Text) || File.Exists(textBoxPscpLocation.Text))
             {
                 SuperPuTTY.Settings.PscpExe = textBoxPscpLocation.Text;
@@ -308,6 +344,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu = this.checkPuttyEnableNewSessionMenu.Checked;
                 SuperPuTTY.Settings.AutoUpdateCheck = this.checkBoxCheckForUpdates.Checked;
                 SuperPuTTY.Settings.PscpHomePrefix = this.textBoxHomeDirPrefix.Text;
+                SuperPuTTY.Settings.PasswordImportExport = this.textBoxGlobalPassword.Text;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
@@ -387,6 +424,20 @@ namespace SuperPutty
             openFileDialog1.ShowDialog(this);
             if (!String.IsNullOrEmpty(openFileDialog1.FileName))
                 textBoxMinttyLocation.Text = openFileDialog1.FileName;
+        }
+
+        private void buttonBowseFilezilla_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Filter = "filezilla|filezilla.exe";
+            openFileDialog1.FileName = "filezilla.exe";
+
+            if (File.Exists(textBoxFilezillaLocation.Text))
+            {
+                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxFilezillaLocation.Text);
+            }
+            openFileDialog1.ShowDialog(this);
+            if (!String.IsNullOrEmpty(openFileDialog1.FileName))
+                textBoxFilezillaLocation.Text = openFileDialog1.FileName;
         }
 
         /// <summary>

@@ -30,6 +30,7 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Collections;
 using System.Reflection;
+using SuperPutty.Utils;
 
 namespace SuperPutty.Data
 {
@@ -139,7 +140,13 @@ namespace SuperPutty.Data
         [XmlIgnore]
         public string Password
         {
-            get { return _Password; }
+            get {
+                if (String.IsNullOrEmpty(_Password)){
+                    // search if ExtraArgs contains the password
+                    _Password = CommandLineOptions.getcommand(this.ExtraArgs, "-pw");
+                }
+                return _Password;
+            }
             set { _Password = value; }
         }
 
@@ -149,6 +156,23 @@ namespace SuperPutty.Data
         {
             get { return _ExtraArgs; }
             set { _ExtraArgs = value; }
+        }
+
+
+        private string _RemotePath;
+        [XmlAttribute]
+        public string RemotePath
+        {
+            get { return _RemotePath; }
+            set { _RemotePath = value; }
+        }
+
+        private string _LocalPath;
+        [XmlAttribute]
+        public string LocalPath
+        {
+            get { return _LocalPath; }
+            set { _LocalPath = value; }
         }
 
         private DockState m_LastDockstate = DockState.Document;
@@ -213,6 +237,8 @@ namespace SuperPutty.Data
                         sessionData.Username = (string)itemKey.GetValue("Login", "");
                         sessionData.LastDockstate = (DockState)itemKey.GetValue("Last Dock", DockState.Document);
                         sessionData.AutoStartSession = bool.Parse((string)itemKey.GetValue("Auto Start", "False"));
+                        sessionData.RemotePath = (string)itemKey.GetValue("RemotePath", "");
+                        sessionData.LocalPath = (string)itemKey.GetValue("LocalPath", "");
                         sessionList.Add(sessionData);
                     }
                 }

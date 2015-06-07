@@ -63,6 +63,8 @@ namespace SuperPutty
                 this.textBoxPort.Text = Session.Port.ToString();
                 this.textBoxExtraArgs.Text = Session.ExtraArgs;
                 this.textBoxUsername.Text = Session.Username;
+                this.textBoxRemotePathSesion.Text = Session.RemotePath;
+                this.textBoxLocalPathSesion.Text = Session.LocalPath;
 
                 switch (Session.Proto)
                 {
@@ -147,6 +149,8 @@ namespace SuperPutty
             Session.PuttySession = comboBoxPuttyProfile.Text.Trim();
             Session.Host = textBoxHostname.Text.Trim();
             Session.ExtraArgs = textBoxExtraArgs.Text.Trim();
+            Session.RemotePath = textBoxRemotePathSesion.Text.Trim();
+            Session.LocalPath = textBoxLocalPathSesion.Text.Trim();
             Session.Port = int.Parse(textBoxPort.Text.Trim());
             Session.Username = textBoxUsername.Text.Trim();
             Session.SessionId = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
@@ -376,6 +380,32 @@ namespace SuperPutty
         }
 
         #endregion
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (checkBoxShowHidePW.Checked)
+            {
+                textBoxExtraArgs.PasswordChar = '*';
+            }
+            else 
+            {
+                textBoxExtraArgs.PasswordChar='\0'; 
+            }
+        }
+
+        private void dlgEditSession_Load(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(CommandLineOptions.getcommand(this.Session.ExtraArgs, "-pw")))
+            {
+                checkBoxShowHidePW.Checked = true;
+                textBoxExtraArgs.PasswordChar = '*';
+            }
+            else 
+            {
+                textBoxExtraArgs.PasswordChar = '\0';
+            }
+        }
 
     }
 }
