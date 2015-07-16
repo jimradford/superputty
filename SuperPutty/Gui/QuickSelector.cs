@@ -14,7 +14,7 @@ namespace SuperPutty.Gui
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(QuickSelector));
         private static char[] sanitizeChars = { '*', '[', ',' };
-        private static char[] splitChars = { ' ', '.' };
+        private static char[] splitChars = { ' ', '.', '*' };
 
         public QuickSelector()
         {
