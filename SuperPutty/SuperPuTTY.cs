@@ -727,6 +727,12 @@ namespace SuperPutty
             get { return File.Exists(SuperPuTTY.Settings.FileZillaExe); }
         }
 
+        /// <summary>true if the application has defined where the winSCP program is located</summary>
+        public static bool IsWinSCPEnabled
+        {
+            get { return File.Exists(SuperPuTTY.Settings.WinSCPExe); }
+        }
+
         /// <summary>Returns a string containing the current version of SuperPuTTY</summary>
         public static string Version
         {

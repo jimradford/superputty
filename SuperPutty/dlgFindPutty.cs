@@ -66,6 +66,7 @@ namespace SuperPutty
             string pscpExe = SuperPuTTY.Settings.PscpExe;
 
             textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe);
+            textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe);
 
             // check for location of putty/pscp
             if (!String.IsNullOrEmpty(puttyExe) && File.Exists(puttyExe))
@@ -284,6 +285,11 @@ namespace SuperPutty
                 SuperPuTTY.Settings.FileZillaExe = textBoxFilezillaLocation.Text;
             }
 
+            if (String.IsNullOrEmpty(textBoxWinSCPLocation.Text) || File.Exists(textBoxWinSCPLocation.Text))
+            {
+                SuperPuTTY.Settings.WinSCPExe = textBoxWinSCPLocation.Text;
+            }
+
             if (String.IsNullOrEmpty(textBoxPscpLocation.Text) || File.Exists(textBoxPscpLocation.Text))
             {
                 SuperPuTTY.Settings.PscpExe = textBoxPscpLocation.Text;
@@ -438,6 +444,20 @@ namespace SuperPutty
             openFileDialog1.ShowDialog(this);
             if (!String.IsNullOrEmpty(openFileDialog1.FileName))
                 textBoxFilezillaLocation.Text = openFileDialog1.FileName;
+        }
+
+        private void buttonBowseWinSCP_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Filter = "WinSCP|WinSCP.exe";
+            openFileDialog1.FileName = "WinSCP.exe";
+
+            if (File.Exists(textBoxWinSCPLocation.Text))
+            {
+                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxWinSCPLocation.Text);
+            }
+            openFileDialog1.ShowDialog(this);
+            if (!String.IsNullOrEmpty(openFileDialog1.FileName))
+                textBoxWinSCPLocation.Text = openFileDialog1.FileName;
         }
 
         /// <summary>

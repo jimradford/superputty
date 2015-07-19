@@ -371,6 +371,26 @@ namespace SuperPutty
             String param = "sftp://" + userPw + session.Host + ":" + session.Port + rp + lp;
             Process.Start(SuperPuTTY.Settings.FileZillaExe, param);                      
         }
+        /// <summary>
+        /// Open the WinSCP program with the sesion data, for sftp connection. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void winSCPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // open WinSCP with the session info (https://winscp.net/eng/docs/commandline)
+            SessionData session = (SessionData)treeView1.SelectedNode.Tag;            
+            String pw = Uri.EscapeDataString(session.Password);
+            String user = Uri.EscapeDataString(session.Username);
+            String userPw = (!String.IsNullOrEmpty(user)) ? ((!String.IsNullOrEmpty(pw)) ? user + ":" + pw + "@" : user + "@") : "";
+            String rp = String.IsNullOrEmpty(session.RemotePath) ? "" : session.RemotePath;
+            if (!rp.Substring(rp.Length).Equals("/")){
+                rp += "/";
+            }
+            String lp = String.IsNullOrEmpty(session.LocalPath) ? "" : " -rawsettings localDirectory=\"" + session.LocalPath + "\" ";
+            String param = "sftp://" + userPw + session.Host + ":" + session.Port + rp + lp;
+            Process.Start(SuperPuTTY.Settings.WinSCPExe, param);
+        }
 
         /// <summary>
         /// Shortcut for double clicking an entries node.
@@ -545,6 +565,7 @@ namespace SuperPutty
             // disable file transfers if pscp isn't configured.
             this.fileBrowserToolStripMenuItem.Enabled = SuperPuTTY.IsScpEnabled;
             this.fileZillaToolStripMenuItem.Enabled = SuperPuTTY.IsFilezillaEnabled;
+            this.winSCPToolStripMenuItem.Enabled = SuperPuTTY.IsWinSCPEnabled;
 
             connectInNewSuperPuTTYToolStripMenuItem.Enabled = !SuperPuTTY.Settings.SingleInstanceMode;
         }

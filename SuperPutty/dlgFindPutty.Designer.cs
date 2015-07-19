@@ -113,6 +113,9 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
+            this.labelWinSCP = new System.Windows.Forms.Label();
+            this.textBoxWinSCPLocation = new System.Windows.Forms.TextBox();
+            this.buttonBowseWinSCP = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
@@ -226,7 +229,7 @@
             // 
             this.textBoxSettingsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSettingsFolder.Location = new System.Drawing.Point(172, 214);
+            this.textBoxSettingsFolder.Location = new System.Drawing.Point(172, 240);
             this.textBoxSettingsFolder.Name = "textBoxSettingsFolder";
             this.textBoxSettingsFolder.Size = new System.Drawing.Size(337, 20);
             this.textBoxSettingsFolder.TabIndex = 4;
@@ -235,7 +238,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(4, 215);
+            this.label3.Location = new System.Drawing.Point(4, 241);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(143, 15);
             this.label3.TabIndex = 9;
@@ -245,7 +248,7 @@
             // buttonBrowseLayoutsFolder
             // 
             this.buttonBrowseLayoutsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(515, 211);
+            this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(515, 237);
             this.buttonBrowseLayoutsFolder.Name = "buttonBrowseLayoutsFolder";
             this.buttonBrowseLayoutsFolder.Size = new System.Drawing.Size(75, 23);
             this.buttonBrowseLayoutsFolder.TabIndex = 5;
@@ -257,7 +260,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(4, 242);
+            this.label4.Location = new System.Drawing.Point(4, 268);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(84, 15);
             this.label4.TabIndex = 12;
@@ -270,7 +273,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxLayouts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLayouts.FormattingEnabled = true;
-            this.comboBoxLayouts.Location = new System.Drawing.Point(172, 240);
+            this.comboBoxLayouts.Location = new System.Drawing.Point(172, 266);
             this.comboBoxLayouts.Name = "comboBoxLayouts";
             this.comboBoxLayouts.Size = new System.Drawing.Size(337, 21);
             this.comboBoxLayouts.TabIndex = 6;
@@ -557,7 +560,6 @@
             this.label17.Size = new System.Drawing.Size(112, 15);
             this.label17.TabIndex = 36;
             this.label17.Text = "filezilla.exe Location";
-            this.toolTip.SetToolTip(this.label17, "Where sessions and layout config files are stored");
             // 
             // textBoxGlobalPassword
             // 
@@ -589,11 +591,14 @@
             this.tabControl.Location = new System.Drawing.Point(5, 5);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(604, 313);
+            this.tabControl.Size = new System.Drawing.Size(604, 333);
             this.tabControl.TabIndex = 38;
             // 
             // tabPageGeneral
             // 
+            this.tabPageGeneral.Controls.Add(this.labelWinSCP);
+            this.tabPageGeneral.Controls.Add(this.textBoxWinSCPLocation);
+            this.tabPageGeneral.Controls.Add(this.buttonBowseWinSCP);
             this.tabPageGeneral.Controls.Add(this.label17);
             this.tabPageGeneral.Controls.Add(this.textBoxFilezillaLocation);
             this.tabPageGeneral.Controls.Add(this.buttonBowseFilezilla);
@@ -615,7 +620,7 @@
             this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabPageGeneral.Name = "tabPageGeneral";
             this.tabPageGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGeneral.Size = new System.Drawing.Size(596, 287);
+            this.tabPageGeneral.Size = new System.Drawing.Size(596, 307);
             this.tabPageGeneral.TabIndex = 0;
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
@@ -1007,10 +1012,39 @@
             this.panelBottom.Controls.Add(this.buttonCancel);
             this.panelBottom.Controls.Add(this.buttonOk);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBottom.Location = new System.Drawing.Point(5, 318);
+            this.panelBottom.Location = new System.Drawing.Point(5, 338);
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(604, 27);
             this.panelBottom.TabIndex = 39;
+            // 
+            // labelWinSCP
+            // 
+            this.labelWinSCP.AutoSize = true;
+            this.labelWinSCP.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelWinSCP.Location = new System.Drawing.Point(4, 215);
+            this.labelWinSCP.Name = "labelWinSCP";
+            this.labelWinSCP.Size = new System.Drawing.Size(118, 15);
+            this.labelWinSCP.TabIndex = 39;
+            this.labelWinSCP.Text = "WinSCP.exe Location";
+            // 
+            // textBoxWinSCPLocation
+            // 
+            this.textBoxWinSCPLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxWinSCPLocation.Location = new System.Drawing.Point(172, 214);
+            this.textBoxWinSCPLocation.Name = "textBoxWinSCPLocation";
+            this.textBoxWinSCPLocation.Size = new System.Drawing.Size(337, 20);
+            this.textBoxWinSCPLocation.TabIndex = 37;
+            // 
+            // buttonBowseWinSCP
+            // 
+            this.buttonBowseWinSCP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBowseWinSCP.Location = new System.Drawing.Point(515, 211);
+            this.buttonBowseWinSCP.Name = "buttonBowseWinSCP";
+            this.buttonBowseWinSCP.Size = new System.Drawing.Size(75, 23);
+            this.buttonBowseWinSCP.TabIndex = 38;
+            this.buttonBowseWinSCP.Text = "Browse";
+            this.buttonBowseWinSCP.UseVisualStyleBackColor = true;
             // 
             // dlgFindPutty
             // 
@@ -1018,7 +1052,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(614, 350);
+            this.ClientSize = new System.Drawing.Size(614, 370);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.panelBottom);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -1146,5 +1180,8 @@
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.TextBox textBoxGlobalPassword;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label labelWinSCP;
+        private System.Windows.Forms.TextBox textBoxWinSCPLocation;
+        private System.Windows.Forms.Button buttonBowseWinSCP;
     }
 }
