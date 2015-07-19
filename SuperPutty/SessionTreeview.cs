@@ -367,8 +367,8 @@ namespace SuperPutty
             String pw = session.Password;
             String userPw = (!String.IsNullOrEmpty(session.Username))? ((!String.IsNullOrEmpty(pw))?session.Username +":"+pw +"@": session.Username + "@") :"";
             String rp = String.IsNullOrEmpty(session.RemotePath) ? "" : session.RemotePath;
-            String lp = String.IsNullOrEmpty(session.LocalPath) ? "" : " --local=\"" + session.LocalPath + "\" ";
-            String param = "sftp://" + userPw + session.Host + rp + lp;
+            String lp = String.IsNullOrEmpty(session.LocalPath) ? "" : " --local=\"" + session.LocalPath + "\" ";           
+            String param = "sftp://" + userPw + session.Host + ":" + session.Port + rp + lp;
             Process.Start(SuperPuTTY.Settings.FileZillaExe, param);                      
         }
 
