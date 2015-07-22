@@ -42,6 +42,10 @@ namespace SuperPutty
 
         private static bool EnforceSingleInstance = Convert.ToBoolean(
             ConfigurationManager.AppSettings["SuperPuTTY.SingleInstance"] ?? "False");
+        
+        //ISSUE: In Release mode (1.4.0.6) doesn't work single instance option 
+        //FIX: declare mutex out of Main       
+        private static Mutex mutex;
 
         /// <summary>
         /// The main entry point for the application.
@@ -53,7 +57,7 @@ namespace SuperPutty
             log4net.Config.BasicConfigurator.Configure();
 
             bool onlyInstance = false;
-            Mutex mutex = new Mutex(true, "SuperPutty", out onlyInstance);
+            mutex = new Mutex(true, "SuperPutty", out onlyInstance);
 
             Log.InfoFormat(
                 "IsFirstRun={0}, SingleInstanceMode={1}, onlyInstance={2}", 
