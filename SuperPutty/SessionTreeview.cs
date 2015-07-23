@@ -361,15 +361,9 @@ namespace SuperPutty
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void fileZillaToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // open filezilla with the session info (https://wiki.filezilla-project.org/Command-line_arguments_%28Client%29)
+        {            
             SessionData session = (SessionData)treeView1.SelectedNode.Tag;
-            String pw = session.Password;
-            String userPw = (!String.IsNullOrEmpty(session.Username))? ((!String.IsNullOrEmpty(pw))?session.Username +":"+pw +"@": session.Username + "@") :"";
-            String rp = String.IsNullOrEmpty(session.RemotePath) ? "" : session.RemotePath;
-            String lp = String.IsNullOrEmpty(session.LocalPath) ? "" : " --local=\"" + session.LocalPath + "\" ";           
-            String param = "sftp://" + userPw + session.Host + ":" + session.Port + rp + lp;
-            Process.Start(SuperPuTTY.Settings.FileZillaExe, param);                      
+            ExternalApplications.openFileZilla(session);                     
         }
         /// <summary>
         /// Open the WinSCP program with the sesion data, for sftp connection. 
@@ -377,19 +371,9 @@ namespace SuperPutty
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void winSCPToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // open WinSCP with the session info (https://winscp.net/eng/docs/commandline)
-            SessionData session = (SessionData)treeView1.SelectedNode.Tag;            
-            String pw = Uri.EscapeDataString(session.Password);
-            String user = Uri.EscapeDataString(session.Username);
-            String userPw = (!String.IsNullOrEmpty(user)) ? ((!String.IsNullOrEmpty(pw)) ? user + ":" + pw + "@" : user + "@") : "";
-            String rp = String.IsNullOrEmpty(session.RemotePath) ? "" : session.RemotePath;
-            if (!rp.Substring(rp.Length).Equals("/")){
-                rp += "/";
-            }
-            String lp = String.IsNullOrEmpty(session.LocalPath) ? "" : " -rawsettings localDirectory=\"" + session.LocalPath + "\" ";
-            String param = "sftp://" + userPw + session.Host + ":" + session.Port + rp + lp;
-            Process.Start(SuperPuTTY.Settings.WinSCPExe, param);
+        {            
+            SessionData session = (SessionData)treeView1.SelectedNode.Tag;
+            ExternalApplications.openWinSCP(session);
         }
 
         /// <summary>

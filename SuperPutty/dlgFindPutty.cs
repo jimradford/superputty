@@ -65,8 +65,9 @@ namespace SuperPutty
             string puttyExe = SuperPuTTY.Settings.PuttyExe;
             string pscpExe = SuperPuTTY.Settings.PscpExe;
 
-            textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe);
-            textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe);
+            Boolean firstExecution = String.IsNullOrEmpty(puttyExe);
+            textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe,firstExecution);
+            textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe, firstExecution);
 
             // check for location of putty/pscp
             if (!String.IsNullOrEmpty(puttyExe) && File.Exists(puttyExe))
@@ -213,10 +214,17 @@ namespace SuperPutty
             this.dataGridViewShortcuts.DataSource = this.Shortcuts;
         }
         
-        private String getPathExe(String PathInProgramFile, String settingValue)
-        {
-
-            if (!String.IsNullOrEmpty(settingValue) && File.Exists(settingValue))
+        /// <summary>
+        /// return the path of the exe. 
+        /// return settingValue if it is a valid path, or if searchPath is false, else search and return the default location of PathInProgramFile.
+        /// </summary>
+        /// <param name="PathInProgramFile">relative path of file (in ProgramFiles or ProgramFiles(x86))</param>
+        /// <param name="settingValue">path stored in settings </param>
+        /// <param name="searchPath">boolean </param>
+        /// <returns>The path of the exe</returns>
+        private String getPathExe(String PathInProgramFile, String settingValue, Boolean searchPath)
+        {            
+            if ((!String.IsNullOrEmpty(settingValue) && File.Exists(settingValue)) || !searchPath)
             {
                 return settingValue;
             }
@@ -458,6 +466,18 @@ namespace SuperPutty
             openFileDialog1.ShowDialog(this);
             if (!String.IsNullOrEmpty(openFileDialog1.FileName))
                 textBoxWinSCPLocation.Text = openFileDialog1.FileName;
+        }
+
+        //Search automaticaly the path of FileZilla when doubleClick when it is empty
+        private void textBoxFilezillaLocation_DoubleClick(object sender, EventArgs e) 
+        {
+            textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe, true);           
+        }
+
+        //Search automaticaly the path of WinSCP when doubleClick when it is empty
+        private void textBoxWinSCPLocation_DoubleClick(object sender, EventArgs e)                              
+        {            
+            textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe, true);
         }
 
         /// <summary>

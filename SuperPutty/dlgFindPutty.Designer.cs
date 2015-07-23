@@ -633,6 +633,7 @@
             this.textBoxFilezillaLocation.Name = "textBoxFilezillaLocation";
             this.textBoxFilezillaLocation.Size = new System.Drawing.Size(337, 20);
             this.textBoxFilezillaLocation.TabIndex = 34;
+            this.textBoxFilezillaLocation.DoubleClick += new System.EventHandler(this.textBoxFilezillaLocation_DoubleClick);
             // 
             // buttonBowseFilezilla
             // 
@@ -1035,6 +1036,7 @@
             this.textBoxWinSCPLocation.Name = "textBoxWinSCPLocation";
             this.textBoxWinSCPLocation.Size = new System.Drawing.Size(337, 20);
             this.textBoxWinSCPLocation.TabIndex = 37;
+            this.textBoxWinSCPLocation.DoubleClick += new System.EventHandler(this.textBoxWinSCPLocation_DoubleClick);
             // 
             // buttonBowseWinSCP
             // 
