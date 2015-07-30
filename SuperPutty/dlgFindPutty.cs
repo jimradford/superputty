@@ -413,60 +413,39 @@ namespace SuperPutty
 
         private void buttonBrowsePscp_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "PScp|pscp.exe";
-            openFileDialog1.FileName = "pscp.exe";
-
-            if (File.Exists(textBoxPscpLocation.Text))
-            {
-                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxPscpLocation.Text);
-            }
-            openFileDialog1.ShowDialog(this);
-            if (!String.IsNullOrEmpty(openFileDialog1.FileName))
-                textBoxPscpLocation.Text = openFileDialog1.FileName;
+            dialogBrowseExe("PScp|pscp.exe", "pscp.exe", textBoxPscpLocation);
         }
-
 
         private void btnBrowseMintty_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "MinTTY|mintty.exe";
-            openFileDialog1.FileName = "mintty.exe";
-
-            if (File.Exists(textBoxMinttyLocation.Text))
-            {
-                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxMinttyLocation.Text);
-            }
-            openFileDialog1.ShowDialog(this);
-            if (!String.IsNullOrEmpty(openFileDialog1.FileName))
-                textBoxMinttyLocation.Text = openFileDialog1.FileName;
+            dialogBrowseExe("MinTTY|mintty.exe", "mintty.exe", textBoxMinttyLocation);
         }
 
-        private void buttonBowseFilezilla_Click(object sender, EventArgs e)
+        private void buttonBrowseFilezilla_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "filezilla|filezilla.exe";
-            openFileDialog1.FileName = "filezilla.exe";
-
-            if (File.Exists(textBoxFilezillaLocation.Text))
-            {
-                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxFilezillaLocation.Text);
-            }
-            openFileDialog1.ShowDialog(this);
-            if (!String.IsNullOrEmpty(openFileDialog1.FileName))
-                textBoxFilezillaLocation.Text = openFileDialog1.FileName;
+            dialogBrowseExe("filezilla|filezilla.exe", "filezilla.exe", textBoxFilezillaLocation);
         }
 
-        private void buttonBowseWinSCP_Click(object sender, EventArgs e)
+        private void buttonBrowseWinSCP_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "WinSCP|WinSCP.exe";
-            openFileDialog1.FileName = "WinSCP.exe";
-
-            if (File.Exists(textBoxWinSCPLocation.Text))
-            {
-                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxWinSCPLocation.Text);
-            }
-            openFileDialog1.ShowDialog(this);
-            if (!String.IsNullOrEmpty(openFileDialog1.FileName))
-                textBoxWinSCPLocation.Text = openFileDialog1.FileName;
+            dialogBrowseExe( "WinSCP|WinSCP.exe","WinSCP.exe",textBoxWinSCPLocation);
         }
+
+        private void dialogBrowseExe(String filter,string filename, TextBox textbox)
+        {
+            openFileDialog1.Filter = filter;
+            openFileDialog1.FileName = filename;
+
+            if (File.Exists(textbox.Text)){
+                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textbox.Text);
+            }
+            if (openFileDialog1.ShowDialog(this)==DialogResult.OK) {
+                if (!String.IsNullOrEmpty(openFileDialog1.FileName))
+                    textbox.Text = openFileDialog1.FileName;
+            }
+            
+        }
+
 
         //Search automaticaly the path of FileZilla when doubleClick when it is empty
         private void textBoxFilezillaLocation_DoubleClick(object sender, EventArgs e) 

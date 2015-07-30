@@ -644,7 +644,7 @@
             this.buttonBowseFilezilla.TabIndex = 35;
             this.buttonBowseFilezilla.Text = "Browse";
             this.buttonBowseFilezilla.UseVisualStyleBackColor = true;
-            this.buttonBowseFilezilla.Click += new System.EventHandler(this.buttonBowseFilezilla_Click);
+            this.buttonBowseFilezilla.Click += new System.EventHandler(this.buttonBrowseFilezilla_Click);
             // 
             // tabPageGUI
             // 
@@ -1047,6 +1047,7 @@
             this.buttonBowseWinSCP.TabIndex = 38;
             this.buttonBowseWinSCP.Text = "Browse";
             this.buttonBowseWinSCP.UseVisualStyleBackColor = true;
+            this.buttonBowseWinSCP.Click += new System.EventHandler(this.buttonBrowseWinSCP_Click);
             // 
             // dlgFindPutty
             // 
