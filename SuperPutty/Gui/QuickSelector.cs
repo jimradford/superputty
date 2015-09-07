@@ -13,6 +13,8 @@ namespace SuperPutty.Gui
     public partial class QuickSelector : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(QuickSelector));
+        private static char[] sanitizeChars = { '*', '[', ',' };
+        private static char[] splitChars = { ' ', '.', '*' };
 
         public QuickSelector()
         {
@@ -43,11 +45,67 @@ namespace SuperPutty.Gui
                 this.DataView.RowFilter = String.Empty;
             }
             else
-            {                
-                this.DataView.RowFilter = string.Format(
-                    "[Name] LIKE '%{0}%' OR [Detail] LIKE '%{0}%'", this.textBoxData.Text.Replace("[", "[[]"));
+            {
+                this.DataView.RowFilter = FormatFilterString(this.textBoxData.Text);
             }
             this.Text = string.Format("{0} [{1}]", this.Options.BaseText, this.DataView.Count);
+        }
+
+        string FormatFilterString(string text)
+        {
+            string filter = "";
+
+            int i = 0;
+            int tokenCount = cleanTokens(text.Split(splitChars)).Length;
+
+            foreach (string token in cleanTokens(text.Split(splitChars)))
+            {
+                if (i > 0 && i < tokenCount)
+                {
+                    filter += " AND ";
+                }
+
+                filter += string.Format("([Name] LIKE '%{0}%' OR [Detail] LIKE '%{0}%')", tokenSanitize(token));
+
+                i++;
+            }
+
+            return filter;
+        }
+
+        string[] cleanTokens(string[] tokens)
+        {
+            int i = 0;
+            foreach (string token in tokens)
+            {
+                if (token.Length > 0)
+                {
+                    i++;
+                }
+            }
+
+            string[] result = new string[i];
+
+            i = 0;
+            foreach(string token in tokens)
+            {
+                if (token.Length > 0)
+                {
+                    result[i] = token;
+                    i++;
+                }
+            }
+            return result;
+        }
+
+        string tokenSanitize(string token)
+        {
+            foreach (char sanitizeChar in sanitizeChars)
+            {
+                token = token.Replace(Convert.ToString(sanitizeChar), "");
+            }
+
+            return token;
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
