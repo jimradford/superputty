@@ -65,6 +65,10 @@ namespace SuperPutty
             string puttyExe = SuperPuTTY.Settings.PuttyExe;
             string pscpExe = SuperPuTTY.Settings.PscpExe;
 
+            Boolean firstExecution = String.IsNullOrEmpty(puttyExe);
+            textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe,firstExecution);
+            textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe, firstExecution);
+
             // check for location of putty/pscp
             if (!String.IsNullOrEmpty(puttyExe) && File.Exists(puttyExe))
             {
@@ -193,6 +197,7 @@ namespace SuperPutty
             this.checkPuttyEnableNewSessionMenu.Checked = SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu;
             this.checkBoxCheckForUpdates.Checked = SuperPuTTY.Settings.AutoUpdateCheck;
             this.textBoxHomeDirPrefix.Text = SuperPuTTY.Settings.PscpHomePrefix;
+            this.textBoxGlobalPassword.Text = SuperPuTTY.Settings.PasswordImportExport;
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -207,6 +212,40 @@ namespace SuperPutty
                 this.Shortcuts.Add(ks);
             }
             this.dataGridViewShortcuts.DataSource = this.Shortcuts;
+        }
+        
+        /// <summary>
+        /// return the path of the exe. 
+        /// return settingValue if it is a valid path, or if searchPath is false, else search and return the default location of PathInProgramFile.
+        /// </summary>
+        /// <param name="PathInProgramFile">relative path of file (in ProgramFiles or ProgramFiles(x86))</param>
+        /// <param name="settingValue">path stored in settings </param>
+        /// <param name="searchPath">boolean </param>
+        /// <returns>The path of the exe</returns>
+        private String getPathExe(String PathInProgramFile, String settingValue, Boolean searchPath)
+        {            
+            if ((!String.IsNullOrEmpty(settingValue) && File.Exists(settingValue)) || !searchPath)
+            {
+                return settingValue;
+            }
+
+            if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("ProgramFiles(x86)")))
+            {
+                if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles(x86)") + PathInProgramFile))
+                {
+                    return Environment.GetEnvironmentVariable("ProgramFiles(x86)") + PathInProgramFile;
+                }
+            }
+
+            if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("ProgramFiles")))
+            {
+                if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles") + PathInProgramFile))
+                {
+                    return Environment.GetEnvironmentVariable("ProgramFiles") + PathInProgramFile;
+                }
+            }
+
+            return "";
         }
 
         private void InitLayouts()
@@ -248,6 +287,17 @@ namespace SuperPutty
         private void buttonOk_Click(object sender, EventArgs e)
         {
             List<String> errors = new List<string>();
+
+            if (String.IsNullOrEmpty(textBoxFilezillaLocation.Text) || File.Exists(textBoxFilezillaLocation.Text))
+            {
+                SuperPuTTY.Settings.FileZillaExe = textBoxFilezillaLocation.Text;
+            }
+
+            if (String.IsNullOrEmpty(textBoxWinSCPLocation.Text) || File.Exists(textBoxWinSCPLocation.Text))
+            {
+                SuperPuTTY.Settings.WinSCPExe = textBoxWinSCPLocation.Text;
+            }
+
             if (String.IsNullOrEmpty(textBoxPscpLocation.Text) || File.Exists(textBoxPscpLocation.Text))
             {
                 SuperPuTTY.Settings.PscpExe = textBoxPscpLocation.Text;
@@ -308,6 +358,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu = this.checkPuttyEnableNewSessionMenu.Checked;
                 SuperPuTTY.Settings.AutoUpdateCheck = this.checkBoxCheckForUpdates.Checked;
                 SuperPuTTY.Settings.PscpHomePrefix = this.textBoxHomeDirPrefix.Text;
+                SuperPuTTY.Settings.PasswordImportExport = this.textBoxGlobalPassword.Text;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
@@ -362,31 +413,50 @@ namespace SuperPutty
 
         private void buttonBrowsePscp_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "PScp|pscp.exe";
-            openFileDialog1.FileName = "pscp.exe";
-
-            if (File.Exists(textBoxPscpLocation.Text))
-            {
-                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxPscpLocation.Text);
-            }
-            openFileDialog1.ShowDialog(this);
-            if (!String.IsNullOrEmpty(openFileDialog1.FileName))
-                textBoxPscpLocation.Text = openFileDialog1.FileName;
+            dialogBrowseExe("PScp|pscp.exe", "pscp.exe", textBoxPscpLocation);
         }
-
 
         private void btnBrowseMintty_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "MinTTY|mintty.exe";
-            openFileDialog1.FileName = "mintty.exe";
+            dialogBrowseExe("MinTTY|mintty.exe", "mintty.exe", textBoxMinttyLocation);
+        }
 
-            if (File.Exists(textBoxMinttyLocation.Text))
-            {
-                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textBoxMinttyLocation.Text);
+        private void buttonBrowseFilezilla_Click(object sender, EventArgs e)
+        {
+            dialogBrowseExe("filezilla|filezilla.exe", "filezilla.exe", textBoxFilezillaLocation);
+        }
+
+        private void buttonBrowseWinSCP_Click(object sender, EventArgs e)
+        {
+            dialogBrowseExe( "WinSCP|WinSCP.exe","WinSCP.exe",textBoxWinSCPLocation);
+        }
+
+        private void dialogBrowseExe(String filter,string filename, TextBox textbox)
+        {
+            openFileDialog1.Filter = filter;
+            openFileDialog1.FileName = filename;
+
+            if (File.Exists(textbox.Text)){
+                openFileDialog1.InitialDirectory = Path.GetDirectoryName(textbox.Text);
             }
-            openFileDialog1.ShowDialog(this);
-            if (!String.IsNullOrEmpty(openFileDialog1.FileName))
-                textBoxMinttyLocation.Text = openFileDialog1.FileName;
+            if (openFileDialog1.ShowDialog(this)==DialogResult.OK) {
+                if (!String.IsNullOrEmpty(openFileDialog1.FileName))
+                    textbox.Text = openFileDialog1.FileName;
+            }
+            
+        }
+
+
+        //Search automaticaly the path of FileZilla when doubleClick when it is empty
+        private void textBoxFilezillaLocation_DoubleClick(object sender, EventArgs e) 
+        {
+            textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe, true);           
+        }
+
+        //Search automaticaly the path of WinSCP when doubleClick when it is empty
+        private void textBoxWinSCPLocation_DoubleClick(object sender, EventArgs e)                              
+        {            
+            textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe, true);
         }
 
         /// <summary>

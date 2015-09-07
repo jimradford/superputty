@@ -406,9 +406,22 @@ namespace SuperPutty
 
         /// <summary>Get a list of all sessions from the in-application database</summary>
         /// <returns>A <seealso cref="List"/> of <seealso cref="SessionData"/> objects</returns>
-        public static List<SessionData> GetAllSessions()
+        public static List<SessionData> GetAllSessions(Boolean encriptPWInExtraArgs = false)
         {
-            return sessionsMap.Values.ToList();
+            List<SessionData> sessions = new List<SessionData>();
+            if (encriptPWInExtraArgs)
+            {
+                foreach (SessionData session in sessionsMap.Values.ToList())
+                {
+                    SessionData s = (SessionData)session.Clone();
+                    s.ExtraArgs = CommandLineOptions.encriptPassword(s.ExtraArgs);
+                    sessions.Add(s);
+                }
+            }
+            else {
+                sessions = sessionsMap.Values.ToList();
+            }
+            return sessions;
         }
 
         /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty window</summary>
@@ -452,8 +465,7 @@ namespace SuperPutty
             else if (session != null)
             {
                 PscpBrowserPanel panel = new PscpBrowserPanel(
-                    session, new PscpOptions { PscpLocation = Settings.PscpExe, PscpHomePrefix = Settings.PscpHomePrefix }, 
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+                    session, new PscpOptions { PscpLocation = Settings.PscpExe, PscpHomePrefix = Settings.PscpHomePrefix });
                 ApplyDockRestrictions(panel);
                 ApplyIconForWindow(panel, session);
                 panel.Show(MainForm.DockPanel, session.LastDockstate);
@@ -524,6 +536,10 @@ namespace SuperPutty
             {
                 Log.InfoFormat("Importing sessions from file, path={0}", fileName);
                 List<SessionData> sessions = SessionData.LoadSessionsFromFile(fileName);
+                foreach (SessionData session in sessions)
+                {
+                    session.ExtraArgs = CommandLineOptions.decriptPassword(session.ExtraArgs);
+                }
                 ImportSessions(sessions, "Imported");
             }
         }
@@ -703,6 +719,18 @@ namespace SuperPutty
         public static bool IsScpEnabled
         {
             get { return File.Exists(SuperPuTTY.Settings.PscpExe); }
+        }
+
+        /// <summary>true if the application has defined where the filezilla program is located</summary>
+        public static bool IsFilezillaEnabled
+        {
+            get { return File.Exists(SuperPuTTY.Settings.FileZillaExe); }
+        }
+
+        /// <summary>true if the application has defined where the winSCP program is located</summary>
+        public static bool IsWinSCPEnabled
+        {
+            get { return File.Exists(SuperPuTTY.Settings.WinSCPExe); }
         }
 
         /// <summary>Returns a string containing the current version of SuperPuTTY</summary>

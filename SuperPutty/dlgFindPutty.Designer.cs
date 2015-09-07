@@ -72,9 +72,13 @@
             this.checkSessionsShowSearch = new System.Windows.Forms.CheckBox();
             this.label18 = new System.Windows.Forms.Label();
             this.checkBoxCheckForUpdates = new System.Windows.Forms.CheckBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.textBoxGlobalPassword = new System.Windows.Forms.TextBox();
             this.checkConfirmTabClose = new System.Windows.Forms.CheckBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
+            this.textBoxFilezillaLocation = new System.Windows.Forms.TextBox();
+            this.buttonBowseFilezilla = new System.Windows.Forms.Button();
             this.tabPageGUI = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.textBoxHomeDirPrefix = new System.Windows.Forms.TextBox();
@@ -94,19 +98,24 @@
             this.label11 = new System.Windows.Forms.Label();
             this.tabPageShortcuts = new System.Windows.Forms.TabPage();
             this.dataGridViewShortcuts = new System.Windows.Forms.DataGridView();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.shortcutStringDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
             this.colClear = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.keyboardShortcutBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabPageAdvanced = new System.Windows.Forms.TabPage();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label19 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.comboBoxActivatorType = new System.Windows.Forms.ComboBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.shortcutStringDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.keyboardShortcutBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.labelWinSCP = new System.Windows.Forms.Label();
+            this.textBoxWinSCPLocation = new System.Windows.Forms.TextBox();
+            this.buttonBowseWinSCP = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
@@ -118,11 +127,12 @@
             this.groupBox1.SuspendLayout();
             this.tabPageShortcuts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).BeginInit();
             this.tabPageAdvanced.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.panelBottom.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -219,7 +229,7 @@
             // 
             this.textBoxSettingsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSettingsFolder.Location = new System.Drawing.Point(172, 188);
+            this.textBoxSettingsFolder.Location = new System.Drawing.Point(172, 240);
             this.textBoxSettingsFolder.Name = "textBoxSettingsFolder";
             this.textBoxSettingsFolder.Size = new System.Drawing.Size(337, 20);
             this.textBoxSettingsFolder.TabIndex = 4;
@@ -228,7 +238,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(4, 189);
+            this.label3.Location = new System.Drawing.Point(4, 241);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(143, 15);
             this.label3.TabIndex = 9;
@@ -238,7 +248,7 @@
             // buttonBrowseLayoutsFolder
             // 
             this.buttonBrowseLayoutsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(515, 185);
+            this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(515, 237);
             this.buttonBrowseLayoutsFolder.Name = "buttonBrowseLayoutsFolder";
             this.buttonBrowseLayoutsFolder.Size = new System.Drawing.Size(75, 23);
             this.buttonBrowseLayoutsFolder.TabIndex = 5;
@@ -250,7 +260,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(4, 217);
+            this.label4.Location = new System.Drawing.Point(4, 268);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(84, 15);
             this.label4.TabIndex = 12;
@@ -263,7 +273,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxLayouts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLayouts.FormattingEnabled = true;
-            this.comboBoxLayouts.Location = new System.Drawing.Point(172, 215);
+            this.comboBoxLayouts.Location = new System.Drawing.Point(172, 266);
             this.comboBoxLayouts.Name = "comboBoxLayouts";
             this.comboBoxLayouts.Size = new System.Drawing.Size(337, 21);
             this.comboBoxLayouts.TabIndex = 6;
@@ -541,6 +551,26 @@
             this.toolTip.SetToolTip(this.checkBoxCheckForUpdates, "Check for Updates when Application starts");
             this.checkBoxCheckForUpdates.UseVisualStyleBackColor = true;
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(4, 189);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(112, 15);
+            this.label17.TabIndex = 36;
+            this.label17.Text = "filezilla.exe Location";
+            // 
+            // textBoxGlobalPassword
+            // 
+            this.textBoxGlobalPassword.Location = new System.Drawing.Point(79, 26);
+            this.textBoxGlobalPassword.Name = "textBoxGlobalPassword";
+            this.textBoxGlobalPassword.Size = new System.Drawing.Size(217, 20);
+            this.textBoxGlobalPassword.TabIndex = 1;
+            this.toolTip.SetToolTip(this.textBoxGlobalPassword, "Password to Encrypt and Decrypt the session password. If it\'s empty the session p" +
+        "assword isn\'t will encrypted / decrypted when you Import or export the sessions." +
+        "");
+            // 
             // checkConfirmTabClose
             // 
             this.checkConfirmTabClose.AutoSize = true;
@@ -561,11 +591,17 @@
             this.tabControl.Location = new System.Drawing.Point(5, 5);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(604, 313);
+            this.tabControl.Size = new System.Drawing.Size(604, 333);
             this.tabControl.TabIndex = 38;
             // 
             // tabPageGeneral
             // 
+            this.tabPageGeneral.Controls.Add(this.labelWinSCP);
+            this.tabPageGeneral.Controls.Add(this.textBoxWinSCPLocation);
+            this.tabPageGeneral.Controls.Add(this.buttonBowseWinSCP);
+            this.tabPageGeneral.Controls.Add(this.label17);
+            this.tabPageGeneral.Controls.Add(this.textBoxFilezillaLocation);
+            this.tabPageGeneral.Controls.Add(this.buttonBowseFilezilla);
             this.tabPageGeneral.Controls.Add(this.label4);
             this.tabPageGeneral.Controls.Add(this.buttonBrowsePutty);
             this.tabPageGeneral.Controls.Add(this.buttonBrowsePscp);
@@ -584,10 +620,31 @@
             this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabPageGeneral.Name = "tabPageGeneral";
             this.tabPageGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGeneral.Size = new System.Drawing.Size(596, 287);
+            this.tabPageGeneral.Size = new System.Drawing.Size(596, 307);
             this.tabPageGeneral.TabIndex = 0;
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
+            // 
+            // textBoxFilezillaLocation
+            // 
+            this.textBoxFilezillaLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxFilezillaLocation.Location = new System.Drawing.Point(172, 188);
+            this.textBoxFilezillaLocation.Name = "textBoxFilezillaLocation";
+            this.textBoxFilezillaLocation.Size = new System.Drawing.Size(337, 20);
+            this.textBoxFilezillaLocation.TabIndex = 34;
+            this.textBoxFilezillaLocation.DoubleClick += new System.EventHandler(this.textBoxFilezillaLocation_DoubleClick);
+            // 
+            // buttonBowseFilezilla
+            // 
+            this.buttonBowseFilezilla.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBowseFilezilla.Location = new System.Drawing.Point(515, 185);
+            this.buttonBowseFilezilla.Name = "buttonBowseFilezilla";
+            this.buttonBowseFilezilla.Size = new System.Drawing.Size(75, 23);
+            this.buttonBowseFilezilla.TabIndex = 35;
+            this.buttonBowseFilezilla.Text = "Browse";
+            this.buttonBowseFilezilla.UseVisualStyleBackColor = true;
+            this.buttonBowseFilezilla.Click += new System.EventHandler(this.buttonBrowseFilezilla_Click);
             // 
             // tabPageGUI
             // 
@@ -824,6 +881,38 @@
             this.dataGridViewShortcuts.TabIndex = 0;
             this.dataGridViewShortcuts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShortcuts_CellClick);
             // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.nameDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // keyDataGridViewTextBoxColumn
+            // 
+            this.keyDataGridViewTextBoxColumn.DataPropertyName = "Key";
+            this.keyDataGridViewTextBoxColumn.HeaderText = "Key";
+            this.keyDataGridViewTextBoxColumn.Name = "keyDataGridViewTextBoxColumn";
+            this.keyDataGridViewTextBoxColumn.ReadOnly = true;
+            this.keyDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // modifiersDataGridViewTextBoxColumn
+            // 
+            this.modifiersDataGridViewTextBoxColumn.DataPropertyName = "Modifiers";
+            this.modifiersDataGridViewTextBoxColumn.HeaderText = "Modifiers";
+            this.modifiersDataGridViewTextBoxColumn.Name = "modifiersDataGridViewTextBoxColumn";
+            this.modifiersDataGridViewTextBoxColumn.ReadOnly = true;
+            this.modifiersDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // shortcutStringDataGridViewTextBoxColumn
+            // 
+            this.shortcutStringDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.shortcutStringDataGridViewTextBoxColumn.DataPropertyName = "ShortcutString";
+            this.shortcutStringDataGridViewTextBoxColumn.HeaderText = "Shortcut";
+            this.shortcutStringDataGridViewTextBoxColumn.Name = "shortcutStringDataGridViewTextBoxColumn";
+            this.shortcutStringDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
             // colEdit
             // 
             this.colEdit.HeaderText = "";
@@ -842,8 +931,13 @@
             this.colClear.UseColumnTextForButtonValue = true;
             this.colClear.Width = 50;
             // 
+            // keyboardShortcutBindingSource
+            // 
+            this.keyboardShortcutBindingSource.DataSource = typeof(SuperPutty.Data.KeyboardShortcut);
+            // 
             // tabPageAdvanced
             // 
+            this.tabPageAdvanced.Controls.Add(this.groupBox8);
             this.tabPageAdvanced.Controls.Add(this.groupBox5);
             this.tabPageAdvanced.Controls.Add(this.groupBox4);
             this.tabPageAdvanced.Location = new System.Drawing.Point(4, 22);
@@ -853,6 +947,26 @@
             this.tabPageAdvanced.Text = "Advanced";
             this.tabPageAdvanced.UseVisualStyleBackColor = true;
             // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.textBoxGlobalPassword);
+            this.groupBox8.Controls.Add(this.label19);
+            this.groupBox8.Location = new System.Drawing.Point(3, 166);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(316, 70);
+            this.groupBox8.TabIndex = 30;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Import / Export Options";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(18, 29);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(59, 13);
+            this.label19.TabIndex = 0;
+            this.label19.Text = "Password: ";
+            // 
             // groupBox5
             // 
             this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -861,7 +975,7 @@
             this.groupBox5.Controls.Add(this.label6);
             this.groupBox5.Location = new System.Drawing.Point(3, 102);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(590, 142);
+            this.groupBox5.Size = new System.Drawing.Size(590, 55);
             this.groupBox5.TabIndex = 29;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Focus";
@@ -899,46 +1013,41 @@
             this.panelBottom.Controls.Add(this.buttonCancel);
             this.panelBottom.Controls.Add(this.buttonOk);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBottom.Location = new System.Drawing.Point(5, 318);
+            this.panelBottom.Location = new System.Drawing.Point(5, 338);
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(604, 27);
             this.panelBottom.TabIndex = 39;
             // 
-            // nameDataGridViewTextBoxColumn
+            // labelWinSCP
             // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.nameDataGridViewTextBoxColumn.Width = 200;
+            this.labelWinSCP.AutoSize = true;
+            this.labelWinSCP.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelWinSCP.Location = new System.Drawing.Point(4, 215);
+            this.labelWinSCP.Name = "labelWinSCP";
+            this.labelWinSCP.Size = new System.Drawing.Size(118, 15);
+            this.labelWinSCP.TabIndex = 39;
+            this.labelWinSCP.Text = "WinSCP.exe Location";
             // 
-            // keyDataGridViewTextBoxColumn
+            // textBoxWinSCPLocation
             // 
-            this.keyDataGridViewTextBoxColumn.DataPropertyName = "Key";
-            this.keyDataGridViewTextBoxColumn.HeaderText = "Key";
-            this.keyDataGridViewTextBoxColumn.Name = "keyDataGridViewTextBoxColumn";
-            this.keyDataGridViewTextBoxColumn.ReadOnly = true;
-            this.keyDataGridViewTextBoxColumn.Visible = false;
+            this.textBoxWinSCPLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxWinSCPLocation.Location = new System.Drawing.Point(172, 214);
+            this.textBoxWinSCPLocation.Name = "textBoxWinSCPLocation";
+            this.textBoxWinSCPLocation.Size = new System.Drawing.Size(337, 20);
+            this.textBoxWinSCPLocation.TabIndex = 37;
+            this.textBoxWinSCPLocation.DoubleClick += new System.EventHandler(this.textBoxWinSCPLocation_DoubleClick);
             // 
-            // modifiersDataGridViewTextBoxColumn
+            // buttonBowseWinSCP
             // 
-            this.modifiersDataGridViewTextBoxColumn.DataPropertyName = "Modifiers";
-            this.modifiersDataGridViewTextBoxColumn.HeaderText = "Modifiers";
-            this.modifiersDataGridViewTextBoxColumn.Name = "modifiersDataGridViewTextBoxColumn";
-            this.modifiersDataGridViewTextBoxColumn.ReadOnly = true;
-            this.modifiersDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // shortcutStringDataGridViewTextBoxColumn
-            // 
-            this.shortcutStringDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.shortcutStringDataGridViewTextBoxColumn.DataPropertyName = "ShortcutString";
-            this.shortcutStringDataGridViewTextBoxColumn.HeaderText = "Shortcut";
-            this.shortcutStringDataGridViewTextBoxColumn.Name = "shortcutStringDataGridViewTextBoxColumn";
-            this.shortcutStringDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // keyboardShortcutBindingSource
-            // 
-            this.keyboardShortcutBindingSource.DataSource = typeof(SuperPutty.Data.KeyboardShortcut);
+            this.buttonBowseWinSCP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBowseWinSCP.Location = new System.Drawing.Point(515, 211);
+            this.buttonBowseWinSCP.Name = "buttonBowseWinSCP";
+            this.buttonBowseWinSCP.Size = new System.Drawing.Size(75, 23);
+            this.buttonBowseWinSCP.TabIndex = 38;
+            this.buttonBowseWinSCP.Text = "Browse";
+            this.buttonBowseWinSCP.UseVisualStyleBackColor = true;
+            this.buttonBowseWinSCP.Click += new System.EventHandler(this.buttonBrowseWinSCP_Click);
             // 
             // dlgFindPutty
             // 
@@ -946,7 +1055,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(614, 350);
+            this.ClientSize = new System.Drawing.Size(614, 370);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.panelBottom);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -976,13 +1085,15 @@
             this.groupBox1.PerformLayout();
             this.tabPageShortcuts.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShortcuts)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).EndInit();
             this.tabPageAdvanced.ResumeLayout(false);
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.panelBottom.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1066,5 +1177,14 @@
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.TextBox textBoxHomeDirPrefix;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox textBoxFilezillaLocation;
+        private System.Windows.Forms.Button buttonBowseFilezilla;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.TextBox textBoxGlobalPassword;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label labelWinSCP;
+        private System.Windows.Forms.TextBox textBoxWinSCPLocation;
+        private System.Windows.Forms.Button buttonBowseWinSCP;
     }
 }

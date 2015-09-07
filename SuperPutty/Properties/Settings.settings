@@ -146,5 +146,14 @@
     <Setting Name="AutoUpdateCheck" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="FileZillaExe" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="PasswordImportExport" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="WinSCPExe" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

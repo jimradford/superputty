@@ -5,6 +5,7 @@ using System.Text;
 using SuperPutty.Data;
 using log4net;
 using System.Web;
+using System.Text.RegularExpressions;
 
 namespace SuperPutty.Utils
 {
@@ -124,6 +125,90 @@ namespace SuperPutty.Utils
                 }
             }
         }
+
+        /// <summary>
+        /// Return the command value in allCommands (without quotes)              
+        /// </summary>
+        /// <param name="allCommands">String contains all commands</param>
+        /// <param name="command">command to search: ej "-pw"</param>
+        /// <returns>the value of command  )</returns>
+        public static String getcommand(String allCommands, String command) {
+
+            if (String.IsNullOrEmpty(allCommands)) {
+                return "";
+            }
+            string strRegex = command + @"[=:\s](?:""([^""]*)""|([^""\s]+))";
+            Regex myRegex = new Regex(strRegex, RegexOptions.Compiled);
+
+            foreach (Match myMatch in myRegex.Matches(allCommands))
+            {
+                if (myMatch.Success)
+                {
+                    return String.IsNullOrEmpty(myMatch.Groups[1].Value) ? myMatch.Groups[2].Value : myMatch.Groups[1].Value;
+                }
+            }
+            return "";
+        }
+
+
+
+
+        public static String encriptPassword(String allCommands)
+        {
+            if (String.IsNullOrEmpty(SuperPuTTY.Settings.PasswordImportExport)) {
+                return allCommands;
+            }
+
+            String pw = "";
+            if (String.IsNullOrEmpty(allCommands))
+            {
+                return "";
+            }
+            string strRegex = @"(-pw[=:\s])(""[^""]*""|[^""\s]+)";
+            Regex myRegex = new Regex(strRegex, RegexOptions.Compiled);
+
+            foreach (Match myMatch in myRegex.Matches(allCommands))
+            {
+                if (myMatch.Success)
+                {
+                    pw = myMatch.Groups[2].Value;
+                    pw = CryptoAES.EncryptString(pw, SuperPuTTY.Settings.PasswordImportExport);
+                    allCommands = Regex.Replace(allCommands, strRegex, "${1}" + pw); 
+                }
+            }
+            return allCommands;
+        }
+
+        public static String decriptPassword(String allCommands)
+        {
+            
+            if (String.IsNullOrEmpty(allCommands))
+            {
+                return "";
+            }
+
+            if (String.IsNullOrEmpty(SuperPuTTY.Settings.PasswordImportExport))
+            {
+                return allCommands;
+            }
+
+            String pw = "";
+            string strRegex = @"(-pw[=:\s])(""[^""]*""|[^""\s]+)";
+            Regex myRegex = new Regex(strRegex, RegexOptions.Compiled);
+
+            foreach (Match myMatch in myRegex.Matches(allCommands))
+            {
+                if (myMatch.Success)
+                {
+                    pw = myMatch.Groups[2].Value;
+                    pw = CryptoAES.DecryptString(pw, SuperPuTTY.Settings.PasswordImportExport);
+                    allCommands = Regex.Replace(allCommands, strRegex, "${1}" + pw);
+                }
+            }
+            return allCommands;
+        }
+
+
 
 
         public SessionDataStartInfo ToSessionStartInfo()

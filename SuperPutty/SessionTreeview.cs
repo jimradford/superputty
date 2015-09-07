@@ -33,6 +33,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using SuperPutty.Gui;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 
 namespace SuperPutty
@@ -355,6 +356,27 @@ namespace SuperPutty
         }
 
         /// <summary>
+        /// Open the filezilla program with the sesion data, for sftp connection. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void fileZillaToolStripMenuItem_Click(object sender, EventArgs e)
+        {            
+            SessionData session = (SessionData)treeView1.SelectedNode.Tag;
+            ExternalApplications.openFileZilla(session);                     
+        }
+        /// <summary>
+        /// Open the WinSCP program with the sesion data, for sftp connection. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void winSCPToolStripMenuItem_Click(object sender, EventArgs e)
+        {            
+            SessionData session = (SessionData)treeView1.SelectedNode.Tag;
+            ExternalApplications.openWinSCP(session);
+        }
+
+        /// <summary>
         /// Shortcut for double clicking an entries node.
         /// </summary>
         /// <param name="sender"></param>
@@ -525,7 +547,9 @@ namespace SuperPutty
         private void contextMenuStripAddTreeItem_Opening(object sender, CancelEventArgs e)
         {
             // disable file transfers if pscp isn't configured.
-            fileBrowserToolStripMenuItem.Enabled = SuperPuTTY.IsScpEnabled;
+            this.fileBrowserToolStripMenuItem.Enabled = SuperPuTTY.IsScpEnabled;
+            this.fileZillaToolStripMenuItem.Enabled = SuperPuTTY.IsFilezillaEnabled;
+            this.winSCPToolStripMenuItem.Enabled = SuperPuTTY.IsWinSCPEnabled;
 
             connectInNewSuperPuTTYToolStripMenuItem.Enabled = !SuperPuTTY.Settings.SingleInstanceMode;
         }

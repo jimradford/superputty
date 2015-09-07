@@ -82,6 +82,9 @@ namespace SuperPutty
         private readonly TabSwitcher tabSwitcher;
         private readonly ViewState fullscreenViewState;
 
+        //for easy change the title
+        private String title = "SuperPuTTY (BewaApps)";
+
         Dictionary<Keys, SuperPuttyAction> shortcuts = new Dictionary<Keys, SuperPuttyAction>();
 
         public frmSuperPutty()
@@ -90,7 +93,7 @@ namespace SuperPutty
             dlgFindPutty.PuttyCheck();
 
             InitializeComponent();
-
+            this.Text = this.title;
             // force toolbar locations...designer likes to flip them around
             this.tsConnect.Location = new System.Drawing.Point(0, 24);
             this.tsCommands.Location = new System.Drawing.Point(0, 49);
@@ -194,7 +197,7 @@ namespace SuperPutty
 
         void UpdateWindowText(string text)
         {
-            this.Text = string.Format("SuperPuTTY - {0}", text);
+            this.Text = string.Format("{0} - {1}", this.title, text);
         }
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
@@ -257,7 +260,7 @@ namespace SuperPutty
         {
             if (this.DockPanel.ActiveDocument == null)
             {
-                this.Text = string.Format("SuperPuTTY");
+                this.Text = string.Format(this.title);
             }
             else
             {
@@ -306,7 +309,8 @@ namespace SuperPutty
             saveDialog.InitialDirectory = Application.StartupPath;
             if (saveDialog.ShowDialog(this) == DialogResult.OK)
             {
-                SessionData.SaveSessionsToFile(SuperPuTTY.GetAllSessions(), saveDialog.FileName);
+                //return a copy of sessions withs the extraArgs encripted (only the -pw command)
+                SessionData.SaveSessionsToFile(SuperPuTTY.GetAllSessions(true), saveDialog.FileName);
             }
         }
 
