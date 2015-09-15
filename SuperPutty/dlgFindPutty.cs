@@ -193,6 +193,7 @@ namespace SuperPutty
             this.checkPuttyEnableNewSessionMenu.Checked = SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu;
             this.checkBoxCheckForUpdates.Checked = SuperPuTTY.Settings.AutoUpdateCheck;
             this.textBoxHomeDirPrefix.Text = SuperPuTTY.Settings.PscpHomePrefix;
+            this.textBoxRootDirPrefix.Text = SuperPuTTY.Settings.PscpRootHomePrefix;
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -308,6 +309,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu = this.checkPuttyEnableNewSessionMenu.Checked;
                 SuperPuTTY.Settings.AutoUpdateCheck = this.checkBoxCheckForUpdates.Checked;
                 SuperPuTTY.Settings.PscpHomePrefix = this.textBoxHomeDirPrefix.Text;
+                SuperPuTTY.Settings.PscpRootHomePrefix = this.textBoxRootDirPrefix.Text;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
@@ -474,7 +476,6 @@ namespace SuperPutty
         {
             return String.Format("{0}, {1} pt, {2}", font.FontFamily.Name, font.Size, font.Style);
         }
-
     }
 
 }
