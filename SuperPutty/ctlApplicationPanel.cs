@@ -96,15 +96,11 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             string typeName = string.IsNullOrEmpty(SuperPuTTY.Settings.WindowActivator) ? ActivatorTypeName : SuperPuTTY.Settings.WindowActivator;
             this.m_windowActivator = (WindowActivator)Activator.CreateInstance(Type.GetType(typeName));
             //this.m_windowActivator = new SetFGCombinedWindowActivator();
-            this.m_winEventDelegate = new NativeMethods.WinEventDelegate(WinEventProc);
-            this.m_hWinEventHook = NativeMethods.SetWinEventHook(
-                (int) NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND,
-                (int) NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE, 
-                IntPtr.Zero, 
-                this.m_winEventDelegate, 0, 0, 
-                NativeMethods.WINEVENT_OUTOFCONTEXT);
-
             SuperPuTTY.Settings.SettingsSaving += Settings_SettingsSaving;
+            SuperPuTTY.WindowEvents.ObjectNameChange.On += new EventHandler<GlobalWindowEventArgs>(OnObjectNameChange);
+            SuperPuTTY.WindowEvents.SystemSwitchStart.On += new EventHandler<GlobalWindowEventArgs>(OnSystemSwitchStart);
+            SuperPuTTY.WindowEvents.SystemSwitchEnd.On += new EventHandler<GlobalWindowEventArgs>(OnSystemSwitchEnd);
+            SuperPuTTY.WindowEvents.SystemForeground.On += new EventHandler<GlobalWindowEventArgs>(OnSystemForeground);
         }
 
         void Settings_SettingsSaving(object sender, CancelEventArgs e)
@@ -116,8 +112,11 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         {
             this.Disposed -= new EventHandler(ApplicationPanel_Disposed);
             SuperPuTTY.LayoutChanged -= new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
-            NativeMethods.UnhookWinEvent(m_hWinEventHook);
             SuperPuTTY.Settings.SettingsSaving -= Settings_SettingsSaving;
+            SuperPuTTY.WindowEvents.ObjectNameChange.On -= new EventHandler<GlobalWindowEventArgs>(OnObjectNameChange);
+            SuperPuTTY.WindowEvents.SystemSwitchStart.On -= new EventHandler<GlobalWindowEventArgs>(OnSystemSwitchStart);
+            SuperPuTTY.WindowEvents.SystemSwitchEnd.On -= new EventHandler<GlobalWindowEventArgs>(OnSystemSwitchEnd);
+            SuperPuTTY.WindowEvents.SystemForeground.On -= new EventHandler<GlobalWindowEventArgs>(OnSystemForeground);
         }
 
         void SuperPuTTY_LayoutChanged(object sender, Data.LayoutChangedEventArgs e)
@@ -190,67 +189,73 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
          * http://stackoverflow.com/questions/4867210/how-to-bring-a-window-foreground-using-c
          * http://stackoverflow.com/questions/46030/c-sharp-force-form-focus
         */
-        NativeMethods.WinEventDelegate m_winEventDelegate;
-        IntPtr m_hWinEventHook;
+
         bool settingForeground = false;
         bool isSwitchingViaAltTab = false;
-        
-        void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+
+        void OnObjectNameChange(object sender, GlobalWindowEventArgs e)
         {
-            //Log.DebugFormat("eventType={0}, hwnd={1}", eventType, hwnd);
-            if (eventType == (int) NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE && hwnd == m_AppWin)
+            if (m_AppWin == e.hwnd)
             {
-                // Putty xterm chdir - apply to title
                 UpdateTitle();
             }
-            else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHSTART )
+        }
+
+        void OnSystemSwitchStart(object sender, GlobalWindowEventArgs e)
+        {
+            this.isSwitchingViaAltTab = true;
+        }
+
+        void OnSystemSwitchEnd(object sender, GlobalWindowEventArgs e)
+        {
+            this.isSwitchingViaAltTab = false;
+        }
+
+        void OnSystemForeground(object sender, GlobalWindowEventArgs e)
+        {
+            if (m_AppWin != e.hwnd)
             {
-                this.isSwitchingViaAltTab = true;
+                return;
             }
-            else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHEND)
+
+            // if we got the EVENT_SYSTEM_FOREGROUND, and the hwnd is the putty terminal hwnd (m_AppWin)
+            // then bring the supperputty window to the foreground
+            Log.DebugFormat("[{0}] HandlingForegroundEvent: settingFG={1}", e.hwnd, settingForeground);
+            if (settingForeground)
             {
-                this.isSwitchingViaAltTab = false;
+                settingForeground = false;
+                return;
             }
-            else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND && hwnd == m_AppWin)
+
+
+            // This is the easiest way I found to get the superputty window to be brought to the top
+            // if you leave TopMost = true; then the window will always be on top.
+            if (this.TopLevelControl != null)
             {
-                // if we got the EVENT_SYSTEM_FOREGROUND, and the hwnd is the putty terminal hwnd (m_AppWin)
-                // then bring the supperputty window to the foreground
-                Log.DebugFormat("[{0}] HandlingForegroundEvent: settingFG={1}", hwnd, settingForeground);
-                if (settingForeground)
+                Form form = SuperPuTTY.MainForm;
+                if (form.WindowState == FormWindowState.Minimized)
                 {
-                    settingForeground = false;
                     return;
                 }
 
-                // This is the easiest way I found to get the superputty window to be brought to the top
-                // if you leave TopMost = true; then the window will always be on top.
-                if (this.TopLevelControl != null)
+                DesktopWindow window = DesktopWindow.GetFirstDesktopWindow();
+                this.m_windowActivator.ActivateForm(form, window, e.hwnd);
+
+                // focus back to putty via setting active dock panel
+                ctlPuttyPanel parent = (ctlPuttyPanel)this.Parent;
+                if (parent != null && parent.DockPanel != null)
                 {
-                    Form form = SuperPuTTY.MainForm;
-                    if (form.WindowState == FormWindowState.Minimized)
+                    if (parent.DockPanel.ActiveDocument != parent && parent.DockState == DockState.Document)
                     {
-                        return;
+                        string activeDoc = parent.DockPanel.ActiveDocument != null
+                            ? ((ToolWindow)parent.DockPanel.ActiveDocument).Text : "?";
+                        Log.InfoFormat("[{0}] Setting Active Document: {1} -> {2}", e.hwnd, activeDoc, parent.Text);
+                        parent.Show();
                     }
-
-                    DesktopWindow window = DesktopWindow.GetFirstDesktopWindow();
-                    this.m_windowActivator.ActivateForm(form, window, hwnd);
-
-                    // focus back to putty via setting active dock panel
-                    ctlPuttyPanel parent = (ctlPuttyPanel)this.Parent;
-                    if (parent != null && parent.DockPanel != null)
+                    else
                     {
-                        if (parent.DockPanel.ActiveDocument != parent && parent.DockState == DockState.Document)
-                        {
-                            string activeDoc = parent.DockPanel.ActiveDocument != null
-                                ? ((ToolWindow)parent.DockPanel.ActiveDocument).Text : "?";
-                            Log.InfoFormat("[{0}] Setting Active Document: {1} -> {2}", hwnd, activeDoc, parent.Text);
-                            parent.Show();
-                        }
-                        else
-                        {
-                            // give focus back
-                            this.ReFocusPuTTY("WinEventProc-FG, AltTab=" + isSwitchingViaAltTab);
-                        }
+                        // give focus back
+                        this.ReFocusPuTTY("WinEventProc-FG, AltTab=" + isSwitchingViaAltTab);
                     }
                 }
             }

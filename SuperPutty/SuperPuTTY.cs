@@ -96,6 +96,7 @@ namespace SuperPutty
 
             // Register IpcChanncel for single instance support
             SingleInstanceHelper.RegisterRemotingService();
+            WindowEvents = new GlobalWindowEvents();
 
             Log.Info("Initialized");
         }
@@ -724,6 +725,7 @@ namespace SuperPutty
         public static BindingList<SessionData> Sessions { get { return sessionsList; } }
         public static CommandLineOptions CommandLine { get; private set; }
         public static ImageList Images { get; private set; }
+        public static GlobalWindowEvents WindowEvents { get; private set; }
 
         /// <summary>true of KiTTY is being used instead of putty</summary>
         public static bool IsKiTTY
