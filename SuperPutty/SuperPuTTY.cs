@@ -742,6 +742,17 @@ namespace SuperPutty
             }
         }
 
+        public static string PuTTYAppName
+        {
+            get
+            {
+                if (IsKiTTY)
+                    return "KiTTY";
+
+                return "PuTTY";
+            }
+        }
+
         /// <summary>The path to the default AutoRestore layout configuration</summary>
         public static string AutoRestoreLayoutPath
         {
