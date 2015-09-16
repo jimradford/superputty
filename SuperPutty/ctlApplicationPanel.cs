@@ -57,6 +57,7 @@ namespace SuperPutty
         private string m_ApplicationParameters = "";
         private string m_ApplicationWorkingDirectory = "";
         private List<IntPtr> m_hWinEventHooks = new List<IntPtr>();
+        private List<NativeMethods.WinEventDelegate> lpfnWinEventProcs = new List<NativeMethods.WinEventDelegate>();
         private WindowActivator m_windowActivator = null;
 
         internal PuttyClosedCallback m_CloseCallback;
@@ -116,6 +117,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             this.m_hWinEventHooks.ForEach(delegate(IntPtr hook) {
                 NativeMethods.UnhookWinEvent(hook);
             });
+            this.m_hWinEventHooks.Clear();
+            this.lpfnWinEventProcs.Clear();
         }
 
         void SuperPuTTY_LayoutChanged(object sender, Data.LayoutChangedEventArgs e)
@@ -425,10 +428,17 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     lStyle &= ~(NativeMethods.WS_BORDER | NativeMethods.WS_THICKFRAME);
                     NativeMethods.SetWindowLong(m_AppWin, NativeMethods.GWL_STYLE, lStyle);
                     NativeMethods.WinEventDelegate lpfnWinEventProc = new NativeMethods.WinEventDelegate(WinEventProc);
+                    this.lpfnWinEventProcs.Add(lpfnWinEventProc);
                     uint eventType = (uint)NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE;
                     this.m_hWinEventHooks.Add(NativeMethods.SetWinEventHook(eventType, eventType, IntPtr.Zero, lpfnWinEventProc, (uint)m_Process.Id, 0, NativeMethods.WINEVENT_OUTOFCONTEXT));
                     eventType = (uint)NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND;
                     this.m_hWinEventHooks.Add(NativeMethods.SetWinEventHook(eventType, eventType, IntPtr.Zero, lpfnWinEventProc, (uint)m_Process.Id, 0, NativeMethods.WINEVENT_OUTOFCONTEXT));
+                }
+                else
+                {
+                    MessageBox.Show("Process window not found.", "Process Window Not Found");
+                    m_Process.Kill();
+                    return;
                 }
             }
             if (this.Visible && this.m_Created && this.ExternalProcessCaptured)

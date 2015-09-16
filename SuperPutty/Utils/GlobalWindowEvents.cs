@@ -21,12 +21,13 @@ namespace SuperPutty.Utils
     {
         public event EventHandler<GlobalWindowEventArgs> SystemSwitch;
         IntPtr m_hWinEventHook;
+        NativeMethods.WinEventDelegate lpfnWinEventProc;
 
         public GlobalWindowEvents()
         {
             uint eventMin = (uint)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHSTART;
             uint eventMax = (uint)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHEND;
-            NativeMethods.WinEventDelegate lpfnWinEventProc = new NativeMethods.WinEventDelegate(WinEventProc);
+            lpfnWinEventProc = new NativeMethods.WinEventDelegate(WinEventProc);
             this.m_hWinEventHook = NativeMethods.SetWinEventHook(eventMin, eventMax, IntPtr.Zero, lpfnWinEventProc, 0, 0, NativeMethods.WINEVENT_OUTOFCONTEXT);
         }
 
