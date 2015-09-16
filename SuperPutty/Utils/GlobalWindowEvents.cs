@@ -38,7 +38,6 @@ namespace SuperPutty.Utils
 
         ~GlobalWindowEvents()
         {
-            IntPtr m_hWinEventHook;
             NativeMethods.UnhookWinEvent(this.m_hWinEventHook);
         }
     }
