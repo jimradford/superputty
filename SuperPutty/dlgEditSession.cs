@@ -265,6 +265,8 @@ namespace SuperPutty
         {
             if (this.imgPopup == null)
             {
+                // TODO: ImageList is null on initial installation and will throw a nullreference exception when creating a new session and trying to select an image.
+
                 int n = buttonImageSelect.ImageList.Images.Count;
                 int x = (int) Math.Floor(Math.Sqrt(n)) + 1;
                 int cols = x;

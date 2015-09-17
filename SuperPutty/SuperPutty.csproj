@@ -249,6 +249,7 @@
     <Compile Include="Utils\CommandLineOptions.cs" />
     <Compile Include="Utils\FormUtils.cs" />
     <Compile Include="Utils\GlobalHotKey.cs" />
+    <Compile Include="Utils\GlobalWindowEvents.cs" />
     <Compile Include="Utils\HostConnectionString.cs" />
     <Compile Include="Utils\MinttyStartInfo.cs" />
     <Compile Include="Utils\NativeMethods.cs" />
