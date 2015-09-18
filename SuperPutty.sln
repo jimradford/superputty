@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperPutty", "SuperPutty\Su
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperPuttyUnitTests", "SuperPuttyUnitTests\SuperPuttyUnitTests.csproj", "{94D2BCB6-A377-4C9C-96D7-C5603D46D292}"
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "SuperPuttyInstaller", "SuperPuttyInstaller\SuperPuttyInstaller.wixproj", "{89846760-8956-477C-9456-0F8CD32F4718}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,16 @@ Global
 		{94D2BCB6-A377-4C9C-96D7-C5603D46D292}.Release|Mixed Platforms.Build.0 = Release|x86
 		{94D2BCB6-A377-4C9C-96D7-C5603D46D292}.Release|x86.ActiveCfg = Release|x86
 		{94D2BCB6-A377-4C9C-96D7-C5603D46D292}.Release|x86.Build.0 = Release|x86
+		{89846760-8956-477C-9456-0F8CD32F4718}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{89846760-8956-477C-9456-0F8CD32F4718}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{89846760-8956-477C-9456-0F8CD32F4718}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{89846760-8956-477C-9456-0F8CD32F4718}.Debug|x86.ActiveCfg = Debug|x86
+		{89846760-8956-477C-9456-0F8CD32F4718}.Debug|x86.Build.0 = Debug|x86
+		{89846760-8956-477C-9456-0F8CD32F4718}.Release|Any CPU.ActiveCfg = Release|x86
+		{89846760-8956-477C-9456-0F8CD32F4718}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{89846760-8956-477C-9456-0F8CD32F4718}.Release|Mixed Platforms.Build.0 = Release|x86
+		{89846760-8956-477C-9456-0F8CD32F4718}.Release|x86.ActiveCfg = Release|x86
+		{89846760-8956-477C-9456-0F8CD32F4718}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
