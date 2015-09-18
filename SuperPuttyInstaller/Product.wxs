@@ -13,8 +13,9 @@
     <!-- <Property Id="ARPNOMODIFY" Value="1"/>-->
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-    <MediaTemplate />
-
+    
+      <Media Id="1" Cabinet="Cab1.cab" EmbedCab="yes" />
+    
     <Feature Id="ProductFeature" Title="SuperPuTTY" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentGroupRef Id="DefaultTheme" />
