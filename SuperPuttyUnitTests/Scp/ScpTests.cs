@@ -113,7 +113,7 @@ namespace SuperPuttyUnitTests.Scp
         /// <summary>
         /// Simple test to run scp and get a listing back.  
         /// </summary>
-        [Test]
+        [Test, Category("NetworkTest")]
         public void ListDirSuccess()
         {
             ListDirectory(ScpConfig.UserName, ScpConfig.Password, ScpConfig.KnownHost);
@@ -124,7 +124,7 @@ namespace SuperPuttyUnitTests.Scp
         /// Bad password will hang with an auth failed messsage and prompt for password which blocks/locks the
         /// process
         /// </summary>
-        [Test]
+        [Test, Category("NetworkTest")]
         public void ListDirBadPassword()
         {
             bool returned = false;
@@ -152,7 +152,7 @@ namespace SuperPuttyUnitTests.Scp
         /// <summary>
         /// Unknown host will hang asking to accept key on output stream
         /// </summary>
-        [Test]
+        [Test, Category("NetworkTest")]
         public void ListDirHostNoKey()
         {
             bool returned = false;
@@ -184,7 +184,7 @@ namespace SuperPuttyUnitTests.Scp
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(PscpClientListDirTests));
 
-        [Test]
+        [Test, Category("NetworkTest")]
         public void ListDirSuccess()
         {
             SessionData session = new SessionData
@@ -209,7 +209,7 @@ namespace SuperPuttyUnitTests.Scp
             Log.InfoFormat("Result: {0}", res);
         }
 
-        [Test]
+        [Test, Category("NetworkTest")]
         public void ListDirBadPassword()
         {
             SessionData session = new SessionData
@@ -251,7 +251,7 @@ namespace SuperPuttyUnitTests.Scp
             Log.InfoFormat("Result: {0}", res);
         }
 
-        [Test]
+        [Test, Category("NetworkTest")]
         public void ListDirBadPath()
         {
             SessionData session = new SessionData
@@ -283,7 +283,7 @@ namespace SuperPuttyUnitTests.Scp
             Program.InitLoggingForUnitTests();
         }
 
-        [Test]
+        [Test, Category("Netowk Tests")]
         public void LocalToRemote()
         {
             SessionData session = new SessionData
@@ -297,7 +297,7 @@ namespace SuperPuttyUnitTests.Scp
             List<BrowserFileInfo> sourceFiles = new List<BrowserFileInfo> 
             {
                 //new BrowserFileInfo(new FileInfo(Path.GetTempFileName()))
-                new BrowserFileInfo(new FileInfo( @"D:\Downloads\vs2012_winexp_enu.iso" ))
+                new BrowserFileInfo(new FileInfo(ScpConfig.PscpLocation))
             };
             BrowserFileInfo target = new BrowserFileInfo
             { 

@@ -44,8 +44,8 @@ namespace SuperPuttyUnitTests.Scp
 
         [Test]
         public void LocalListFiles()
-        {
-            BrowserPresenter presenter = new BrowserPresenter("Local", new LocalBrowserModel(), null, null);
+        {            
+            BrowserPresenter presenter = new BrowserPresenter("Local", new LocalBrowserModel(), null, new MockFileTransferPresenter());
             IBrowserViewModel viewModel = presenter.ViewModel;
 
             // make mock dir
