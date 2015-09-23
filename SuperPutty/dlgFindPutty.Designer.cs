@@ -72,11 +72,14 @@
             this.checkSessionsShowSearch = new System.Windows.Forms.CheckBox();
             this.label18 = new System.Windows.Forms.Label();
             this.checkBoxCheckForUpdates = new System.Windows.Forms.CheckBox();
-            this.label17 = new System.Windows.Forms.Label();
             this.textBoxGlobalPassword = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.checkConfirmTabClose = new System.Windows.Forms.CheckBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
+            this.labelWinSCP = new System.Windows.Forms.Label();
+            this.textBoxWinSCPLocation = new System.Windows.Forms.TextBox();
+            this.buttonBowseWinSCP = new System.Windows.Forms.Button();
             this.textBoxFilezillaLocation = new System.Windows.Forms.TextBox();
             this.buttonBowseFilezilla = new System.Windows.Forms.Button();
             this.tabPageGUI = new System.Windows.Forms.TabPage();
@@ -113,9 +116,6 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
-            this.labelWinSCP = new System.Windows.Forms.Label();
-            this.textBoxWinSCPLocation = new System.Windows.Forms.TextBox();
-            this.buttonBowseWinSCP = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
@@ -551,6 +551,15 @@
             this.toolTip.SetToolTip(this.checkBoxCheckForUpdates, "Check for Updates when Application starts");
             this.checkBoxCheckForUpdates.UseVisualStyleBackColor = true;
             // 
+            // textBoxGlobalPassword
+            // 
+            this.textBoxGlobalPassword.Location = new System.Drawing.Point(79, 26);
+            this.textBoxGlobalPassword.Name = "textBoxGlobalPassword";
+            this.textBoxGlobalPassword.Size = new System.Drawing.Size(217, 20);
+            this.textBoxGlobalPassword.TabIndex = 1;
+            this.toolTip.SetToolTip(this.textBoxGlobalPassword, "Password for encrypt/decrypt the session password. If it\'s empty the session pass" +
+        "word isn\'t will encrypted / decrypted when you save the sessions.");           
+            // 
             // label17
             // 
             this.label17.AutoSize = true;
@@ -560,16 +569,6 @@
             this.label17.Size = new System.Drawing.Size(112, 15);
             this.label17.TabIndex = 36;
             this.label17.Text = "filezilla.exe Location";
-            // 
-            // textBoxGlobalPassword
-            // 
-            this.textBoxGlobalPassword.Location = new System.Drawing.Point(79, 26);
-            this.textBoxGlobalPassword.Name = "textBoxGlobalPassword";
-            this.textBoxGlobalPassword.Size = new System.Drawing.Size(217, 20);
-            this.textBoxGlobalPassword.TabIndex = 1;
-            this.toolTip.SetToolTip(this.textBoxGlobalPassword, "Password to Encrypt and Decrypt the session password. If it\'s empty the session p" +
-        "assword isn\'t will encrypted / decrypted when you Import or export the sessions." +
-        "");
             // 
             // checkConfirmTabClose
             // 
@@ -625,6 +624,37 @@
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
             // 
+            // labelWinSCP
+            // 
+            this.labelWinSCP.AutoSize = true;
+            this.labelWinSCP.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelWinSCP.Location = new System.Drawing.Point(4, 215);
+            this.labelWinSCP.Name = "labelWinSCP";
+            this.labelWinSCP.Size = new System.Drawing.Size(118, 15);
+            this.labelWinSCP.TabIndex = 39;
+            this.labelWinSCP.Text = "WinSCP.exe Location";
+            // 
+            // textBoxWinSCPLocation
+            // 
+            this.textBoxWinSCPLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxWinSCPLocation.Location = new System.Drawing.Point(172, 214);
+            this.textBoxWinSCPLocation.Name = "textBoxWinSCPLocation";
+            this.textBoxWinSCPLocation.Size = new System.Drawing.Size(337, 20);
+            this.textBoxWinSCPLocation.TabIndex = 37;
+            this.textBoxWinSCPLocation.DoubleClick += new System.EventHandler(this.textBoxWinSCPLocation_DoubleClick);
+            // 
+            // buttonBowseWinSCP
+            // 
+            this.buttonBowseWinSCP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBowseWinSCP.Location = new System.Drawing.Point(515, 211);
+            this.buttonBowseWinSCP.Name = "buttonBowseWinSCP";
+            this.buttonBowseWinSCP.Size = new System.Drawing.Size(75, 23);
+            this.buttonBowseWinSCP.TabIndex = 38;
+            this.buttonBowseWinSCP.Text = "Browse";
+            this.buttonBowseWinSCP.UseVisualStyleBackColor = true;
+            this.buttonBowseWinSCP.Click += new System.EventHandler(this.buttonBrowseWinSCP_Click);
+            // 
             // textBoxFilezillaLocation
             // 
             this.textBoxFilezillaLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -656,7 +686,7 @@
             this.tabPageGUI.Location = new System.Drawing.Point(4, 22);
             this.tabPageGUI.Name = "tabPageGUI";
             this.tabPageGUI.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGUI.Size = new System.Drawing.Size(596, 287);
+            this.tabPageGUI.Size = new System.Drawing.Size(596, 307);
             this.tabPageGUI.TabIndex = 1;
             this.tabPageGUI.Text = "GUI";
             this.tabPageGUI.UseVisualStyleBackColor = true;
@@ -854,7 +884,7 @@
             this.tabPageShortcuts.Controls.Add(this.dataGridViewShortcuts);
             this.tabPageShortcuts.Location = new System.Drawing.Point(4, 22);
             this.tabPageShortcuts.Name = "tabPageShortcuts";
-            this.tabPageShortcuts.Size = new System.Drawing.Size(596, 287);
+            this.tabPageShortcuts.Size = new System.Drawing.Size(596, 307);
             this.tabPageShortcuts.TabIndex = 3;
             this.tabPageShortcuts.Text = "Shortcuts";
             this.tabPageShortcuts.UseVisualStyleBackColor = true;
@@ -877,7 +907,7 @@
             this.dataGridViewShortcuts.Location = new System.Drawing.Point(0, 0);
             this.dataGridViewShortcuts.Name = "dataGridViewShortcuts";
             this.dataGridViewShortcuts.ReadOnly = true;
-            this.dataGridViewShortcuts.Size = new System.Drawing.Size(596, 287);
+            this.dataGridViewShortcuts.Size = new System.Drawing.Size(596, 307);
             this.dataGridViewShortcuts.TabIndex = 0;
             this.dataGridViewShortcuts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShortcuts_CellClick);
             // 
@@ -942,7 +972,7 @@
             this.tabPageAdvanced.Controls.Add(this.groupBox4);
             this.tabPageAdvanced.Location = new System.Drawing.Point(4, 22);
             this.tabPageAdvanced.Name = "tabPageAdvanced";
-            this.tabPageAdvanced.Size = new System.Drawing.Size(596, 287);
+            this.tabPageAdvanced.Size = new System.Drawing.Size(596, 307);
             this.tabPageAdvanced.TabIndex = 2;
             this.tabPageAdvanced.Text = "Advanced";
             this.tabPageAdvanced.UseVisualStyleBackColor = true;
@@ -956,7 +986,7 @@
             this.groupBox8.Size = new System.Drawing.Size(316, 70);
             this.groupBox8.TabIndex = 30;
             this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "Import / Export Options";
+            this.groupBox8.Text = "Master password ";
             // 
             // label19
             // 
@@ -1017,37 +1047,6 @@
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(604, 27);
             this.panelBottom.TabIndex = 39;
-            // 
-            // labelWinSCP
-            // 
-            this.labelWinSCP.AutoSize = true;
-            this.labelWinSCP.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelWinSCP.Location = new System.Drawing.Point(4, 215);
-            this.labelWinSCP.Name = "labelWinSCP";
-            this.labelWinSCP.Size = new System.Drawing.Size(118, 15);
-            this.labelWinSCP.TabIndex = 39;
-            this.labelWinSCP.Text = "WinSCP.exe Location";
-            // 
-            // textBoxWinSCPLocation
-            // 
-            this.textBoxWinSCPLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxWinSCPLocation.Location = new System.Drawing.Point(172, 214);
-            this.textBoxWinSCPLocation.Name = "textBoxWinSCPLocation";
-            this.textBoxWinSCPLocation.Size = new System.Drawing.Size(337, 20);
-            this.textBoxWinSCPLocation.TabIndex = 37;
-            this.textBoxWinSCPLocation.DoubleClick += new System.EventHandler(this.textBoxWinSCPLocation_DoubleClick);
-            // 
-            // buttonBowseWinSCP
-            // 
-            this.buttonBowseWinSCP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBowseWinSCP.Location = new System.Drawing.Point(515, 211);
-            this.buttonBowseWinSCP.Name = "buttonBowseWinSCP";
-            this.buttonBowseWinSCP.Size = new System.Drawing.Size(75, 23);
-            this.buttonBowseWinSCP.TabIndex = 38;
-            this.buttonBowseWinSCP.Text = "Browse";
-            this.buttonBowseWinSCP.UseVisualStyleBackColor = true;
-            this.buttonBowseWinSCP.Click += new System.EventHandler(this.buttonBrowseWinSCP_Click);
             // 
             // dlgFindPutty
             // 

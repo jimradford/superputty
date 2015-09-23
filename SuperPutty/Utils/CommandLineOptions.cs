@@ -34,7 +34,7 @@ namespace SuperPutty.Utils
     /// </summary>
     public class CommandLineOptions
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(CommandLineOptions));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(CommandLineOptions));        
 
         public CommandLineOptions(string[] args)
         {
@@ -152,10 +152,15 @@ namespace SuperPutty.Utils
 
 
 
-
-        public static String encriptPassword(String allCommands)
+        /// <summary>
+        /// Encrypt the "-pw" command included in allcomands with key
+        /// </summary>
+        /// <param name="allCommands"></param>
+        /// <param name="key">key for encrypt</param>
+        /// <returns></returns>
+        public static String encryptPassword(String allCommands, String key)
         {
-            if (String.IsNullOrEmpty(SuperPuTTY.Settings.PasswordImportExport)) {
+            if (String.IsNullOrEmpty(key)) {
                 return allCommands;
             }
 
@@ -172,14 +177,20 @@ namespace SuperPutty.Utils
                 if (myMatch.Success)
                 {
                     pw = myMatch.Groups[2].Value;
-                    pw = CryptoAES.EncryptString(pw, SuperPuTTY.Settings.PasswordImportExport);
+                    pw = CryptoAES.EncryptString(pw, key);
                     allCommands = Regex.Replace(allCommands, strRegex, "${1}" + pw); 
                 }
             }
             return allCommands;
         }
 
-        public static String decriptPassword(String allCommands)
+        /// <summary>
+        /// Decrypt the "-pw" command included in allcomands with key
+        /// </summary>
+        /// <param name="allCommands"></param>
+        /// <param name="key">key for decrypt</param>
+        /// <returns></returns>
+        public static String decryptPassword(String allCommands, String key)
         {
             
             if (String.IsNullOrEmpty(allCommands))
@@ -187,7 +198,7 @@ namespace SuperPutty.Utils
                 return "";
             }
 
-            if (String.IsNullOrEmpty(SuperPuTTY.Settings.PasswordImportExport))
+            if (String.IsNullOrEmpty(key))
             {
                 return allCommands;
             }
@@ -201,7 +212,7 @@ namespace SuperPutty.Utils
                 if (myMatch.Success)
                 {
                     pw = myMatch.Groups[2].Value;
-                    pw = CryptoAES.DecryptString(pw, SuperPuTTY.Settings.PasswordImportExport);
+                    pw = CryptoAES.DecryptString(pw, key);
                     allCommands = Regex.Replace(allCommands, strRegex, "${1}" + pw);
                 }
             }

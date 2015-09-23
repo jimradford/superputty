@@ -23,6 +23,9 @@ namespace SuperPutty
     public static class SuperPuTTY 
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SuperPuTTY));
+        public  enum OperationCrypto{encrypt,decrypt, withoutEncryption};
+        public static Exception exceptionMasterPwIncorrectInLoad = null;
+        
 
         public static event EventHandler<LayoutChangedEventArgs> LayoutChanging;
         public static event EventHandler<LayoutChangedEventArgs> LayoutChanged;
@@ -301,6 +304,7 @@ namespace SuperPutty
         {
             string fileName = SessionsFileName;
             Log.InfoFormat("Loading all sessions.  file={0}", fileName);
+            exceptionMasterPwIncorrectInLoad = null;
 
             try
             {
@@ -310,9 +314,29 @@ namespace SuperPutty
                     // remove old
                     sessionsMap.Clear();
                     sessionsList.Clear();
-
+                    string pw = SingletonSesionPasswordManager.Instance.getMasterPassword();
                     foreach (SessionData session in sessions)
                     {
+                        //if the masterPassword is not empty, decrypt password specified in extraArgs
+                        //when occurs an error don't continue loading the sessions
+                        if (!String.IsNullOrEmpty(pw) && (exceptionMasterPwIncorrectInLoad == null))
+                        {
+                            try
+                            {
+                                session.ExtraArgs = CommandLineOptions.decryptPassword(session.ExtraArgs, pw);
+                            }
+                            catch (System.Security.Cryptography.CryptographicException cex)
+                            {
+                                exceptionMasterPwIncorrectInLoad = new Exception("Incorrect master password.\nPlease, change the master password (Tools-->Options-->Advanced-->Master Password). Type the password used in the last session, and reload sessions (File-->Reload sessions) for retrieve the sessions\n", cex);
+                                Log.Error("Error while loading sessions from " + fileName + ". please, make sure the master password is correct", cex);
+                                break;
+                            }
+                            catch (System.FormatException fex) {
+                                exceptionMasterPwIncorrectInLoad = new Exception("The session " + session.SessionName + " is corrupt (command -pw can't be decrypted).\nPlease, revise the file " + fileName + ".", fex);                            
+                                Log.Error("Error while loading sessions from " + fileName + ". The session " + session.SessionName + " is corrupt.", fex);
+                                break;
+                            }                         
+                        }
                         AddSession(session);
                     }
                 }
@@ -324,15 +348,17 @@ namespace SuperPutty
             }
             catch (Exception ex)
             {
-                Log.Error("Error while loading sessions from " + fileName, ex);
+                Log.Error("Error while loading sessions from " + fileName, ex);                
             }
+            
+
         }
 
         /// <summary>Save in-application Session Database to XML File</summary>
         public static void SaveSessions()
         {
             Log.InfoFormat("Saving all sessions");
-            SessionData.SaveSessionsToFile(GetAllSessions(), SessionsFileName);
+            SessionData.SaveSessionsToFile(GetAllSessions(SuperPuTTY.OperationCrypto.encrypt, SingletonSesionPasswordManager.Instance.getMasterPassword()), SessionsFileName);
         }
 
         /// <summary>
@@ -404,19 +430,37 @@ namespace SuperPutty
             return success;
         }
 
-        /// <summary>Get a list of all sessions from the in-application database</summary>
+        
+        /// <summary>        
+        /// Get a list of all sessions from the in-application database and if pw is not empty, encript/decript the extraargs
+        /// </summary>        
+        /// <param name="operation">operation (encrypt/decrypt/withoutEncryption)</param>
+        /// <param name="pw">password for encript the extra args (only encript the -pw command). </param>
         /// <returns>A <seealso cref="List"/> of <seealso cref="SessionData"/> objects</returns>
-        public static List<SessionData> GetAllSessions(Boolean encriptPWInExtraArgs = false)
+        public static List<SessionData> GetAllSessions(OperationCrypto operation, string pw = ""  )
         {
             List<SessionData> sessions = new List<SessionData>();
-            if (encriptPWInExtraArgs)
+            if (operation != OperationCrypto.withoutEncryption && !String.IsNullOrEmpty(pw) )
             {
-                foreach (SessionData session in sessionsMap.Values.ToList())
+                switch (operation)
                 {
-                    SessionData s = (SessionData)session.Clone();
-                    s.ExtraArgs = CommandLineOptions.encriptPassword(s.ExtraArgs);
-                    sessions.Add(s);
-                }
+                    case OperationCrypto.decrypt:
+                        foreach (SessionData session in sessionsMap.Values.ToList())
+                        {
+                            SessionData s = (SessionData)session.Clone();
+                            s.ExtraArgs = CommandLineOptions.decryptPassword(s.ExtraArgs, pw);
+                            sessions.Add(s);
+                        }
+                        break;
+                    default:
+                        foreach (SessionData session in sessionsMap.Values.ToList())
+                        {
+                            SessionData s = (SessionData)session.Clone();
+                            s.ExtraArgs = CommandLineOptions.encryptPassword(s.ExtraArgs, pw);
+                            sessions.Add(s);
+                        }
+                        break;
+                } 
             }
             else {
                 sessions = sessionsMap.Values.ToList();
@@ -529,8 +573,10 @@ namespace SuperPutty
 
         /// <summary>Import sessions from the specified file into the in-application database</summary>
         /// <param name="fileName">A string containing the path of the filename that holds session configuration</param>
-        public static void ImportSessionsFromFile(string fileName)
+        /// <param name="pw">password used for importing file (for decript the pw specified in extraargs)
+        public static void ImportSessionsFromFile(string fileName, String pw = "")
         {
+            exceptionMasterPwIncorrectInLoad = null;
             if (fileName == null) { return; }
             if (File.Exists(fileName))
             {
@@ -538,9 +584,27 @@ namespace SuperPutty
                 List<SessionData> sessions = SessionData.LoadSessionsFromFile(fileName);
                 foreach (SessionData session in sessions)
                 {
-                    session.ExtraArgs = CommandLineOptions.decriptPassword(session.ExtraArgs);
+                    try
+                    {
+                        session.ExtraArgs = CommandLineOptions.decryptPassword(session.ExtraArgs, pw);
+                    }
+                    catch (System.Security.Cryptography.CryptographicException cex)
+                    {
+                        exceptionMasterPwIncorrectInLoad = new Exception("Incorrect password. Please, change the password and try again.", cex);
+                        Log.Error("Error while loading sessions from " + fileName + ". please, make sure the password is correct", cex);
+                        break;
+                    }
+                    catch (System.FormatException fex)
+                    {
+                        exceptionMasterPwIncorrectInLoad = new Exception("The session " + session.SessionName + " is corrupt (command -pw can't be decrypted).\nPlease, revise the file " + fileName + ".", fex);
+                        Log.Error("Error while loading sessions from " + fileName + ". The session " + session.SessionName + " is corrupt.", fex);
+                        break;
+                    }
                 }
-                ImportSessions(sessions, "Imported");
+                if (exceptionMasterPwIncorrectInLoad == null) {
+                    ImportSessions(sessions, "Imported");
+                }
+                
             }
         }
 

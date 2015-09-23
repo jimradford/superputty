@@ -130,7 +130,7 @@ namespace SuperPutty
             this.nodeRoot = treeView1.Nodes.Add("root", "PuTTY Sessions", ImageKeyFolder, ImageKeyFolder);
             this.nodeRoot.ContextMenuStrip = this.contextMenuStripFolder;
 
-            foreach (SessionData session in SuperPuTTY.GetAllSessions())
+            foreach (SessionData session in SuperPuTTY.GetAllSessions(SuperPuTTY.OperationCrypto.withoutEncryption))
             {
                 TryAddSessionNode(session);
             }

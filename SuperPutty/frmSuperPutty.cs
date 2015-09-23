@@ -309,8 +309,12 @@ namespace SuperPutty
             saveDialog.InitialDirectory = Application.StartupPath;
             if (saveDialog.ShowDialog(this) == DialogResult.OK)
             {
-                //return a copy of sessions withs the extraArgs encripted (only the -pw command)
-                SessionData.SaveSessionsToFile(SuperPuTTY.GetAllSessions(true), saveDialog.FileName);
+                dlgSelectPW s_pw = new dlgSelectPW();
+                if (s_pw.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                {
+                    //return a copy of sessions withs the extraArgs encripted (only the -pw command)
+                    SessionData.SaveSessionsToFile(SuperPuTTY.GetAllSessions(SuperPuTTY.OperationCrypto.encrypt,s_pw.Password), saveDialog.FileName);
+                }
             }
         }
 
@@ -323,7 +327,15 @@ namespace SuperPutty
             openDialog.InitialDirectory = Application.StartupPath;
             if (openDialog.ShowDialog(this) == DialogResult.OK)
             {
-                SuperPuTTY.ImportSessionsFromFile(openDialog.FileName);
+                //select the password for import the sesions
+                dlgSelectPW s_pw = new dlgSelectPW();
+                if (s_pw.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {                    
+                    SuperPuTTY.ImportSessionsFromFile(openDialog.FileName,s_pw.Password);
+                    if (SuperPuTTY.exceptionMasterPwIncorrectInLoad != null)
+                    {
+                        MessageBox.Show(SuperPuTTY.exceptionMasterPwIncorrectInLoad.Message);
+                    }
+                }                
             }
         }
 
@@ -421,6 +433,10 @@ namespace SuperPutty
         private void reloadSessionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SuperPuTTY.LoadSessions();
+            if (SuperPuTTY.exceptionMasterPwIncorrectInLoad != null)
+            {
+                MessageBox.Show(SuperPuTTY.exceptionMasterPwIncorrectInLoad.Message);
+            }
         }
 
         private void toolStripMenuItem2_Click(object sender, EventArgs e)

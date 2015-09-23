@@ -69,6 +69,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
     <Reference Include="System.Core" />
@@ -92,6 +93,12 @@
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\KeyboardShortcut.cs" />
+    <Compile Include="dlgSelectPW.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgSelectPW.Designer.cs">
+      <DependentUpon>dlgSelectPW.cs</DependentUpon>
+    </Compile>
     <Compile Include="GitRelease.cs" />
     <Compile Include="Gui\BaseViewModel.cs" />
     <Compile Include="Gui\DataGridViewProgressColumn.cs" />
@@ -249,9 +256,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\CommandLineOptions.cs" />
+    <Compile Include="Utils\DataProtection.cs" />
     <Compile Include="Utils\ExternalApplications.cs" />
     <Compile Include="Utils\FormUtils.cs" />
     <Compile Include="Utils\GlobalHotKey.cs" />
+    <Compile Include="Utils\Hash.cs" />
     <Compile Include="Utils\HostConnectionString.cs" />
     <Compile Include="Utils\MinttyStartInfo.cs" />
     <Compile Include="Utils\NativeMethods.cs" />
@@ -259,6 +268,7 @@
     <Compile Include="Utils\PropertyNotifiableObject.cs" />
     <Compile Include="Utils\PuttyStartInfo.cs" />
     <Compile Include="Utils\SingleInstanceHelper.cs" />
+    <Compile Include="Utils\SingletonSesionPasswordManager.cs" />
     <Compile Include="Utils\SingletonToolWindowHelper.cs" />
     <Compile Include="Utils\DesktopWindowHelper.cs" />
     <Compile Include="Utils\SortableBindingList.cs" />
@@ -268,6 +278,9 @@
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgSelectPW.resx">
+      <DependentUpon>dlgSelectPW.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Gui\ImageListPopup.resx">
       <DependentUpon>ImageListPopup.cs</DependentUpon>

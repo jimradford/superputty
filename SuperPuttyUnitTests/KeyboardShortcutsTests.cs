@@ -89,17 +89,36 @@ namespace SuperPuttyUnitTests
         [Test]
         public void encriptPasswordTest()
         {
-            String command = CommandLineOptions.encriptPassword("-pw 12sa12 -we aasd");
-            command = CommandLineOptions.decriptPassword(command);
+            String command = CommandLineOptions.encryptPassword("-pw 12sa12 -we aasd", "mipw");
+            command = CommandLineOptions.decryptPassword(command,"mipw");
             Assert.AreEqual("-pw 12sa12 -we aasd", command);
 
-            command = CommandLineOptions.encriptPassword(" -pw \"/\\*/*12sa12\" -we aasd");
-            command = CommandLineOptions.decriptPassword(command);
+            command = CommandLineOptions.encryptPassword(" -pw \"/\\*/*12sa12\" -we aasd", "mipw");
+            command = CommandLineOptions.decryptPassword(command, "mipw");
             Assert.AreEqual(" -pw \"/\\*/*12sa12\" -we aasd", command);
 
-            command = CommandLineOptions.encriptPassword(" -pw:\"/\\*/*+12sa12\" -we aasd");
-            command = CommandLineOptions.decriptPassword(command);
+            command = CommandLineOptions.encryptPassword(" -pw:\"/\\*/*+12sa12\" -we aasd", "mipw");
+            command = CommandLineOptions.decryptPassword(command, "mipw");
             Assert.AreEqual(" -pw:\"/\\*/*+12sa12\" -we aasd", command);
+        }
+
+
+        [Test]
+        public void MasterPasswordTest()
+        {
+            String command = DataProtection.Protect("12sa12");
+            command = DataProtection.Unprotect(command);
+            Assert.AreEqual("12sa12", command);
+
+            command = DataProtection.Protect("\"/\\*/*12sa12\"");
+            command = DataProtection.Unprotect(command);
+            Assert.AreEqual("\"/\\*/*12sa12\"", command);
+
+            command = DataProtection.Protect("\"/\\*/*+12sa12\"");
+            command = DataProtection.Unprotect(command);
+            Assert.AreEqual("\"/\\*/*+12sa12\"", command);                       
+
+
         }
 
 

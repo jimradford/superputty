@@ -31,12 +31,14 @@ using log4net;
 using SuperPutty.Data;
 using SuperPutty.Utils;
 using SuperPutty.Gui;
+using System.Security.Cryptography;     
 
 namespace SuperPutty
 {
     public partial class dlgFindPutty : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(dlgFindPutty));
+        private static String textSimulePassword = "******";
 
         private string m_PuttyLocation;
 
@@ -197,7 +199,14 @@ namespace SuperPutty
             this.checkPuttyEnableNewSessionMenu.Checked = SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu;
             this.checkBoxCheckForUpdates.Checked = SuperPuTTY.Settings.AutoUpdateCheck;
             this.textBoxHomeDirPrefix.Text = SuperPuTTY.Settings.PscpHomePrefix;
-            this.textBoxGlobalPassword.Text = SuperPuTTY.Settings.PasswordImportExport;
+
+            if (String.IsNullOrEmpty(SingletonSesionPasswordManager.Instance.getMasterPassword()))
+            {
+                this.textBoxGlobalPassword.Text = "";
+            }
+            else {
+                this.textBoxGlobalPassword.Text = textSimulePassword;
+            }
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -358,8 +367,17 @@ namespace SuperPutty
                 SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu = this.checkPuttyEnableNewSessionMenu.Checked;
                 SuperPuTTY.Settings.AutoUpdateCheck = this.checkBoxCheckForUpdates.Checked;
                 SuperPuTTY.Settings.PscpHomePrefix = this.textBoxHomeDirPrefix.Text;
-                SuperPuTTY.Settings.PasswordImportExport = this.textBoxGlobalPassword.Text;
-
+                
+                // only save the password if has changed
+                // the MasterPassword is never visible, superputty works with the hash of password, 
+                // and is only accesible for the current user, if the user change is needed rewrite the password.
+                if (!this.textBoxGlobalPassword.Text.Equals(textSimulePassword))
+                {                   
+                    SingletonSesionPasswordManager.Instance.setMasterPassword(this.textBoxGlobalPassword.Text);
+                    this.textBoxGlobalPassword.Text = textSimulePassword;
+                    //save sessions for force encript with new password
+                    SuperPuTTY.SaveSessions();                    
+                }
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
                 this.Shortcuts.CopyTo(shortcuts, 0);

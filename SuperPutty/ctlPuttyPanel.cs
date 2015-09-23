@@ -138,7 +138,7 @@ namespace SuperPutty
 
                 // BBB: do i need to dispose each one?
                 newSessionToolStripMenuItem.DropDownItems.Clear();
-                foreach (SessionData session in SuperPuTTY.GetAllSessions())
+                foreach (SessionData session in SuperPuTTY.GetAllSessions(SuperPuTTY.OperationCrypto.withoutEncryption))
                 {
                     ToolStripMenuItem tsmiParent = newSessionToolStripMenuItem;
                     foreach (string part in SessionData.GetSessionNameParts(session.SessionId))
