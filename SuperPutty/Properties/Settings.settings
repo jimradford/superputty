@@ -144,7 +144,7 @@
       <Value Profile="(Default)">/home/</Value>
     </Setting>
     <Setting Name="AutoUpdateCheck" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="PscpRootHomePrefix" Type="System.String" Scope="User">
       <Value Profile="(Default)">/</Value>
