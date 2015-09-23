@@ -452,8 +452,9 @@ namespace SuperPutty
             }
             else if (session != null)
             {
+                var homePrefix = session.Username.ToLower().Equals("root") ? Settings.PscpRootHomePrefix : Settings.PscpHomePrefix;
                 PscpBrowserPanel panel = new PscpBrowserPanel(
-                    session, new PscpOptions { PscpLocation = Settings.PscpExe, PscpHomePrefix = Settings.PscpHomePrefix }, 
+                    session, new PscpOptions { PscpLocation = Settings.PscpExe, PscpHomePrefix = homePrefix }, 
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
                 ApplyDockRestrictions(panel);
                 ApplyIconForWindow(panel, session);
