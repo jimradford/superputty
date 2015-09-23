@@ -83,7 +83,7 @@ namespace SuperPutty
         private readonly ViewState fullscreenViewState;
 
         //for easy change the title
-        private String title = "SuperPuTTY (BewaApps)";
+        private String title = "SuperPuTTY";
 
         Dictionary<Keys, SuperPuttyAction> shortcuts = new Dictionary<Keys, SuperPuttyAction>();
 
