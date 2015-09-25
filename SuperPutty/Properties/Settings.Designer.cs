@@ -656,5 +656,17 @@ namespace SuperPutty.Properties {
                 this["PscpRootHomePrefix"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public global::System.Windows.Forms.Keys Action_OpenScriptEditor_Shortcut {
+            get {
+                return ((global::System.Windows.Forms.Keys)(this["Action_OpenScriptEditor_Shortcut"]));
+            }
+            set {
+                this["Action_OpenScriptEditor_Shortcut"] = value;
+            }
+        }
     }
 }

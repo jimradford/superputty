@@ -149,5 +149,8 @@
     <Setting Name="PscpRootHomePrefix" Type="System.String" Scope="User">
       <Value Profile="(Default)">/</Value>
     </Setting>
+    <Setting Name="Action_OpenScriptEditor_Shortcut" Type="System.Windows.Forms.Keys" Scope="User">
+      <Value Profile="(Default)">None</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -778,7 +778,8 @@ namespace SuperPutty
         DuplicateSession,
         GotoCommandBar,
         GotoConnectionBar,
-        FocusActiveSession
+        FocusActiveSession,
+        OpenScriptEditor
     } 
     #endregion
 
