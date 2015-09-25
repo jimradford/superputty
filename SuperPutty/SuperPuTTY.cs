@@ -38,7 +38,9 @@ namespace SuperPutty
         {
             Log.InfoFormat(
                 "Initializing.  Version={0}, UserSettings={1}, SettingsFolder={2}", 
-                Version, Settings.SettingsFilePath, Settings.SettingsFolder);           
+                Version, Settings.SettingsFilePath, Settings.SettingsFolder);
+
+            Images = LoadImageList("default");
 
             if (!SuperPuTTY.IsFirstRun)
             {
@@ -54,10 +56,9 @@ namespace SuperPutty
                     }
                 }
 
-                // load data
+                // load data                
                 LoadLayouts();
-                LoadSessions();
-                Images = LoadImageList("default");
+                LoadSessions();                
 
                 // determine starting layout, if any.  CLI has priority
                 if (CommandLine.IsValid)
