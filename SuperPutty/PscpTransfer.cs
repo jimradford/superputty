@@ -388,9 +388,9 @@ namespace SuperPutty
         {
             Match match;
             // 'drwxr-xr-x    6 jradford users        4096 Mar 28 22:07 legend'
-            match = Regex.Match(line.TrimEnd(), @"^(?<Permissions>[drwx\-lSs]+)\s+(?<LinkCount>\d{1,})\s+(?<OwnerName>\w+|\w+\.\w+)\s+(?<GroupName>\w+|\w+\.\w+)\s+(?<BlockCount>\d+)\s+(?<FileMonth>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s{1,2}(?<FileDay>\d{1,2})\s(?<FileHour>[0-9]{2}):(?<FileMinute>[0-9]{2})\s(?<FileName>.*)$");
+            match = Regex.Match(line.TrimEnd(), @"^(?<Permissions>[drwx\-lSs]+)\s+(?<LinkCount>\d{1,})\s+(?<OwnerName>\w+|\w+\.\w+|\w+\-\w+)\s+(?<GroupName>\w+|\w+\.\w+|\w+\-\w+)\s+(?<BlockCount>\d+)\s+(?<FileMonth>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s{1,2}(?<FileDay>\d{1,2})\s(?<FileHour>[0-9]{2}):(?<FileMinute>[0-9]{2})\s(?<FileName>.*)$");
             if (!match.Success) // '-rw-r--r--   1 jradford jradford     1157 Jan 15  2002 localwww.gif'
-                match = Regex.Match(line.TrimEnd(), @"^(?<Permissions>[drwx\-lSs]+)\s+(?<LinkCount>\d+)\s+(?<OwnerName>\w+|\w+\.\w+)\s+(?<GroupName>\w+|\w+\.\w+)\s+(?<BlockCount>\d+)\s+(?<FileMonth>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s{1,2}(?<FileDay>\d{1,2})\s+(?<FileYear>[0-9]{4})\s(?<FileName>.*)$");
+                match = Regex.Match(line.TrimEnd(), @"^(?<Permissions>[drwx\-lSs]+)\s+(?<LinkCount>\d+)\s+(?<OwnerName>\w+|\w+\.\w+|\w+\-\w+)\s+(?<GroupName>\w+|\w+\.\w+|\w+\-\w+)\s+(?<BlockCount>\d+)\s+(?<FileMonth>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s{1,2}(?<FileDay>\d{1,2})\s+(?<FileYear>[0-9]{4})\s(?<FileName>.*)$");
 
             if (match.Success)
             {
