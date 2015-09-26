@@ -120,7 +120,7 @@ namespace SuperPutty.Gui
             switch (e.KeyCode)
             {
                 case Keys.Enter:
-                    if (this.DataView.Count == 1)
+                    if (this.DataView.Count > 0)
                     {
                         this.DoSelectItem();
                     }
@@ -136,7 +136,7 @@ namespace SuperPutty.Gui
                     {
                         if (this.dataGridViewData.Rows.Count > 1)
                         {
-                            this.dataGridViewData.Rows[1].Selected = true;
+                            this.dataGridViewData.CurrentCell = this.dataGridViewData.Rows[1].Cells[0];
                         }
                     }
                     e.Handled = true;
