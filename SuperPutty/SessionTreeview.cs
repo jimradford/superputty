@@ -65,7 +65,10 @@ namespace SuperPutty
             m_DockPanel = dockPanel;
             InitializeComponent();
             this.treeView1.TreeViewNodeSorter = this;
-            this.treeView1.ImageList = SuperPuTTY.Images;
+            if (SuperPuTTY.Images != null)
+            {
+                this.treeView1.ImageList = SuperPuTTY.Images;
+            }
             this.ApplySettings();
 
             // populate sessions in the treeview from the registry

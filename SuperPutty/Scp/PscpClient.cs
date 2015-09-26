@@ -613,7 +613,7 @@ namespace SuperPutty.Scp
         #region ScpLineParser
         public class ScpLineParser
         {
-            Regex regExFileLine = new Regex(@"^(?<Permissions>[cdrwx\-lSst]+)\s+(?<LinkCount>\d+)\s+(?<OwnerName>\w+)\s+(?<GroupName>\w+)\s+(?<BlockCount>\d+)\s+(?<Timestamp>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec).{9})\s{1}(?<FileName>.*)$");
+            Regex regExFileLine = new Regex(@"^(?<Permissions>[cdrwx\-lSst]+)\s+(?<LinkCount>\d+)\s+(?<OwnerName>\w+|\w+\.\w+\w+|\w+\.\w+|\w+\-\w+)\s+(?<GroupName>\w+|\w+\.\w+\w+|\w+\.\w+|\w+\-\w+)\s+(?<BlockCount>\d+)\s+(?<Timestamp>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec).{9})\s{1}(?<FileName>.*)$");            
             Regex regExStatus = new Regex(@".*|.*|.*|.*|.*");
 
             public bool TryParseFileLine(string line, out BrowserFileInfo fileInfo)

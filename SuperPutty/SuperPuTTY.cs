@@ -38,7 +38,9 @@ namespace SuperPutty
         {
             Log.InfoFormat(
                 "Initializing.  Version={0}, UserSettings={1}, SettingsFolder={2}", 
-                Version, Settings.SettingsFilePath, Settings.SettingsFolder);           
+                Version, Settings.SettingsFilePath, Settings.SettingsFolder);
+
+            Images = LoadImageList("default");
 
             if (!SuperPuTTY.IsFirstRun)
             {
@@ -54,10 +56,9 @@ namespace SuperPutty
                     }
                 }
 
-                // load data
+                // load data                
                 LoadLayouts();
-                LoadSessions();
-                Images = LoadImageList("default");
+                LoadSessions();                
 
                 // determine starting layout, if any.  CLI has priority
                 if (CommandLine.IsValid)
@@ -96,6 +97,7 @@ namespace SuperPutty
 
             // Register IpcChanncel for single instance support
             SingleInstanceHelper.RegisterRemotingService();
+            WindowEvents = new GlobalWindowEvents();
 
             Log.Info("Initialized");
         }
@@ -464,8 +466,10 @@ namespace SuperPutty
             }
             else if (session != null)
             {
+                var homePrefix = session.Username.ToLower().Equals("root") ? Settings.PscpRootHomePrefix : Settings.PscpHomePrefix;
                 PscpBrowserPanel panel = new PscpBrowserPanel(
-                    session, new PscpOptions { PscpLocation = Settings.PscpExe, PscpHomePrefix = Settings.PscpHomePrefix });
+
+                session, new PscpOptions { PscpLocation = Settings.PscpExe, PscpHomePrefix = homePrefix });
                 ApplyDockRestrictions(panel);
                 ApplyIconForWindow(panel, session);
                 panel.Show(MainForm.DockPanel, session.LastDockstate);
@@ -752,6 +756,7 @@ namespace SuperPutty
         public static BindingList<SessionData> Sessions { get { return sessionsList; } }
         public static CommandLineOptions CommandLine { get; private set; }
         public static ImageList Images { get; private set; }
+        public static GlobalWindowEvents WindowEvents { get; private set; }
 
         /// <summary>true of KiTTY is being used instead of putty</summary>
         public static bool IsKiTTY
@@ -765,6 +770,17 @@ namespace SuperPutty
                     isKitty = exe != null && exe.ToLower().StartsWith("kitty");
                 }
                 return isKitty;
+            }
+        }
+
+        public static string PuTTYAppName
+        {
+            get
+            {
+                if (IsKiTTY)
+                    return "KiTTY";
+
+                return "PuTTY";
             }
         }
 
@@ -792,7 +808,8 @@ namespace SuperPutty
         DuplicateSession,
         GotoCommandBar,
         GotoConnectionBar,
-        FocusActiveSession
+        FocusActiveSession,
+        OpenScriptEditor
     } 
     #endregion
 

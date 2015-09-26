@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2009 - 2014 Jim Radford http://www.jimradford.com
+ * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -20,10 +20,8 @@
  */
 
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Diagnostics;
 using System.Threading;
 using System.Text.RegularExpressions;
@@ -385,14 +383,14 @@ namespace SuperPutty
             timeoutThread.Start();
             timeoutWatch.Start();                                    
         }
-
+        
         private static bool TryParseFileLine(string line, out FileEntry FileNode)
         {
             Match match;
             // 'drwxr-xr-x    6 jradford users        4096 Mar 28 22:07 legend'
-            match = Regex.Match(line.TrimEnd(), @"^(?<Permissions>[drwx\-lSs]+)\s+(?<LinkCount>\d{1,})\s+(?<OwnerName>\w+)\s+(?<GroupName>\w+)\s+(?<BlockCount>\d+)\s+(?<FileMonth>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s{1,2}(?<FileDay>\d{1,2})\s(?<FileHour>[0-9]{2}):(?<FileMinute>[0-9]{2})\s(?<FileName>.*)$");
+            match = Regex.Match(line.TrimEnd(), @"^(?<Permissions>[drwx\-lSs]+)\s+(?<LinkCount>\d{1,})\s+(?<OwnerName>\w+|\w+\.\w+|\w+\-\w+)\s+(?<GroupName>\w+|\w+\.\w+|\w+\-\w+)\s+(?<BlockCount>\d+)\s+(?<FileMonth>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s{1,2}(?<FileDay>\d{1,2})\s(?<FileHour>[0-9]{2}):(?<FileMinute>[0-9]{2})\s(?<FileName>.*)$");
             if (!match.Success) // '-rw-r--r--   1 jradford jradford     1157 Jan 15  2002 localwww.gif'
-                match = Regex.Match(line.TrimEnd(), @"^(?<Permissions>[drwx\-lSs]+)\s+(?<LinkCount>\d+)\s+(?<OwnerName>\w+)\s+(?<GroupName>\w+)\s+(?<BlockCount>\d+)\s+(?<FileMonth>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s{1,2}(?<FileDay>\d{1,2})\s+(?<FileYear>[0-9]{4})\s(?<FileName>.*)$");
+                match = Regex.Match(line.TrimEnd(), @"^(?<Permissions>[drwx\-lSs]+)\s+(?<LinkCount>\d+)\s+(?<OwnerName>\w+|\w+\.\w+|\w+\-\w+)\s+(?<GroupName>\w+|\w+\.\w+|\w+\-\w+)\s+(?<BlockCount>\d+)\s+(?<FileMonth>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s{1,2}(?<FileDay>\d{1,2})\s+(?<FileYear>[0-9]{4})\s(?<FileName>.*)$");
 
             if (match.Success)
             {
@@ -426,7 +424,7 @@ namespace SuperPutty
                 return false;
             }
         }
-
+        
         static string MakeArgs(SessionData session, bool includePassword, string path)
         {
             string args = "-ls "; // default arguments

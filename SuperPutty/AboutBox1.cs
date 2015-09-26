@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2009 Jim Radford http://www.jimradford.com
+ * Copyright (c) 2009-2015 Jim Radford http://www.jimradford.com
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -20,9 +20,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Diagnostics;
@@ -41,6 +38,15 @@ namespace SuperPutty
             this.linkLabelCompany.Text = AssemblyCompany;
             this.linkLabelCompany2.Text = "https://github.com/jimradford/superputty";
             //this.textBoxDescription.Text = AssemblyDescription;
+
+            textBoxSupportText.AppendText("SuperPuTTY Version: " + SuperPuTTY.Version + System.Environment.NewLine);
+            Assembly[] asms = AppDomain.CurrentDomain.GetAssemblies();
+            foreach(var a in asms)
+            {                
+                textBoxSupportText.AppendText(a.FullName + System.Environment.NewLine);                
+            }
+
+
         }
 
         #region Assembly Attribute Accessors

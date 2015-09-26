@@ -72,15 +72,20 @@
             this.checkSessionsShowSearch = new System.Windows.Forms.CheckBox();
             this.label18 = new System.Windows.Forms.Label();
             this.checkBoxCheckForUpdates = new System.Windows.Forms.CheckBox();
-            this.label17 = new System.Windows.Forms.Label();
             this.textBoxGlobalPassword = new System.Windows.Forms.TextBox();
+            this.lbFilezillaLocation = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
             this.checkConfirmTabClose = new System.Windows.Forms.CheckBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
+            this.labelWinSCP = new System.Windows.Forms.Label();
+            this.textBoxWinSCPLocation = new System.Windows.Forms.TextBox();
+            this.buttonBowseWinSCP = new System.Windows.Forms.Button();
             this.textBoxFilezillaLocation = new System.Windows.Forms.TextBox();
             this.buttonBowseFilezilla = new System.Windows.Forms.Button();
             this.tabPageGUI = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.textBoxRootDirPrefix = new System.Windows.Forms.TextBox();
             this.textBoxHomeDirPrefix = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -113,9 +118,6 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
-            this.labelWinSCP = new System.Windows.Forms.Label();
-            this.textBoxWinSCPLocation = new System.Windows.Forms.TextBox();
-            this.buttonBowseWinSCP = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
@@ -551,16 +553,6 @@
             this.toolTip.SetToolTip(this.checkBoxCheckForUpdates, "Check for Updates when Application starts");
             this.checkBoxCheckForUpdates.UseVisualStyleBackColor = true;
             // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(4, 189);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(112, 15);
-            this.label17.TabIndex = 36;
-            this.label17.Text = "filezilla.exe Location";
-            // 
             // textBoxGlobalPassword
             // 
             this.textBoxGlobalPassword.Location = new System.Drawing.Point(79, 26);
@@ -570,6 +562,25 @@
             this.toolTip.SetToolTip(this.textBoxGlobalPassword, "Password to Encrypt and Decrypt the session password. If it\'s empty the session p" +
         "assword isn\'t will encrypted / decrypted when you Import or export the sessions." +
         "");
+            // 
+            // lbFilezillaLocation
+            // 
+            this.lbFilezillaLocation.AutoSize = true;
+            this.lbFilezillaLocation.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbFilezillaLocation.Location = new System.Drawing.Point(6, 189);
+            this.lbFilezillaLocation.Name = "lbFilezillaLocation";
+            this.lbFilezillaLocation.Size = new System.Drawing.Size(116, 15);
+            this.lbFilezillaLocation.TabIndex = 2;
+            this.lbFilezillaLocation.Text = "FileZilla.exe Location";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(10, 49);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(104, 13);
+            this.label17.TabIndex = 2;
+            this.label17.Text = "Root Directory Prefix";
             // 
             // checkConfirmTabClose
             // 
@@ -599,8 +610,8 @@
             this.tabPageGeneral.Controls.Add(this.labelWinSCP);
             this.tabPageGeneral.Controls.Add(this.textBoxWinSCPLocation);
             this.tabPageGeneral.Controls.Add(this.buttonBowseWinSCP);
-            this.tabPageGeneral.Controls.Add(this.label17);
             this.tabPageGeneral.Controls.Add(this.textBoxFilezillaLocation);
+            this.tabPageGeneral.Controls.Add(this.lbFilezillaLocation);
             this.tabPageGeneral.Controls.Add(this.buttonBowseFilezilla);
             this.tabPageGeneral.Controls.Add(this.label4);
             this.tabPageGeneral.Controls.Add(this.buttonBrowsePutty);
@@ -624,6 +635,37 @@
             this.tabPageGeneral.TabIndex = 0;
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
+            // 
+            // labelWinSCP
+            // 
+            this.labelWinSCP.AutoSize = true;
+            this.labelWinSCP.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelWinSCP.Location = new System.Drawing.Point(4, 215);
+            this.labelWinSCP.Name = "labelWinSCP";
+            this.labelWinSCP.Size = new System.Drawing.Size(118, 15);
+            this.labelWinSCP.TabIndex = 39;
+            this.labelWinSCP.Text = "WinSCP.exe Location";
+            // 
+            // textBoxWinSCPLocation
+            // 
+            this.textBoxWinSCPLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxWinSCPLocation.Location = new System.Drawing.Point(172, 214);
+            this.textBoxWinSCPLocation.Name = "textBoxWinSCPLocation";
+            this.textBoxWinSCPLocation.Size = new System.Drawing.Size(337, 20);
+            this.textBoxWinSCPLocation.TabIndex = 37;
+            this.textBoxWinSCPLocation.DoubleClick += new System.EventHandler(this.textBoxWinSCPLocation_DoubleClick);
+            // 
+            // buttonBowseWinSCP
+            // 
+            this.buttonBowseWinSCP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBowseWinSCP.Location = new System.Drawing.Point(515, 211);
+            this.buttonBowseWinSCP.Name = "buttonBowseWinSCP";
+            this.buttonBowseWinSCP.Size = new System.Drawing.Size(75, 23);
+            this.buttonBowseWinSCP.TabIndex = 38;
+            this.buttonBowseWinSCP.Text = "Browse";
+            this.buttonBowseWinSCP.UseVisualStyleBackColor = true;
+            this.buttonBowseWinSCP.Click += new System.EventHandler(this.buttonBrowseWinSCP_Click);
             // 
             // textBoxFilezillaLocation
             // 
@@ -656,21 +698,30 @@
             this.tabPageGUI.Location = new System.Drawing.Point(4, 22);
             this.tabPageGUI.Name = "tabPageGUI";
             this.tabPageGUI.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGUI.Size = new System.Drawing.Size(596, 287);
+            this.tabPageGUI.Size = new System.Drawing.Size(596, 307);
             this.tabPageGUI.TabIndex = 1;
             this.tabPageGUI.Text = "GUI";
             this.tabPageGUI.UseVisualStyleBackColor = true;
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.textBoxRootDirPrefix);
             this.groupBox7.Controls.Add(this.textBoxHomeDirPrefix);
             this.groupBox7.Controls.Add(this.label16);
+            this.groupBox7.Controls.Add(this.label17);
             this.groupBox7.Location = new System.Drawing.Point(358, 44);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(232, 79);
             this.groupBox7.TabIndex = 42;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "File Transfer Options";
+            // 
+            // textBoxRootDirPrefix
+            // 
+            this.textBoxRootDirPrefix.Location = new System.Drawing.Point(125, 46);
+            this.textBoxRootDirPrefix.Name = "textBoxRootDirPrefix";
+            this.textBoxRootDirPrefix.Size = new System.Drawing.Size(100, 20);
+            this.textBoxRootDirPrefix.TabIndex = 3;
             // 
             // textBoxHomeDirPrefix
             // 
@@ -854,7 +905,7 @@
             this.tabPageShortcuts.Controls.Add(this.dataGridViewShortcuts);
             this.tabPageShortcuts.Location = new System.Drawing.Point(4, 22);
             this.tabPageShortcuts.Name = "tabPageShortcuts";
-            this.tabPageShortcuts.Size = new System.Drawing.Size(596, 287);
+            this.tabPageShortcuts.Size = new System.Drawing.Size(596, 307);
             this.tabPageShortcuts.TabIndex = 3;
             this.tabPageShortcuts.Text = "Shortcuts";
             this.tabPageShortcuts.UseVisualStyleBackColor = true;
@@ -877,7 +928,7 @@
             this.dataGridViewShortcuts.Location = new System.Drawing.Point(0, 0);
             this.dataGridViewShortcuts.Name = "dataGridViewShortcuts";
             this.dataGridViewShortcuts.ReadOnly = true;
-            this.dataGridViewShortcuts.Size = new System.Drawing.Size(596, 287);
+            this.dataGridViewShortcuts.Size = new System.Drawing.Size(596, 307);
             this.dataGridViewShortcuts.TabIndex = 0;
             this.dataGridViewShortcuts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShortcuts_CellClick);
             // 
@@ -942,7 +993,7 @@
             this.tabPageAdvanced.Controls.Add(this.groupBox4);
             this.tabPageAdvanced.Location = new System.Drawing.Point(4, 22);
             this.tabPageAdvanced.Name = "tabPageAdvanced";
-            this.tabPageAdvanced.Size = new System.Drawing.Size(596, 287);
+            this.tabPageAdvanced.Size = new System.Drawing.Size(596, 307);
             this.tabPageAdvanced.TabIndex = 2;
             this.tabPageAdvanced.Text = "Advanced";
             this.tabPageAdvanced.UseVisualStyleBackColor = true;
@@ -1017,37 +1068,6 @@
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(604, 27);
             this.panelBottom.TabIndex = 39;
-            // 
-            // labelWinSCP
-            // 
-            this.labelWinSCP.AutoSize = true;
-            this.labelWinSCP.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelWinSCP.Location = new System.Drawing.Point(4, 215);
-            this.labelWinSCP.Name = "labelWinSCP";
-            this.labelWinSCP.Size = new System.Drawing.Size(118, 15);
-            this.labelWinSCP.TabIndex = 39;
-            this.labelWinSCP.Text = "WinSCP.exe Location";
-            // 
-            // textBoxWinSCPLocation
-            // 
-            this.textBoxWinSCPLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxWinSCPLocation.Location = new System.Drawing.Point(172, 214);
-            this.textBoxWinSCPLocation.Name = "textBoxWinSCPLocation";
-            this.textBoxWinSCPLocation.Size = new System.Drawing.Size(337, 20);
-            this.textBoxWinSCPLocation.TabIndex = 37;
-            this.textBoxWinSCPLocation.DoubleClick += new System.EventHandler(this.textBoxWinSCPLocation_DoubleClick);
-            // 
-            // buttonBowseWinSCP
-            // 
-            this.buttonBowseWinSCP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBowseWinSCP.Location = new System.Drawing.Point(515, 211);
-            this.buttonBowseWinSCP.Name = "buttonBowseWinSCP";
-            this.buttonBowseWinSCP.Size = new System.Drawing.Size(75, 23);
-            this.buttonBowseWinSCP.TabIndex = 38;
-            this.buttonBowseWinSCP.Text = "Browse";
-            this.buttonBowseWinSCP.UseVisualStyleBackColor = true;
-            this.buttonBowseWinSCP.Click += new System.EventHandler(this.buttonBrowseWinSCP_Click);
             // 
             // dlgFindPutty
             // 
@@ -1177,7 +1197,8 @@
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.TextBox textBoxHomeDirPrefix;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label17;
+
+        private System.Windows.Forms.Label lbFilezillaLocation;
         private System.Windows.Forms.TextBox textBoxFilezillaLocation;
         private System.Windows.Forms.Button buttonBowseFilezilla;
         private System.Windows.Forms.GroupBox groupBox8;
@@ -1186,5 +1207,9 @@
         private System.Windows.Forms.Label labelWinSCP;
         private System.Windows.Forms.TextBox textBoxWinSCPLocation;
         private System.Windows.Forms.Button buttonBowseWinSCP;
+
+        private System.Windows.Forms.TextBox textBoxRootDirPrefix;
+        private System.Windows.Forms.Label label17;
+
     }
 }

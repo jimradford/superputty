@@ -92,6 +92,12 @@
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\KeyboardShortcut.cs" />
+    <Compile Include="dlgScriptEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgScriptEditor.Designer.cs">
+      <DependentUpon>dlgScriptEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="GitRelease.cs" />
     <Compile Include="Gui\BaseViewModel.cs" />
     <Compile Include="Gui\DataGridViewProgressColumn.cs" />
@@ -252,6 +258,7 @@
     <Compile Include="Utils\ExternalApplications.cs" />
     <Compile Include="Utils\FormUtils.cs" />
     <Compile Include="Utils\GlobalHotKey.cs" />
+    <Compile Include="Utils\GlobalWindowEvents.cs" />
     <Compile Include="Utils\HostConnectionString.cs" />
     <Compile Include="Utils\MinttyStartInfo.cs" />
     <Compile Include="Utils\NativeMethods.cs" />
@@ -268,6 +275,9 @@
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgScriptEditor.resx">
+      <DependentUpon>dlgScriptEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Gui\ImageListPopup.resx">
       <DependentUpon>ImageListPopup.cs</DependentUpon>
@@ -422,6 +432,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Apps-utilities-terminal.ico" />
+    <None Include="Resources\script_code.png" />
+    <None Include="Resources\folder-up.png" />
+    <None Include="Resources\page-blue.png" />
+    <Content Include="_Lib\WeifenLuo.WinFormsUI.Docking.dll" />
     <None Include="Resources\find.png" />
     <Content Include="_Lib\log4net.dll" />
     <Content Include="Resources\accept-gray.png" />
@@ -443,7 +457,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF NOT EXIST $(SolutionDir)bin\Release\themes mkdir $(SolutionDir)bin\Release\themes 
-IF NOT EXIST $(SolutionDir)bin\Release\themes\default xcopy /E  /Y $(ProjectDir)Resources\themes $(SolutionDir)bin\Release\themes</PostBuildEvent>
+IF NOT EXIST $(SolutionDir)bin\Release\themes\default xcopy /E  /Y $(ProjectDir)Resources\themes $(SolutionDir)bin\Release\themes
+IF NOT EXIST $(SolutionDir)bin\Debug\themes mkdir $(SolutionDir)bin\Debug\themes 
+IF NOT EXIST $(SolutionDir)bin\Debug\themes\default xcopy /E  /Y $(ProjectDir)Resources\themes $(SolutionDir)bin\Debug\themes</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
