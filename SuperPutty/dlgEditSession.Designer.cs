@@ -157,6 +157,7 @@ namespace SuperPutty
             this.textBoxExtraArgs.Name = "textBoxExtraArgs";
             this.textBoxExtraArgs.Size = new System.Drawing.Size(420, 20);
             this.textBoxExtraArgs.TabIndex = 6;
+            this.textBoxExtraArgs.TextChanged += new System.EventHandler(this.textBoxExtraArgs_TextChanged);
             // 
             // label6
             // 

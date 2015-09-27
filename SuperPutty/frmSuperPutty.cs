@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2009 Jim Radford http://www.jimradford.com
+ * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -21,26 +21,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Diagnostics;
 using System.IO;
-using Microsoft.Win32;
 using WeifenLuo.WinFormsUI.Docking;
-using SuperPutty.Properties;
 using SuperPutty.Data;
 using log4net;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using SuperPutty.Utils;
 using System.Configuration;
-using System.Collections;
 using SuperPutty.Gui;
-using System.Threading;
 using log4net.Core;
 using System.Text.RegularExpressions;
 using System.Runtime.Serialization.Json;
@@ -93,7 +85,9 @@ namespace SuperPutty
             dlgFindPutty.PuttyCheck();
 
             InitializeComponent();
+
             this.Text = this.title;
+
             // force toolbar locations...designer likes to flip them around
             this.tsConnect.Location = new System.Drawing.Point(0, 24);
             this.tsCommands.Location = new System.Drawing.Point(0, 49);
@@ -1081,7 +1075,6 @@ namespace SuperPutty
         int TrySendCommandsFromToolbar(CommandData command, bool saveHistory)
         {
             int sent = 0;
-            //String command = this.tsSendCommandCombo.Text; //this.tbTextCommand.Text;
             if (this.DockPanel.DocumentsCount > 0)
             {
                 foreach (DockContent content in this.DockPanel.Documents)
@@ -1091,19 +1084,13 @@ namespace SuperPutty
                     {
                         int handle = puttyPanel.AppPanel.AppWindowHandle.ToInt32();
                         Log.InfoFormat("SendCommand: session={0}, command=[{1}], handle={2}", puttyPanel.Session.SessionId, command, handle);
-
+                        
                         command.SendToTerminal(handle);
-                        /*
-                        foreach (Char c in command.Chars)
-                        {
-                            NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)c, 0);
-                        }
-
-                        NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)Keys.Enter, 0);*/
-                        //NativeMethods.SendMessage(handle, NativeMethods.WM_KEYUP, (int)Keys.Enter, 0);
+                        
                         sent++;
                     }
                 }
+
                 if (sent > 0)
                 {
                     // success...clear text and save in mru
@@ -1398,6 +1385,10 @@ namespace SuperPutty
                         putty.SetFocusToChildApplication("ExecuteAction");
                     }
                     break;
+                case SuperPuttyAction.OpenScriptEditor:
+                    KeyEventWindowActivator.ActivateForm(this);
+                    toolStripButtonRunScript_Click(this, EventArgs.Empty);
+                    break;
                 default:
                     success = false;
                     break;
@@ -1609,5 +1600,31 @@ namespace SuperPutty
             Mixed
         }
 
+        /// <summary>Open a window which will allow multiline scripts (commands) to be sent to hosts.</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripButtonRunScript_Click(object sender, EventArgs e)
+        {            
+            dlgScriptEditor editor = new dlgScriptEditor();
+            editor.ScriptReady += Editor_ScriptReady;
+            editor.SetDesktopLocation(MousePosition.X, MousePosition.Y);                       
+            Log.Debug(sender.ToString());
+            editor.Show();           
+        }
+
+        /// <summary>Process the script.</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Editor_ScriptReady(object sender, ExecuteScriptEventArgs e)
+        {
+            if(!String.IsNullOrEmpty(e.Script))
+            {
+                string[] script = e.Script.Split('\n');
+                foreach (string line in script)
+                {                    
+                    TrySendCommandsFromToolbar(new CommandData(line.TrimEnd()), !this.tbBtnMaskText.Checked);
+                }
+            }
+        }
     }
 }

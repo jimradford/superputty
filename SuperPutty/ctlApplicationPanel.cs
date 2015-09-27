@@ -31,6 +31,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using System.IO;
 using log4net;
 using System.Configuration;
+using System.Collections.Generic;
 using SuperPutty.Utils;
 using System.Text;
 
@@ -55,6 +56,8 @@ namespace SuperPutty
         private string m_ApplicationName = "";
         private string m_ApplicationParameters = "";
         private string m_ApplicationWorkingDirectory = "";
+        private List<IntPtr> m_hWinEventHooks = new List<IntPtr>();
+        private List<NativeMethods.WinEventDelegate> lpfnWinEventProcs = new List<NativeMethods.WinEventDelegate>();
         private WindowActivator m_windowActivator = null;
 
         internal PuttyClosedCallback m_CloseCallback;
@@ -96,15 +99,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             string typeName = string.IsNullOrEmpty(SuperPuTTY.Settings.WindowActivator) ? ActivatorTypeName : SuperPuTTY.Settings.WindowActivator;
             this.m_windowActivator = (WindowActivator)Activator.CreateInstance(Type.GetType(typeName));
             //this.m_windowActivator = new SetFGCombinedWindowActivator();
-            this.m_winEventDelegate = new NativeMethods.WinEventDelegate(WinEventProc);
-            this.m_hWinEventHook = NativeMethods.SetWinEventHook(
-                (int) NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND,
-                (int) NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE, 
-                IntPtr.Zero, 
-                this.m_winEventDelegate, 0, 0, 
-                NativeMethods.WINEVENT_OUTOFCONTEXT);
-
             SuperPuTTY.Settings.SettingsSaving += Settings_SettingsSaving;
+            SuperPuTTY.WindowEvents.SystemSwitch += new EventHandler<GlobalWindowEventArgs>(OnSystemSwitch);
         }
 
         void Settings_SettingsSaving(object sender, CancelEventArgs e)
@@ -116,8 +112,13 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         {
             this.Disposed -= new EventHandler(ApplicationPanel_Disposed);
             SuperPuTTY.LayoutChanged -= new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
-            NativeMethods.UnhookWinEvent(m_hWinEventHook);
             SuperPuTTY.Settings.SettingsSaving -= Settings_SettingsSaving;
+            SuperPuTTY.WindowEvents.SystemSwitch -= new EventHandler<GlobalWindowEventArgs>(OnSystemSwitch);
+            this.m_hWinEventHooks.ForEach(delegate(IntPtr hook) {
+                NativeMethods.UnhookWinEvent(hook);
+            });
+            this.m_hWinEventHooks.Clear();
+            this.lpfnWinEventProcs.Clear();
         }
 
         void SuperPuTTY_LayoutChanged(object sender, Data.LayoutChangedEventArgs e)
@@ -190,67 +191,79 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
          * http://stackoverflow.com/questions/4867210/how-to-bring-a-window-foreground-using-c
          * http://stackoverflow.com/questions/46030/c-sharp-force-form-focus
         */
-        NativeMethods.WinEventDelegate m_winEventDelegate;
-        IntPtr m_hWinEventHook;
+
         bool settingForeground = false;
         bool isSwitchingViaAltTab = false;
-        
+
+        void OnSystemSwitch(object sender, GlobalWindowEventArgs e)
+        {
+            switch (e.eventType)
+            {
+                case (uint)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHSTART:
+                    this.isSwitchingViaAltTab = true;
+                    break;
+                case (uint)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHEND:
+                    this.isSwitchingViaAltTab = false;
+                    break;
+            }
+        }
+
         void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            //Log.DebugFormat("eventType={0}, hwnd={1}", eventType, hwnd);
-            if (eventType == (int) NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE && hwnd == m_AppWin)
+            if (m_AppWin != hwnd)
+                return;
+
+            switch (eventType)
             {
-                // Putty xterm chdir - apply to title
-                UpdateTitle();
+                case (uint)NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE:
+                    UpdateTitle();
+                    break;
+                case (uint)NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND:
+                    UpdateForeground();
+                    break;
             }
-            else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHSTART )
+        }
+
+        void UpdateForeground()
+        {
+            // if we got the EVENT_SYSTEM_FOREGROUND, and the hwnd is the putty terminal hwnd (m_AppWin)
+            // then bring the supperputty window to the foreground
+            Log.DebugFormat("[{0}] HandlingForegroundEvent: settingFG={1}", m_AppWin, settingForeground);
+            if (settingForeground)
             {
-                this.isSwitchingViaAltTab = true;
+                settingForeground = false;
+                return;
             }
-            else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_SWITCHEND)
+
+
+            // This is the easiest way I found to get the superputty window to be brought to the top
+            // if you leave TopMost = true; then the window will always be on top.
+            if (this.TopLevelControl != null)
             {
-                this.isSwitchingViaAltTab = false;
-            }
-            else if (eventType == (int)NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND && hwnd == m_AppWin)
-            {
-                // if we got the EVENT_SYSTEM_FOREGROUND, and the hwnd is the putty terminal hwnd (m_AppWin)
-                // then bring the supperputty window to the foreground
-                Log.DebugFormat("[{0}] HandlingForegroundEvent: settingFG={1}", hwnd, settingForeground);
-                if (settingForeground)
+                Form form = SuperPuTTY.MainForm;
+                if (form.WindowState == FormWindowState.Minimized)
                 {
-                    settingForeground = false;
                     return;
                 }
 
-                // This is the easiest way I found to get the superputty window to be brought to the top
-                // if you leave TopMost = true; then the window will always be on top.
-                if (this.TopLevelControl != null)
+                DesktopWindow window = DesktopWindow.GetFirstDesktopWindow();
+                this.m_windowActivator.ActivateForm(form, window, m_AppWin);
+
+                // focus back to putty via setting active dock panel
+                ctlPuttyPanel parent = (ctlPuttyPanel)this.Parent;
+                if (parent != null && parent.DockPanel != null)
                 {
-                    Form form = SuperPuTTY.MainForm;
-                    if (form.WindowState == FormWindowState.Minimized)
+                    if (parent.DockPanel.ActiveDocument != parent && parent.DockState == DockState.Document)
                     {
-                        return;
+                        string activeDoc = parent.DockPanel.ActiveDocument != null
+                            ? ((ToolWindow)parent.DockPanel.ActiveDocument).Text : "?";
+                        Log.InfoFormat("[{0}] Setting Active Document: {1} -> {2}", m_AppWin, activeDoc, parent.Text);
+                        parent.Show();
                     }
-
-                    DesktopWindow window = DesktopWindow.GetFirstDesktopWindow();
-                    this.m_windowActivator.ActivateForm(form, window, hwnd);
-
-                    // focus back to putty via setting active dock panel
-                    ctlPuttyPanel parent = (ctlPuttyPanel)this.Parent;
-                    if (parent != null && parent.DockPanel != null)
+                    else
                     {
-                        if (parent.DockPanel.ActiveDocument != parent && parent.DockState == DockState.Document)
-                        {
-                            string activeDoc = parent.DockPanel.ActiveDocument != null
-                                ? ((ToolWindow)parent.DockPanel.ActiveDocument).Text : "?";
-                            Log.InfoFormat("[{0}] Setting Active Document: {1} -> {2}", hwnd, activeDoc, parent.Text);
-                            parent.Show();
-                        }
-                        else
-                        {
-                            // give focus back
-                            this.ReFocusPuTTY("WinEventProc-FG, AltTab=" + isSwitchingViaAltTab);
-                        }
+                        // give focus back
+                        this.ReFocusPuTTY("WinEventProc-FG, AltTab=" + isSwitchingViaAltTab);
                     }
                 }
             }
@@ -394,13 +407,14 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     }
                 }
 
-                if ("PuTTY Command Line Error" == this.m_Process.MainWindowTitle)
+                if (SuperPuTTY.PuTTYAppName + " Command Line Error" == this.m_Process.MainWindowTitle)
                 {
                     // dont' try to capture or manipulate the window
                     Log.WarnFormat("Error while creating putty session: title={0}, handle={1}.  Abort capture window", this.m_Process.MainWindowTitle, this.m_AppWin);
                     this.m_AppWin = IntPtr.Zero;
                 }
-                else
+                
+                if(this.m_AppWin != IntPtr.Zero)
                 {
                     //Logger.Log("Process Handle: {0}", m_AppWin.ToString("X"));
                     // Set the application as a child of the parent form
@@ -413,6 +427,18 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     long lStyle = NativeMethods.GetWindowLong(m_AppWin, NativeMethods.GWL_STYLE);
                     lStyle &= ~(NativeMethods.WS_BORDER | NativeMethods.WS_THICKFRAME);
                     NativeMethods.SetWindowLong(m_AppWin, NativeMethods.GWL_STYLE, lStyle);
+                    NativeMethods.WinEventDelegate lpfnWinEventProc = new NativeMethods.WinEventDelegate(WinEventProc);
+                    this.lpfnWinEventProcs.Add(lpfnWinEventProc);
+                    uint eventType = (uint)NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE;
+                    this.m_hWinEventHooks.Add(NativeMethods.SetWinEventHook(eventType, eventType, IntPtr.Zero, lpfnWinEventProc, (uint)m_Process.Id, 0, NativeMethods.WINEVENT_OUTOFCONTEXT));
+                    eventType = (uint)NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND;
+                    this.m_hWinEventHooks.Add(NativeMethods.SetWinEventHook(eventType, eventType, IntPtr.Zero, lpfnWinEventProc, (uint)m_Process.Id, 0, NativeMethods.WINEVENT_OUTOFCONTEXT));
+                }
+                else
+                {
+                    MessageBox.Show("Process window not found.", "Process Window Not Found");
+                    m_Process.Kill();
+                    return;
                 }
             }
             if (this.Visible && this.m_Created && this.ExternalProcessCaptured)

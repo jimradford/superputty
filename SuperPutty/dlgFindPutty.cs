@@ -208,6 +208,8 @@ namespace SuperPutty
                 this.textBoxGlobalPassword.Text = textSimulePassword;
             }
 
+            this.textBoxRootDirPrefix.Text = SuperPuTTY.Settings.PscpRootHomePrefix;
+
             if (SuperPuTTY.IsFirstRun)
             {
                 this.ShowIcon = true;
@@ -367,7 +369,8 @@ namespace SuperPutty
                 SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu = this.checkPuttyEnableNewSessionMenu.Checked;
                 SuperPuTTY.Settings.AutoUpdateCheck = this.checkBoxCheckForUpdates.Checked;
                 SuperPuTTY.Settings.PscpHomePrefix = this.textBoxHomeDirPrefix.Text;
-                
+                SuperPuTTY.Settings.PscpRootHomePrefix = this.textBoxRootDirPrefix.Text;
+
                 // only save the password if has changed
                 // the MasterPassword is never visible, superputty works with the hash of password, 
                 // and is only accesible for the current user, if the user change is needed rewrite the password.
@@ -378,6 +381,7 @@ namespace SuperPutty
                     //save sessions for force encript with new password
                     SuperPuTTY.SaveSessions();                    
                 }
+
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
                 this.Shortcuts.CopyTo(shortcuts, 0);
@@ -562,7 +566,6 @@ namespace SuperPutty
         {
             return String.Format("{0}, {1} pt, {2}", font.FontFamily.Name, font.Size, font.Style);
         }
-
     }
 
 }

@@ -39,6 +39,8 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.textBoxSupportText = new System.Windows.Forms.TextBox();
             this.labelProductName = new System.Windows.Forms.Label();
             this.labelVersion = new System.Windows.Forms.Label();
             this.labelCopyright = new System.Windows.Forms.Label();
@@ -47,6 +49,7 @@
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabControl1.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // logoPictureBox
@@ -183,12 +186,33 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControl1.Location = new System.Drawing.Point(12, 130);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(537, 141);
             this.tabControl1.TabIndex = 25;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.textBoxSupportText);
+            this.tabPage4.Location = new System.Drawing.Point(4, 24);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(529, 113);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Diagnostics";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // textBoxSupportText
+            // 
+            this.textBoxSupportText.Location = new System.Drawing.Point(6, 6);
+            this.textBoxSupportText.Multiline = true;
+            this.textBoxSupportText.Name = "textBoxSupportText";
+            this.textBoxSupportText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBoxSupportText.Size = new System.Drawing.Size(517, 104);
+            this.textBoxSupportText.TabIndex = 0;
             // 
             // labelProductName
             // 
@@ -206,7 +230,7 @@
             this.labelVersion.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelVersion.Location = new System.Drawing.Point(177, 35);
             this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(46, 15);
+            this.labelVersion.Size = new System.Drawing.Size(45, 15);
             this.labelVersion.TabIndex = 29;
             this.labelVersion.Text = "Version";
             // 
@@ -250,6 +274,8 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -271,5 +297,7 @@
         private System.Windows.Forms.Label labelProductName;
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Label labelCopyright;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TextBox textBoxSupportText;
     }
 }

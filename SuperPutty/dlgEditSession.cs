@@ -145,6 +145,15 @@ namespace SuperPutty
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
+            if (!String.IsNullOrEmpty(CommandLineOptions.getcommand(textBoxExtraArgs.Text, "-pw")))
+            {
+                if (MessageBox.Show("SuperPutty encrypts the password in Sessions.xml file with the master password, but using a password in 'Extra PuTTY Arguments' is very insecure.\nFor a secure connection use SSH authentication with Pageant. \nSelect yes, if you want save the password", "Are you sure that you want to save the password?",
+                        MessageBoxButtons.OKCancel,
+                        MessageBoxIcon.Warning,
+                        MessageBoxDefaultButton.Button1)==DialogResult.Cancel){
+                            return;                
+                }
+            }
             Session.SessionName = textBoxSessionName.Text.Trim();
             Session.PuttySession = comboBoxPuttyProfile.Text.Trim();
             Session.Host = textBoxHostname.Text.Trim();
@@ -269,6 +278,8 @@ namespace SuperPutty
         {
             if (this.imgPopup == null)
             {
+                // TODO: ImageList is null on initial installation and will throw a nullreference exception when creating a new session and trying to select an image.
+
                 int n = buttonImageSelect.ImageList.Images.Count;
                 int x = (int) Math.Floor(Math.Sqrt(n)) + 1;
                 int cols = x;
@@ -404,6 +415,18 @@ namespace SuperPutty
             else 
             {
                 textBoxExtraArgs.PasswordChar = '\0';
+            }
+        }
+
+        private void textBoxExtraArgs_TextChanged(object sender, EventArgs e)
+        {
+            //if extra Args contains a password, change the backgroudn
+            if (!String.IsNullOrEmpty(CommandLineOptions.getcommand(textBoxExtraArgs.Text, "-pw")))
+            {
+                textBoxExtraArgs.BackColor = Color.LightCoral;                
+            }
+            else {
+                textBoxExtraArgs.BackColor = Color.White;
             }
         }
 

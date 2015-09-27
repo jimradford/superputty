@@ -74,6 +74,7 @@
             this.checkBoxCheckForUpdates = new System.Windows.Forms.CheckBox();
             this.textBoxGlobalPassword = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
+            this.lbFilezillaLocation = new System.Windows.Forms.Label();
             this.checkConfirmTabClose = new System.Windows.Forms.CheckBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
@@ -84,6 +85,7 @@
             this.buttonBowseFilezilla = new System.Windows.Forms.Button();
             this.tabPageGUI = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.textBoxRootDirPrefix = new System.Windows.Forms.TextBox();
             this.textBoxHomeDirPrefix = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -563,12 +565,22 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(4, 189);
+            this.label17.Location = new System.Drawing.Point(10, 49);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(112, 15);
-            this.label17.TabIndex = 36;
-            this.label17.Text = "filezilla.exe Location";
+            this.label17.Size = new System.Drawing.Size(104, 13);
+            this.label17.TabIndex = 2;
+            this.label17.Text = "Root Directory Prefix";
+
+            // 
+            // lbFilezillaLocation
+            // 
+            this.lbFilezillaLocation.AutoSize = true;            
+            this.lbFilezillaLocation.Location = new System.Drawing.Point(6, 189);
+            this.lbFilezillaLocation.Name = "lbFilezillaLocation";
+            this.lbFilezillaLocation.Size = new System.Drawing.Size(116, 15);
+            this.lbFilezillaLocation.TabIndex = 2;
+            this.lbFilezillaLocation.Text = "FileZilla.exe Location";
+
             // 
             // checkConfirmTabClose
             // 
@@ -598,7 +610,7 @@
             this.tabPageGeneral.Controls.Add(this.labelWinSCP);
             this.tabPageGeneral.Controls.Add(this.textBoxWinSCPLocation);
             this.tabPageGeneral.Controls.Add(this.buttonBowseWinSCP);
-            this.tabPageGeneral.Controls.Add(this.label17);
+            this.tabPageGeneral.Controls.Add(this.lbFilezillaLocation);
             this.tabPageGeneral.Controls.Add(this.textBoxFilezillaLocation);
             this.tabPageGeneral.Controls.Add(this.buttonBowseFilezilla);
             this.tabPageGeneral.Controls.Add(this.label4);
@@ -693,6 +705,8 @@
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.textBoxRootDirPrefix);
+            this.groupBox7.Controls.Add(this.label17);
             this.groupBox7.Controls.Add(this.textBoxHomeDirPrefix);
             this.groupBox7.Controls.Add(this.label16);
             this.groupBox7.Location = new System.Drawing.Point(358, 44);
@@ -701,6 +715,13 @@
             this.groupBox7.TabIndex = 42;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "File Transfer Options";
+            // 
+            // textBoxRootDirPrefix
+            // 
+            this.textBoxRootDirPrefix.Location = new System.Drawing.Point(125, 46);
+            this.textBoxRootDirPrefix.Name = "textBoxRootDirPrefix";
+            this.textBoxRootDirPrefix.Size = new System.Drawing.Size(100, 20);
+            this.textBoxRootDirPrefix.TabIndex = 3;
             // 
             // textBoxHomeDirPrefix
             // 
@@ -1176,7 +1197,7 @@
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.TextBox textBoxHomeDirPrefix;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label lbFilezillaLocation;
         private System.Windows.Forms.TextBox textBoxFilezillaLocation;
         private System.Windows.Forms.Button buttonBowseFilezilla;
         private System.Windows.Forms.GroupBox groupBox8;
@@ -1185,5 +1206,9 @@
         private System.Windows.Forms.Label labelWinSCP;
         private System.Windows.Forms.TextBox textBoxWinSCPLocation;
         private System.Windows.Forms.Button buttonBowseWinSCP;
+
+        private System.Windows.Forms.TextBox textBoxRootDirPrefix;
+        private System.Windows.Forms.Label label17;
+
     }
 }

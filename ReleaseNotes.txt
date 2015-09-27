@@ -1,6 +1,24 @@
 1.4.0.7
-- 490: Fixed issue #490 sending a blank command (<enter>) in command toolbar now sends a carriage return to each session window
-- 517: Fixed issue #517 About Box now referenced new Github Project
+- Fixes Issue #379 NullReferenceException being thrown on First Run
+- Fixes Issue #440 Fixes Issue #553 usernames with . or - in them were failing the regular expression parser. [[:graph]] does not appear to be supported by the .NET regular expression library.
+- Add back debug log statement left out of last commit.
+- Fixes Issue #272 New Feature: Multiline Script Editor/Sender (New icon added to the command bar) 
+- Added "Diagnostics" Tab to about dialog which provides application version and loaded DLL verion/names to aid in assiting users obtain information for error reporting
+- Removed old Visual Studio based installer project file
+- Changed default to enable check for updates automatically when application starts (can still be turned off in options) 
+- Updated Docking Library to 2.9.0.0, Moved dll to common location
+- Merge pull request #537 from mdorenkamp/master
+- Fixes Nullreference exception when running LocalListFiles unit test
+- Fixes Issue #533 parser properly allows for '.' character in usernames or groupnames
+- Fixes Issue #541 Adds support for a Wix based installer 
+  Adds License in .rtf format (for installer)
+  Removed legacy SuperPutty Setup from solution file
+- Adds GlobalWindowEvents to Project file, Merge pull request #538 from joeyhub/master Improved desktop UI performance 
+- Merge pull request #524 from jbondhus/master Searching is more robust and uses glob style
+- Merge pull request #529 from kswmsw/download-instructions-522 Link to download and docs from README.
+- Merge pull request #525 from bewaapps/master In Release mode (1.4.0.6) doesn't work single instance option
+- Fixed issue #517 About Box now referenced new Github Project
+- Fixes Issue #490 pressing <enter> in the command toolbar now sends a carriage return to sessions.
 
 1.4.0.6
 - Moved Project from Google Code to Github
