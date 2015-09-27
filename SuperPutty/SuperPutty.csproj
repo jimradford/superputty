@@ -93,7 +93,6 @@
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\KeyboardShortcut.cs" />
-
     <Compile Include="dlgSelectPW.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,7 +104,6 @@
     </Compile>
     <Compile Include="dlgScriptEditor.Designer.cs">
       <DependentUpon>dlgScriptEditor.cs</DependentUpon>
-
     </Compile>
     <Compile Include="GitRelease.cs" />
     <Compile Include="Gui\BaseViewModel.cs" />
@@ -277,7 +275,7 @@
     <Compile Include="Utils\PropertyNotifiableObject.cs" />
     <Compile Include="Utils\PuttyStartInfo.cs" />
     <Compile Include="Utils\SingleInstanceHelper.cs" />
-    <Compile Include="Utils\SingletonSesionPasswordManager.cs" />
+    <Compile Include="Utils\SingletonSessionPasswordManager.cs" />
     <Compile Include="Utils\SingletonToolWindowHelper.cs" />
     <Compile Include="Utils\DesktopWindowHelper.cs" />
     <Compile Include="Utils\SortableBindingList.cs" />
