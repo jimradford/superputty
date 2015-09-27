@@ -316,7 +316,7 @@ namespace SuperPutty
                     // remove old
                     sessionsMap.Clear();
                     sessionsList.Clear();
-                    string pw = SingletonSesionPasswordManager.Instance.getMasterPassword();
+                    string pw = SingletonSessionPasswordManager.Instance.getMasterPassword();
                     foreach (SessionData session in sessions)
                     {
                         //if the masterPassword is not empty, decrypt password specified in extraArgs
@@ -361,7 +361,7 @@ namespace SuperPutty
         public static void SaveSessions()
         {
             Log.InfoFormat("Saving all sessions");
-            SessionData.SaveSessionsToFile(GetAllSessions(SuperPuTTY.OperationCrypto.encrypt, SingletonSesionPasswordManager.Instance.getMasterPassword()), SessionsFileName);
+            SessionData.SaveSessionsToFile(GetAllSessions(SuperPuTTY.OperationCrypto.encrypt, SingletonSessionPasswordManager.Instance.getMasterPassword()), SessionsFileName);
         }
 
         /// <summary>

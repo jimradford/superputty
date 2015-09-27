@@ -200,7 +200,7 @@ namespace SuperPutty
             this.checkBoxCheckForUpdates.Checked = SuperPuTTY.Settings.AutoUpdateCheck;
             this.textBoxHomeDirPrefix.Text = SuperPuTTY.Settings.PscpHomePrefix;
 
-            if (String.IsNullOrEmpty(SingletonSesionPasswordManager.Instance.getMasterPassword()))
+            if (String.IsNullOrEmpty(SingletonSessionPasswordManager.Instance.getMasterPassword()))
             {
                 this.textBoxGlobalPassword.Text = "";
             }
@@ -376,7 +376,7 @@ namespace SuperPutty
                 // and is only accesible for the current user, if the user change is needed rewrite the password.
                 if (!this.textBoxGlobalPassword.Text.Equals(textSimulePassword))
                 {                   
-                    SingletonSesionPasswordManager.Instance.setMasterPassword(this.textBoxGlobalPassword.Text);
+                    SingletonSessionPasswordManager.Instance.setMasterPassword(this.textBoxGlobalPassword.Text);
                     this.textBoxGlobalPassword.Text = textSimulePassword;
                     //save sessions for force encript with new password
                     SuperPuTTY.SaveSessions();                    

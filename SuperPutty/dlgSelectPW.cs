@@ -48,7 +48,7 @@ namespace SuperPutty
         private void btSelectPasswordOK_Click(object sender, EventArgs e)
         {
             if (rbUseMasterPassword.Checked){
-                Password = SingletonSesionPasswordManager.Instance.getMasterPassword();
+                Password = SingletonSessionPasswordManager.Instance.getMasterPassword();
             }
             else if(rbWPw.Checked || String.IsNullOrEmpty(tbOtherPassword.Text)) {
                 Password = "";            

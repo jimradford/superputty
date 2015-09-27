@@ -5,13 +5,13 @@ using System.Text;
 
 namespace SuperPutty.Utils
 {
-    class SingletonSesionPasswordManager
+    class SingletonSessionPasswordManager
     {
-        private static SingletonSesionPasswordManager instance;
+        private static SingletonSessionPasswordManager instance;
         private static String masterPassword = "";       
 
 
-        private SingletonSesionPasswordManager() {
+        private SingletonSessionPasswordManager() {
             refreshMasterPassword();
         }
 
@@ -47,13 +47,13 @@ namespace SuperPutty.Utils
             
         }
 
-        public static SingletonSesionPasswordManager Instance
+        public static SingletonSessionPasswordManager Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    instance = new SingletonSesionPasswordManager();
+                    instance = new SingletonSessionPasswordManager();
                 }
                 return instance;
             }
