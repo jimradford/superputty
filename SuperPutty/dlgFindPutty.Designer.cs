@@ -560,7 +560,7 @@
             this.textBoxGlobalPassword.Size = new System.Drawing.Size(217, 20);
             this.textBoxGlobalPassword.TabIndex = 1;
             this.toolTip.SetToolTip(this.textBoxGlobalPassword, "Password for encrypt/decrypt the session password. If it\'s empty the session pass" +
-        "word isn\'t will encrypted / decrypted when you save the sessions.");           
+        "word isn\'t will encrypted / decrypted when you save the sessions.");
             // 
             // label17
             // 
@@ -570,17 +570,16 @@
             this.label17.Size = new System.Drawing.Size(104, 13);
             this.label17.TabIndex = 2;
             this.label17.Text = "Root Directory Prefix";
-
             // 
             // lbFilezillaLocation
             // 
-            this.lbFilezillaLocation.AutoSize = true;            
-            this.lbFilezillaLocation.Location = new System.Drawing.Point(6, 189);
+            this.lbFilezillaLocation.AutoSize = true;
+            this.lbFilezillaLocation.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lbFilezillaLocation.Location = new System.Drawing.Point(4, 189);
             this.lbFilezillaLocation.Name = "lbFilezillaLocation";
             this.lbFilezillaLocation.Size = new System.Drawing.Size(116, 15);
             this.lbFilezillaLocation.TabIndex = 2;
             this.lbFilezillaLocation.Text = "FileZilla.exe Location";
-
             // 
             // checkConfirmTabClose
             // 
