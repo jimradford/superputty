@@ -52,6 +52,7 @@ namespace SuperPutty
         private SingletonToolWindowHelper<SessionTreeview> sessions;
         private SingletonToolWindowHelper<LayoutsList> layouts;
         private SingletonToolWindowHelper<Log4netLogViewer> logViewer;
+        private SingletonToolWindowHelper<SessionDetail> sessionDetail;
 
         private TextBoxFocusHelper tbFocusHelperHost;
         private TextBoxFocusHelper tbFocusHelperUserName;
@@ -97,9 +98,13 @@ namespace SuperPutty
             this.toolStripStatusLabelVersion.Text = SuperPuTTY.Version;
 
             // tool windows
-            this.sessions = new SingletonToolWindowHelper<SessionTreeview>("Sessions", this.DockPanel, x => new SessionTreeview(x.DockPanel));
+            this.sessions = new SingletonToolWindowHelper<SessionTreeview>("Sessions", this.DockPanel, null, x => new SessionTreeview(x.DockPanel));
             this.layouts = new SingletonToolWindowHelper<LayoutsList>("Layouts", this.DockPanel);
             this.logViewer = new SingletonToolWindowHelper<Log4netLogViewer>("Log Viewer", this.DockPanel);
+            this.sessionDetail = new SingletonToolWindowHelper<SessionDetail>("Session Detail", this.DockPanel, this.sessions, 
+                                                                              x => {
+                                                                                return new SessionDetail(x.InitializerResource as SingletonToolWindowHelper<SessionTreeview>);
+                                                                              });
 
             // for toolbar
             this.tbFocusHelperHost = new TextBoxFocusHelper(this.tbTxtBoxHost.TextBox);
@@ -458,9 +463,10 @@ namespace SuperPutty
 
         private void sessionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.layouts.IsVisibleAsToolWindow)
+            if (this.layouts.IsVisibleAsToolWindow || this.sessionDetail.IsVisibleAsToolWindow)
             {
-                this.sessions.ShowWindow(this.layouts.Instance.DockHandler.Pane, DockAlignment.Top, 0.5);
+                DockPane Pane = layouts.IsVisibleAsToolWindow ? layouts.Instance.DockHandler.Pane : sessionDetail.Instance.DockHandler.Pane;
+                this.sessions.ShowWindow(Pane, DockAlignment.Top, 0.5);
             }
             else
             {
@@ -476,13 +482,33 @@ namespace SuperPutty
 
         private void layoutsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.sessions.IsVisibleAsToolWindow)
+            if (this.sessionDetail.IsVisibleAsToolWindow)
             {
-                this.layouts.ShowWindow(this.sessions.Instance.DockHandler.Pane, DockAlignment.Bottom, 0.5);
+                this.layouts.ShowWindow(this.sessionDetail.Instance.Pane, this.sessionDetail.Instance);
+            }
+            else if (this.sessions.IsVisibleAsToolWindow)
+            {
+                this.layouts.ShowWindow(sessions.Instance.DockHandler.Pane, DockAlignment.Bottom, 0.5);
             }
             else
             {
                 this.layouts.ShowWindow(DockState.DockRight);
+            }
+        }
+
+        private void sessionDetailMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.layouts.IsVisibleAsToolWindow)
+            {
+                this.sessionDetail.ShowWindow(this.layouts.Instance.Pane, this.layouts.Instance);
+            }
+            else if (this.sessions.IsVisibleAsToolWindow)
+            {
+                this.sessionDetail.ShowWindow(sessions.Instance.DockHandler.Pane, DockAlignment.Bottom, 0.5);
+            }
+            else
+            {
+                this.sessionDetail.ShowWindow(DockState.DockRight);
             }
         }
 
@@ -526,6 +552,7 @@ namespace SuperPutty
             public bool SessionsWindow { get; set; }
             public bool LogWindow { get; set; }
             public bool LayoutWindow { get; set; }
+            public bool SessionDetail { get; set; }
 
             public FormBorderStyle FormBorderStyle { get; set; }
             public FormWindowState FormWindowState { get; set; }
@@ -546,6 +573,7 @@ namespace SuperPutty
                 this.SessionsWindow = this.MainForm.sessions.IsVisible;
                 this.LogWindow = this.MainForm.logViewer.IsVisible;
                 this.LayoutWindow = this.MainForm.layouts.IsVisible;
+                this.SessionDetail = this.MainForm.sessionDetail.IsVisible;
 
                 this.FormBorderStyle = this.MainForm.FormBorderStyle;
                 this.FormWindowState = this.MainForm.WindowState;
@@ -562,6 +590,7 @@ namespace SuperPutty
                     this.MainForm.sessions.Hide();
                     this.MainForm.layouts.Hide();
                     this.MainForm.logViewer.Hide();
+                    this.MainForm.sessionDetail.Hide();
 
                     // status bar
                     this.MainForm.statusStrip1.Hide();
@@ -601,6 +630,7 @@ namespace SuperPutty
                     if (this.SessionsWindow) { this.MainForm.sessions.Restore(); }
                     if (this.LayoutWindow) { this.MainForm.layouts.Restore(); }
                     if (this.LogWindow) { this.MainForm.logViewer.Restore(); }
+                    if (this.SessionDetail) { this.MainForm.sessionDetail.Restore(); }
 
                     // status bar
                     if (this.StatusBar) { this.MainForm.statusStrip1.Show(); }
@@ -776,6 +806,10 @@ namespace SuperPutty
             else if (typeof(Log4netLogViewer).FullName == persistString)
             {
                 return this.logViewer.Instance ?? this.logViewer.Initialize();
+            }
+            else if (typeof(SessionDetail).FullName == persistString)
+            {
+                return this.sessionDetail.Instance ?? this.sessionDetail.Initialize();
             }
             else
             {

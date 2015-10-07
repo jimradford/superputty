@@ -127,6 +127,7 @@
     </Compile>
     <Compile Include="Gui\QuickSelectorData.cs">
       <DependentUpon>QuickSelectorData.xsd</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Gui\QuickSelectorData.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -161,6 +162,12 @@
     </Compile>
     <Compile Include="Scp\PscpClient.cs" />
     <Compile Include="Scp\RemoteBrowserModel.cs" />
+    <Compile Include="SessionDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SessionDetail.Designer.cs">
+      <DependentUpon>SessionDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindowEx.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -341,6 +348,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Scp\PscpBrowserPanel.resx">
       <DependentUpon>PscpBrowserPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SessionDetail.resx">
+      <DependentUpon>SessionDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SessionTreeview.resx">
       <DependentUpon>SessionTreeview.cs</DependentUpon>

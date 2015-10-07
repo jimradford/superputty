@@ -92,6 +92,7 @@ namespace SuperPutty
                         break;
                 }
 
+                comboBoxPuttyProfile.DropDownStyle = ComboBoxStyle.DropDownList;
                 foreach(String settings in this.comboBoxPuttyProfile.Items){
                     if (settings == session.PuttySession)
                     {
@@ -354,12 +355,27 @@ namespace SuperPutty
 
         private void comboBoxPuttyProfile_Validating(object sender, CancelEventArgs e)
         {
+            bool SessionExists = false;
+            foreach (String settings in this.comboBoxPuttyProfile.Items)
+            {
+                if (settings == Session.PuttySession)
+                {
+                    SessionExists = true;
+                    break;
+                }
+            }
+
+            if (!SessionExists)
+            {
+                Session.PuttySession = "";
+            }
+
             this.textBoxHostname_Validating(sender, e);
         }
 
         private void comboBoxPuttyProfile_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.ValidateChildren(ValidationConstraints.ImmediateChildren);    
+            this.ValidateChildren(ValidationConstraints.ImmediateChildren);
         }
 
         void SetError(Control control, string error)
