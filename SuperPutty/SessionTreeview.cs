@@ -162,7 +162,7 @@ namespace SuperPutty
                 if (session.SessionId != null && session.SessionId != session.SessionName)
                 {
                     // take session id and create folder nodes
-                    nodeParent = FindParentNode(session.SessionId, true);
+                    nodeParent = FindOrCreateParentNode(session.SessionId);
                 }
                 AddSessionNode(nodeParent, session, true);
             }
@@ -175,14 +175,14 @@ namespace SuperPutty
 
             if (PropertyName == "SessionName" || PropertyName == "ImageKey")
             {
-                TreeNode Node = FindNode(Session.SessionId);
+                TreeNode Node = FindSessionNode(Session.SessionId);
                 if (Node == null)
                 {
                     // It is possible that the session id was changed before the
                     // session name. In this case, we check to see if we
                     // can find a node with the old session id that is also associated
                     // to the session data.
-                    Node = FindNode(Session.OldSessionId);
+                    Node = FindSessionNode(Session.OldSessionId);
                     if (Node == null || Node.Tag != Session)
                         return;
                 }
@@ -202,14 +202,14 @@ namespace SuperPutty
             }
             else if (PropertyName == "SessionId")
             {
-                TreeNode Node = FindNode(Session.OldSessionId);
+                TreeNode Node = FindSessionNode(Session.OldSessionId);
                 if (Node == null)
                 {
                     // It is possible that the session name was changed before the
                     // session id. In this case, we check to see if we
                     // can find a node with the current session id that is also associated
                     // to the session data.
-                    Node = FindNode(Session.SessionId);
+                    Node = FindSessionNode(Session.SessionId);
                     if (Node == null || Node.Tag != Session)
                         return;
                 }
@@ -234,7 +234,7 @@ namespace SuperPutty
 
             if (AttributeName == "SessionName")
             {
-                TreeNode Node = FindNode(Session.SessionId);
+                TreeNode Node = FindSessionNode(Session.SessionId);
                 if (Node == null)
                     return;
 
@@ -721,7 +721,7 @@ namespace SuperPutty
             //session.SaveToRegistry();
         }
 
-        TreeNode FindParentNode(string sessionId, bool CreateIfNotFound = false)
+        TreeNode FindOrCreateParentNode(string sessionId)
         {
             Log.DebugFormat("Finding Parent Node for sessionId ({0})", sessionId);
             TreeNode nodeParent = this.nodeRoot;
@@ -748,7 +748,7 @@ namespace SuperPutty
             return nodeParent;
         }
 
-        TreeNode FindNode(String SessionId)
+        TreeNode FindSessionNode(String SessionId)
         {
             Log.DebugFormat("Finding Node for sessionId ({0})", SessionId);
             TreeNode CurrentNode = this.nodeRoot;
@@ -765,7 +765,7 @@ namespace SuperPutty
                     {
                         return null;
                     }
-                    else if (i == Parts.Length - 1)
+                    else if (i == Parts.Length - 1 && !IsFolderNode(CurrentNode))
                     {
                         NodeToReturn = CurrentNode;
                     }

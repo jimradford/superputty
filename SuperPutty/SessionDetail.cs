@@ -27,6 +27,8 @@ namespace SuperPutty
             SessionsToolWindowHelper = Sessions;
             if (SessionsToolWindowHelper != null)
             {
+                // We need to know when an instance of the SessionTreeView is created
+                // so that we can register for the SelectionChanged event.
                 SessionsToolWindowHelper.InstanceChanged += SessionTreeviewInstanceChanged;
                 SessionTreeviewInstanceChanged(SessionsToolWindowHelper.Instance);
             }
