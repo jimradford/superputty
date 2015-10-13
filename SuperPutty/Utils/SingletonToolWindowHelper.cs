@@ -13,14 +13,18 @@ namespace SuperPutty.Utils
     public class SingletonToolWindowHelper<T> where T : ToolWindow
     {
         public delegate T WindowInitializer(SingletonToolWindowHelper<T> helper);
+        public delegate void InstanceChangedHandler(T Instance);
 
-        public SingletonToolWindowHelper(string name, DockPanel dockPanel) : this(name, dockPanel, null) {}
+        public event InstanceChangedHandler InstanceChanged;
 
-        public SingletonToolWindowHelper(string name, DockPanel dockPanel, WindowInitializer initializer)
+        public SingletonToolWindowHelper(string name, DockPanel dockPanel) : this(name, dockPanel, null, null) {}
+
+        public SingletonToolWindowHelper(string name, DockPanel dockPanel, Object InitializerResource, WindowInitializer initializer)
         {
             this.Name = name;
             this.DockPanel = dockPanel;
             this.Initializer = initializer;
+            this.InitializerResource = InitializerResource;
         }
 
         public void ShowWindow(DockState dockState)
@@ -53,6 +57,17 @@ namespace SuperPutty.Utils
             }
         }
 
+        public void ShowWindow(DockPane pane, IDockContent PreviousContent)
+        {
+            if (this.Instance == null)
+            {
+                Initialize();
+            }
+            
+            Instance.Show(pane, PreviousContent);
+            SuperPuTTY.ReportStatus("Showing " + this.Name);
+        }
+
         public bool IsVisibleAsToolWindow
         {
             get
@@ -73,7 +88,12 @@ namespace SuperPutty.Utils
                 // some kind of factor method throw in
                 this.Instance = this.Initializer(this);
             }
+
             this.Instance.FormClosed += new FormClosedEventHandler(Instance_FormClosed);
+            if (InstanceChanged != null)
+            {
+                InstanceChanged(this.Instance);
+            }
             return Instance;
         }
 
@@ -108,6 +128,7 @@ namespace SuperPutty.Utils
         public string Name { get; private set; }
         public DockPanel DockPanel { get; private set; }
         public WindowInitializer Initializer { get; private set; }
+        public Object InitializerResource { get; private set; }
         public T Instance { get; private set; }
     }
 }

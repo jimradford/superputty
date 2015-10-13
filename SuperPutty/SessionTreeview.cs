@@ -37,8 +37,11 @@ using System.Text.RegularExpressions;
 
 namespace SuperPutty
 {
+    public delegate void SelectionChangedHandler(SessionData Session);
+
     public partial class SessionTreeview : ToolWindow, IComparer
     {
+        public event SelectionChangedHandler SelectionChanged;
         private static readonly ILog Log = LogManager.GetLogger(typeof(SessionTreeview));
 
         private static int MaxSessionsToOpen = Convert.ToInt32(ConfigurationManager.AppSettings["SuperPuTTY.MaxSessionsToOpen"] ?? "10");
@@ -53,6 +56,18 @@ namespace SuperPutty
         ImageList imgIcons = new ImageList();
         Func<SessionData, bool> filter;
 
+        public SessionData SelectedSession
+        {
+            get
+            {
+                if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is SessionData)
+                {
+                    return treeView1.SelectedNode.Tag as SessionData;
+                }
+                return null;
+            }
+        }
+
         /// <summary>
         /// Instantiate the treeview containing the sessions
         /// </summary>
@@ -64,6 +79,7 @@ namespace SuperPutty
             m_DockPanel = dockPanel;
             InitializeComponent();
             this.treeView1.TreeViewNodeSorter = this;
+            this.treeView1.HideSelection = false;
             if (SuperPuTTY.Images != null)
             {
                 this.treeView1.ImageList = SuperPuTTY.Images;
@@ -152,6 +168,86 @@ namespace SuperPutty
             }
         }
 
+        public void SessionPropertyChanged(SessionData Session, String PropertyName)
+        {
+            if (Session == null)
+                return;
+
+            if (PropertyName == "SessionName" || PropertyName == "ImageKey")
+            {
+                TreeNode Node = FindSessionNode(Session.SessionId);
+                if (Node == null)
+                {
+                    // It is possible that the session id was changed before the
+                    // session name. In this case, we check to see if we
+                    // can find a node with the old session id that is also associated
+                    // to the session data.
+                    Node = FindSessionNode(Session.OldSessionId);
+                    if (Node == null || Node.Tag != Session)
+                        return;
+                }
+
+                Node.Text = Session.SessionName;
+                Node.Name = Session.SessionName;
+                Node.ImageKey = Session.ImageKey;
+                Node.SelectedImageKey = Session.ImageKey;
+
+                bool IsSelectedSession = treeView1.SelectedNode == Node;
+                ResortNodes();
+                if (IsSelectedSession)
+                {
+                    // Re-selecting the node since it will be unselected when sorting.
+                    treeView1.SelectedNode = Node;
+                }
+            }
+            else if (PropertyName == "SessionId")
+            {
+                TreeNode Node = FindSessionNode(Session.OldSessionId);
+                if (Node == null)
+                {
+                    // It is possible that the session name was changed before the
+                    // session id. In this case, we check to see if we
+                    // can find a node with the current session id that is also associated
+                    // to the session data.
+                    Node = FindSessionNode(Session.SessionId);
+                    if (Node == null || Node.Tag != Session)
+                        return;
+                }
+
+                try
+                {
+                    this.isRenamingNode = true;
+                    SuperPuTTY.RemoveSession(Session.OldSessionId);
+                    SuperPuTTY.AddSession(Session);
+                }
+                finally
+                {
+                    this.isRenamingNode = false;
+                }
+            }
+        }
+
+        public void SessionPropertyChanging(SessionData Session, String AttributeName, Object NewValue, ref bool CancelChange)
+        {
+            if (Session == null)
+                return;
+
+            if (AttributeName == "SessionName")
+            {
+                TreeNode Node = FindSessionNode(Session.SessionId);
+                if (Node == null)
+                    return;
+
+                String Error = "";
+                bool IsValid = ValidateSessionNameChange(Node.Parent, Node, NewValue as String, out Error);
+                if (!IsValid)
+                {
+                    CancelChange = true;
+                    MessageBox.Show(Error);
+                }
+            }
+        }
+
         void Sessions_ListChanged(object sender, ListChangedEventArgs e)
         {
             if (isRenamingNode)
@@ -178,6 +274,14 @@ namespace SuperPutty
                 }
             }
             // @TODO: implement more later, note delete will be tricky...need a copy of the list
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (this.SelectionChanged != null)
+            {
+                this.SelectionChanged(this.SelectedSession);
+            }
         }
 
         /// <summary>
@@ -232,7 +336,8 @@ namespace SuperPutty
                 else
                 {
                     // edit, session node selected
-                    session = (SessionData)treeView1.SelectedNode.Tag;
+                    // We make a clone of the session since we do not want to directly edit the real object.
+                    session = (SessionData)((SessionData)treeView1.SelectedNode.Tag).Clone();
                     node = treeView1.SelectedNode;
                     nodeRef = node.Parent;
                     isEdit = true;
@@ -244,21 +349,8 @@ namespace SuperPutty
             form.Text = title;
             form.SessionNameValidator += delegate(string txt, out string error)
             {
-                error = String.Empty;
-                bool isDupeNode = isEdit ? txt != node.Text && nodeRef.Nodes.ContainsKey(txt) : nodeRef.Nodes.ContainsKey(txt);
-                if (isDupeNode)
-                {
-                    error = "Session with same name exists";
-                }
-                else if (txt.Contains(SessionIdDelim))
-                {
-                    error = "Invalid character ( " + SessionIdDelim + " ) in name";
-                }
-                else if (string.IsNullOrEmpty(txt) || txt.Trim() == String.Empty)
-                {
-                    error = "Empty name";
-                }
-                return string.IsNullOrEmpty(error);
+                bool IsValid = ValidateSessionNameChange(nodeRef, node, txt, out error);
+                return IsValid;
             };
             
             if (form.ShowDialog(this) == DialogResult.OK)
@@ -284,26 +376,10 @@ namespace SuperPutty
                 }
                 else
                 {
-                    // handle renames
-                    node.Text = session.SessionName;
-                    node.Name = session.SessionName;
-                    node.ImageKey = session.ImageKey;
-                    node.SelectedImageKey = session.ImageKey;
-                    if (session.SessionId != session.OldSessionId)
-                    {
-                        try
-                        {
-                            this.isRenamingNode = true;
-                            SuperPuTTY.RemoveSession(session.OldSessionId);
-                            SuperPuTTY.AddSession(session);
-                        }
-                        finally
-                        {
-                            this.isRenamingNode = false;
-                        }
 
-                    }
-                    ResortNodes();
+                    SessionData RealSession = (SessionData)treeView1.SelectedNode.Tag;
+                    RealSession.CopyFrom(session);
+                    RealSession.SessionName = session.SessionName;
                     this.treeView1.SelectedNode = node;
                 }
 
@@ -311,6 +387,31 @@ namespace SuperPutty
                 SuperPuTTY.SaveSessions();
             }
             
+        }
+
+        private bool ValidateSessionNameChange(TreeNode ParentNode, TreeNode Node, String NewName, out String Error)
+        {
+            bool IsEdit = (Node != null);
+            Error = String.Empty;
+            bool IsDupeNode;
+            if (IsEdit)
+                IsDupeNode = ParentNode.Nodes.ContainsKey(NewName) && ParentNode.Nodes[NewName] != Node;
+            else
+                IsDupeNode = ParentNode.Nodes.ContainsKey(NewName);
+
+            if (IsDupeNode)
+            {
+                Error = "Session with same name exists";
+            }
+            else if (NewName.Contains(SessionIdDelim))
+            {
+                Error = "Invalid character ( " + SessionIdDelim + " ) in name";
+            }
+            else if (string.IsNullOrEmpty(NewName) || NewName.Trim() == String.Empty)
+            {
+                Error = "Empty name";
+            }
+            return string.IsNullOrEmpty(Error);
         }
 
         /// <summary>
@@ -557,6 +658,9 @@ namespace SuperPutty
                 }
             }
 
+            session.OnPropertyChanged += SessionPropertyChanged;
+            session.OnPropertyChanging += SessionPropertyChanging;
+
             return addedNode;
         }
 
@@ -619,7 +723,7 @@ namespace SuperPutty
 
         TreeNode FindOrCreateParentNode(string sessionId)
         {
-            Log.DebugFormat("Finding Node for sessionId ({0})", sessionId);
+            Log.DebugFormat("Finding Parent Node for sessionId ({0})", sessionId);
             TreeNode nodeParent = this.nodeRoot;
 
             string[] parts = sessionId.Split(SessionIdDelim.ToCharArray());
@@ -642,6 +746,34 @@ namespace SuperPutty
 
             Log.DebugFormat("Returning node ({0})", nodeParent.Text);
             return nodeParent;
+        }
+
+        TreeNode FindSessionNode(String SessionId)
+        {
+            Log.DebugFormat("Finding Node for sessionId ({0})", SessionId);
+            TreeNode CurrentNode = this.nodeRoot;
+            TreeNode NodeToReturn = null;
+
+            string[] Parts = SessionId.Split(SessionIdDelim.ToCharArray());
+            if (Parts.Length > 0)
+            {
+                for (int i = 0; i < Parts.Length; i++)
+                {
+                    string Part = Parts[i];
+                    CurrentNode = CurrentNode.Nodes[Part];
+                    if (CurrentNode == null)
+                    {
+                        return null;
+                    }
+                    else if (i == Parts.Length - 1 && !IsFolderNode(CurrentNode))
+                    {
+                        NodeToReturn = CurrentNode;
+                    }
+                }
+            }
+
+            Log.DebugFormat("Returning node ({0})", NodeToReturn != null ? NodeToReturn.Text : "null");
+            return NodeToReturn;
         }
 
         public int Compare(object x, object y)

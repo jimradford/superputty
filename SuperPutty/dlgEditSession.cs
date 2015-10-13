@@ -92,6 +92,7 @@ namespace SuperPutty
                         break;
                 }
 
+                comboBoxPuttyProfile.DropDownStyle = ComboBoxStyle.DropDownList;
                 foreach(String settings in this.comboBoxPuttyProfile.Items){
                     if (settings == session.PuttySession)
                     {

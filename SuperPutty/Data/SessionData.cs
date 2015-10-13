@@ -29,7 +29,15 @@ using log4net;
 using System.Xml.Serialization;
 using System.IO;
 using System.Collections;
+using System.ComponentModel;
 using System.Reflection;
+using System.Drawing.Design;
+using System.Drawing;
+using System.Windows.Forms.Design;
+using SuperPutty.Gui;
+using System.Windows.Forms;
+using System.Drawing.Drawing2D;
+using System.ComponentModel.Design;
 
 namespace SuperPutty.Data
 {
@@ -49,39 +57,63 @@ namespace SuperPutty.Data
     public class SessionData : IComparable, ICloneable
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SessionData));
+        public delegate void OnPropertyChangedHandler(SessionData Session, String AttributeName);
+        public delegate void OnPropertyChangingHandler(SessionData Session, String AttributeName, Object NewValue, ref bool CancelChange);
+
+        [XmlIgnore]
+        public OnPropertyChangedHandler OnPropertyChanged;
+        [XmlIgnore]
+        public OnPropertyChangingHandler OnPropertyChanging;
 
         /// <summary>Full session id (includes path for session tree)e.g. FolderName/SessionName</summary>
         private string _SessionId;
         [XmlAttribute]
+        [Browsable(false)]
         public string SessionId
         {
             get { return this._SessionId; }
             set
             {
-                this.OldSessionId = SessionId;
-                this._SessionId = value;
+                if (_SessionId != value)
+                {
+                    this.OldSessionId = SessionId;
+
+                    UpdateField(ref _SessionId, value, "SessionId");
+                }
             }
         }
         internal string OldSessionId { get; set; }
 
         private string _OldName;
         [XmlIgnore]
+        [Browsable(false)]
         public string OldName
         {
             get { return _OldName; }
-            set { _OldName = value; }
+            set 
+            {
+                UpdateField(ref _OldName, value, "OldName");
+            }
         }
 
         private string _SessionName;
         [XmlAttribute]
+        [DisplayName("Session Name")]
+        [Description("This is the name of the session.")]
         public string SessionName
         {
             get { return _SessionName; }
-            set { OldName = _SessionName; 
-                _SessionName = value;
-                if (SessionId == null)
+            set 
+            { 
+                if (_SessionName != value)
                 {
-                    SessionId = value;
+                    OldName = _SessionName;
+                    UpdateField(ref _SessionName, value, "SessionName");
+
+                    if (SessionId == null)
+                    {
+                        SessionId = value;
+                    }
                 }
             }
         }
@@ -89,82 +121,132 @@ namespace SuperPutty.Data
         private string _ImageKey;
         /// <summary>A string containing the key of the image associated with this session</summary>
         [XmlAttribute]
+        [DisplayName("Image")]
+        [Description("This is the image associated to the session.")]
+        [Editor(typeof(ImageKeyEditor), typeof(UITypeEditor))]
+        [TypeConverter(typeof(ImageKeyConverter))]
         public string ImageKey
         {
             get { return _ImageKey; }
-            set { _ImageKey = value; }
+            set 
+            {
+                UpdateField(ref _ImageKey, value, "ImageKey");
+            }
         }
 
         private string _Host;
         [XmlAttribute]
+        [DisplayName("Host Name/Ip")]
+        [Description("This is the host name or the IP address of the destination.")]
         public string Host
         {
             get { return _Host; }
-            set { _Host = value; }
+            set 
+            {
+                UpdateField(ref _Host, value, "Host");
+            }
         }
 
         private int _Port;
         [XmlAttribute]
+        [DisplayName("Port")]
+        [Description("This is the port that will be used to connect to the destination.")]
         public int Port
         {
             get { return _Port; }
-            set { _Port = value; }
+            set 
+            {
+                UpdateField(ref _Port, value, "Port");
+            }
         }
 
         private ConnectionProtocol _Proto;
         [XmlAttribute]
+        [DisplayName("Connection Type")]
+        [Description("This is the login protocol.")]
         public ConnectionProtocol Proto
         {
             get { return _Proto; }
-            set { _Proto = value; }
+            set 
+            {
+                UpdateField(ref _Proto, value, "Proto");
+            }
         }
 
         private string _PuttySession;
         [XmlAttribute]
+        [TypeConverter(typeof(PuttySessionConverter))]
+        [DisplayName("Putty Profile")]
+        [Description("This is the PuTTY session profile associated to this session.")]
         public string PuttySession
         {
             get { return _PuttySession; }
-            set { _PuttySession = value; }
+            set 
+            {
+                UpdateField(ref _PuttySession, value, "PuttySession");
+            }
         }
 
         private string _Username;
         [XmlAttribute]
+        [DisplayName("Username")]
+        [Description("This is the username that will be used to login.")]
         public string Username
         {
             get { return _Username; }
-            set { _Username = value; }
+            set 
+            {
+                UpdateField(ref _Username, value, "Username");
+            }
         }
 
         private string _Password;
         [XmlIgnore]
+        [Browsable(false)]
         public string Password
         {
             get { return _Password; }
-            set { _Password = value; }
+            set 
+            {
+                UpdateField(ref _Password, value, "Password");
+            }
         }
 
         private string _ExtraArgs;
         [XmlAttribute]
+        [DisplayName("Extra Arguments")]
+        [Description("Extra PuTTY arguments.")]
         public string ExtraArgs
         {
             get { return _ExtraArgs; }
-            set { _ExtraArgs = value; }
+            set 
+            {
+                UpdateField(ref _ExtraArgs, value, "ExtraArgs");
+            }
         }
 
         private DockState m_LastDockstate = DockState.Document;
         [XmlIgnore]
+        [Browsable(false)]
         public DockState LastDockstate
         {
             get { return m_LastDockstate; }
-            set { m_LastDockstate = value; }
+            set 
+            {
+                UpdateField(ref m_LastDockstate, value, "LastDockstate");
+            }
         }
 
         private bool m_AutoStartSession = false;
         [XmlIgnore]
+        [Browsable(false)]
         public bool AutoStartSession
         {
             get { return m_AutoStartSession; }
-            set { m_AutoStartSession = value; }
+            set 
+            {
+                UpdateField(ref m_AutoStartSession, value, "AutoStartSession");
+            }
         }
 
         /// <summary>Construct a new session data object</summary>
@@ -186,6 +268,23 @@ namespace SuperPutty.Data
         public SessionData()
         {
 
+        }
+
+        private void UpdateField<T>(ref T Field, T NewValue, string PropertyName)
+        {
+            if (!EqualityComparer<T>.Default.Equals(Field, NewValue))
+            {
+                Object NewValueObj = NewValue;
+                bool CancelChange = false;
+                if (OnPropertyChanging != null)
+                    OnPropertyChanging(this, PropertyName, NewValueObj, ref CancelChange);
+                if (!CancelChange)
+                {
+                    Field = NewValue;
+                    if (OnPropertyChanged != null)
+                        OnPropertyChanged(this, PropertyName);
+                }
+            }
         }
 
         /// <summary>Read any existing saved sessions from the registry, decode and populate a list containing the data</summary>
@@ -382,14 +481,23 @@ namespace SuperPutty.Data
         public object Clone()
         {
             SessionData session = new SessionData();
-            foreach (PropertyInfo pi in this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            session.CopyFrom(this);
+            
+            return session;
+        }
+
+        public void CopyFrom(SessionData SessionToCopy)
+        {
+            if (SessionToCopy == null)
+                return;
+
+            foreach (PropertyInfo pi in SessionToCopy.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
                 if (pi.CanWrite)
                 {
-                    pi.SetValue(session, pi.GetValue(this, null), null);
+                    pi.SetValue(this, pi.GetValue(SessionToCopy, null), null);
                 }
             }
-            return session;
         }
 
         /// <summary>Return a string containing a uri to the protocol://host:port of this sesssions defined host</summary>
@@ -403,6 +511,62 @@ namespace SuperPutty.Data
             else
             {
                 return string.Format("{0}://{1}:{2}", this.Proto.ToString().ToLower(), this.Host, this.Port);
+            }
+        }
+
+        class PuttySessionConverter : StringConverter
+        {
+            public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+            {
+                return true;
+            }
+            public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+            {
+                return new StandardValuesCollection(PuttyDataHelper.GetSessionNames());
+            }
+
+            public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+            {
+                return true;
+            }
+        }
+
+        class ImageKeyConverter : StringConverter
+        {
+            public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+            {
+                return true;
+            }
+            public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+            {
+                return new StandardValuesCollection(SuperPuTTY.Images.Images.Keys);
+            }
+
+            public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+            {
+                return true;
+            }
+            
+        }
+
+        class ImageKeyEditor : UITypeEditor
+        {
+            public override bool GetPaintValueSupported(ITypeDescriptorContext context)
+            {
+                return true;
+            }
+
+            public override void PaintValue(PaintValueEventArgs e)
+            {
+                string ImageKey = e.Value.ToString();
+                Image img = SuperPuTTY.Images.Images[ImageKey];
+
+                if (img == null)
+                    return;
+
+                Rectangle destRect = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Height, e.Bounds.Height);
+                e.Graphics.DrawImage(img, destRect);
+                e.Graphics.ExcludeClip(e.Bounds);
             }
         }
     }
