@@ -1041,7 +1041,7 @@ namespace SuperPutty
             else if (e.KeyCode == Keys.Enter)
             {
                 // send commands
-                TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), !this.tbBtnMaskText.Checked);
+                TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), !this.tbBtnMaskText.Checked, !e.Shift);
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
@@ -1081,10 +1081,20 @@ namespace SuperPutty
 
         int TrySendCommandsFromToolbar(bool saveHistory)
         {
-            return TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), saveHistory);
+            return TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), saveHistory, true);
+        }
+
+        int TrySendCommandsFromToolbar(bool saveHistory, bool enter)
+        {
+            return TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), saveHistory, enter);
         }
 
         int TrySendCommandsFromToolbar(CommandData command, bool saveHistory)
+        {
+            return TrySendCommandsFromToolbar(command, saveHistory, true);
+        }
+
+        int TrySendCommandsFromToolbar(CommandData command, bool saveHistory, bool enter)
         {
             int sent = 0;
             if (this.DockPanel.DocumentsCount > 0)
@@ -1097,7 +1107,7 @@ namespace SuperPutty
                         int handle = puttyPanel.AppPanel.AppWindowHandle.ToInt32();
                         Log.InfoFormat("SendCommand: session={0}, command=[{1}], handle={2}", puttyPanel.Session.SessionId, command, handle);
                         
-                        command.SendToTerminal(handle);
+                        command.SendToTerminal(handle, enter);
                         
                         sent++;
                     }

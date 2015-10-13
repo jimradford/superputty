@@ -23,6 +23,11 @@ namespace SuperPutty.Utils
 
         public void SendToTerminal(int handle)
         {
+            SendToTerminal(handle, true);
+        }
+
+        public void SendToTerminal(int handle, bool enter)
+        {
             if (!string.IsNullOrEmpty(this.Command))
             {
                 // send normal string command
@@ -30,7 +35,10 @@ namespace SuperPutty.Utils
                 {
                     NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)c, 0);
                 }
-                NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)Keys.Enter, 0);
+                if (enter)
+                {
+                    NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)Keys.Enter, 0);
+                }
             }
             else if (this.KeyData != null)
             {
@@ -44,7 +52,7 @@ namespace SuperPutty.Utils
                 if (this.KeyData.Shift) { NativeMethods.PostMessage(handle, NativeMethods.WM_KEYUP, NativeMethods.VK_SHIFT, 0); }
                 if (this.KeyData.Control) { NativeMethods.PostMessage(handle, NativeMethods.WM_KEYUP, NativeMethods.VK_CONTROL, 0); }
             }
-            else
+            else if (enter)
             {
                 NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)Keys.Enter, 0);
             }
