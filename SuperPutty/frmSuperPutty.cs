@@ -1563,46 +1563,49 @@ namespace SuperPutty
         private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Log.Info("Checking for application update");
-            httpRequest r = new httpRequest();
-            r.MakeRequest("https://api.github.com/repos/jimradford/superputty/releases/latest", delegate(bool success, string content)
-            {
-                if (success)
+            try {
+                httpRequest httpUpdateRequest = new httpRequest();
+                httpUpdateRequest.MakeRequest("https://api.github.com/repos/jimradford/superputty/releases/latest", delegate (bool success, string content)
                 {
-                    DataContractJsonSerializer js = new DataContractJsonSerializer(typeof(GitRelease));
-                    MemoryStream ms = new MemoryStream(System.Text.ASCIIEncoding.ASCII.GetBytes(content));
-                    GitRelease  latest = (GitRelease)js.ReadObject(ms);                                        
-                    ms.Close();
-                    
-                    if (!latest.version.Trim().Contains(SuperPuTTY.Version))
+                    if (success)
                     {
-                        Log.Info("New Application version found! " + latest.version);
+                        DataContractJsonSerializer js = new DataContractJsonSerializer(typeof(GitRelease));
+                        MemoryStream ms = new MemoryStream(System.Text.ASCIIEncoding.ASCII.GetBytes(content));
+                        GitRelease latest = (GitRelease)js.ReadObject(ms);
+                        ms.Close();
 
-                        if (MessageBox.Show("An updated version of SuperPuTTY (" + latest.version + ") is Available Would you like to visit the download page to upgrade?",
-                            "SuperPutty Update Found",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Question,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.DefaultDesktopOnly) == System.Windows.Forms.DialogResult.Yes)
+                        if (!latest.version.Trim().Contains(SuperPuTTY.Version))
                         {
-                            Process.Start(latest.release_url);
+                            Log.Info("New Application version found! " + latest.version);
+
+                            if (MessageBox.Show("An updated version of SuperPuTTY (" + latest.version + ") is Available Would you like to visit the download page to upgrade?",
+                                "SuperPutty Update Found",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question,
+                                MessageBoxDefaultButton.Button1,
+                                MessageBoxOptions.DefaultDesktopOnly) == System.Windows.Forms.DialogResult.Yes)
+                            {
+                                Process.Start(latest.release_url);
+                            }
+                        }
+                        else
+                        {
+                            if (sender.ToString().Equals(checkForUpdatesToolStripMenuItem.Text))
+                            {
+                                MessageBox.Show("You are running the latest version of SuperPutty", "SuperPuTTY Update Check", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
                         }
                     }
                     else
                     {
-                        if (sender.ToString().Equals(checkForUpdatesToolStripMenuItem.Text))
-                        {
-                            MessageBox.Show("You are running the latest version of SuperPutty", "SuperPuTTY Update Check", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
+                        Log.Warn("An Error occurred trying to check for program updates");                        
                     }
-                }
-                else
-                {
-                    // error occurred while making api request
-                    var foo = r;
-                    Console.WriteLine(r);
-                }
-            });
-
+                });
+            }
+            catch (System.Net.WebException ex)
+            {
+                Log.Warn("An Exception occurred while trying to check for program updates: " + ex.ToString());
+            }
         }
         #endregion
 
