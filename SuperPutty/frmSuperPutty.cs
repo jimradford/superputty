@@ -1560,6 +1560,9 @@ namespace SuperPutty
             menuStrip1.Visible = SuperPuTTY.Settings.ShowMenuBar;
         }
 
+        /// <summary>Check for a newer version of the SuperPuTTY Application</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Log.Info("Checking for application update");
@@ -1570,7 +1573,7 @@ namespace SuperPutty
                     if (success)
                     {
                         DataContractJsonSerializer js = new DataContractJsonSerializer(typeof(GitRelease));
-                        MemoryStream ms = new MemoryStream(System.Text.ASCIIEncoding.ASCII.GetBytes(content));
+                        MemoryStream ms = new MemoryStream(ASCIIEncoding.ASCII.GetBytes(content));
                         GitRelease latest = (GitRelease)js.ReadObject(ms);
                         ms.Close();
 
@@ -1583,7 +1586,7 @@ namespace SuperPutty
                                 MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Question,
                                 MessageBoxDefaultButton.Button1,
-                                MessageBoxOptions.DefaultDesktopOnly) == System.Windows.Forms.DialogResult.Yes)
+                                MessageBoxOptions.DefaultDesktopOnly) == DialogResult.Yes)
                             {
                                 Process.Start(latest.release_url);
                             }
@@ -1598,7 +1601,8 @@ namespace SuperPutty
                     }
                     else
                     {
-                        Log.Warn("An Error occurred trying to check for program updates");                        
+                        MessageBox.Show("There was an error while checking for updates. Please try again later.", "Error during update check", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        Log.Warn("An Error occurred trying to check for program updates: " + content);                        
                     }
                 });
             }

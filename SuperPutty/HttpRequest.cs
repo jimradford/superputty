@@ -1,6 +1,26 @@
-﻿using System;
+﻿/*
+ * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+using System;
 using System.Net;
-using System.Threading;
+using System.Reflection;
 using System.Text;
 using System.IO;
 
@@ -41,34 +61,39 @@ namespace SuperPutty
             RequestState state = new RequestState();
             state.Request = request;
             state.Callback = callback;
-            ((HttpWebRequest)request).UserAgent = "SuperPutty/1.4.0.5";
+            ((HttpWebRequest)request).UserAgent = "SuperPuTTY/" + Assembly.GetExecutingAssembly().GetName().Version;
 
-            IAsyncResult result = (IAsyncResult)request.BeginGetResponse(
-         new System.AsyncCallback(RespCallback), state);
+            IAsyncResult result = (IAsyncResult)request.BeginGetResponse(new AsyncCallback(RespCallback), state);     
         }
 
         private static void RespCallback(IAsyncResult ar)
         {
             // Get the RequestState object from the async result.
             RequestState rs = (RequestState)ar.AsyncState;
+            try {                
+                // Get the WebRequest from RequestState.
+                WebRequest req = rs.Request;
 
-            // Get the WebRequest from RequestState.
-            WebRequest req = rs.Request;
+                // Call EndGetResponse, which produces the WebResponse object
+                //  that came from the request issued above.
+                WebResponse resp = req.EndGetResponse(ar);
 
-            // Call EndGetResponse, which produces the WebResponse object
-            //  that came from the request issued above.
-            WebResponse resp = req.EndGetResponse(ar);
+                //  Start reading data from the response stream.
+                Stream ResponseStream = resp.GetResponseStream();
 
-            //  Start reading data from the response stream.
-            Stream ResponseStream = resp.GetResponseStream();
+                // Store the response stream in RequestState to read 
+                // the stream asynchronously.
+                rs.ResponseStream = ResponseStream;
 
-            // Store the response stream in RequestState to read 
-            // the stream asynchronously.
-            rs.ResponseStream = ResponseStream;
-
-            //  Pass rs.BufferRead to BeginRead. Read data into rs.BufferRead
-            IAsyncResult iarRead = ResponseStream.BeginRead(rs.BufferRead, 0,
-               BufferSize, new System.AsyncCallback(ReadCallBack), rs);
+                //  Pass rs.BufferRead to BeginRead. Read data into rs.BufferRead
+                IAsyncResult iarRead = ResponseStream.BeginRead(rs.BufferRead, 0,
+                   BufferSize, new System.AsyncCallback(ReadCallBack), rs);
+            }
+            catch (WebException ex)
+            {
+                // Fire the callback so we can inform the user what went wrong
+                rs.Callback(false, ex.Message);
+            }
         }
 
         private static void ReadCallBack(IAsyncResult asyncResult)

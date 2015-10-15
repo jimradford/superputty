@@ -1,4 +1,24 @@
-﻿using System;
+﻿/*
+ * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+using System;
 using log4net;
 using System.ComponentModel;
 using SuperPutty.Data;
@@ -6,15 +26,19 @@ using SuperPutty.Data;
 namespace SuperPutty.Scp
 {
     #region LocalBrowserPresenter
-    /// <summary>
-    /// Start in last directory...preference
-    /// </summary>
+    /// <summary>Class that contains data and methods for displaying local or remote directories</summary>
     public class BrowserPresenter : IBrowserPresenter
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(BrowserPresenter));
 
+        /// <summary>Raised when login and password information is required to authenticate against a ssh server serving files via scp</summary>
         public event EventHandler<AuthEventArgs> AuthRequest;
 
+        /// <summary>Construct a new instance of the BrowserPresenter class with parameters</summary>
+        /// <param name="name">A string that identifies the name of the associated <seealso cref="ViewModel"/> e.g. "Local" or "Remote"</param>
+        /// <param name="model">The BrowserModel object used to get the data from a file system</param>
+        /// <param name="session">The session information containing host, ip, and other data specific to the BrowserModel</param>
+        /// <param name="fileTransferPresenter">Methods and tools for working with file transfers</param>
         public BrowserPresenter(string name, IBrowserModel model, SessionData session, IFileTransferPresenter fileTransferPresenter)
         {
             this.Model = model;
@@ -37,7 +61,10 @@ namespace SuperPutty.Scp
             };
         }
 
-        void FileTransfers_ListChanged(object sender, ListChangedEventArgs e)
+        /// <summary>Updates the <seealso cref="BrowserViewModel"/> when a change to the file transfers list is detected</summary>
+        /// <param name="sender">The <seealso cref="IBindingList"/> of <seealso cref="FileTransferViewItem"/> items</param>
+        /// <param name="e">The <seealso cref="ListChangedEventArgs"/> items containing the type of change detected and the index of the item</param>
+        private void FileTransfers_ListChanged(object sender, ListChangedEventArgs e)
         {
             if (e.ListChangedType == ListChangedType.ItemChanged)
             {
@@ -55,12 +82,12 @@ namespace SuperPutty.Scp
 
         #region Async Work
 
-        void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             this.ViewModel.Status = (string) e.UserState;
         }
 
-        void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             BrowserFileInfo targetPath = (BrowserFileInfo)e.Argument;
             this.BackgroundWorker.ReportProgress(5, "Requesting files for " + targetPath.Path);
@@ -71,7 +98,7 @@ namespace SuperPutty.Scp
             e.Result = result;
         }
 
-        void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Error != null)
             {
@@ -129,36 +156,52 @@ namespace SuperPutty.Scp
 
         #endregion
 
+        /// <summary>Asynchronously loads the contents of a directory</summary>
+        /// <param name="dir">The BrowserFileInfo object containing the path to the directory to load</param>
         public void LoadDirectory(BrowserFileInfo dir)
         {
             if (this.BackgroundWorker.IsBusy)
             {
-                this.ViewModel.Status = "Busying loading directory";
+                this.ViewModel.Status = "Busy loading directory";
             }
             else
             {
                 this.ViewModel.BrowserState = BrowserState.Working;
-                Log.InfoFormat("LoadDirectory, path={0}", dir);
-                this.BackgroundWorker.RunWorkerAsync(dir);
+                if (dir != null)
+                {
+                    Log.InfoFormat("LoadDirectory, path={0}", dir);
+                    this.BackgroundWorker.RunWorkerAsync(dir);
+                }
+                else
+                {
+                    Log.Error("LoadDirectory Failed: target was null");
+                }
             }
         }
 
+        /// <summary>Refresh the current directory</summary>
         public void Refresh()
         {
-            // refresh current directory
-            Log.DebugFormat("Refresh");
+            Log.DebugFormat("Refreshing current directory: '{0}'", this.CurrentPath);
             this.LoadDirectory(this.CurrentPath);
         }
 
+        /// <summary>Verify a file can be transfered</summary>
+        /// <param name="source">The Source file</param>
+        /// <param name="target">The Destination file</param>
+        /// <returns>true if the file can be transfered</returns>
         public bool CanTransferFile(BrowserFileInfo source, BrowserFileInfo target)
         {
             return this.FileTransferPresenter.CanTransferFile(source, target);
         }
 
+        /// <summary>Transfer a file between two locations</summary>
+        /// <param name="fileTransferReqeust">The request data containing files to transfer</param>
         public void TransferFiles(FileTransferRequest fileTransferReqeust)
         {
             this.FileTransferPresenter.TransferFiles(fileTransferReqeust);
         }
+
 
         protected void OnAuthRequest(AuthEventArgs evt)
         {
