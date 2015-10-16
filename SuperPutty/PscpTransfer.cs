@@ -434,7 +434,7 @@ namespace SuperPutty
                 : "";
             args += "-P " + session.Port + " ";
             args += (!String.IsNullOrEmpty(session.Username)) ? session.Username + "@" : "";
-            args += session.Host + ":" + path;
+            args += session.Host + ":\"" + path + "\"";
 
             return args;
         }
