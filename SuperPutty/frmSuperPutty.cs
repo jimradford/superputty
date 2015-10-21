@@ -31,11 +31,13 @@ using SuperPutty.Data;
 using log4net;
 using System.Runtime.InteropServices;
 using SuperPutty.Utils;
+using SuperPuTTY.Scripting;
 using System.Configuration;
 using SuperPutty.Gui;
 using log4net.Core;
 using System.Text.RegularExpressions;
 using System.Runtime.Serialization.Json;
+using System.Threading;
 
 namespace SuperPutty
 {
@@ -1041,7 +1043,7 @@ namespace SuperPutty
             else if (e.KeyCode == Keys.Enter)
             {
                 // send commands
-                TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), !this.tbBtnMaskText.Checked, !e.Shift);
+                TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text, new KeyEventArgs(Keys.Enter)), !this.tbBtnMaskText.Checked);
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
@@ -1079,22 +1081,19 @@ namespace SuperPutty
             this.tsSendCommandCombo.ComboBox.Refresh();
         }
 
+        /// <summary>Send command from send command toolbar to open sessions</summary>
+        /// <param name="saveHistory">If true, save the history in the command toolbar combobox</param>
+        /// <returns>The number of commands sent</returns>
         int TrySendCommandsFromToolbar(bool saveHistory)
         {
-            return TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), saveHistory, true);
+            return TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), saveHistory);
         }
 
-        int TrySendCommandsFromToolbar(bool saveHistory, bool enter)
-        {
-            return TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), saveHistory, enter);
-        }
-
+        /// <summary>Send commands to open sessions</summary>
+        /// <param name="command">The <seealso cref="CommandData"/> object containing text and or keyboard commands</param>
+        /// <param name="saveHistory">If True, save the history in the command toolbar combobox</param>
+        /// <returns>The number of commands sent</returns>
         int TrySendCommandsFromToolbar(CommandData command, bool saveHistory)
-        {
-            return TrySendCommandsFromToolbar(command, saveHistory, true);
-        }
-
-        int TrySendCommandsFromToolbar(CommandData command, bool saveHistory, bool enter)
         {
             int sent = 0;
             if (this.DockPanel.DocumentsCount > 0)
@@ -1107,7 +1106,7 @@ namespace SuperPutty
                         int handle = puttyPanel.AppPanel.AppWindowHandle.ToInt32();
                         Log.InfoFormat("SendCommand: session={0}, command=[{1}], handle={2}", puttyPanel.Session.SessionId, command, handle);
                         
-                        command.SendToTerminal(handle, enter);
+                        command.SendToTerminal(handle);
                         
                         sent++;
                     }
@@ -1116,10 +1115,32 @@ namespace SuperPutty
                 if (sent > 0)
                 {
                     // success...clear text and save in mru
-                    this.tsSendCommandCombo.Text = string.Empty;
+                    if (this.InvokeRequired)
+                    {
+                        this.BeginInvoke((MethodInvoker)delegate ()
+                        {
+                            this.tsSendCommandCombo.Text = string.Empty;
+                        });
+                    }
+                    else
+                    {
+                        this.tsSendCommandCombo.Text = string.Empty;
+                    }
+
+
                     if (command != null && !string.IsNullOrEmpty(command.Command) && saveHistory)
                     {
-                        this.tsSendCommandCombo.Items.Add(command.ToString());
+                        if (this.InvokeRequired)
+                        {
+                            this.BeginInvoke((MethodInvoker)delegate ()
+                            {
+                                this.tsSendCommandCombo.Items.Add(command.ToString());
+                            });
+                        }
+                        else
+                        {
+                            this.tsSendCommandCombo.Items.Add(command.ToString());
+                        }
                     }
                 }
             }
@@ -1555,6 +1576,7 @@ namespace SuperPutty
                 MessageBox.Show(this, msg, "Error Cleaning Processes");
             }
         }
+
         private void menuStrip1_MenuDeactivate(object sender, EventArgs e)
         {
             menuStrip1.Visible = SuperPuTTY.Settings.ShowMenuBar;
@@ -1637,7 +1659,6 @@ namespace SuperPutty
             dlgScriptEditor editor = new dlgScriptEditor();
             editor.ScriptReady += Editor_ScriptReady;
             editor.SetDesktopLocation(MousePosition.X, MousePosition.Y);                       
-            Log.Debug(sender.ToString());
             editor.Show();           
         }
 
@@ -1645,13 +1666,32 @@ namespace SuperPutty
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Editor_ScriptReady(object sender, ExecuteScriptEventArgs e)
-        {
-            if(!String.IsNullOrEmpty(e.Script))
+        {            
+            if (!String.IsNullOrEmpty(e.Script))
             {
-                string[] script = e.Script.Split('\n');
-                foreach (string line in script)
-                {                    
-                    TrySendCommandsFromToolbar(new CommandData(line.TrimEnd()), !this.tbBtnMaskText.Checked);
+                string[] scriptlines = e.Script.Split('\n');
+                if (scriptlines.Length > 0 
+                    && e.IsSPSL)
+                {
+                    new Thread(delegate()
+                    {
+                        foreach (string line in scriptlines)
+                        {
+                            CommandData command;                                                                                    
+                            SPSL.TryParseScriptLine(line, out command);
+                            if (command != null)
+                            {
+                                TrySendCommandsFromToolbar(command, false);
+                            }
+                        }
+                    }).Start();
+                }
+                else // Not a spsl script
+                {
+                    foreach (string line in scriptlines)
+                    {
+                        TrySendCommandsFromToolbar(new CommandData(line.TrimEnd('\n'), new KeyEventArgs(Keys.Enter)), !this.tbBtnMaskText.Checked);
+                    }
                 }
             }
         }

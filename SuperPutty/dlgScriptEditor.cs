@@ -80,5 +80,16 @@ namespace SuperPutty
     {
         /// <summary>A string containing a list of commands to be sent to open terminal sessions</summary>
         public string Script { get; set; }
+        /// <summary>True if the script should be handled by script parser</summary>
+        public bool IsSPSL {
+            get
+            {
+                if (!string.IsNullOrEmpty(this.Script)
+                    && this.Script.StartsWith("#!/bin/spsl"))
+                    return true;
+                else
+                    return false;
+            }
+        }
     }
 }
