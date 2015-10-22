@@ -22,12 +22,20 @@
 using System;
 using System.Text;
 using System.Windows.Forms;
+using log4net;
 
 namespace SuperPutty.Utils
 {
     /// <summary>Store and retrieve commands and keystrokes for sending to sessions</summary>
     public class CommandData
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(CommandData));
+
+        /// <summary>Get the command to send</summary>
+        public string Command { get; private set; }
+        /// <summary>Get the keystrokes to send</summary>
+        public KeyEventArgs KeyData { get; private set; }
+
         /// <summary>Construct a new <seealso cref="CommandData"/> object, specifying a command to send</summary>
         /// <param name="command">A string containing the command to send</param>
         public CommandData(string command)
@@ -50,16 +58,12 @@ namespace SuperPutty.Utils
             this.Command = command;
             this.KeyData = keys;
         }
-
-        /// <summary>Get the command to send</summary>
-        public string Command { get; private set; }
-        /// <summary>Get the keystrokes to send</summary>
-        public KeyEventArgs KeyData { get; private set; }
-
+        
         /// <summary>Send commands and keystrokes to the specified session</summary>
         /// <param name="handle">The Windows Handle to send to</param>
         public void SendToTerminal(int handle)
         {
+            Log.InfoFormat("SendToTerminal: Handle={0}, Command=[{1}]", handle, this);
             if (!string.IsNullOrEmpty(this.Command))
             {
                 // send normal string command

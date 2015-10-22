@@ -820,15 +820,7 @@ namespace SuperPutty
                 if (puttyPanel != null)
                 {
                     return puttyPanel;
-                }
-
-                // pscp session (is this possible...prompt is a dialog...make inline?)
-                //ctlPuttyPanel puttyPanel = ctlPuttyPanel.FromPersistString(m_Sessions, persistString);
-                //if (puttyPanel != null)
-                //{
-                //    return puttyPanel;
-                //}
-
+                }                
             }
             return null;
         }
@@ -1661,7 +1653,7 @@ namespace SuperPutty
             editor.SetDesktopLocation(MousePosition.X, MousePosition.Y);                       
             editor.Show();           
         }
-
+        
         /// <summary>Process the script.</summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

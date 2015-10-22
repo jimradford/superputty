@@ -303,6 +303,9 @@ namespace SuperPutty
             return str;
         }
 
+        /// <summary>Restore sessions from a string containing previous sessions</summary>
+        /// <param name="persistString">A string containing the sessions to restore</param>
+        /// <returns>The <seealso cref="ctlPuttyPanel"/> object which is the parent of the hosted putty application, null if unable to start session</returns>
         public static ctlPuttyPanel FromPersistString(String persistString)
         {
             ctlPuttyPanel panel = null;
@@ -320,7 +323,7 @@ namespace SuperPutty
                     SessionData session = SuperPuTTY.GetSessionById(sessionId);
                     if (session != null)
                     {
-                        panel = ctlPuttyPanel.NewPanel(session);
+                        panel = SuperPuTTY.OpenPuttySession(session);
                         if (panel == null)
                         {
                             Log.WarnFormat("Could not restore putty session, sessionId={0}", sessionId);
@@ -347,7 +350,7 @@ namespace SuperPutty
                         SessionData session = SuperPuTTY.GetSessionById(sessionId);
                         if (session != null)
                         {
-                            panel = ctlPuttyPanel.NewPanel(session);
+                            panel = SuperPuTTY.OpenPuttySession(session);
                         }
                         else
                         {

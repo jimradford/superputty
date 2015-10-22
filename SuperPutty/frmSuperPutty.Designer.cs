@@ -1,4 +1,6 @@
-﻿namespace SuperPutty
+﻿using System;
+
+namespace SuperPutty
 {
     partial class frmSuperPutty
     {
@@ -880,6 +882,7 @@
             this.ResumeLayout(false);
 
         }
+        
 
         #endregion
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Jim Radford http://www.jimradford.com
+ * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -21,8 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Net;
 using Microsoft.Win32;
 using WeifenLuo.WinFormsUI.Docking;
 using log4net;
@@ -33,11 +31,6 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Drawing.Design;
 using System.Drawing;
-using System.Windows.Forms.Design;
-using SuperPutty.Gui;
-using System.Windows.Forms;
-using System.Drawing.Drawing2D;
-using System.ComponentModel.Design;
 
 namespace SuperPutty.Data
 {
@@ -246,6 +239,19 @@ namespace SuperPutty.Data
             set 
             {
                 UpdateField(ref m_AutoStartSession, value, "AutoStartSession");
+            }
+        }
+
+        private string m_SPSLFileName = string.Empty;
+        [XmlAttribute]
+        [DisplayName("SPSL File")]
+        [Description("SPSL Script Filename")]
+        public string SPSLFileName
+        {
+            get { return m_SPSLFileName; }
+            set
+            {
+                UpdateField(ref m_SPSLFileName, value, "SPSLFileName");
             }
         }
 

@@ -1,4 +1,25 @@
-﻿using System;
+﻿/*
+ * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -14,6 +35,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using SuperPutty.Scp;
+using SuperPuTTY.Scripting;
 
 namespace SuperPutty
 {
@@ -422,17 +444,29 @@ namespace SuperPutty
 
         /// <summary>Open a new putty window with its settings being passed in a <seealso cref="SessionData"/> object</summary>
         /// <param name="session">The <seealso cref="SessionData"/> object containing the settings</param>
-        public static void OpenPuttySession(SessionData session)
+        public static ctlPuttyPanel OpenPuttySession(SessionData session)
         {
             Log.InfoFormat("Opening putty session, id={0}", session == null ? "" : session.SessionId);
+            ctlPuttyPanel sessionPanel = null;
             if (session != null)
             {
-                ctlPuttyPanel sessionPanel = ctlPuttyPanel.NewPanel(session);
+                sessionPanel = ctlPuttyPanel.NewPanel(session);
                 ApplyDockRestrictions(sessionPanel);
                 ApplyIconForWindow(sessionPanel, session);
                 sessionPanel.Show(MainForm.DockPanel, session.LastDockstate);
-                SuperPuTTY.ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
+                ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
+
+                if (!String.IsNullOrEmpty(session.SPSLFileName)
+                    && File.Exists(session.SPSLFileName))
+                {                    
+                    ExecuteScriptEventArgs scriptArgs = new ExecuteScriptEventArgs() { Script = File.ReadAllText(session.SPSLFileName), Handle = sessionPanel.AppPanel.AppWindowHandle };
+                    if (!String.IsNullOrEmpty(scriptArgs.Script))
+                    {
+                        SPSL.BeginExecuteScript(scriptArgs);                                 
+                    }
+                }
             }
+            return sessionPanel;
         }
 
         /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty scp window</summary>

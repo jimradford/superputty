@@ -21,6 +21,7 @@
 
 using System;
 using SuperPutty.Utils;
+using SuperPutty;
 using log4net;
 
 namespace SuperPuTTY.Scripting
@@ -93,6 +94,29 @@ namespace SuperPuTTY.Scripting
             {
                 Log.WarnFormat("Command {0} Not Supported", command);
                 return false;
+            }
+        }
+
+        /// <summary>Execute a SPSL script Async</summary>
+        /// <param name="scriptArgs">A <seealso cref="ExecuteScriptEventArgs"/> object containing the script to execute and parameters</param>
+        public static void BeginExecuteScript(ExecuteScriptEventArgs scriptArgs)
+        {
+            string[] scriptlines = scriptArgs.Script.Split('\n');
+            if (scriptlines.Length > 0
+                && scriptArgs.IsSPSL)
+            {
+                new System.Threading.Thread(delegate ()
+                {
+                    foreach (string line in scriptlines)
+                    {
+                        CommandData command;
+                        TryParseScriptLine(line, out command);
+                        if (command != null)
+                        {
+                            command.SendToTerminal(scriptArgs.Handle.ToInt32());                        
+                        }
+                    }
+                }).Start();
             }
         }
 

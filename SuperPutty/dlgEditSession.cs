@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Jim Radford http://www.jimradford.com
+ * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -20,14 +20,9 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using Microsoft.Win32;
-using System.Web;
 using SuperPutty.Data;
 using SuperPutty.Utils;
 using SuperPutty.Gui;
@@ -63,6 +58,7 @@ namespace SuperPutty
                 this.textBoxPort.Text = Session.Port.ToString();
                 this.textBoxExtraArgs.Text = Session.ExtraArgs;
                 this.textBoxUsername.Text = Session.Username;
+                this.textBoxSPSLScriptFile.Text = Session.SPSLFileName;
 
                 switch (Session.Proto)
                 {
@@ -144,14 +140,15 @@ namespace SuperPutty
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            Session.SessionName = textBoxSessionName.Text.Trim();
+            Session.SessionName  = textBoxSessionName.Text.Trim();
             Session.PuttySession = comboBoxPuttyProfile.Text.Trim();
-            Session.Host = textBoxHostname.Text.Trim();
-            Session.ExtraArgs = textBoxExtraArgs.Text.Trim();
-            Session.Port = int.Parse(textBoxPort.Text.Trim());
-            Session.Username = textBoxUsername.Text.Trim();
-            Session.SessionId = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
-            Session.ImageKey = buttonImageSelect.ImageKey;
+            Session.Host         = textBoxHostname.Text.Trim();
+            Session.ExtraArgs    = textBoxExtraArgs.Text.Trim();
+            Session.Port         = int.Parse(textBoxPort.Text.Trim());
+            Session.Username     = textBoxUsername.Text.Trim();
+            Session.SessionId    = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
+            Session.ImageKey     = buttonImageSelect.ImageKey;
+            Session.SPSLFileName = textBoxSPSLScriptFile.Text.Trim();
 
             for (int i = 0; i < groupBox1.Controls.Count; i++)
             {
@@ -239,8 +236,6 @@ namespace SuperPutty
                 this.textBoxPort.Text = "22";
             }
         }
-
-
 
         public static int GetDefaultPort(ConnectionProtocol protocol)
         {
@@ -380,5 +375,19 @@ namespace SuperPutty
 
         #endregion
 
+        private void buttonBrowse_Click(object sender, EventArgs e)
+        {
+            DialogResult dlgResult = this.openFileDialog1.ShowDialog();
+            if (dlgResult == DialogResult.OK)
+            {
+                textBoxSPSLScriptFile.Text = this.openFileDialog1.FileName;
+            }
+        }
+
+        private void buttonClearSPSLFile_Click(object sender, EventArgs e)
+        {
+            Session.SPSLFileName = textBoxSPSLScriptFile.Text = String.Empty;
+            
+        }
     }
 }

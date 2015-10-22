@@ -91,5 +91,8 @@ namespace SuperPutty
                     return false;
             }
         }
+
+        /// <summary>If set to the handle of a window, script will be restricted to the specified session only.</summary>
+        public IntPtr Handle { get; set; }
     }
 }

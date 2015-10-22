@@ -321,8 +321,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         /// </summary>
         /// <param name="e">Not used</param>
         protected override void OnVisibleChanged(EventArgs e)
-        {
-            //Log.Debug("OnVisibleChanged");
+        {           
             if (!m_Created && !String.IsNullOrEmpty(ApplicationName)) // only allow one instance of the child
             {
                 m_Created = true;
@@ -411,12 +410,12 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 {
                     // dont' try to capture or manipulate the window
                     Log.WarnFormat("Error while creating putty session: title={0}, handle={1}.  Abort capture window", this.m_Process.MainWindowTitle, this.m_AppWin);
+                    MessageBox.Show("Could not start putty session: Arguments passed to commandline invalid.", "putty command line error.");
                     this.m_AppWin = IntPtr.Zero;
                 }
                 
                 if(this.m_AppWin != IntPtr.Zero)
-                {
-                    //Logger.Log("Process Handle: {0}", m_AppWin.ToString("X"));
+                {                    
                     // Set the application as a child of the parent form
                     NativeMethods.SetParent(m_AppWin, this.Handle);
 
@@ -437,7 +436,13 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 else
                 {
                     MessageBox.Show("Process window not found.", "Process Window Not Found");
-                    m_Process.Kill();
+                    try {
+                        m_Process.Kill();
+                    } 
+                    catch (InvalidOperationException ex)
+                    {
+                        Log.WarnFormat("no process window found to kill: {0}", ex.Message);
+                    }
                     return;
                 }
             }
@@ -445,7 +450,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             {
                 // Move the child so it's located over the parent
                 this.MoveWindow("OnVisChanged");
-                //MoveWindow(m_AppWin, 0, 0, this.Width, this.Height, true);
+                
                 if (RefocusOnVisChanged && NativeMethods.GetForegroundWindow() != this.m_AppWin)
                 {
                     this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY("OnVisChanged"); }));
