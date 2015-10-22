@@ -312,7 +312,6 @@ namespace SuperPutty
             SessionData session = null;
             TreeNode node = null;
             TreeNode nodeRef = this.nodeRoot;
-            bool isEdit = false;
             string title = null;
             if (sender is ToolStripMenuItem)
             {
@@ -340,7 +339,6 @@ namespace SuperPutty
                     session = (SessionData)((SessionData)treeView1.SelectedNode.Tag).Clone();
                     node = treeView1.SelectedNode;
                     nodeRef = node.Parent;
-                    isEdit = true;
                     title = "Edit Session: " + session.SessionName;
                 }
             }
@@ -358,7 +356,6 @@ namespace SuperPutty
                 /* "node" will only be assigned if we're editing an existing session entry */
                 if (node == null)
                 {
-
                     // get the path up to the ref (parent) node
                     if (nodeRoot != nodeRef)
                     {

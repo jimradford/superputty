@@ -447,26 +447,57 @@ namespace SuperPutty
         public static ctlPuttyPanel OpenPuttySession(SessionData session)
         {
             Log.InfoFormat("Opening putty session, id={0}", session == null ? "" : session.SessionId);
-            ctlPuttyPanel sessionPanel = null;
+            ctlPuttyPanel panel = null;
             if (session != null)
             {
-                sessionPanel = ctlPuttyPanel.NewPanel(session);
-                ApplyDockRestrictions(sessionPanel);
-                ApplyIconForWindow(sessionPanel, session);
-                sessionPanel.Show(MainForm.DockPanel, session.LastDockstate);
+                // This is the callback fired when the panel containing the terminal is closed
+                // We use this to save the last docking location and to close the panel
+                PuttyClosedCallback callback = delegate (bool closed)
+                {
+                    if (panel != null)
+                    {
+                        // save the last dockstate (if it has been changed)
+                        if (session.LastDockstate != panel.DockState
+                            && panel.DockState != DockState.Unknown
+                            && panel.DockState != DockState.Hidden)
+                        {
+                            session.LastDockstate = panel.DockState;
+                            SuperPuTTY.SaveSessions();
+                        }
+
+                        if (panel.InvokeRequired)
+                        {
+                            panel.BeginInvoke((MethodInvoker)delegate ()
+                            {
+                                panel.Close();
+                            });
+                        }
+                        else
+                        {
+                            panel.Close();
+                        }
+                    }
+                };
+
+                //sessionPanel = ctlPuttyPanel.NewPanel(session);
+                panel = new ctlPuttyPanel(session, callback);
+
+                ApplyDockRestrictions(panel);
+                ApplyIconForWindow(panel, session);
+                panel.Show(MainForm.DockPanel, session.LastDockstate);
                 ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
 
                 if (!String.IsNullOrEmpty(session.SPSLFileName)
                     && File.Exists(session.SPSLFileName))
                 {                    
-                    ExecuteScriptEventArgs scriptArgs = new ExecuteScriptEventArgs() { Script = File.ReadAllText(session.SPSLFileName), Handle = sessionPanel.AppPanel.AppWindowHandle };
+                    ExecuteScriptEventArgs scriptArgs = new ExecuteScriptEventArgs() { Script = File.ReadAllText(session.SPSLFileName), Handle = panel.AppPanel.AppWindowHandle };
                     if (!String.IsNullOrEmpty(scriptArgs.Script))
                     {
                         SPSL.BeginExecuteScript(scriptArgs);                                 
                     }
                 }
             }
-            return sessionPanel;
+            return panel;
         }
 
         /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty scp window</summary>

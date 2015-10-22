@@ -248,7 +248,7 @@ namespace SuperPutty
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void dockPanel1_ActiveDocumentChanged(object sender, EventArgs e)
-        {
+        {            
             FocusActiveDocument("ActiveDocumentChanged");
         }
 
@@ -1076,7 +1076,7 @@ namespace SuperPutty
         /// <summary>Send command from send command toolbar to open sessions</summary>
         /// <param name="saveHistory">If true, save the history in the command toolbar combobox</param>
         /// <returns>The number of commands sent</returns>
-        int TrySendCommandsFromToolbar(bool saveHistory)
+        private int TrySendCommandsFromToolbar(bool saveHistory)
         {
             return TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text), saveHistory);
         }
@@ -1084,25 +1084,29 @@ namespace SuperPutty
         /// <summary>Send commands to open sessions</summary>
         /// <param name="command">The <seealso cref="CommandData"/> object containing text and or keyboard commands</param>
         /// <param name="saveHistory">If True, save the history in the command toolbar combobox</param>
-        /// <returns>The number of commands sent</returns>
-        int TrySendCommandsFromToolbar(CommandData command, bool saveHistory)
+        /// <returns>The number terminals commands have been sent to</returns>
+        private int TrySendCommandsFromToolbar(CommandData command, bool saveHistory)
         {
             int sent = 0;
-            if (this.DockPanel.DocumentsCount > 0)
+
+            if(this.DockPanel.Contents.Count > 0)
             {
-                foreach (DockContent content in this.DockPanel.Documents)
+                foreach (IDockContent doc in VisualOrderTabSwitchStrategy.GetDocuments(this.DockPanel))
                 {
-                    ctlPuttyPanel puttyPanel = content as ctlPuttyPanel;
-                    if (puttyPanel != null && this.sendCommandsDocumentSelector.IsDocumentSelected(puttyPanel))
+                    if (doc is ctlPuttyPanel)
                     {
-                        int handle = puttyPanel.AppPanel.AppWindowHandle.ToInt32();
-                        Log.InfoFormat("SendCommand: session={0}, command=[{1}], handle={2}", puttyPanel.Session.SessionId, command, handle);
-                        
-                        command.SendToTerminal(handle);
-                        
-                        sent++;
+                        ctlPuttyPanel panel = doc as ctlPuttyPanel;
+                        if (panel != null && this.sendCommandsDocumentSelector.IsDocumentSelected(panel))
+                        {
+                            int handle = panel.AppPanel.AppWindowHandle.ToInt32();
+                            //Log.InfoFormat("SendCommand: session={0}, command=[{1}], handle={2}", panel.Session.SessionId, command, handle);
+
+                            command.SendToTerminal(handle);
+
+                            sent++;                 
+                        }
                     }
-                }
+                }                 
 
                 if (sent > 0)
                 {
@@ -1126,12 +1130,12 @@ namespace SuperPutty
                         {
                             this.BeginInvoke((MethodInvoker)delegate ()
                             {
-                                this.tsSendCommandCombo.Items.Add(command.ToString());
+                                this.tsSendCommandCombo.Items.Add(command.Command);
                             });
                         }
                         else
                         {
-                            this.tsSendCommandCombo.Items.Add(command.ToString());
+                            this.tsSendCommandCombo.Items.Add(command.Command);
                         }
                     }
                 }
