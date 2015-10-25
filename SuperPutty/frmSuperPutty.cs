@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -72,20 +73,24 @@ namespace SuperPutty
         bool isControlDown = false;
         bool isShiftDown = false;
         bool isAltDown = false;
-        int commandMRUIndex = 0;
+        int commandMRUIndex = -1;
 
         private readonly TabSwitcher tabSwitcher;
         private readonly ViewState fullscreenViewState;
 
-        Dictionary<Keys, SuperPuttyAction> shortcuts = new Dictionary<Keys, SuperPuttyAction>();
+        private Dictionary<Keys, SuperPuttyAction> shortcuts = new Dictionary<Keys, SuperPuttyAction>();
 
+        /// <summary>A collection containing send command history</summary>
+        private SortableBindingList<HistoryEntry> tsCommandHistory = new SortableBindingList<HistoryEntry>();
+
+        /// <summary>The main SuperPuTTY application form</summary>
         public frmSuperPutty()
-        {                        
+        {
             // Verify Putty is set; Prompt user if necessary; exit otherwise
             dlgFindPutty.PuttyCheck();
 
             InitializeComponent();
-           
+
             // force toolbar locations...designer likes to flip them around
             this.tsConnect.Location = new System.Drawing.Point(0, 24);
             this.tsCommands.Location = new System.Drawing.Point(0, 49);
@@ -103,9 +108,9 @@ namespace SuperPutty
             this.sessions = new SingletonToolWindowHelper<SessionTreeview>("Sessions", this.DockPanel, null, x => new SessionTreeview(x.DockPanel));
             this.layouts = new SingletonToolWindowHelper<LayoutsList>("Layouts", this.DockPanel);
             this.logViewer = new SingletonToolWindowHelper<Log4netLogViewer>("Log Viewer", this.DockPanel);
-            this.sessionDetail = new SingletonToolWindowHelper<SessionDetail>("Session Detail", this.DockPanel, this.sessions, 
+            this.sessionDetail = new SingletonToolWindowHelper<SessionDetail>("Session Detail", this.DockPanel, this.sessions,
                                                                               x => {
-                                                                                return new SessionDetail(x.InitializerResource as SingletonToolWindowHelper<SessionTreeview>);
+                                                                                  return new SessionDetail(x.InitializerResource as SingletonToolWindowHelper<SessionTreeview>);
                                                                               });
 
             // for toolbar
@@ -115,6 +120,22 @@ namespace SuperPutty
             this.sendCommandsDocumentSelector = new frmDocumentSelector(this.DockPanel);
             this.sendCommandsDocumentSelector.Owner = this;
 
+            // Send Command toolbar history
+            PropertyDescriptor pd = TypeDescriptor.GetProperties(typeof(HistoryEntry))["TimeStamp"];
+            ((IBindingList)tsCommandHistory).ApplySort(pd, ListSortDirection.Descending);
+
+            tsSendCommandCombo.ComboBox.DisplayMember = "Command";
+            tsSendCommandCombo.ComboBox.ValueMember = "Command";            
+            tsSendCommandCombo.ComboBox.DataSource = tsCommandHistory;
+
+            // load saved history
+            if(SuperPuTTY.Settings.PersistCommandBarHistory)
+                tsCommandHistory.DeserializeXML(SuperPuTTY.Settings.CommandBarHistory);
+
+            tsSendCommandCombo.SelectedIndex = -1;
+
+            tsCommandHistory.ListChanged += TsCommandHistory_ListChanged;
+           
             // Hook into status
             SuperPuTTY.StatusEvent += new Action<string>(delegate(String msg) { this.toolStripStatusLabelMessage.Text = msg; });
             SuperPuTTY.ReportStatus("Ready");
@@ -164,6 +185,30 @@ namespace SuperPutty
             this.DockPanel.ContentRemoved += DockPanel_ContentRemoved;
         }
 
+        private void TsCommandHistory_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            DateTime daysAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(SuperPuTTY.Settings.SaveCommandHistoryDays));
+            if (e.ListChangedType == ListChangedType.ItemAdded)
+            {
+                // purge duplicates from history
+                HistoryEntry he = tsCommandHistory[e.NewIndex];
+                for(int i = 0; i < tsCommandHistory.Count; i++)
+                {
+                    if(i != e.NewIndex 
+                        && tsCommandHistory[i].Command.Equals(he.Command))
+                    {
+                        tsCommandHistory.RemoveAt(i);
+                    }
+
+                    // purge old entries from history
+                    if(tsCommandHistory[i].TimeStamp < daysAgo)
+                    {
+                        tsCommandHistory.RemoveAt(i);
+                    }
+                }               
+            }
+        }       
+
         void DockPanel_ContentAdded(object sender, DockContentEventArgs e)
         {
             ctlPuttyPanel p = e.Content as ctlPuttyPanel;
@@ -198,9 +243,9 @@ namespace SuperPutty
 
         private void frmSuperPutty_Load(object sender, EventArgs e)
         {
-            this.BeginInvoke(new Action(this.LoadLayout));
+            this.BeginInvoke(new Action(this.LoadLayout));            
         }
-
+        
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             // free hooks
@@ -219,6 +264,12 @@ namespace SuperPutty
             if (SuperPuTTY.Settings.DefaultLayoutName == LayoutData.AutoRestore)
             {
                 SaveLayout(SuperPuTTY.AutoRestoreLayoutPath, "Saving auto-restore layout");
+            }
+
+            if(SuperPuTTY.Settings.PersistCommandBarHistory)
+            {
+                SuperPuTTY.Settings.CommandBarHistory = tsCommandHistory.SerializeXML();
+                SuperPuTTY.Settings.Save();
             }
 
             this.focusHelper.Dispose();
@@ -690,7 +741,6 @@ namespace SuperPutty
                 SuperPuTTY.LoadLayout(SuperPuTTY.StartingLayout);
                 SuperPuTTY.ApplyDockRestrictions(this.DockPanel);
             }
-
         }
 
         void SuperPuTTY_LayoutChanging(object sender, LayoutChangedEventArgs eventArgs)
@@ -998,7 +1048,7 @@ namespace SuperPutty
             {
                 Log.DebugFormat("Keys={0}, control={1}, shift={2}, keyData={3}", e.KeyCode, e.Control, e.Shift, e.KeyData);
             }
-            if (e.KeyCode == Keys.Up)
+            if (e.KeyCode == Keys.Down)
             {
                 if (tsSendCommandCombo.Items.Count > 0)
                 {
@@ -1009,14 +1059,19 @@ namespace SuperPutty
                     }
                     if (commandMRUIndex >= 0)
                     {
-                        tsSendCommandCombo.Text = (string)tsSendCommandCombo.Items[commandMRUIndex];
+                        tsSendCommandCombo.SelectedIndex = commandMRUIndex;                        
                         tsSendCommandCombo.SelectionStart = tsSendCommandCombo.Text.Length;
                     }
                 }
                 e.Handled = true;
             }
-            else if (e.KeyCode == Keys.Down)
+            else if (e.KeyCode == Keys.Up)
             {
+                for(int i = 0; i < tsSendCommandCombo.Items.Count; i++)
+                {
+                    Console.WriteLine("{0} {1} MRUOld:{2}", i, ((HistoryEntry)tsSendCommandCombo.Items[i]).ToString(), commandMRUIndex);
+                }
+
                 if (tsSendCommandCombo.Items.Count > 0)
                 {
                     commandMRUIndex++;
@@ -1026,7 +1081,7 @@ namespace SuperPutty
                     }
                     if (commandMRUIndex < tsSendCommandCombo.Items.Count)
                     {
-                        tsSendCommandCombo.Text = (string)tsSendCommandCombo.Items[commandMRUIndex];
+                        tsSendCommandCombo.SelectedIndex = commandMRUIndex;
                         tsSendCommandCombo.SelectionStart = tsSendCommandCombo.Text.Length;
                     }
                 }
@@ -1110,7 +1165,22 @@ namespace SuperPutty
 
                 if (sent > 0)
                 {
-                    // success...clear text and save in mru
+                    // success...clear text and save in mru                    
+                    if (command != null && !string.IsNullOrEmpty(command.Command) && saveHistory)
+                    {
+                        if (this.InvokeRequired)
+                        {
+                            this.BeginInvoke((MethodInvoker)delegate ()
+                            {
+                                tsCommandHistory.Insert(0, new HistoryEntry() { Command = command.Command });
+                            });
+                        }
+                        else
+                        {                            
+                            tsCommandHistory.Insert(0, new HistoryEntry() { Command = command.Command });
+                        }                       
+                    }
+
                     if (this.InvokeRequired)
                     {
                         this.BeginInvoke((MethodInvoker)delegate ()
@@ -1121,22 +1191,6 @@ namespace SuperPutty
                     else
                     {
                         this.tsSendCommandCombo.Text = string.Empty;
-                    }
-
-
-                    if (command != null && !string.IsNullOrEmpty(command.Command) && saveHistory)
-                    {
-                        if (this.InvokeRequired)
-                        {
-                            this.BeginInvoke((MethodInvoker)delegate ()
-                            {
-                                this.tsSendCommandCombo.Items.Add(command.Command);
-                            });
-                        }
-                        else
-                        {
-                            this.tsSendCommandCombo.Items.Add(command.Command);
-                        }
                     }
                 }
             }

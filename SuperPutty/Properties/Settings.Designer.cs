@@ -622,6 +622,7 @@ namespace SuperPutty.Properties {
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("/home/")]
         public string PscpHomePrefix {
@@ -634,6 +635,7 @@ namespace SuperPutty.Properties {
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool AutoUpdateCheck {
@@ -646,6 +648,7 @@ namespace SuperPutty.Properties {
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("/")]
         public string PscpRootHomePrefix {
@@ -658,6 +661,7 @@ namespace SuperPutty.Properties {
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("None")]
         public global::System.Windows.Forms.Keys Action_OpenScriptEditor_Shortcut {
@@ -666,6 +670,54 @@ namespace SuperPutty.Properties {
             }
             set {
                 this["Action_OpenScriptEditor_Shortcut"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PersistCommandBarHistory
+        {
+            get
+            {
+                return ((bool)(this["PersistCommandBarHistory"]));
+            }
+            set
+            {
+                this["PersistCommandBarHistory"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CommandBarHistory
+        {
+            get
+            {
+                return ((string)(this["CommandBarHistory"]));
+            }
+            set
+            {
+                this["CommandBarHistory"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("7")]
+        public int SaveCommandHistoryDays
+        {
+            get
+            {
+                return ((int)(this["SaveCommandHistoryDays"]));
+            }
+            set
+            {
+                this["SaveCommandHistoryDays"] = value;
             }
         }
     }

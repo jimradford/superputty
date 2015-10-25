@@ -90,6 +90,7 @@
     <Compile Include="AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Data\HistoryEntry.cs" />
     <Compile Include="Data\KeyboardShortcut.cs" />
     <Compile Include="dlgScriptEditor.cs">
       <SubType>Form</SubType>
