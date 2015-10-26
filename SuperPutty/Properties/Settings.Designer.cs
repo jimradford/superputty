@@ -720,5 +720,21 @@ namespace SuperPutty.Properties {
                 this["SaveCommandHistoryDays"] = value;
             }
         }
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public global::System.Windows.Forms.Keys Action_RenameTab_Shortcut
+        {
+            get
+            {
+                return ((global::System.Windows.Forms.Keys)(this["Action_RenameTab_Shortcut"]));
+            }
+            set
+            {
+                this["Action_RenameTab_Shortcut"] = value;
+            }
+        }
+        
     }
 }

@@ -845,7 +845,10 @@ namespace SuperPutty
         GotoCommandBar,
         GotoConnectionBar,
         FocusActiveSession,
-        OpenScriptEditor
+        /// <summary>Open Script Editor Window</summary>
+        OpenScriptEditor,
+        /// <summary>Rename active tab</summary>
+        RenameTab
     } 
     #endregion
 

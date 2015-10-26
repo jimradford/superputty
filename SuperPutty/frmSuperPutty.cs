@@ -1409,6 +1409,7 @@ namespace SuperPutty
 
         bool ExecuteSuperPuttyAction(SuperPuttyAction action)
         {
+            ctlPuttyPanel activePanel = this.DockPanel.ActiveDocument as ctlPuttyPanel;
             bool success = true;
 
             Log.InfoFormat("Executing action, name={0}", action);
@@ -1440,11 +1441,8 @@ namespace SuperPutty
                     this.optionsToolStripMenuItem.PerformClick();
                     break;
                 case SuperPuttyAction.DuplicateSession:
-                    ctlPuttyPanel p = this.DockPanel.ActiveDocument as ctlPuttyPanel;
-                    if (p != null && p.Session != null)
-                    {
-                        SuperPuTTY.OpenPuttySession(p.Session);
-                    }
+                    if (activePanel != null && activePanel.Session != null)
+                        SuperPuTTY.OpenPuttySession(activePanel.Session);
                     break;
                 case SuperPuttyAction.GotoCommandBar:
                     if (!this.fullscreenViewState.IsFullScreen)
@@ -1472,15 +1470,25 @@ namespace SuperPutty
                 case SuperPuttyAction.FocusActiveSession:
                     // focus on current super putty session...or at least try to
                     KeyEventWindowActivator.ActivateForm(this);
-                    ctlPuttyPanel putty = this.DockPanel.ActiveDocument as ctlPuttyPanel;
-                    if (putty != null)
-                    {
-                        putty.SetFocusToChildApplication("ExecuteAction");
-                    }
+                    if (activePanel != null)
+                        activePanel.SetFocusToChildApplication("ExecuteAction");
                     break;
                 case SuperPuttyAction.OpenScriptEditor:
                     KeyEventWindowActivator.ActivateForm(this);
                     toolStripButtonRunScript_Click(this, EventArgs.Empty);
+                    break;
+                case SuperPuttyAction.RenameTab:                    
+                    if (activePanel != null && activePanel.Session != null)
+                    {
+                        dlgRenameItem dialog = new dlgRenameItem();
+                        dialog.ItemName = activePanel.Text;
+                        dialog.DetailName = activePanel.Session.SessionId;
+
+                        if (dialog.ShowDialog(this) == DialogResult.OK)
+                        {
+                            activePanel.Text = activePanel.TextOverride = dialog.ItemName;                            
+                        }                        
+                    }
                     break;
                 default:
                     success = false;
