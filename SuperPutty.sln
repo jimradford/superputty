@@ -9,6 +9,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperPuttyUnitTests", "Supe
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "SuperPuttyInstaller", "SuperPuttyInstaller\SuperPuttyInstaller.wixproj", "{89846760-8956-477C-9456-0F8CD32F4718}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{10996DCD-BC12-4C5F-9319-F608004C403B}"
+	ProjectSection(SolutionItems) = preProject
+		License.rtf = License.rtf
+		License.txt = License.txt
+		README.txt = README.txt
+		ReleaseNotes.txt = ReleaseNotes.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
