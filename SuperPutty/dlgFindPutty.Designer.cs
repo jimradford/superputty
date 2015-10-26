@@ -72,10 +72,15 @@
             this.checkSessionsShowSearch = new System.Windows.Forms.CheckBox();
             this.label18 = new System.Windows.Forms.Label();
             this.checkBoxCheckForUpdates = new System.Windows.Forms.CheckBox();
+            this.checkBoxPersistTsHistory = new System.Windows.Forms.CheckBox();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.checkConfirmTabClose = new System.Windows.Forms.CheckBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
             this.tabPageGUI = new System.Windows.Forms.TabPage();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.textBoxRootDirPrefix = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
@@ -104,19 +109,18 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.checkBoxPersistTsHistory = new System.Windows.Forms.CheckBox();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.shortcutStringDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.keyboardShortcutBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.checkBoxAllowPuttyPWArg = new System.Windows.Forms.CheckBox();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -129,9 +133,8 @@
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.panelBottom.SuspendLayout();
-            this.groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -550,6 +553,31 @@
             this.toolTip.SetToolTip(this.checkBoxCheckForUpdates, "Check for Updates when Application starts");
             this.checkBoxCheckForUpdates.UseVisualStyleBackColor = true;
             // 
+            // checkBoxPersistTsHistory
+            // 
+            this.checkBoxPersistTsHistory.AutoSize = true;
+            this.checkBoxPersistTsHistory.Location = new System.Drawing.Point(6, 21);
+            this.checkBoxPersistTsHistory.Name = "checkBoxPersistTsHistory";
+            this.checkBoxPersistTsHistory.Size = new System.Drawing.Size(88, 17);
+            this.checkBoxPersistTsHistory.TabIndex = 0;
+            this.checkBoxPersistTsHistory.Text = "Save History";
+            this.toolTip.SetToolTip(this.checkBoxPersistTsHistory, "Persist command bar history between program restarts");
+            this.checkBoxPersistTsHistory.UseVisualStyleBackColor = true;
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(121, 20);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(48, 22);
+            this.numericUpDown1.TabIndex = 1;
+            this.toolTip.SetToolTip(this.numericUpDown1, "The number of days to save history for. Entries older than the selected number of" +
+        " days will be automatically deleted.");
+            this.numericUpDown1.Value = new decimal(new int[] {
+            7,
+            0,
+            0,
+            0});
+            // 
             // checkConfirmTabClose
             // 
             this.checkConfirmTabClose.AutoSize = true;
@@ -600,6 +628,7 @@
             // 
             // tabPageGUI
             // 
+            this.tabPageGUI.Controls.Add(this.groupBox9);
             this.tabPageGUI.Controls.Add(this.groupBox8);
             this.tabPageGUI.Controls.Add(this.groupBox7);
             this.tabPageGUI.Controls.Add(this.groupBox6);
@@ -613,6 +642,37 @@
             this.tabPageGUI.TabIndex = 1;
             this.tabPageGUI.Text = "GUI";
             this.tabPageGUI.UseVisualStyleBackColor = true;
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.label20);
+            this.groupBox8.Controls.Add(this.label19);
+            this.groupBox8.Controls.Add(this.numericUpDown1);
+            this.groupBox8.Controls.Add(this.checkBoxPersistTsHistory);
+            this.groupBox8.Location = new System.Drawing.Point(358, 283);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(232, 48);
+            this.groupBox8.TabIndex = 43;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Command Bar";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(175, 22);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(31, 13);
+            this.label20.TabIndex = 3;
+            this.label20.Text = "Days";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(93, 22);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(22, 13);
+            this.label19.TabIndex = 2;
+            this.label19.Text = "for";
             // 
             // groupBox7
             // 
@@ -932,30 +992,6 @@
             this.panelBottom.Size = new System.Drawing.Size(604, 27);
             this.panelBottom.TabIndex = 39;
             // 
-            // groupBox8
-            // 
-            this.groupBox8.Controls.Add(this.label20);
-            this.groupBox8.Controls.Add(this.label19);
-            this.groupBox8.Controls.Add(this.numericUpDown1);
-            this.groupBox8.Controls.Add(this.checkBoxPersistTsHistory);
-            this.groupBox8.Location = new System.Drawing.Point(358, 283);
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(232, 48);
-            this.groupBox8.TabIndex = 43;
-            this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "Command Bar";
-            // 
-            // checkBoxPersistTsHistory
-            // 
-            this.checkBoxPersistTsHistory.AutoSize = true;
-            this.checkBoxPersistTsHistory.Location = new System.Drawing.Point(6, 21);
-            this.checkBoxPersistTsHistory.Name = "checkBoxPersistTsHistory";
-            this.checkBoxPersistTsHistory.Size = new System.Drawing.Size(88, 17);
-            this.checkBoxPersistTsHistory.TabIndex = 0;
-            this.checkBoxPersistTsHistory.Text = "Save History";
-            this.toolTip.SetToolTip(this.checkBoxPersistTsHistory, "Persist command bar history between program restarts");
-            this.checkBoxPersistTsHistory.UseVisualStyleBackColor = true;
-            // 
             // nameDataGridViewTextBoxColumn
             // 
             this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
@@ -992,37 +1028,27 @@
             // 
             this.keyboardShortcutBindingSource.DataSource = typeof(SuperPutty.Data.KeyboardShortcut);
             // 
-            // numericUpDown1
+            // groupBox9
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(121, 20);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(48, 22);
-            this.numericUpDown1.TabIndex = 1;
-            this.toolTip.SetToolTip(this.numericUpDown1, "The number of days to save history for. Entries older than the selected number of" +
-        " days will be automatically deleted.");
-            this.numericUpDown1.Value = new decimal(new int[] {
-            7,
-            0,
-            0,
-            0});
+            this.groupBox9.Controls.Add(this.checkBoxAllowPuttyPWArg);
+            this.groupBox9.Location = new System.Drawing.Point(3, 283);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(349, 44);
+            this.groupBox9.TabIndex = 44;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Security";
             // 
-            // label19
+            // checkBoxAllowPuttyPWArg
             // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(93, 22);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(22, 13);
-            this.label19.TabIndex = 2;
-            this.label19.Text = "for";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(175, 22);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(31, 13);
-            this.label20.TabIndex = 3;
-            this.label20.Text = "Days";
+            this.checkBoxAllowPuttyPWArg.AutoSize = true;
+            this.checkBoxAllowPuttyPWArg.Location = new System.Drawing.Point(6, 21);
+            this.checkBoxAllowPuttyPWArg.Name = "checkBoxAllowPuttyPWArg";
+            this.checkBoxAllowPuttyPWArg.Size = new System.Drawing.Size(286, 17);
+            this.checkBoxAllowPuttyPWArg.TabIndex = 0;
+            this.checkBoxAllowPuttyPWArg.Text = "Allow plain text passwords on putty command line";
+            this.toolTip.SetToolTip(this.checkBoxAllowPuttyPWArg, "Enabling this will allow plain text passwords to be cached and shown on the comma" +
+        "nd line. It is Recommended you do NOT enable this");
+            this.checkBoxAllowPuttyPWArg.UseVisualStyleBackColor = true;
             // 
             // dlgFindPutty
             // 
@@ -1044,10 +1070,13 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SuperPuTTY Options";
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabPageGeneral.ResumeLayout(false);
             this.tabPageGeneral.PerformLayout();
             this.tabPageGUI.ResumeLayout(false);
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -1067,10 +1096,9 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.panelBottom.ResumeLayout(false);
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1161,5 +1189,7 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.CheckBox checkBoxAllowPuttyPWArg;
     }
 }

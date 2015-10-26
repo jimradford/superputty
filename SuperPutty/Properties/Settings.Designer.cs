@@ -720,6 +720,7 @@ namespace SuperPutty.Properties {
                 this["SaveCommandHistoryDays"] = value;
             }
         }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -735,6 +736,21 @@ namespace SuperPutty.Properties {
                 this["Action_RenameTab_Shortcut"] = value;
             }
         }
-        
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AllowPlainTextPuttyPasswordArg
+        {
+            get
+            {
+                return ((bool)(this["AllowPlainTextPuttyPasswordArg"]));
+            }
+            set
+            {
+                this["AllowPlainTextPuttyPasswordArg"] = value;
+            }
+        }
     }
 }

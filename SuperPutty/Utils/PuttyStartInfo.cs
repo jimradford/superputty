@@ -49,8 +49,11 @@ namespace SuperPutty.Utils
 
         static string MakeArgs(SessionData session, bool includePassword)
         {
+            if (!String.IsNullOrEmpty(session.Password) && includePassword && !SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg)
+                Log.Warn("SuperPuTTY is set to NOT allow the use of the -pw <password> argument, this can be overriden in Tools -> Options -> GUI");
+
             string args = "-" + session.Proto.ToString().ToLower() + " ";
-            args += (!String.IsNullOrEmpty(session.Password) && session.Password.Length > 0) 
+            args += (!String.IsNullOrEmpty(session.Password) && session.Password.Length > 0 && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg) 
                 ? "-pw " + (includePassword ? session.Password : "XXXXX") + " " 
                 : "";
             args += "-P " + session.Port + " ";
