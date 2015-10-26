@@ -87,6 +87,7 @@ namespace SuperPutty
             }
         }
 
+
         public ToolWindowDocument PreviousPanel { get; set; }
         public ToolWindowDocument NextPanel { get; set; }
     }
