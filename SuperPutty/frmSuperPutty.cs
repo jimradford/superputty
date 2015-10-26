@@ -198,14 +198,17 @@ namespace SuperPutty
                         && tsCommandHistory[i].Command.Equals(he.Command))
                     {
                         tsCommandHistory.RemoveAt(i);
-                    }
-
+                    }                    
+                }
+                
+                for(int i = 0; i < tsCommandHistory.Count; i++)
+                {
                     // purge old entries from history
-                    if(tsCommandHistory[i].TimeStamp < daysAgo)
+                    if (tsCommandHistory[i].TimeStamp < daysAgo)
                     {
                         tsCommandHistory.RemoveAt(i);
                     }
-                }               
+                }           
             }
         }       
 
