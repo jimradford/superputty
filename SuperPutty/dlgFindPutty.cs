@@ -194,7 +194,9 @@ namespace SuperPutty
             this.textBoxHomeDirPrefix.Text = SuperPuTTY.Settings.PscpHomePrefix;
             this.textBoxRootDirPrefix.Text = SuperPuTTY.Settings.PscpRootHomePrefix;
             this.checkSessionTreeFoldersFirst.Checked = SuperPuTTY.Settings.SessiontreeShowFoldersFirst;
-
+            this.checkBoxPersistTsHistory.Checked = SuperPuTTY.Settings.PersistCommandBarHistory;
+            this.numericUpDown1.Value = SuperPuTTY.Settings.SaveCommandHistoryDays;
+            this.checkBoxAllowPuttyPWArg.Checked = SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg;
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -312,6 +314,9 @@ namespace SuperPutty
                 SuperPuTTY.Settings.PscpHomePrefix = this.textBoxHomeDirPrefix.Text;
                 SuperPuTTY.Settings.PscpRootHomePrefix = this.textBoxRootDirPrefix.Text;
                 SuperPuTTY.Settings.SessiontreeShowFoldersFirst = this.checkSessionTreeFoldersFirst.Checked;
+                SuperPuTTY.Settings.PersistCommandBarHistory = this.checkBoxPersistTsHistory.Checked;
+                SuperPuTTY.Settings.SaveCommandHistoryDays = (int)this.numericUpDown1.Value;
+                SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg = this.checkBoxAllowPuttyPWArg.Checked;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
@@ -477,7 +482,7 @@ namespace SuperPutty
         static string ToShortString(Font font)
         {
             return String.Format("{0}, {1} pt, {2}", font.FontFamily.Name, font.Size, font.Style);
-        }
+        }       
     }
 
 }

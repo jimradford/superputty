@@ -479,22 +479,26 @@ namespace SuperPutty
                     }
                 };
 
-                //sessionPanel = ctlPuttyPanel.NewPanel(session);
-                panel = new ctlPuttyPanel(session, callback);
+                try {
+                    panel = new ctlPuttyPanel(session, callback);
 
-                ApplyDockRestrictions(panel);
-                ApplyIconForWindow(panel, session);
-                panel.Show(MainForm.DockPanel, session.LastDockstate);
-                ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
+                    ApplyDockRestrictions(panel);
+                    ApplyIconForWindow(panel, session);
+                    panel.Show(MainForm.DockPanel, session.LastDockstate);
+                    ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
 
-                if (!String.IsNullOrEmpty(session.SPSLFileName)
-                    && File.Exists(session.SPSLFileName))
-                {                    
-                    ExecuteScriptEventArgs scriptArgs = new ExecuteScriptEventArgs() { Script = File.ReadAllText(session.SPSLFileName), Handle = panel.AppPanel.AppWindowHandle };
-                    if (!String.IsNullOrEmpty(scriptArgs.Script))
+                    if (!String.IsNullOrEmpty(session.SPSLFileName)
+                        && File.Exists(session.SPSLFileName))
                     {
-                        SPSL.BeginExecuteScript(scriptArgs);                                 
+                        ExecuteScriptEventArgs scriptArgs = new ExecuteScriptEventArgs() { Script = File.ReadAllText(session.SPSLFileName), Handle = panel.AppPanel.AppWindowHandle };
+                        if (!String.IsNullOrEmpty(scriptArgs.Script))
+                        {
+                            SPSL.BeginExecuteScript(scriptArgs);
+                        }
                     }
+                } catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show("Error trying to create session " + ex.Message, "Failed to create session panel", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             return panel;
@@ -845,7 +849,10 @@ namespace SuperPutty
         GotoCommandBar,
         GotoConnectionBar,
         FocusActiveSession,
-        OpenScriptEditor
+        /// <summary>Open Script Editor Window</summary>
+        OpenScriptEditor,
+        /// <summary>Rename active tab</summary>
+        RenameTab
     } 
     #endregion
 
