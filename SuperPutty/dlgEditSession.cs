@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Jim Radford http://www.jimradford.com
+ * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -20,18 +20,14 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using Microsoft.Win32;
-using System.Web;
 using SuperPutty.Data;
 using SuperPutty.Utils;
 using SuperPutty.Gui;
 using log4net;
+using System.IO;
 
 namespace SuperPutty
 {
@@ -63,6 +59,7 @@ namespace SuperPutty
                 this.textBoxPort.Text = Session.Port.ToString();
                 this.textBoxExtraArgs.Text = Session.ExtraArgs;
                 this.textBoxUsername.Text = Session.Username;
+                this.textBoxSPSLScriptFile.Text = Session.SPSLFileName;
                 this.textBoxRemotePathSesion.Text = Session.RemotePath;
                 this.textBoxLocalPathSesion.Text = Session.LocalPath;
 
@@ -94,6 +91,7 @@ namespace SuperPutty
                         break;
                 }
 
+                comboBoxPuttyProfile.DropDownStyle = ComboBoxStyle.DropDownList;
                 foreach(String settings in this.comboBoxPuttyProfile.Items){
                     if (settings == session.PuttySession)
                     {
@@ -145,25 +143,27 @@ namespace SuperPutty
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
+
             if (!String.IsNullOrEmpty(CommandLineOptions.getcommand(textBoxExtraArgs.Text, "-pw")))
             {
-                if (MessageBox.Show("SuperPutty encrypts the password in Sessions.xml file with the master password, but using a password in 'Extra PuTTY Arguments' is very insecure.\nFor a secure connection use SSH authentication with Pageant. \nSelect yes, if you want save the password", "Are you sure that you want to save the password?",
+                if (MessageBox.Show("SuperPutty save the password in Sessions.xml file in plain text.\nUse a password in 'Extra PuTTY Arguments' is very insecure.\nFor a secure connection use SSH authentication with Pageant. \nSelect yes, if you want save the password", "Are you sure that you want to save the password?",
                         MessageBoxButtons.OKCancel,
                         MessageBoxIcon.Warning,
                         MessageBoxDefaultButton.Button1)==DialogResult.Cancel){
                             return;                
                 }
             }
-            Session.SessionName = textBoxSessionName.Text.Trim();
+            Session.SessionName  = textBoxSessionName.Text.Trim();
             Session.PuttySession = comboBoxPuttyProfile.Text.Trim();
-            Session.Host = textBoxHostname.Text.Trim();
-            Session.ExtraArgs = textBoxExtraArgs.Text.Trim();
+            Session.Host         = textBoxHostname.Text.Trim();
+            Session.ExtraArgs    = textBoxExtraArgs.Text.Trim();
+            Session.Port         = int.Parse(textBoxPort.Text.Trim());
+            Session.Username     = textBoxUsername.Text.Trim();
+            Session.SessionId    = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
+            Session.ImageKey     = buttonImageSelect.ImageKey;
+            Session.SPSLFileName = textBoxSPSLScriptFile.Text.Trim();
             Session.RemotePath = textBoxRemotePathSesion.Text.Trim();
             Session.LocalPath = textBoxLocalPathSesion.Text.Trim();
-            Session.Port = int.Parse(textBoxPort.Text.Trim());
-            Session.Username = textBoxUsername.Text.Trim();
-            Session.SessionId = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
-            Session.ImageKey = buttonImageSelect.ImageKey;
 
             for (int i = 0; i < groupBox1.Controls.Count; i++)
             {
@@ -251,8 +251,6 @@ namespace SuperPutty
                 this.textBoxPort.Text = "22";
             }
         }
-
-
 
         public static int GetDefaultPort(ConnectionProtocol protocol)
         {
@@ -392,33 +390,39 @@ namespace SuperPutty
 
         #endregion
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void buttonBrowse_Click(object sender, EventArgs e)
         {
 
-            if (checkBoxShowHidePW.Checked)
+            DialogResult dlgResult = this.openFileDialog1.ShowDialog();
+            if (dlgResult == DialogResult.OK)
             {
-                textBoxExtraArgs.PasswordChar = '*';
-            }
-            else 
-            {
-                textBoxExtraArgs.PasswordChar='\0'; 
+                textBoxSPSLScriptFile.Text = this.openFileDialog1.FileName;
             }
         }
 
-        private void dlgEditSession_Load(object sender, EventArgs e)
+        private void buttonClearSPSLFile_Click(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(CommandLineOptions.getcommand(this.Session.ExtraArgs, "-pw")))
-            {
-                checkBoxShowHidePW.Checked = true;
-                textBoxExtraArgs.PasswordChar = '*';
-            }
-            else 
-            {
-                textBoxExtraArgs.PasswordChar = '\0';
-            }
+            Session.SPSLFileName = textBoxSPSLScriptFile.Text = String.Empty;
+            
         }
 
-        private void textBoxExtraArgs_TextChanged(object sender, EventArgs e)
+        private void buttonBrowseLocalPath_Click(object sender, EventArgs e)
+        {            
+            if (Directory.Exists(textBoxLocalPathSesion.Text))
+            {
+                folderBrowserDialog1.SelectedPath = textBoxLocalPathSesion.Text;
+            }
+            if (folderBrowserDialog1.ShowDialog(this) == DialogResult.OK)
+            {
+                if (!String.IsNullOrEmpty(folderBrowserDialog1.SelectedPath))
+                    textBoxLocalPathSesion.Text = folderBrowserDialog1.SelectedPath;
+            }
+
+
+        }
+
+
+       private void textBoxExtraArgs_TextChanged(object sender, EventArgs e)
         {
             //if extra Args contains a password, change the backgroudn
             if (!String.IsNullOrEmpty(CommandLineOptions.getcommand(textBoxExtraArgs.Text, "-pw")))
@@ -429,6 +433,5 @@ namespace SuperPutty
                 textBoxExtraArgs.BackColor = Color.White;
             }
         }
-
     }
 }

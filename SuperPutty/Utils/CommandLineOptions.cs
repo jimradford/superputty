@@ -34,7 +34,7 @@ namespace SuperPutty.Utils
     /// </summary>
     public class CommandLineOptions
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(CommandLineOptions));        
+        private static readonly ILog Log = LogManager.GetLogger(typeof(CommandLineOptions));
 
         public CommandLineOptions(string[] args)
         {
@@ -126,20 +126,23 @@ namespace SuperPutty.Utils
             }
         }
 
+
+
         /// <summary>
         /// Return the command value in allCommands (without quotes)              
         /// </summary>
         /// <param name="allCommands">String contains all commands</param>
         /// <param name="command">command to search: ej "-pw"</param>
         /// <returns>the value of command  )</returns>
-        public static String getcommand(String allCommands, String command) {
+        public static String getcommand(String allCommands, String command)
+        {
 
-            if (String.IsNullOrEmpty(allCommands)) {
+            if (String.IsNullOrEmpty(allCommands))
+            {
                 return "";
             }
             string strRegex = command + @"[=:\s](?:""([^""]*)""|([^""\s]+))";
             Regex myRegex = new Regex(strRegex, RegexOptions.Compiled);
-
             foreach (Match myMatch in myRegex.Matches(allCommands))
             {
                 if (myMatch.Success)
@@ -151,20 +154,14 @@ namespace SuperPutty.Utils
         }
 
 
-
         /// <summary>
-        /// Encrypt the "-pw" command included in allcomands with key
+        /// replace the value of "-pw" command included in allcomands with text
         /// </summary>
         /// <param name="allCommands"></param>
-        /// <param name="key">key for encrypt</param>
+        /// <param name="key">text, if is null or empty delete the -pw command</param>
         /// <returns></returns>
-        public static String encryptPassword(String allCommands, String key)
-        {
-            if (String.IsNullOrEmpty(key)) {
-                return allCommands;
-            }
-
-            String pw = "";
+        public static String replacePassword(String allCommands, String text)
+        {            
             if (String.IsNullOrEmpty(allCommands))
             {
                 return "";
@@ -176,51 +173,17 @@ namespace SuperPutty.Utils
             {
                 if (myMatch.Success)
                 {
-                    pw = myMatch.Groups[2].Value;
-                    pw = CryptoAES.EncryptString(pw, key);
-                    allCommands = Regex.Replace(allCommands, strRegex, "${1}" + pw); 
+                    if (String.IsNullOrEmpty(text))
+                    {
+                        allCommands = Regex.Replace(allCommands, strRegex, "");
+                    }
+                    else {
+                        allCommands = Regex.Replace(allCommands, strRegex, "${1}" + text); 
+                    }                                        
                 }
             }
             return allCommands;
         }
-
-        /// <summary>
-        /// Decrypt the "-pw" command included in allcomands with key
-        /// </summary>
-        /// <param name="allCommands"></param>
-        /// <param name="key">key for decrypt</param>
-        /// <returns></returns>
-        public static String decryptPassword(String allCommands, String key)
-        {
-            
-            if (String.IsNullOrEmpty(allCommands))
-            {
-                return "";
-            }
-
-            if (String.IsNullOrEmpty(key))
-            {
-                return allCommands;
-            }
-
-            String pw = "";
-            string strRegex = @"(-pw[=:\s])(""[^""]*""|[^""\s]+)";
-            Regex myRegex = new Regex(strRegex, RegexOptions.Compiled);
-
-            foreach (Match myMatch in myRegex.Matches(allCommands))
-            {
-                if (myMatch.Success)
-                {
-                    pw = myMatch.Groups[2].Value;
-                    pw = CryptoAES.DecryptString(pw, key);
-                    allCommands = Regex.Replace(allCommands, strRegex, "${1}" + pw);
-                }
-            }
-            return allCommands;
-        }
-
-
-
 
         public SessionDataStartInfo ToSessionStartInfo()
         {

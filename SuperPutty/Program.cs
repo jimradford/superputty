@@ -90,11 +90,7 @@ namespace SuperPutty
                 Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
- 
-                if(SuperPuTTY.exceptionMasterPwIncorrectInLoad!=null){
-                    MessageBox.Show(SuperPuTTY.exceptionMasterPwIncorrectInLoad.Message);                       
-                }
-                
+
                 frmSuperPutty mainForm = new frmSuperPutty();
                 SetDefaultIcon(mainForm);
                 Application.Run(SuperPuTTY.MainForm = mainForm);

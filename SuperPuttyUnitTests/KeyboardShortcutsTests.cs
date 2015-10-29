@@ -86,48 +86,15 @@ namespace SuperPuttyUnitTests
 
         }
 
-        [Test]
-        public void encriptPasswordTest()
-        {
-            String command = CommandLineOptions.encryptPassword("-pw 12sa12 -we aasd", "mipw");
-            command = CommandLineOptions.decryptPassword(command,"mipw");
-            Assert.AreEqual("-pw 12sa12 -we aasd", command);
-
-            command = CommandLineOptions.encryptPassword(" -pw \"/\\*/*12sa12\" -we aasd", "mipw");
-            command = CommandLineOptions.decryptPassword(command, "mipw");
-            Assert.AreEqual(" -pw \"/\\*/*12sa12\" -we aasd", command);
-
-            command = CommandLineOptions.encryptPassword(" -pw:\"/\\*/*+12sa12\" -we aasd", "mipw");
-            command = CommandLineOptions.decryptPassword(command, "mipw");
-            Assert.AreEqual(" -pw:\"/\\*/*+12sa12\" -we aasd", command);
-        }
-
-
-        [Test]
-        public void MasterPasswordTest()
-        {
-            String command = DataProtection.Protect("12sa12");
-            command = DataProtection.Unprotect(command);
-            Assert.AreEqual("12sa12", command);
-
-            command = DataProtection.Protect("\"/\\*/*12sa12\"");
-            command = DataProtection.Unprotect(command);
-            Assert.AreEqual("\"/\\*/*12sa12\"", command);
-
-            command = DataProtection.Protect("\"/\\*/*+12sa12\"");
-            command = DataProtection.Unprotect(command);
-            Assert.AreEqual("\"/\\*/*+12sa12\"", command);                       
-
-
-        }
-
-
         [TestView]
         public void DialogBasicTest()
         {
             KeyboardShortcutEditor form = new KeyboardShortcutEditor();
             form.ShowDialog(null, new KeyboardShortcut { Name = "test", Key = Keys.A, Modifiers = Keys.Control });
         }
+
+
+
 
     }
 }

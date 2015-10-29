@@ -23,16 +23,16 @@ namespace SuperPutty.Scp
         }
 
         public PscpBrowserPanel(SessionData session, PscpOptions options) :
-            // default value of localStartingDir moved to localPath in PscpBrowserPanel(SessionData session, PscpOptions options, string localStartingDir)            
-            this(session, options, "") 
+           // default value of localStartingDir moved to localPath in PscpBrowserPanel(SessionData session, PscpOptions options, string localStartingDir)            
+           this(session, options, "")
         { }
 
         public PscpBrowserPanel(SessionData session, PscpOptions options, string localStartingDir) : this()
         {
             this.Name = session.SessionName;
             this.TabText = session.SessionName;
-            
-            //set the remote path
+
+             //set the remote path
             String remotePath = "";            
             if (String.IsNullOrEmpty(session.RemotePath)){                
                 remotePath = options.PscpHomePrefix + session.Username;
@@ -51,6 +51,7 @@ namespace SuperPutty.Scp
             }else{
                 localPath = localStartingDir;
             }
+ 		 
 
             this.fileTransferPresenter = new FileTransferPresenter(options);
             this.localBrowserPresenter = new BrowserPresenter(

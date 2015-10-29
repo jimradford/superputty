@@ -1,4 +1,25 @@
-﻿using System;
+﻿/*
+ * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -14,6 +35,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using SuperPutty.Scp;
+using SuperPuTTY.Scripting;
 
 namespace SuperPutty
 {
@@ -23,9 +45,6 @@ namespace SuperPutty
     public static class SuperPuTTY 
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SuperPuTTY));
-        public  enum OperationCrypto{encrypt,decrypt, withoutEncryption};
-        public static Exception exceptionMasterPwIncorrectInLoad = null;
-        
 
         public static event EventHandler<LayoutChangedEventArgs> LayoutChanging;
         public static event EventHandler<LayoutChangedEventArgs> LayoutChanged;
@@ -306,7 +325,6 @@ namespace SuperPutty
         {
             string fileName = SessionsFileName;
             Log.InfoFormat("Loading all sessions.  file={0}", fileName);
-            exceptionMasterPwIncorrectInLoad = null;
 
             try
             {
@@ -316,30 +334,9 @@ namespace SuperPutty
                     // remove old
                     sessionsMap.Clear();
                     sessionsList.Clear();
-                    string pw = SingletonSessionPasswordManager.Instance.getMasterPassword();
+
                     foreach (SessionData session in sessions)
                     {
-                        //if the masterPassword is not empty, decrypt password specified in extraArgs
-                        //when occurs an error don't continue loading the sessions
-                        if (!String.IsNullOrEmpty(pw) && (exceptionMasterPwIncorrectInLoad == null))
-                        {
-                            try
-                            {
-                                session.ExtraArgs = CommandLineOptions.decryptPassword(session.ExtraArgs, pw);
-                            }
-                            catch (System.Security.Cryptography.CryptographicException cex)
-                            {
-                                exceptionMasterPwIncorrectInLoad = new Exception("Incorrect master password.\nPlease, change the master password (Tools-->Options-->Advanced-->Master Password). Type the password used in the last session, and reload sessions (File-->Reload sessions) for retrieve the sessions\n", cex);
-                                Log.Error("Error while loading sessions from " + fileName + ". please, make sure the master password is correct", cex);
-                                break;
-                            }
-                            catch (System.FormatException fex) {
-
-                                exceptionMasterPwIncorrectInLoad = new Exception("I can't decrypt the " + session.SessionName + " session.\nThe password is incorrect, or the file " + fileName + " is corrupt.", fex);                            
-                                Log.Error("Error while loading sessions from " + fileName + ". The session " + session.SessionName + " is corrupt, or the password is incorrect", fex);
-                                break;
-                            }                         
-                        }
                         AddSession(session);
                     }
                 }
@@ -351,17 +348,15 @@ namespace SuperPutty
             }
             catch (Exception ex)
             {
-                Log.Error("Error while loading sessions from " + fileName, ex);                
+                Log.Error("Error while loading sessions from " + fileName, ex);
             }
-            
-
         }
 
         /// <summary>Save in-application Session Database to XML File</summary>
         public static void SaveSessions()
         {
             Log.InfoFormat("Saving all sessions");
-            SessionData.SaveSessionsToFile(GetAllSessions(SuperPuTTY.OperationCrypto.encrypt, SingletonSessionPasswordManager.Instance.getMasterPassword()), SessionsFileName);
+            SessionData.SaveSessionsToFile(GetAllSessions(), SessionsFileName);
         }
 
         /// <summary>
@@ -433,42 +428,11 @@ namespace SuperPutty
             return success;
         }
 
-        
-        /// <summary>        
-        /// Get a list of all sessions from the in-application database and if pw is not empty, encript/decript the extraargs
-        /// </summary>        
-        /// <param name="operation">operation (encrypt/decrypt/withoutEncryption)</param>
-        /// <param name="pw">password for encript the extra args (only encript the -pw command). </param>
+        /// <summary>Get a list of all sessions from the in-application database</summary>
         /// <returns>A <seealso cref="List"/> of <seealso cref="SessionData"/> objects</returns>
-        public static List<SessionData> GetAllSessions(OperationCrypto operation, string pw = ""  )
+        public static List<SessionData> GetAllSessions()
         {
-            List<SessionData> sessions = new List<SessionData>();
-            if (operation != OperationCrypto.withoutEncryption && !String.IsNullOrEmpty(pw) )
-            {
-                switch (operation)
-                {
-                    case OperationCrypto.decrypt:
-                        foreach (SessionData session in sessionsMap.Values.ToList())
-                        {
-                            SessionData s = (SessionData)session.Clone();
-                            s.ExtraArgs = CommandLineOptions.decryptPassword(s.ExtraArgs, pw);
-                            sessions.Add(s);
-                        }
-                        break;
-                    default:
-                        foreach (SessionData session in sessionsMap.Values.ToList())
-                        {
-                            SessionData s = (SessionData)session.Clone();
-                            s.ExtraArgs = CommandLineOptions.encryptPassword(s.ExtraArgs, pw);
-                            sessions.Add(s);
-                        }
-                        break;
-                } 
-            }
-            else {
-                sessions = sessionsMap.Values.ToList();
-            }
-            return sessions;
+            return sessionsMap.Values.ToList();
         }
 
         /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty window</summary>
@@ -480,17 +444,64 @@ namespace SuperPutty
 
         /// <summary>Open a new putty window with its settings being passed in a <seealso cref="SessionData"/> object</summary>
         /// <param name="session">The <seealso cref="SessionData"/> object containing the settings</param>
-        public static void OpenPuttySession(SessionData session)
+        public static ctlPuttyPanel OpenPuttySession(SessionData session)
         {
             Log.InfoFormat("Opening putty session, id={0}", session == null ? "" : session.SessionId);
+            ctlPuttyPanel panel = null;
             if (session != null)
             {
-                ctlPuttyPanel sessionPanel = ctlPuttyPanel.NewPanel(session);
-                ApplyDockRestrictions(sessionPanel);
-                ApplyIconForWindow(sessionPanel, session);
-                sessionPanel.Show(MainForm.DockPanel, session.LastDockstate);
-                SuperPuTTY.ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
+                // This is the callback fired when the panel containing the terminal is closed
+                // We use this to save the last docking location and to close the panel
+                PuttyClosedCallback callback = delegate (bool closed)
+                {
+                    if (panel != null)
+                    {
+                        // save the last dockstate (if it has been changed)
+                        if (session.LastDockstate != panel.DockState
+                            && panel.DockState != DockState.Unknown
+                            && panel.DockState != DockState.Hidden)
+                        {
+                            session.LastDockstate = panel.DockState;
+                            SuperPuTTY.SaveSessions();
+                        }
+
+                        if (panel.InvokeRequired)
+                        {
+                            panel.BeginInvoke((MethodInvoker)delegate ()
+                            {
+                                panel.Close();
+                            });
+                        }
+                        else
+                        {
+                            panel.Close();
+                        }
+                    }
+                };
+
+                try {
+                    panel = new ctlPuttyPanel(session, callback);
+
+                    ApplyDockRestrictions(panel);
+                    ApplyIconForWindow(panel, session);
+                    panel.Show(MainForm.DockPanel, session.LastDockstate);
+                    ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
+
+                    if (!String.IsNullOrEmpty(session.SPSLFileName)
+                        && File.Exists(session.SPSLFileName))
+                    {
+                        ExecuteScriptEventArgs scriptArgs = new ExecuteScriptEventArgs() { Script = File.ReadAllText(session.SPSLFileName), Handle = panel.AppPanel.AppWindowHandle };
+                        if (!String.IsNullOrEmpty(scriptArgs.Script))
+                        {
+                            SPSL.BeginExecuteScript(scriptArgs);
+                        }
+                    }
+                } catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show("Error trying to create session " + ex.Message, "Failed to create session panel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
+            return panel;
         }
 
         /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty scp window</summary>
@@ -513,8 +524,7 @@ namespace SuperPutty
             {
                 var homePrefix = session.Username.ToLower().Equals("root") ? Settings.PscpRootHomePrefix : Settings.PscpHomePrefix;
                 PscpBrowserPanel panel = new PscpBrowserPanel(
-
-                session, new PscpOptions { PscpLocation = Settings.PscpExe, PscpHomePrefix = homePrefix });
+                    session, new PscpOptions { PscpLocation = Settings.PscpExe, PscpHomePrefix = homePrefix });
                 ApplyDockRestrictions(panel);
                 ApplyIconForWindow(panel, session);
                 panel.Show(MainForm.DockPanel, session.LastDockstate);
@@ -578,38 +588,14 @@ namespace SuperPutty
 
         /// <summary>Import sessions from the specified file into the in-application database</summary>
         /// <param name="fileName">A string containing the path of the filename that holds session configuration</param>
-        /// <param name="pw">password used for importing file (for decript the pw specified in extraargs)
-        public static void ImportSessionsFromFile(string fileName, String pw = "")
+        public static void ImportSessionsFromFile(string fileName)
         {
-            exceptionMasterPwIncorrectInLoad = null;
             if (fileName == null) { return; }
             if (File.Exists(fileName))
             {
                 Log.InfoFormat("Importing sessions from file, path={0}", fileName);
                 List<SessionData> sessions = SessionData.LoadSessionsFromFile(fileName);
-                foreach (SessionData session in sessions)
-                {
-                    try
-                    {
-                        session.ExtraArgs = CommandLineOptions.decryptPassword(session.ExtraArgs, pw);
-                    }
-                    catch (System.Security.Cryptography.CryptographicException cex)
-                    {
-                        exceptionMasterPwIncorrectInLoad = new Exception("Incorrect password. Please, change the password and try again.", cex);
-                        Log.Error("Error while loading sessions from " + fileName + ". please, make sure the password is correct", cex);
-                        break;
-                    }
-                    catch (System.FormatException fex)
-                    {
-                        exceptionMasterPwIncorrectInLoad = new Exception("I can't decrypt the " + session.SessionName + " session.\nThe password is incorrect, or the file " + fileName + " is corrupt.", fex);
-                        Log.Error("Error while loading sessions from " + fileName + ". The session " + session.SessionName + " is corrupt, or the password is incorrect", fex);
-                        break;
-                    }
-                }
-                if (exceptionMasterPwIncorrectInLoad == null) {
-                    ImportSessions(sessions, "Imported");
-                }
-                
+                ImportSessions(sessions, "Imported");
             }
         }
 
@@ -874,7 +860,10 @@ namespace SuperPutty
         GotoCommandBar,
         GotoConnectionBar,
         FocusActiveSession,
-        OpenScriptEditor
+        /// <summary>Open Script Editor Window</summary>
+        OpenScriptEditor,
+        /// <summary>Rename active tab</summary>
+        RenameTab
     } 
     #endregion
 

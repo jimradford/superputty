@@ -23,7 +23,6 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -31,14 +30,12 @@ using log4net;
 using SuperPutty.Data;
 using SuperPutty.Utils;
 using SuperPutty.Gui;
-using System.Security.Cryptography;     
 
 namespace SuperPutty
 {
     public partial class dlgFindPutty : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(dlgFindPutty));
-        private static String textSimulePassword = "******";
 
         private string m_PuttyLocation;
 
@@ -68,7 +65,7 @@ namespace SuperPutty
             string pscpExe = SuperPuTTY.Settings.PscpExe;
 
             Boolean firstExecution = String.IsNullOrEmpty(puttyExe);
-            textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe,firstExecution);
+            textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe, firstExecution);
             textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe, firstExecution);
 
             // check for location of putty/pscp
@@ -199,16 +196,10 @@ namespace SuperPutty
             this.checkPuttyEnableNewSessionMenu.Checked = SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu;
             this.checkBoxCheckForUpdates.Checked = SuperPuTTY.Settings.AutoUpdateCheck;
             this.textBoxHomeDirPrefix.Text = SuperPuTTY.Settings.PscpHomePrefix;
-
-            if (String.IsNullOrEmpty(SingletonSessionPasswordManager.Instance.getMasterPassword()))
-            {
-                this.textBoxGlobalPassword.Text = "";
-            }
-            else {
-                this.textBoxGlobalPassword.Text = textSimulePassword;
-            }
-
             this.textBoxRootDirPrefix.Text = SuperPuTTY.Settings.PscpRootHomePrefix;
+            this.checkBoxPersistTsHistory.Checked = SuperPuTTY.Settings.PersistCommandBarHistory;
+            this.numericUpDown1.Value = SuperPuTTY.Settings.SaveCommandHistoryDays;
+            this.checkBoxAllowPuttyPWArg.Checked = SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg;
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -224,7 +215,8 @@ namespace SuperPutty
             }
             this.dataGridViewShortcuts.DataSource = this.Shortcuts;
         }
-        
+
+
         /// <summary>
         /// return the path of the exe. 
         /// return settingValue if it is a valid path, or if searchPath is false, else search and return the default location of PathInProgramFile.
@@ -234,7 +226,7 @@ namespace SuperPutty
         /// <param name="searchPath">boolean </param>
         /// <returns>The path of the exe</returns>
         private String getPathExe(String PathInProgramFile, String settingValue, Boolean searchPath)
-        {            
+        {
             if ((!String.IsNullOrEmpty(settingValue) && File.Exists(settingValue)) || !searchPath)
             {
                 return settingValue;
@@ -258,6 +250,7 @@ namespace SuperPutty
 
             return "";
         }
+
 
         private void InitLayouts()
         {
@@ -370,17 +363,9 @@ namespace SuperPutty
                 SuperPuTTY.Settings.AutoUpdateCheck = this.checkBoxCheckForUpdates.Checked;
                 SuperPuTTY.Settings.PscpHomePrefix = this.textBoxHomeDirPrefix.Text;
                 SuperPuTTY.Settings.PscpRootHomePrefix = this.textBoxRootDirPrefix.Text;
-
-                // only save the password if has changed
-                // the MasterPassword is never visible, superputty works with the hash of password, 
-                // and is only accesible for the current user, if the user change is needed rewrite the password.
-                if (!this.textBoxGlobalPassword.Text.Equals(textSimulePassword))
-                {                   
-                    SingletonSessionPasswordManager.Instance.setMasterPassword(this.textBoxGlobalPassword.Text);
-                    this.textBoxGlobalPassword.Text = textSimulePassword;
-                    //save sessions for force encript with new password
-                    SuperPuTTY.SaveSessions();                    
-                }
+                SuperPuTTY.Settings.PersistCommandBarHistory = this.checkBoxPersistTsHistory.Checked;
+                SuperPuTTY.Settings.SaveCommandHistoryDays = (int)this.numericUpDown1.Value;
+                SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg = this.checkBoxAllowPuttyPWArg.Checked;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
@@ -450,36 +435,38 @@ namespace SuperPutty
 
         private void buttonBrowseWinSCP_Click(object sender, EventArgs e)
         {
-            dialogBrowseExe( "WinSCP|WinSCP.exe","WinSCP.exe",textBoxWinSCPLocation);
+            dialogBrowseExe("WinSCP|WinSCP.exe", "WinSCP.exe", textBoxWinSCPLocation);
         }
 
-        private void dialogBrowseExe(String filter,string filename, TextBox textbox)
+        private void dialogBrowseExe(String filter, string filename, TextBox textbox)
         {
             openFileDialog1.Filter = filter;
             openFileDialog1.FileName = filename;
 
-            if (File.Exists(textbox.Text)){
+            if (File.Exists(textbox.Text))
+            {
                 openFileDialog1.InitialDirectory = Path.GetDirectoryName(textbox.Text);
             }
-            if (openFileDialog1.ShowDialog(this)==DialogResult.OK) {
+            if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
+            {
                 if (!String.IsNullOrEmpty(openFileDialog1.FileName))
                     textbox.Text = openFileDialog1.FileName;
             }
-            
+
         }
 
-
         //Search automaticaly the path of FileZilla when doubleClick when it is empty
-        private void textBoxFilezillaLocation_DoubleClick(object sender, EventArgs e) 
+        private void textBoxFilezillaLocation_DoubleClick(object sender, EventArgs e)
         {
-            textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe, true);           
+            textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe, true);
         }
 
         //Search automaticaly the path of WinSCP when doubleClick when it is empty
-        private void textBoxWinSCPLocation_DoubleClick(object sender, EventArgs e)                              
-        {            
+        private void textBoxWinSCPLocation_DoubleClick(object sender, EventArgs e)
+        {
             textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe, true);
         }
+
 
         /// <summary>
         /// Check that putty can be found.  If not, prompt the user
@@ -565,7 +552,7 @@ namespace SuperPutty
         static string ToShortString(Font font)
         {
             return String.Format("{0}, {1} pt, {2}", font.FontFamily.Name, font.Size, font.Style);
-        }
+        }       
     }
 
 }

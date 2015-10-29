@@ -10,6 +10,7 @@ using System.Threading;
 using log4net;
 using log4net.Core;
 using SuperPutty.Data;
+using SuperPutty.Utils;
 
 namespace SuperPutty.Scp
 {
@@ -92,11 +93,11 @@ namespace SuperPutty.Scp
             {
                 //return this.DoListDirectory(path);
                 ListDirectoryResult result = new ListDirectoryResult(path);
-                
+                String ArgsPscp = ToArgs(this.Session, this.Session.Password, path.Path);
                 RunPscp(
                     result,
-                    ToArgs(this.Session, this.Session.Password, path.Path),
-                    ToArgs(this.Session, "XXXXX", path.Path), 
+                    ArgsPscp,
+                    CommandLineOptions.replacePassword(ArgsPscp,"XXXXX"), 
                     null, 
                     null,
                     (lines) =>
@@ -162,13 +163,18 @@ namespace SuperPutty.Scp
             {
                 sb.AppendFormat("-load \"{0}\" ", session.PuttySession);
             }
+
+            //only send the password if AllowPlainTextPuttyPasswordArg is checked
+            if (!String.IsNullOrEmpty(password) && !SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg)
+                Log.Warn("SuperPuTTY is set to NOT allow the use of the -pw <password> argument, this can be overriden in Tools -> Options -> GUI");
             //fix: use the parameter "password"
-            if (!string.IsNullOrEmpty(password))
+            if (!string.IsNullOrEmpty(password) && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg)
             {
                 sb.AppendFormat("-pw {0} ", password);
             }
+
             sb.AppendFormat("-P {0} ", session.Port);
-            sb.AppendFormat("{0}@{1}:{2}", session.Username, session.Host, path);
+            sb.AppendFormat("{0}@{1}:\"{2}\"", session.Username, session.Host, path);
 
             return sb.ToString();
         }
@@ -220,7 +226,7 @@ namespace SuperPutty.Scp
             }
         }
 
-        static string ToArgs(SessionData session, string password, List<BrowserFileInfo> source, BrowserFileInfo target)
+        private static string ToArgs(SessionData session, string password, List<BrowserFileInfo> source, BrowserFileInfo target)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -242,26 +248,21 @@ namespace SuperPutty.Scp
                 {
                     sb.AppendFormat("\"{0}\" ", file.Path);
                 }
-                sb.AppendFormat(" {0}@{1}:\"{2}\"", session.Username, session.Host, EscapeForUnix(target.Path));
+                sb.AppendFormat(" {0}@{1}:\"{2}\"", session.Username, session.Host, target.Path);
             }
             else
             {
                 if (source.Count > 1)
                 {
-                    Log.WarnFormat("Not possible to transfer multiple remote files locally at one time.  Tranfering first only!");
+                    Log.WarnFormat("Not possible to transfer multiple remote files locally at one time.  Transferring first file only!");
                 }
-                sb.AppendFormat(" {0}@{1}:\"{2}\" ", session.Username, session.Host, EscapeForUnix(source[0].Path));
+                sb.AppendFormat(" {0}@{1}:\"{2}\" ", session.Username, session.Host, source[0].Path);
                 sb.AppendFormat("\"{0}\"", target.Path);
             }
 
             return sb.ToString();
         }
-
-        static string EscapeForUnix(string path)
-        {
-            return path.Replace(" ", @"\ "); 
-        }
-
+        
         #endregion
 
         #region RunPscp - Main work method
@@ -274,7 +275,7 @@ namespace SuperPutty.Scp
         /// <param name="inlineOutHandler">Inline handler for output</param>
         /// <param name="inlineErrHandler">Inline handler for error</param>
         /// <param name="successOutHandler">Handler for output of successful operation</param>
-        void RunPscp(
+        private void RunPscp(
             PscpResult result, 
             string args, 
             string argsToLog, 

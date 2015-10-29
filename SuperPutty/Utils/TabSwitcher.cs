@@ -1,6 +1,26 @@
-﻿using System;
+﻿/*
+ * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using WeifenLuo.WinFormsUI.Docking;
 using log4net;
@@ -31,7 +51,7 @@ namespace SuperPutty.Utils
                 Type t = Type.GetType(typeName);
                 if (t != null)
                 {
-                    strategy = (ITabSwitchStrategy) Activator.CreateInstance(t);
+                    strategy = (ITabSwitchStrategy)Activator.CreateInstance(t);
                 }
             }
             catch (Exception ex)
@@ -158,7 +178,7 @@ namespace SuperPutty.Utils
 
         ITabSwitchStrategy tabSwitchStrategy;
         ToolWindow currentDocument;
-    } 
+    }
     #endregion
 
     #region ITabSwitchStrategy
@@ -185,13 +205,13 @@ namespace SuperPutty.Utils
             this.Description = desc;
         }
 
-        public void Initialize(DockPanel panel) 
+        public void Initialize(DockPanel panel)
         {
             this.DockPanel = panel;
         }
 
-        public void AddTab(ToolWindow tab) {}
-        public void RemoveTab(ToolWindow tab) {}
+        public void AddTab(ToolWindow tab) { }
+        public void RemoveTab(ToolWindow tab) { }
 
         public bool MoveToNextTab()
         {
@@ -223,8 +243,8 @@ namespace SuperPutty.Utils
 
         public abstract IList<IDockContent> GetDocuments();
 
-        public void SetCurrentTab(ToolWindow window)  { }
-        public void Dispose() {}
+        public void SetCurrentTab(ToolWindow window) { }
+        public void Dispose() { }
 
         protected DockPanel DockPanel { get; set; }
         public string Description { get; protected set; }
@@ -236,14 +256,18 @@ namespace SuperPutty.Utils
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(VisualOrderTabSwitchStrategy));
 
-        public VisualOrderTabSwitchStrategy() : 
-            base("Visual: Left-to-Right, Top-to-Bottom") { }
+        public VisualOrderTabSwitchStrategy() :
+            base("Visual: Left-to-Right, Top-to-Bottom")
+        { }
 
         public override IList<IDockContent> GetDocuments()
         {
             return GetDocuments(this.DockPanel);
         }
 
+        /// <summary>Get a List containing session panels from a <seealso cref="DockPanel"/></summary>
+        /// <param name="dockPanel">The DockPanel parent containing the children panels</param>
+        /// <returns>A <seealso cref="IList{T}"/> containing open session panels of type <seealso cref="ctlPuttyPanel"/></returns>
         public static IList<IDockContent> GetDocuments(DockPanel dockPanel)
         {
             List<IDockContent> docs = new List<IDockContent>();
@@ -257,17 +281,10 @@ namespace SuperPutty.Utils
                 });
                 foreach (DockPane pane in panes)
                 {
-                    if (pane.Appearance == DockPane.AppearanceStyle.Document)
+                    foreach (IDockContent content in pane.Contents)
                     {
-                        foreach (IDockContent content in pane.Contents)
-                        {
-                            if (content.DockHandler.DockState == DockState.Document)
-                            {
-                                docs.Add(content);
-                            }
-                        }
-                        //Log.InfoFormat("\tPane: contents={0}, L={1}, T={2}", pane.Contents.Count, pane.Left, pane.Top);
-                        //foreach (IDockContent content in pane.Contents) { //Log.Info("\t\t" + content.DockHandler.TabText); }
+                        if(content is ctlPuttyPanel)
+                            docs.Add(content);
                     }
                 }
             }
@@ -281,155 +298,14 @@ namespace SuperPutty.Utils
     public class OpenOrderTabSwitchStrategy : AbstractOrderedTabSwitchStrategy
     {
         public OpenOrderTabSwitchStrategy() :
-            base("Open: In the order sessions are opened.") { }
+            base("Open: In the order sessions are opened.")
+        { }
 
         public override IList<IDockContent> GetDocuments()
         {
             return new List<IDockContent>(this.DockPanel.DocumentsToArray());
         }
     }
-
-    #endregion
-
-
-    #region MRUTabSwitchStrategyOld
-
-    /**
-    public class MRUTabSwitchStrategyOld : ITabSwitchStrategy
-    {
-        public string Description
-        {
-            get { return "MRU: Similar to Windows Alt-Tab"; }
-        }
-
-        public void Initialize(DockPanel panel)
-        {
-            this.DockPanel = panel;
-        }
-
-        public void AddTab(ToolWindow newTab)
-        {
-            if (!nodes.ContainsKey(newTab))
-            {
-                // Insert this panel into the list used for Ctrl-Tab handling.
-
-                // store node
-                TabNode node = new TabNode { Window = newTab };
-                nodes.Add(newTab, node);
-
-                if (this.CurrentTab == null)
-                {
-                    // First panel to be created
-                    node.Prev = node;
-                    node.Next = node;
-                    this.CurrentTab = node;
-                } 
-                else
-                {
-                    // Other panels exist. Tie ourselves into list ahead of current panel.
-                    node.Prev = this.CurrentTab;
-                    node.Next = this.CurrentTab.Next;
-                    this.CurrentTab.Next = node;
-                    node.Next.Prev = node;
-
-                    // We are now the current panel
-                    this.CurrentTab = node;
-                }
-            }
-        }
-
-        public void RemoveTab(ToolWindow oldTab)
-        {
-            TabNode node;
-            if (this.nodes.TryGetValue(oldTab, out node))
-            {
-                // remove the tab
-                this.nodes.Remove(oldTab);
-
-                // remove the node from the circular list
-                if (this.CurrentTab == node && node.Next == node && node.Prev == node)
-                {
-                    this.CurrentTab = null;
-                }
-                else
-                {
-                    node.Prev.Next = node.Next;
-                    node.Next.Prev = node.Prev;
-                    this.CurrentTab = node.Prev;
-                }
-            }
-        }
-
-        public bool MoveToNextTab()
-        {
-            bool res = false;
-            if (this.TransitioningTab == null)
-            {
-                this.TransitioningTab = this.CurrentTab;
-            }
-
-            if (this.TransitioningTab != null)
-            {
-                this.TransitioningTab = this.TransitioningTab.Next;
-                this.TransitioningTab.Window.Activate();
-                res = true;
-            }
-            return res;
-        }
-
-        public bool MoveToPrevTab()
-        {
-            bool res = false;
-            if (this.TransitioningTab == null)
-            {
-                this.TransitioningTab = this.CurrentTab;
-            }
-
-            if (this.TransitioningTab != null)
-            {
-                this.TransitioningTab = this.TransitioningTab.Prev;
-                this.TransitioningTab.Window.Activate();
-                res = true;
-            }
-            return res;
-        }
-
-        public void SetCurrentTab(ToolWindow window)
-        {
-            TabNode node;
-            if (window != null && this.nodes.TryGetValue(window, out node))
-            {
-                if (this.CurrentTab == node) { return; }
-
-                // Remove ourselves from our position in chain
-                node.Prev.Next = node.Next;
-                node.Next.Prev = node.Prev;
-
-                node.Prev = this.CurrentTab;
-                node.Next = this.CurrentTab.Next;
-                this.CurrentTab.Next = node;
-                node.Next.Prev = node;
-
-                this.CurrentTab = node;
-                this.TransitioningTab = null;
-            }
-        }
-
-        public void Dispose() { }
-
-        DockPanel DockPanel { get; set; }
-        TabNode CurrentTab { get; set; }
-        TabNode TransitioningTab { get; set; }
-
-        private IDictionary<ToolWindow, TabNode> nodes = new Dictionary<ToolWindow, TabNode>();
-
-        public class TabNode
-        {
-            public ToolWindow Window { get; set; }
-            public TabNode Next { get; set; }
-            public TabNode Prev { get; set; }
-        }
-    }    */
 
     #endregion
 

@@ -1,3 +1,28 @@
+1.4.0.8
+- Fixes Issue #528 mintty (2.1.4) exiting and throwing exception due to default behavior change in mintty daemonize option.
+- Fixes Issue #546 Option Added to override and allow -pw <password> command line option to be sent. Defaults to not allow the -pw option.
+- Updated Readme file to promote our Facebook page
+- Resolves Issue #423 Support added to define shortcut key that will allow rename tab.
+- Issue #530 Adds support to persist Command Bar History between sessions 
+  * Uses SortableBindingList class as datasource for Command Bar History 
+  * Adds new settings in Options for enabling (default) command bar history and for setting aging (default 7 days) of history to persist
+- Fixes issue #491 Commands now sent to all sessions that are selected. 
+  * Some code cleanup
+- Issue #558 Adds support to execute SPSL scripts when a session is launched, or restored from auto layout 
+  * Better handling when a new session process is unable to start due to command line arguments or other reasons causing process to not start. should fix unhandled exception in Issue #528
+- Adds new SPSL Scripting Engine as documented in Issue #558
+- Fixes Issue #551 pscp command line arguments now properly encapsulated in quotation marks to deal with spaces in folder names
+- Fixes issue #557 and adds better error checking to application update checker Fixes Issue #556 check for null object when remote directory is not found due to configuration path error
+- Add better handling for update checker, possibly Fixes issue #557
+- Merge pull request #552 from spokorski/master
+  * pressing shift-enter in the command sender will suppress the trailing enter key in the
+  * commands actually sent to the putty sessions. pressing enter by itself will still function as
+  * normal.
+- Merge pull request #553 from simono74/master
+  * Implements Session Detail Window for a quick view of session properties
+- Merge pull request #548 from simono74/master
+  * Fix the way the keys are handled in the open session window
+
 1.4.0.7
 - Fixes Issue #379 NullReferenceException being thrown on First Run
 - Fixes Issue #440 Fixes Issue #553 usernames with . or - in them were failing the regular expression parser. [[:graph]] does not appear to be supported by the .NET regular expression library.

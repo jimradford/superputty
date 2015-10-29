@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Jim Radford http://www.jimradford.com
+ * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
  * Copyright (c) 2012 John Peterson
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using log4net;
 using System.Diagnostics;
@@ -43,6 +41,7 @@ using log4net.Core;
 
 namespace SuperPutty
 {
+    /// <summary>A control that hosts a putty window</summary>
     public partial class ctlPuttyPanel : ToolWindowDocument
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ctlPuttyPanel));
@@ -71,6 +70,7 @@ namespace SuperPutty
             AdjustMenu();
         }
 
+        /// <summary>Gets or sets the text displayed on a tab.</summary>
         public override string Text
         {
             get
@@ -138,7 +138,7 @@ namespace SuperPutty
 
                 // BBB: do i need to dispose each one?
                 newSessionToolStripMenuItem.DropDownItems.Clear();
-                foreach (SessionData session in SuperPuTTY.GetAllSessions(SuperPuTTY.OperationCrypto.withoutEncryption))
+                foreach (SessionData session in SuperPuTTY.GetAllSessions())
                 {
                     ToolStripMenuItem tsmiParent = newSessionToolStripMenuItem;
                     foreach (string part in SessionData.GetSessionNameParts(session.SessionId))
@@ -303,6 +303,9 @@ namespace SuperPutty
             return str;
         }
 
+        /// <summary>Restore sessions from a string containing previous sessions</summary>
+        /// <param name="persistString">A string containing the sessions to restore</param>
+        /// <returns>The <seealso cref="ctlPuttyPanel"/> object which is the parent of the hosted putty application, null if unable to start session</returns>
         public static ctlPuttyPanel FromPersistString(String persistString)
         {
             ctlPuttyPanel panel = null;
@@ -320,7 +323,7 @@ namespace SuperPutty
                     SessionData session = SuperPuTTY.GetSessionById(sessionId);
                     if (session != null)
                     {
-                        panel = ctlPuttyPanel.NewPanel(session);
+                        panel = SuperPuTTY.OpenPuttySession(session);
                         if (panel == null)
                         {
                             Log.WarnFormat("Could not restore putty session, sessionId={0}", sessionId);
@@ -347,7 +350,7 @@ namespace SuperPutty
                         SessionData session = SuperPuTTY.GetSessionById(sessionId);
                         if (session != null)
                         {
-                            panel = ctlPuttyPanel.NewPanel(session);
+                            panel = SuperPuTTY.OpenPuttySession(session);
                         }
                         else
                         {
@@ -396,42 +399,6 @@ namespace SuperPutty
         public ctlPuttyPanel previousPanel { get; set; }
         public ctlPuttyPanel nextPanel { get; set; }
 
-        public static ctlPuttyPanel NewPanel(SessionData sessionData)
-        {
-            ctlPuttyPanel puttyPanel = null;
-            // This is the callback fired when the panel containing the terminal is closed
-            // We use this to save the last docking location
-            PuttyClosedCallback callback = delegate(bool closed)
-            {
-                if (puttyPanel != null)
-                {
-                    // save the last dockstate (if it has been changed)
-                    if (sessionData.LastDockstate != puttyPanel.DockState
-                        && puttyPanel.DockState != DockState.Unknown
-                        && puttyPanel.DockState != DockState.Hidden)
-                    {
-                        sessionData.LastDockstate = puttyPanel.DockState;
-                        SuperPuTTY.SaveSessions();
-                        //sessionData.SaveToRegistry();
-                    }
-
-                    if (puttyPanel.InvokeRequired)
-                    {
-                        puttyPanel.BeginInvoke((MethodInvoker)delegate()
-                        {
-                            puttyPanel.Close();
-                        });
-                    }
-                    else
-                    {
-                        puttyPanel.Close();
-                    }
-                }
-            };
-            puttyPanel = new ctlPuttyPanel(sessionData, callback);
-            return puttyPanel;
-        }
-
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {
             CreateMenu();
@@ -466,7 +433,6 @@ namespace SuperPutty
                     Log.ErrorFormat("Error sending command menu command to embedded putty", ex);
                 }
             });
-            //SuperPuTTY.MainForm.BringToFront();
         }
 
         public bool AcceptCommands
