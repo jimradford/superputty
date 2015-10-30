@@ -31,7 +31,6 @@ using SuperPutty.Data;
 using SuperPutty.Utils;
 using WeifenLuo.WinFormsUI.Docking;
 using SuperPutty.Gui;
-using System.IO;
 using System.Text.RegularExpressions;
 
 
@@ -152,6 +151,7 @@ namespace SuperPutty
             {
                 TryAddSessionNode(session);
             }
+            ResortNodes();
         }
 
         private void TryAddSessionNode(SessionData session)
@@ -777,7 +777,11 @@ namespace SuperPutty
         {
             TreeNode tx = x as TreeNode;
             TreeNode ty = y as TreeNode;
-
+            if (SuperPuTTY.Settings.SessiontreeShowFoldersFirst) { 
+                if (IsFolderNode(tx) && IsSessionNode(ty)) {
+                    return -1;
+                }
+            }
             return string.Compare(tx.Text, ty.Text);
 
         }
