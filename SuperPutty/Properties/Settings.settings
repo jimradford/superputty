@@ -152,11 +152,12 @@
     <Setting Name="Action_OpenScriptEditor_Shortcut" Type="System.Windows.Forms.Keys" Scope="User">
       <Value Profile="(Default)">None</Value>
     </Setting>
-    <Setting Name="FileZillaExe" Type="System.String" Scope="User">
+    <Setting Name="SessiontreeShowFoldersFirst" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>    <Setting Name="FileZillaExe" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="WinSCPExe" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
-    </Setting>
-  </Settings>
+    </Setting>  </Settings>
 </SettingsFile>
