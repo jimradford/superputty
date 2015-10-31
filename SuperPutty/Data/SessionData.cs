@@ -31,6 +31,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Drawing.Design;
 using System.Drawing;
+using SuperPutty.Utils;
 
 namespace SuperPutty.Data
 {
@@ -198,7 +199,14 @@ namespace SuperPutty.Data
         [Browsable(false)]
         public string Password
         {
-            get { return _Password; }
+            get {
+                
+                 if (String.IsNullOrEmpty(_Password)){
+                    // search if ExtraArgs contains the password
+                    UpdateField(ref _Password, CommandLineOptions.getcommand(this.ExtraArgs, "-pw"), "Password");
+                }
+                return _Password;
+            }
             set 
             {
                 UpdateField(ref _Password, value, "Password");
@@ -254,6 +262,31 @@ namespace SuperPutty.Data
                 UpdateField(ref m_SPSLFileName, value, "SPSLFileName");
             }
         }
+
+
+
+         private string _RemotePath;
+        [XmlAttribute]
+        [DisplayName("Remote Path")]
+        [Description("Remote Path used in file transfer")]
+        public string RemotePath
+        {
+            get { return _RemotePath; }
+            set { _RemotePath = value; }
+        }
+
+        private string _LocalPath;
+        [XmlAttribute]
+        [DisplayName("Local Path")]
+        [Description("Local path used in file transfer")]
+        public string LocalPath
+        {
+            get { return _LocalPath; }
+            set { _LocalPath = value; }
+        }
+
+
+
 
         /// <summary>Construct a new session data object</summary>
         /// <param name="sessionName">A string representing the name of the session</param>
@@ -318,6 +351,8 @@ namespace SuperPutty.Data
                         sessionData.Username = (string)itemKey.GetValue("Login", "");
                         sessionData.LastDockstate = (DockState)itemKey.GetValue("Last Dock", DockState.Document);
                         sessionData.AutoStartSession = bool.Parse((string)itemKey.GetValue("Auto Start", "False"));
+                        sessionData.RemotePath = (string)itemKey.GetValue("RemotePath", "");
+                        sessionData.LocalPath = (string)itemKey.GetValue("LocalPath", "");
                         sessionList.Add(sessionData);
                     }
                 }

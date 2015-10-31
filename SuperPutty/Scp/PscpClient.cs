@@ -10,6 +10,7 @@ using System.Threading;
 using log4net;
 using log4net.Core;
 using SuperPutty.Data;
+using SuperPutty.Utils;
 
 namespace SuperPutty.Scp
 {
@@ -92,11 +93,11 @@ namespace SuperPutty.Scp
             {
                 //return this.DoListDirectory(path);
                 ListDirectoryResult result = new ListDirectoryResult(path);
-                
+                String ArgsPscp = ToArgs(this.Session, this.Session.Password, path.Path);
                 RunPscp(
                     result,
-                    ToArgs(this.Session, this.Session.Password, path.Path),
-                    ToArgs(this.Session, "XXXXX", path.Path), 
+                    ArgsPscp,
+                    CommandLineOptions.replacePassword(ArgsPscp,"XXXXX"), 
                     null, 
                     null,
                     (lines) =>
@@ -162,10 +163,16 @@ namespace SuperPutty.Scp
             {
                 sb.AppendFormat("-load \"{0}\" ", session.PuttySession);
             }
-            if (!string.IsNullOrEmpty(session.Password))
+
+            //only send the password if AllowPlainTextPuttyPasswordArg is checked
+            if (!String.IsNullOrEmpty(password) && !SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg)
+                Log.Warn("SuperPuTTY is set to NOT allow the use of the -pw <password> argument, this can be overriden in Tools -> Options -> GUI");
+            //fix: use the parameter "password"
+            if (!string.IsNullOrEmpty(password) && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg)
             {
                 sb.AppendFormat("-pw {0} ", password);
             }
+
             sb.AppendFormat("-P {0} ", session.Port);
             sb.AppendFormat("{0}@{1}:\"{2}\"", session.Username, session.Host, path);
 

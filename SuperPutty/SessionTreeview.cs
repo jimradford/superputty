@@ -627,6 +627,10 @@ namespace SuperPutty
         {
             // disable file transfers if pscp isn't configured.
             fileBrowserToolStripMenuItem.Enabled = SuperPuTTY.IsScpEnabled;
+            this.fileZillaToolStripMenuItem.Enabled = SuperPuTTY.IsFilezillaEnabled;
+            this.winSCPToolStripMenuItem.Enabled = SuperPuTTY.IsWinSCPEnabled;
+            this.fileZillaToolStripMenuItem.Visible = SuperPuTTY.IsFilezillaEnabled;
+            this.winSCPToolStripMenuItem.Visible = SuperPuTTY.IsWinSCPEnabled;
 
             connectInNewSuperPuTTYToolStripMenuItem.Enabled = !SuperPuTTY.Settings.SingleInstanceMode;
         }
@@ -1114,6 +1118,18 @@ namespace SuperPutty
             }
         }
         #endregion
+
+        private void winSCPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SessionData session = (SessionData)treeView1.SelectedNode.Tag;
+            ExternalApplications.openWinSCP(session);
+        }
+
+        private void fileZillaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SessionData session = (SessionData)treeView1.SelectedNode.Tag;
+            ExternalApplications.openFileZilla(session); 
+        }
 
     }
 

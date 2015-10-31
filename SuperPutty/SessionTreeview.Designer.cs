@@ -60,6 +60,8 @@
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
+            this.winSCPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileZillaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripAddTreeItem.SuspendLayout();
             this.contextMenuStripFolder.SuspendLayout();
             this.panelSearch.SuspendLayout();
@@ -108,10 +110,12 @@
             this.connectExternalToolStripMenuItem,
             this.connectInNewSuperPuTTYToolStripMenuItem,
             this.toolStripSeparator2,
-            this.fileBrowserToolStripMenuItem});
+            this.fileBrowserToolStripMenuItem,
+            this.winSCPToolStripMenuItem,
+            this.fileZillaToolStripMenuItem});
             this.contextMenuStripAddTreeItem.Name = "contextMenuStripAddTreeItem";
             this.contextMenuStripAddTreeItem.ShowImageMargin = false;
-            this.contextMenuStripAddTreeItem.Size = new System.Drawing.Size(182, 192);
+            this.contextMenuStripAddTreeItem.Size = new System.Drawing.Size(182, 258);
             this.contextMenuStripAddTreeItem.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripAddTreeItem_Opening);
             // 
             // newSessionToolStripMenuItem
@@ -326,6 +330,20 @@
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
+            // winSCPToolStripMenuItem
+            // 
+            this.winSCPToolStripMenuItem.Name = "winSCPToolStripMenuItem";
+            this.winSCPToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.winSCPToolStripMenuItem.Text = "WinSCP";
+            this.winSCPToolStripMenuItem.Click += new System.EventHandler(this.winSCPToolStripMenuItem_Click);
+            // 
+            // fileZillaToolStripMenuItem
+            // 
+            this.fileZillaToolStripMenuItem.Name = "fileZillaToolStripMenuItem";
+            this.fileZillaToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.fileZillaToolStripMenuItem.Text = "FileZilla";
+            this.fileZillaToolStripMenuItem.Click += new System.EventHandler(this.fileZillaToolStripMenuItem_Click);
+            // 
             // SessionTreeview
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -380,5 +398,7 @@
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.ToolStripMenuItem winSCPToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fileZillaToolStripMenuItem;
     }
 }

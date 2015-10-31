@@ -6,6 +6,7 @@ using NUnit.Framework;
 using System.Windows.Forms;
 using SuperPutty.Gui;
 using SuperPutty.Data;
+using SuperPutty.Utils;
 
 namespace SuperPuttyUnitTests
 {
@@ -49,12 +50,51 @@ namespace SuperPuttyUnitTests
 
         }
 
+        [Test]
+        public void getcommandTest()
+        {
+            String command = CommandLineOptions.getcommand("-pw 12sa12 -we aasd", "-pw");
+            Assert.AreEqual("12sa12", command);
+
+            command = CommandLineOptions.getcommand(" -pw 12sa12 -we aasd", "-pw");
+            Assert.AreEqual("12sa12", command);
+
+            command = CommandLineOptions.getcommand("-pw \"12sa12\" -we aasd", "-pw");
+            Assert.AreEqual("12sa12", command);
+
+            command = CommandLineOptions.getcommand(" -pw  -pw \"12sa12\" -we aasd", "-pw");
+            Assert.AreEqual("12sa12", command);
+
+
+            command = CommandLineOptions.getcommand("-pw \"12sa12\" -we aasd", "-pw");
+            Assert.AreEqual("12sa12", command);
+
+            command = CommandLineOptions.getcommand("  -pw  \"12sa12\" -we aasd", "-pw");
+            Assert.AreEqual("", command);
+
+            command = CommandLineOptions.getcommand("  -pw: \"12sa12\" -we aasd", "-pw");
+            Assert.AreEqual("", command);
+
+            command = CommandLineOptions.getcommand(" -pw  -pw \"12sa12 -we aasd", "-pw");
+            Assert.AreEqual("", command);
+
+            command = CommandLineOptions.getcommand(" -pw  -pw \"12sa12 -we aasd\"", "-pw");
+            Assert.AreEqual("12sa12 -we aasd", command);
+
+            command = CommandLineOptions.getcommand(@" -pw  -pw \+**jioi12sa12'k*+/\ -we aasd'""", "-pw");
+            Assert.AreEqual(@"\+**jioi12sa12'k*+/\", command);
+
+        }
+
         [TestView]
         public void DialogBasicTest()
         {
             KeyboardShortcutEditor form = new KeyboardShortcutEditor();
             form.ShowDialog(null, new KeyboardShortcut { Name = "test", Key = Keys.A, Modifiers = Keys.Control });
         }
+
+
+
 
     }
 }
