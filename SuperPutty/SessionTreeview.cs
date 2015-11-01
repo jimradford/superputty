@@ -128,6 +128,7 @@ namespace SuperPutty
             this.treeView1.ShowLines = SuperPuTTY.Settings.SessionsTreeShowLines;
             this.treeView1.Font = SuperPuTTY.Settings.SessionsTreeFont;
             this.panelSearch.Visible = SuperPuTTY.Settings.SessionsShowSearch;
+            this.ResortNodes();
         }
 
         protected override void OnClosed(EventArgs e)

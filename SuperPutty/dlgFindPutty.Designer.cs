@@ -565,9 +565,9 @@
             this.checkSessionTreeFoldersFirst.AutoSize = true;
             this.checkSessionTreeFoldersFirst.Location = new System.Drawing.Point(76, 113);
             this.checkSessionTreeFoldersFirst.Name = "checkSessionTreeFoldersFirst";
-            this.checkSessionTreeFoldersFirst.Size = new System.Drawing.Size(206, 17);
+            this.checkSessionTreeFoldersFirst.Size = new System.Drawing.Size(119, 17);
             this.checkSessionTreeFoldersFirst.TabIndex = 43;
-            this.checkSessionTreeFoldersFirst.Text = "Show Folders first (requires restart)";
+            this.checkSessionTreeFoldersFirst.Text = "Show Folders first";
             this.toolTip.SetToolTip(this.checkSessionTreeFoldersFirst, "Show search box above sessions");
             this.checkSessionTreeFoldersFirst.UseVisualStyleBackColor = true;
             // 
