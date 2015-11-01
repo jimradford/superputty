@@ -767,5 +767,38 @@ namespace SuperPutty.Properties {
                 this["AllowPlainTextPuttyPasswordArg"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]        
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FileZillaExe
+        {
+            get
+            {
+                return ((string)(this["FileZillaExe"]));
+            }
+            set
+            {
+                this["FileZillaExe"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]        
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string WinSCPExe
+        {
+            get
+            {
+                return ((string)(this["WinSCPExe"]));
+            }
+            set
+            {
+                this["WinSCPExe"] = value;
+            }
+        }
+
     }
 }

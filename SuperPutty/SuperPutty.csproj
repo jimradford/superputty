@@ -128,6 +128,7 @@
     </Compile>
     <Compile Include="Gui\QuickSelectorData.cs">
       <DependentUpon>QuickSelectorData.xsd</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Gui\QuickSelectorData.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -266,6 +267,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\CommandLineOptions.cs" />
+    <Compile Include="Utils\ExternalApplications.cs" />
     <Compile Include="Utils\FormUtils.cs" />
     <Compile Include="Utils\GlobalHotKey.cs" />
     <Compile Include="Utils\GlobalWindowEvents.cs" />
@@ -288,24 +290,29 @@
     </EmbeddedResource>
     <EmbeddedResource Include="dlgScriptEditor.resx">
       <DependentUpon>dlgScriptEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Gui\ImageListPopup.resx">
       <DependentUpon>ImageListPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ctlApplicationPanel.resx">
       <DependentUpon>ctlApplicationPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="DebugLogViewer.resx">
       <DependentUpon>DebugLogViewer.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgMouseFeedback.resx">
       <DependentUpon>dlgMouseFeedback.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Gui\dlgRenameItem.resx">
       <DependentUpon>dlgRenameItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmDocumentSelector.resx">
       <DependentUpon>frmDocumentSelector.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmTransferStatus.resx">
       <DependentUpon>frmTransferStatus.cs</DependentUpon>
@@ -441,6 +448,7 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>

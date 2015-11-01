@@ -524,8 +524,7 @@ namespace SuperPutty
             {
                 var homePrefix = session.Username.ToLower().Equals("root") ? Settings.PscpRootHomePrefix : Settings.PscpHomePrefix;
                 PscpBrowserPanel panel = new PscpBrowserPanel(
-                    session, new PscpOptions { PscpLocation = Settings.PscpExe, PscpHomePrefix = homePrefix }, 
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+                    session, new PscpOptions { PscpLocation = Settings.PscpExe, PscpHomePrefix = homePrefix });
                 ApplyDockRestrictions(panel);
                 ApplyIconForWindow(panel, session);
                 panel.Show(MainForm.DockPanel, session.LastDockstate);
@@ -775,6 +774,18 @@ namespace SuperPutty
         public static bool IsScpEnabled
         {
             get { return File.Exists(SuperPuTTY.Settings.PscpExe); }
+        }
+
+        /// <summary>true if the application has defined where the filezilla program is located</summary>
+        public static bool IsFilezillaEnabled
+        {
+            get { return File.Exists(SuperPuTTY.Settings.FileZillaExe); }
+        }
+
+        /// <summary>true if the application has defined where the winSCP program is located</summary>
+        public static bool IsWinSCPEnabled
+        {
+            get { return File.Exists(SuperPuTTY.Settings.WinSCPExe); }
         }
 
         /// <summary>Returns a string containing the current version of SuperPuTTY</summary>

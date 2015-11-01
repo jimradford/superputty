@@ -58,7 +58,10 @@ namespace SuperPutty.Utils
                 : "";
             args += "-P " + session.Port + " ";
             args += (!String.IsNullOrEmpty(session.PuttySession)) ? "-load \"" + session.PuttySession + "\" " : "";
-            args += (!String.IsNullOrEmpty(session.ExtraArgs) ? session.ExtraArgs + " " : "");
+            
+            //If extra args contains the password, delete it (it's in session.password)
+            String ExtraArgs = CommandLineOptions.replacePassword(session.ExtraArgs,"");            
+            args += (!String.IsNullOrEmpty(ExtraArgs) ? ExtraArgs + " " : "");
             args += (!String.IsNullOrEmpty(session.Username) && session.Username.Length > 0) ? " -l " + session.Username + " " : "";
             args += session.Host;
 

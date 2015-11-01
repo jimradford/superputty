@@ -5,6 +5,7 @@ using System.Text;
 using SuperPutty.Data;
 using log4net;
 using System.Web;
+using System.Text.RegularExpressions;
 
 namespace SuperPutty.Utils
 {
@@ -125,6 +126,64 @@ namespace SuperPutty.Utils
             }
         }
 
+
+
+        /// <summary>
+        /// Return the command value in allCommands (without quotes)              
+        /// </summary>
+        /// <param name="allCommands">String contains all commands</param>
+        /// <param name="command">command to search: ej "-pw"</param>
+        /// <returns>the value of command  )</returns>
+        public static String getcommand(String allCommands, String command)
+        {
+
+            if (String.IsNullOrEmpty(allCommands))
+            {
+                return "";
+            }
+            string strRegex = command + @"[=:\s](?:""([^""]*)""|([^""\s]+))";
+            Regex myRegex = new Regex(strRegex, RegexOptions.Compiled);
+            foreach (Match myMatch in myRegex.Matches(allCommands))
+            {
+                if (myMatch.Success)
+                {
+                    return String.IsNullOrEmpty(myMatch.Groups[1].Value) ? myMatch.Groups[2].Value : myMatch.Groups[1].Value;
+                }
+            }
+            return "";
+        }
+
+
+        /// <summary>
+        /// replace the value of "-pw" command included in allcomands with text
+        /// </summary>
+        /// <param name="allCommands"></param>
+        /// <param name="key">text, if is null or empty delete the -pw command</param>
+        /// <returns></returns>
+        public static String replacePassword(String allCommands, String text)
+        {            
+            if (String.IsNullOrEmpty(allCommands))
+            {
+                return "";
+            }
+            string strRegex = @"(-pw[=:\s])(""[^""]*""|[^""\s]+)";
+            Regex myRegex = new Regex(strRegex, RegexOptions.Compiled);
+
+            foreach (Match myMatch in myRegex.Matches(allCommands))
+            {
+                if (myMatch.Success)
+                {
+                    if (String.IsNullOrEmpty(text))
+                    {
+                        allCommands = Regex.Replace(allCommands, strRegex, "");
+                    }
+                    else {
+                        allCommands = Regex.Replace(allCommands, strRegex, "${1}" + text); 
+                    }                                        
+                }
+            }
+            return allCommands;
+        }
 
         public SessionDataStartInfo ToSessionStartInfo()
         {
