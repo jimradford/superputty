@@ -7,8 +7,6 @@ using System;
 using System.Windows.Forms;
 using System.Configuration;
 using System.Collections.Generic;
-using System.Threading;
-using System.Globalization;
 
 namespace SuperPutty.Properties {
     

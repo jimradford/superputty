@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SuperPutty.Data;
 using log4net;
 using System.Diagnostics;
@@ -53,16 +51,18 @@ namespace SuperPutty.Utils
                 Log.Warn("SuperPuTTY is set to NOT allow the use of the -pw <password> argument, this can be overriden in Tools -> Options -> GUI");
 
             string args = "-" + session.Proto.ToString().ToLower() + " ";
-            args += (!String.IsNullOrEmpty(session.Password) && session.Password.Length > 0 && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg) 
+            args += !String.IsNullOrEmpty(session.Password) && session.Password.Length > 0 && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg 
                 ? "-pw " + (includePassword ? session.Password : "XXXXX") + " " 
                 : "";
             args += "-P " + session.Port + " ";
-            args += (!String.IsNullOrEmpty(session.PuttySession)) ? "-load \"" + session.PuttySession + "\" " : "";
-            
+            args += !String.IsNullOrEmpty(session.PuttySession) ? "-load \"" + session.PuttySession + "\" " : "";
+
+            args += !String.IsNullOrEmpty(SuperPuTTY.Settings.PuttyDefaultParameters) ? SuperPuTTY.Settings.PuttyDefaultParameters + " " : "";
+
             //If extra args contains the password, delete it (it's in session.password)
-            String ExtraArgs = CommandLineOptions.replacePassword(session.ExtraArgs,"");            
-            args += (!String.IsNullOrEmpty(ExtraArgs) ? ExtraArgs + " " : "");
-            args += (!String.IsNullOrEmpty(session.Username) && session.Username.Length > 0) ? " -l " + session.Username + " " : "";
+            string extraArgs = CommandLineOptions.replacePassword(session.ExtraArgs,"");            
+            args += !String.IsNullOrEmpty(extraArgs) ? extraArgs + " " : "";
+            args += !String.IsNullOrEmpty(session.Username) && session.Username.Length > 0 ? " -l " + session.Username + " " : "";
             args += session.Host;
 
             return args;

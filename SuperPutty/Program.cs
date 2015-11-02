@@ -20,13 +20,9 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Threading;
 using log4net;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-using SuperPutty.Data;
 using System.Configuration;
 using SuperPutty.Utils;
 using System.Reflection;

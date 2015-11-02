@@ -123,6 +123,8 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
+            this.label23 = new System.Windows.Forms.Label();
+            this.textBoxPuttyDefaultParameters = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
@@ -238,7 +240,7 @@
             // 
             this.textBoxSettingsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSettingsFolder.Location = new System.Drawing.Point(171, 243);
+            this.textBoxSettingsFolder.Location = new System.Drawing.Point(172, 243);
             this.textBoxSettingsFolder.Name = "textBoxSettingsFolder";
             this.textBoxSettingsFolder.Size = new System.Drawing.Size(357, 22);
             this.textBoxSettingsFolder.TabIndex = 4;
@@ -247,7 +249,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(3, 246);
+            this.label3.Location = new System.Drawing.Point(4, 246);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(143, 15);
             this.label3.TabIndex = 9;
@@ -257,7 +259,7 @@
             // buttonBrowseLayoutsFolder
             // 
             this.buttonBrowseLayoutsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(534, 243);
+            this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(535, 243);
             this.buttonBrowseLayoutsFolder.Name = "buttonBrowseLayoutsFolder";
             this.buttonBrowseLayoutsFolder.Size = new System.Drawing.Size(75, 23);
             this.buttonBrowseLayoutsFolder.TabIndex = 5;
@@ -325,7 +327,7 @@
             this.checkConstrainPuttyDocking.AutoSize = true;
             this.checkConstrainPuttyDocking.Location = new System.Drawing.Point(76, 76);
             this.checkConstrainPuttyDocking.Name = "checkConstrainPuttyDocking";
-            this.checkConstrainPuttyDocking.Size = new System.Drawing.Size(205, 17);
+            this.checkConstrainPuttyDocking.Size = new System.Drawing.Size(204, 17);
             this.checkConstrainPuttyDocking.TabIndex = 25;
             this.checkConstrainPuttyDocking.Text = "Restrict Content to Document Tabs";
             this.checkConstrainPuttyDocking.UseVisualStyleBackColor = true;
@@ -369,7 +371,7 @@
             this.checkMinimizeToTray.AutoSize = true;
             this.checkMinimizeToTray.Location = new System.Drawing.Point(71, 49);
             this.checkMinimizeToTray.Name = "checkMinimizeToTray";
-            this.checkMinimizeToTray.Size = new System.Drawing.Size(110, 17);
+            this.checkMinimizeToTray.Size = new System.Drawing.Size(108, 17);
             this.checkMinimizeToTray.TabIndex = 30;
             this.checkMinimizeToTray.Text = "Minimize To Tray";
             this.checkMinimizeToTray.UseVisualStyleBackColor = true;
@@ -410,7 +412,7 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(11, 22);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(51, 13);
+            this.label8.Size = new System.Drawing.Size(49, 13);
             this.label8.TabIndex = 34;
             this.label8.Text = "Tab Text:";
             this.toolTip.SetToolTip(this.label8, "Determines how tabs are named and if they respond to the shell\'s title changing");
@@ -490,7 +492,7 @@
             this.checkEnableControlTabSwitching.AutoSize = true;
             this.checkEnableControlTabSwitching.Location = new System.Drawing.Point(286, 20);
             this.checkEnableControlTabSwitching.Name = "checkEnableControlTabSwitching";
-            this.checkEnableControlTabSwitching.Size = new System.Drawing.Size(200, 17);
+            this.checkEnableControlTabSwitching.Size = new System.Drawing.Size(198, 17);
             this.checkEnableControlTabSwitching.TabIndex = 28;
             this.checkEnableControlTabSwitching.Text = "Enable Control-Tab Tab Switching";
             this.toolTip.SetToolTip(this.checkEnableControlTabSwitching, "Enable CTRL+TAB Session Switching");
@@ -613,7 +615,7 @@
             this.checkConfirmTabClose.AutoSize = true;
             this.checkConfirmTabClose.Location = new System.Drawing.Point(76, 122);
             this.checkConfirmTabClose.Name = "checkConfirmTabClose";
-            this.checkConfirmTabClose.Size = new System.Drawing.Size(281, 17);
+            this.checkConfirmTabClose.Size = new System.Drawing.Size(280, 17);
             this.checkConfirmTabClose.TabIndex = 38;
             this.checkConfirmTabClose.Text = "Ask for Confirmation When Closing Mulitple Tabs";
             this.checkConfirmTabClose.UseVisualStyleBackColor = true;
@@ -633,6 +635,8 @@
             // 
             // tabPageGeneral
             // 
+            this.tabPageGeneral.Controls.Add(this.label23);
+            this.tabPageGeneral.Controls.Add(this.textBoxPuttyDefaultParameters);
             this.tabPageGeneral.Controls.Add(this.buttonBrowseFilezilla);
             this.tabPageGeneral.Controls.Add(this.label22);
             this.tabPageGeneral.Controls.Add(this.textBoxFilezillaLocation);
@@ -1137,6 +1141,25 @@
             this.panelBottom.Size = new System.Drawing.Size(624, 27);
             this.panelBottom.TabIndex = 39;
             // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label23.Location = new System.Drawing.Point(4, 300);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(145, 15);
+            this.label23.TabIndex = 41;
+            this.label23.Text = "PuTTY Default Parameters";
+            // 
+            // textBoxPuttyDefaultParameters
+            // 
+            this.textBoxPuttyDefaultParameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPuttyDefaultParameters.Location = new System.Drawing.Point(172, 297);
+            this.textBoxPuttyDefaultParameters.Name = "textBoxPuttyDefaultParameters";
+            this.textBoxPuttyDefaultParameters.Size = new System.Drawing.Size(357, 22);
+            this.textBoxPuttyDefaultParameters.TabIndex = 40;
+            // 
             // dlgFindPutty
             // 
             this.AcceptButton = this.buttonOk;
@@ -1285,5 +1308,7 @@
         private System.Windows.Forms.Button buttonBrowseWinSCP;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.TextBox textBoxWinSCPLocation;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.TextBox textBoxPuttyDefaultParameters;
     }
 }

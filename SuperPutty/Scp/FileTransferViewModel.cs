@@ -2,11 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
-using System.IO;
-using System.Security.Principal;
-using log4net;
-using System.Security.AccessControl;
-using SuperPutty.Data;
 using SuperPutty.Gui;
 using SuperPutty.Utils;
 using System.Threading;

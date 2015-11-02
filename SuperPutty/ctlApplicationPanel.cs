@@ -20,13 +20,9 @@
  */
 
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using WeifenLuo.WinFormsUI.Docking;
 using System.IO;
 using log4net;
