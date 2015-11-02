@@ -1,6 +1,4 @@
 ﻿using System;
-
-using System.Drawing;
 using System.Windows.Forms;
 using log4net;
 using System.Collections.Generic;
