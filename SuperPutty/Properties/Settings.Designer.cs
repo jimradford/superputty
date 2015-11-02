@@ -800,5 +800,20 @@ namespace SuperPutty.Properties {
             }
         }
 
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PuttyDefaultParameters
+        {
+            get
+            {
+                return ((string)(this["PuttyDefaultParameters"]));
+            }
+            set
+            {
+                this["PuttyDefaultParameters"] = value;
+            }
+        }
     }
 }

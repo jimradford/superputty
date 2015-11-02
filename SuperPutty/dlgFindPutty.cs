@@ -24,6 +24,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
@@ -37,21 +38,6 @@ namespace SuperPutty
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(dlgFindPutty));
 
-        private string m_PuttyLocation;
-
-        public string PuttyLocation
-        {
-            get { return m_PuttyLocation; }
-            private set { m_PuttyLocation = value; }
-        }
-        private string m_PscpLocation;
-
-        public string PscpLocation
-        {
-            get { return m_PscpLocation; }
-            private set { m_PscpLocation = value; }
-        }
-
         private string OrigSettingsFolder { get; set; }
         private string OrigDefaultLayoutName { get; set; }
 
@@ -64,7 +50,7 @@ namespace SuperPutty
             string puttyExe = SuperPuTTY.Settings.PuttyExe;
             string pscpExe = SuperPuTTY.Settings.PscpExe;
 
-            Boolean firstExecution = String.IsNullOrEmpty(puttyExe);
+            bool firstExecution = String.IsNullOrEmpty(puttyExe);
             textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe, firstExecution);
             textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe, firstExecution);
 
@@ -109,7 +95,7 @@ namespace SuperPutty
                 openFileDialog1.InitialDirectory = Application.StartupPath;
             }
 
-            if (string.IsNullOrEmpty(SuperPuTTY.Settings.MinttyExe))
+            if (String.IsNullOrEmpty(SuperPuTTY.Settings.MinttyExe))
             {
                 if (File.Exists(@"C:\cygwin\bin\mintty.exe"))
                 {
@@ -122,10 +108,10 @@ namespace SuperPutty
             }
             
             // super putty settings (sessions and layouts)
-            if (string.IsNullOrEmpty(SuperPuTTY.Settings.SettingsFolder))
+            if (String.IsNullOrEmpty(SuperPuTTY.Settings.SettingsFolder))
             {
                 // Set a default
-                String dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SuperPuTTY");
+                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SuperPuTTY");
                 if (!Directory.Exists(dir))
                 {
                     Log.InfoFormat("Creating default settings dir: {0}", dir);
@@ -201,6 +187,7 @@ namespace SuperPutty
             this.checkBoxPersistTsHistory.Checked = SuperPuTTY.Settings.PersistCommandBarHistory;
             this.numericUpDown1.Value = SuperPuTTY.Settings.SaveCommandHistoryDays;
             this.checkBoxAllowPuttyPWArg.Checked = SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg;
+            this.textBoxPuttyDefaultParameters.Text = SuperPuTTY.Settings.PuttyDefaultParameters;
 
             if (SuperPuTTY.IsFirstRun)
             {
@@ -220,13 +207,13 @@ namespace SuperPutty
 
         /// <summary>
         /// return the path of the exe. 
-        /// return settingValue if it is a valid path, or if searchPath is false, else search and return the default location of PathInProgramFile.
+        /// return settingValue if it is a valid path, or if searchPath is false, else search and return the default location of pathInProgramFile.
         /// </summary>
-        /// <param name="PathInProgramFile">relative path of file (in ProgramFiles or ProgramFiles(x86))</param>
+        /// <param name="pathInProgramFile">relative path of file (in ProgramFiles or ProgramFiles(x86))</param>
         /// <param name="settingValue">path stored in settings </param>
         /// <param name="searchPath">boolean </param>
         /// <returns>The path of the exe</returns>
-        private String getPathExe(String PathInProgramFile, String settingValue, Boolean searchPath)
+        private String getPathExe(String pathInProgramFile, String settingValue, Boolean searchPath)
         {
             if ((!String.IsNullOrEmpty(settingValue) && File.Exists(settingValue)) || !searchPath)
             {
@@ -235,17 +222,17 @@ namespace SuperPutty
 
             if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("ProgramFiles(x86)")))
             {
-                if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles(x86)") + PathInProgramFile))
+                if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles(x86)") + pathInProgramFile))
                 {
-                    return Environment.GetEnvironmentVariable("ProgramFiles(x86)") + PathInProgramFile;
+                    return Environment.GetEnvironmentVariable("ProgramFiles(x86)") + pathInProgramFile;
                 }
             }
 
             if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("ProgramFiles")))
             {
-                if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles") + PathInProgramFile))
+                if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles") + pathInProgramFile))
                 {
-                    return Environment.GetEnvironmentVariable("ProgramFiles") + PathInProgramFile;
+                    return Environment.GetEnvironmentVariable("ProgramFiles") + pathInProgramFile;
                 }
             }
 
@@ -270,10 +257,7 @@ namespace SuperPutty
             {
                 layouts.Add(String.Empty);
                 // auto restore is in the layouts collection already
-                foreach (LayoutData layout in SuperPuTTY.Layouts)
-                {
-                    layouts.Add(layout.Name);
-                }
+                layouts.AddRange(SuperPuTTY.Layouts.Select(layout => layout.Name));
 
                 defaultLayout = SuperPuTTY.Settings.DefaultLayoutName;
             }
@@ -368,6 +352,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.PersistCommandBarHistory = this.checkBoxPersistTsHistory.Checked;
                 SuperPuTTY.Settings.SaveCommandHistoryDays = (int)this.numericUpDown1.Value;
                 SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg = this.checkBoxAllowPuttyPWArg.Checked;
+                SuperPuTTY.Settings.PuttyDefaultParameters = this.textBoxPuttyDefaultParameters.Text;
 
                 // save shortcuts
                 KeyboardShortcut[] shortcuts = new KeyboardShortcut[this.Shortcuts.Count];
@@ -392,7 +377,7 @@ namespace SuperPutty
             else
             {
                 StringBuilder sb = new StringBuilder();
-                foreach (String s in errors)
+                foreach (string s in errors)
                 {
                     sb.Append(s).AppendLine().AppendLine();
                 }
