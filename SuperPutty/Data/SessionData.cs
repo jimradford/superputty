@@ -349,7 +349,6 @@ namespace SuperPutty.Data
 
         /// <summary>Load session configuration data from the specified XML file</summary>
         /// <param name="fileName">The filename containing the settings</param>
-        /// <returns>A <seealso cref="List"/> containing the session configuration data</returns>
         public static List<SessionData> LoadSessionsFromFile(string fileName)
         {
             List<SessionData> sessions = new List<SessionData>();
@@ -398,7 +397,7 @@ namespace SuperPutty.Data
         }
 
         /// <summary>Save session configuration to the specified XML file</summary>
-        /// <param name="sessions">A <seealso cref="List"/> containing the session configuration data</param>
+        /// <param name="sessions">A List containing the session configuration data</param>
         /// <param name="fileName">A path to a filename to save the data in</param>
         public static void SaveSessionsToFile(List<SessionData> sessions, string fileName)
         {

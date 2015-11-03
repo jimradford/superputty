@@ -157,7 +157,7 @@ namespace SuperPutty.Utils
         /// replace the value of "-pw" command included in allcomands with text
         /// </summary>
         /// <param name="allCommands"></param>
-        /// <param name="key">text, if is null or empty delete the -pw command</param>
+        /// <param name="text"></param>
         /// <returns></returns>
         public static String replacePassword(String allCommands, String text)
         {            

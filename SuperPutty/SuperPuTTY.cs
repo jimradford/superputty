@@ -132,7 +132,10 @@ namespace SuperPutty
 
         /// <summary>Send status message to toolstrip</summary>
         /// <param name="status">A string containing the message</param>
-        /// <param name="args">optional arguments <seealso cref="String.Format"/></param>
+        /// <param name="args">optional arguments <seealso>
+        ///         <cref>String.Format</cref>
+        ///     </seealso>
+        /// </param>
         public static void ReportStatus(String status, params Object[] args)
         {
             String msg = (args.Length > 0) ? String.Format(status, args) : status;
@@ -344,7 +347,7 @@ namespace SuperPutty
         /// <summary>
         /// Remove a session from the in-application sessions database. 
         /// </summary>
-        /// <param name="sessionId">The <seealso cref="SessionData.SessionID"/> of the session to remove</param>
+        /// <param name="sessionId">The <seealso cref="SessionData.SessionId"/> of the session to remove</param>
         /// <returns>true on success, or false on failure or if session did not exist</returns>
         public static bool RemoveSession(string sessionId)
         {
@@ -359,7 +362,7 @@ namespace SuperPutty
             return false;
         }
 
-        /// <summary>Get a Session by its <seealso cref="SessionData.SessionID"/></summary>
+        /// <summary>Get a Session by its <seealso cref="SessionData.SessionId"/></summary>
         /// <param name="sessionId">A string which represents a session</param>
         /// <returns>A <seealso cref="SessionData"/> object containing the session details</returns>
         public static SessionData GetSessionById(string sessionId)
@@ -411,14 +414,14 @@ namespace SuperPutty
         }
 
         /// <summary>Get a list of all sessions from the in-application database</summary>
-        /// <returns>A <seealso cref="List"/> of <seealso cref="SessionData"/> objects</returns>
+        /// <returns>A List of <seealso cref="SessionData"/> objects</returns>
         public static List<SessionData> GetAllSessions()
         {
             return sessionsMap.Values.ToList();
         }
 
         /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty window</summary>
-        /// <param name="sessionId">A string containing the <seealso cref="SessionData.SessionID"/> of the session</param>
+        /// <param name="sessionId">A string containing the <seealso cref="SessionData.SessionId"/> of the session</param>
         public static void OpenPuttySession(string sessionId)
         {
             OpenPuttySession(GetSessionById(sessionId));
@@ -487,7 +490,7 @@ namespace SuperPutty
         }
 
         /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty scp window</summary>
-        /// <param name="sessionId">A string containing the <seealso cref="SessionData.SessionID"/> of the session</param>
+        /// <param name="sessionId">A string containing the <seealso cref="SessionData.SessionId"/> of the session</param>
         public static void OpenScpSession(string sessionId)
         {
             OpenScpSession(GetSessionById(sessionId));
@@ -597,8 +600,8 @@ namespace SuperPutty
             ImportSessions(sessions, "ImportedFromPuTTYCM");
         }
 
-        /// <summary>Import sessions from a from a <seealso cref="List"/> object into the specified folder</summary>
-        /// <param name="sessions">A <seealso cref="List"/> of <seealso cref="SessionData"/> objects</param>
+        /// <summary>Import sessions from a from a List object into the specified folder</summary>
+        /// <param name="sessions">A List of <seealso cref="SessionData"/> objects</param>
         /// <param name="folder">The destination folder name</param>
         public static void ImportSessions(List<SessionData> sessions, string folder)
         {

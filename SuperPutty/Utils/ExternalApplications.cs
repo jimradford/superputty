@@ -12,8 +12,7 @@ namespace SuperPutty.Utils
         /// <summary>
         /// Open the filezilla program with the sesion data, for sftp connection. 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="session"></param>
         public static void openFileZilla(SessionData session)
         {
             if (!String.IsNullOrEmpty(session.Password) && !SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg)
@@ -31,11 +30,11 @@ namespace SuperPutty.Utils
             Log.Debug("Send to FileZilla:" + SuperPuTTY.Settings.FileZillaExe + " params="+ "sftp://" + userPwLog + session.Host + ":" + session.Port + rp + lp);
             Process.Start(SuperPuTTY.Settings.FileZillaExe, param);
         }
+
         /// <summary>
         /// Open the WinSCP program with the sesion data, for sftp connection. 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="session"></param>
         public static void openWinSCP(SessionData session)
         {
             if (!String.IsNullOrEmpty(session.Password) && !SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg)
