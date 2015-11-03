@@ -383,11 +383,10 @@ namespace SuperPutty
 
         void EnableDisableSaveButton()
         {
-            this.buttonSave.Enabled = (
-                this.errorProvider.GetError(this.textBoxSessionName) == String.Empty &&
-                this.errorProvider.GetError(this.textBoxHostname) == String.Empty &&
-                this.errorProvider.GetError(this.textBoxPort) == String.Empty &&
-                this.errorProvider.GetError(this.comboBoxPuttyProfile) == String.Empty);
+            this.buttonSave.Enabled = this.errorProvider.GetError(this.textBoxSessionName) == String.Empty &&
+                                      this.errorProvider.GetError(this.textBoxHostname) == String.Empty &&
+                                      this.errorProvider.GetError(this.textBoxPort) == String.Empty &&
+                                      this.errorProvider.GetError(this.comboBoxPuttyProfile) == String.Empty;
         }
 
         #endregion

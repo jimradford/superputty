@@ -1106,7 +1106,7 @@ namespace SuperPutty
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
-            else if ((e.Control && e.KeyCode != Keys.ControlKey))
+            else if (e.Control && e.KeyCode != Keys.ControlKey)
             {
                 // special keys
                 TrySendCommandsFromToolbar(new CommandData(e), !this.tbBtnMaskText.Checked);
@@ -1231,7 +1231,7 @@ namespace SuperPutty
                 Keys keys = (Keys)vkCode;
 
                 // track key state globally for control/alt/shift is up/down
-                bool isKeyDown = (wParam == (IntPtr)NativeMethods.WM_KEYDOWN || wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN);
+                bool isKeyDown = wParam == (IntPtr)NativeMethods.WM_KEYDOWN || wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN;
                 if (keys == Keys.LControlKey || keys == Keys.RControlKey) { isControlDown = isKeyDown; }
                 if (keys == Keys.LShiftKey || keys == Keys.RShiftKey) { isShiftDown = isKeyDown; }
                 if (keys == Keys.LMenu || keys == Keys.RMenu) { isAltDown = isKeyDown; }
@@ -1240,7 +1240,7 @@ namespace SuperPutty
                 {
                     Log.DebugFormat("### KBHook: nCode={0}, wParam={1}, lParam={2} ({4,-4} - {3}) [{5}{6}{7}]",
                         nCode, wParam, vkCode, keys, isKeyDown ? "Down" : "Up",
-                        (isControlDown ? "Ctrl" : ""), (isAltDown ? "Alt" : ""), (isAltDown ? "Shift" : ""));
+                        isControlDown ? "Ctrl" : "", isAltDown ? "Alt" : "", isAltDown ? "Shift" : "");
                 }
 
                 if (IsForegroundWindow(this))

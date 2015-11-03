@@ -45,16 +45,16 @@ namespace SuperPutty.Scp
             this.Session = session;
 
             this.FileTransferPresenter = fileTransferPresenter;
-            this.FileTransferPresenter.ViewModel.FileTransfers.ListChanged += (FileTransfers_ListChanged);
+            this.FileTransferPresenter.ViewModel.FileTransfers.ListChanged += FileTransfers_ListChanged;
 
             this.BackgroundWorker = new BackgroundWorker
             {
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
-            this.BackgroundWorker.DoWork += (BackgroundWorker_DoWork);
-            this.BackgroundWorker.ProgressChanged += (BackgroundWorker_ProgressChanged);
-            this.BackgroundWorker.RunWorkerCompleted += (BackgroundWorker_RunWorkerCompleted);
+            this.BackgroundWorker.DoWork += BackgroundWorker_DoWork;
+            this.BackgroundWorker.ProgressChanged += BackgroundWorker_ProgressChanged;
+            this.BackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 
             this.ViewModel = new BrowserViewModel
             {

@@ -291,7 +291,7 @@ namespace SuperPutty
         private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             // e is null if this method is called from connectToolStripMenuItem_Click
-            TreeNode node = (e != null) ? e.Node : treeView1.SelectedNode;
+            TreeNode node = e != null ? e.Node : treeView1.SelectedNode;
 
             if (IsSessionNode(node) && node == treeView1.SelectedNode)
             {
@@ -386,7 +386,7 @@ namespace SuperPutty
 
         private bool ValidateSessionNameChange(TreeNode ParentNode, TreeNode Node, String NewName, out String Error)
         {
-            bool IsEdit = (Node != null);
+            bool IsEdit = Node != null;
             Error = String.Empty;
             bool IsDupeNode;
             if (IsEdit)

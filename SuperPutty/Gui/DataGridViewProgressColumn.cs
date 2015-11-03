@@ -140,12 +140,12 @@ namespace SuperPutty.Gui
 
             int progressVal = Convert.ToInt32(value);
 
-            float percentage = ((float)progressVal / 100.0f); // Need to convert to float before division; otherwise C# returns int which is 0 for anything but 100%.
+            float percentage = (float)progressVal / 100.0f; // Need to convert to float before division; otherwise C# returns int which is 0 for anything but 100%.
             Brush backColorBrush = new SolidBrush(cellStyle.BackColor);
             Brush foreColorBrush = new SolidBrush(cellStyle.ForeColor);
 
             // Draws the cell grid
-            base.Paint(g, clipBounds, cellBounds, rowIndex, cellState, value, formattedValue, errorText, cellStyle, advancedBorderStyle, (paintParts & ~DataGridViewPaintParts.ContentForeground));
+            base.Paint(g, clipBounds, cellBounds, rowIndex, cellState, value, formattedValue, errorText, cellStyle, advancedBorderStyle, paintParts & ~DataGridViewPaintParts.ContentForeground);
 
             float posX = cellBounds.X;
             float posY = cellBounds.Y;
@@ -157,7 +157,7 @@ namespace SuperPutty.Gui
             switch (cellStyle.Alignment)
             {
                 case DataGridViewContentAlignment.BottomCenter:
-                    posX = cellBounds.X + (cellBounds.Width / 2) - textWidth / 2;
+                    posX = cellBounds.X + cellBounds.Width / 2 - textWidth / 2;
                     posY = cellBounds.Y + cellBounds.Height - textHeight;
                     break;
                 case DataGridViewContentAlignment.BottomLeft:
@@ -169,19 +169,19 @@ namespace SuperPutty.Gui
                     posY = cellBounds.Y + cellBounds.Height - textHeight;
                     break;
                 case DataGridViewContentAlignment.MiddleCenter:
-                    posX = cellBounds.X + (cellBounds.Width / 2) - textWidth / 2;
-                    posY = cellBounds.Y + (cellBounds.Height / 2) - textHeight / 2;
+                    posX = cellBounds.X + cellBounds.Width / 2 - textWidth / 2;
+                    posY = cellBounds.Y + cellBounds.Height / 2 - textHeight / 2;
                     break;
                 case DataGridViewContentAlignment.MiddleLeft:
                     posX = cellBounds.X;
-                    posY = cellBounds.Y + (cellBounds.Height / 2) - textHeight / 2;
+                    posY = cellBounds.Y + cellBounds.Height / 2 - textHeight / 2;
                     break;
                 case DataGridViewContentAlignment.MiddleRight:
                     posX = cellBounds.X + cellBounds.Width - textWidth;
-                    posY = cellBounds.Y + (cellBounds.Height / 2) - textHeight / 2;
+                    posY = cellBounds.Y + cellBounds.Height / 2 - textHeight / 2;
                     break;
                 case DataGridViewContentAlignment.TopCenter:
-                    posX = cellBounds.X + (cellBounds.Width / 2) - textWidth / 2;
+                    posX = cellBounds.X + cellBounds.Width / 2 - textWidth / 2;
                     posY = cellBounds.Y;
                     break;
                 case DataGridViewContentAlignment.TopLeft:
@@ -200,7 +200,7 @@ namespace SuperPutty.Gui
             {
 
                 // Draw the progress 
-                g.FillRectangle(new SolidBrush(_ProgressBarColor), cellBounds.X + 2, cellBounds.Y + 2, Convert.ToInt32((percentage * (cellBounds.Width - 4))), cellBounds.Height / 1 - 5);
+                g.FillRectangle(new SolidBrush(_ProgressBarColor), cellBounds.X + 2, cellBounds.Y + 2, Convert.ToInt32(percentage * (cellBounds.Width - 4)), cellBounds.Height / 1 - 5);
                 //Draw text
                 g.DrawString(progressVal.ToString() + "%", cellStyle.Font, foreColorBrush, posX, posY);
             }

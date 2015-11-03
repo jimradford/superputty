@@ -92,7 +92,7 @@ namespace SuperPutty.Gui
 
             for (int i = 0; i < _nColumns; i++)
                 for (int j = 0; j < _nRows; j++)
-                    if ((j * _nColumns + i) < imageList.Images.Count)
+                    if (j * _nColumns + i < imageList.Images.Count)
                         imageList.Draw(grfx,
                                         i * _nItemWidth + _nHSpace / 2,
                                         j * _nItemHeight + nVSpace / 2,
@@ -203,7 +203,7 @@ namespace SuperPutty.Gui
                     _bIsMouseDown = false;
                 }
 
-                if (((mea.X / _nItemWidth) != _nCoordX) || ((mea.Y / _nItemHeight) != _nCoordY))
+                if ((mea.X / _nItemWidth != _nCoordX) || (mea.Y / _nItemHeight != _nCoordY))
                 {
                     _nCoordX = mea.X / _nItemWidth;
                     _nCoordY = mea.Y / _nItemHeight;
@@ -251,7 +251,7 @@ namespace SuperPutty.Gui
             // We blit the precalculated bitmap on the offscreen Graphics
             offscreenGrfx.DrawImage(_Bitmap, 0, 0);
 
-            if (_nCoordX != -1 && _nCoordY != -1 && (_nCoordY * _nColumns + _nCoordX) < _imageList.Images.Count)
+            if (_nCoordX != -1 && _nCoordY != -1 && _nCoordY * _nColumns + _nCoordX < _imageList.Images.Count)
             {
                 // We draw the selection rectangle
                 offscreenGrfx.FillRectangle(new SolidBrush(BackgroundOverColor), _nCoordX * _nItemWidth + 1, _nCoordY * _nItemHeight + 1, _nItemWidth - 1, _nItemHeight - 1);

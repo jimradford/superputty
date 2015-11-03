@@ -138,7 +138,7 @@ namespace SuperPutty
         /// </param>
         public static void ReportStatus(String status, params Object[] args)
         {
-            String msg = (args.Length > 0) ? String.Format(status, args) : status;
+            String msg = args.Length > 0 ? String.Format(status, args) : status;
             Log.DebugFormat("STATUS: {0}", msg);
 
             if (StatusEvent != null)
@@ -716,7 +716,7 @@ namespace SuperPutty
             Icon icon = null;
             if (session != null)
             {
-                string imageKey = (session.ImageKey == null || !Images.Images.ContainsKey(session.ImageKey))
+                string imageKey = session.ImageKey == null || !Images.Images.ContainsKey(session.ImageKey)
                     ? SessionTreeview.ImageKeySession : session.ImageKey;
                 try
                 {

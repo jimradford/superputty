@@ -415,12 +415,12 @@ namespace SuperPutty
         static string MakeArgs(SessionData session, bool includePassword, string path)
         {
             string args = "-ls "; // default arguments
-            args += (!String.IsNullOrEmpty(session.PuttySession)) ? "-load \"" + session.PuttySession + "\" " : "";
-            args += (!String.IsNullOrEmpty(session.Password) && session.Password.Length > 0) 
+            args += !String.IsNullOrEmpty(session.PuttySession) ? "-load \"" + session.PuttySession + "\" " : "";
+            args += !String.IsNullOrEmpty(session.Password) && session.Password.Length > 0 
                 ? "-pw " + (includePassword ? session.Password : "XXXXX") + " " 
                 : "";
             args += "-P " + session.Port + " ";
-            args += (!String.IsNullOrEmpty(session.Username)) ? session.Username + "@" : "";
+            args += !String.IsNullOrEmpty(session.Username) ? session.Username + "@" : "";
             args += session.Host + ":\"" + path + "\"";
 
             return args;
@@ -455,16 +455,16 @@ namespace SuperPutty
                     processCopyToRemote.StartInfo.CreateNoWindow = true;
                     // process the various options from the session object and convert them into arguments pscp can understand
                     string args = "-r -agent "; // default arguments
-                    args += (!String.IsNullOrEmpty(m_Session.PuttySession))
+                    args += !String.IsNullOrEmpty(m_Session.PuttySession)
                         ? "-load \"" + m_Session.PuttySession + "\" "
                         : "";
                     //args += "-l " + Session.Username + " ";
-                    args += (!String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0)
+                    args += !String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0
                         ? "-pw " + m_Session.Password + " "
                         : "";
                     args += "-P " + m_Session.Port + " ";
                     args += "\"" + files[0] + "\" ";
-                    args += (!String.IsNullOrEmpty(m_Session.Username)) ? m_Session.Username + "@" : "";
+                    args += !String.IsNullOrEmpty(m_Session.Username) ? m_Session.Username + "@" : "";
                     args += m_Session.Host + ":" + target;
                     Logger.Log("Args: '{0} {1}'", processCopyToRemote.StartInfo.FileName, args);
                     processCopyToRemote.StartInfo.Arguments = args;
