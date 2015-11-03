@@ -21,9 +21,9 @@
 
 using System;
 using System.Linq;
-using SuperPutty.Utils;
-using SuperPutty;
 using log4net;
+using SuperPutty;
+using SuperPutty.Utils;
 
 namespace SuperPuTTY.Scripting
 {

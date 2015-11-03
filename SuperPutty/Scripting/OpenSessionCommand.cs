@@ -19,27 +19,30 @@
  * THE SOFTWARE.
  */
 
-using System;
+using log4net;
+using SuperPutty.Data;
 using SuperPutty.Utils;
-using System.Threading;
 
 namespace SuperPuTTY.Scripting
 {
     public static partial class Commands
     {
-        /// <summary>The Sleep command, delays execution of script for the specified number of milliseconds</summary>
-        /// <param name="arg">The number of milliseconds to sleep for.</param>
-        /// <returns>null to prevent any command from being sent to a session</returns>
-        internal static CommandData SleepHandler(string arg)
-        {
-            int duration = 0;            
-            if(int.TryParse(arg, out duration) && duration > 0)
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Commands));
+
+        /// <summary>Open a new session</summary>
+        /// <param name="arg">The name of ID of the session to start</param>
+        /// <returns>null</returns>
+        internal static CommandData OpenSessionHandler(string arg)
+        {            
+            
+            SessionData session = SuperPutty.SuperPuTTY.GetSessionById(arg);
+            if (session != null)
             {
-                Thread.Sleep(duration);
+                SuperPutty.SuperPuTTY.OpenSession(new SessionDataStartInfo() { Session = session });
             }
             else
             {
-                throw new ArgumentOutOfRangeException("The argument passed to SLEEP is not valid. Must be a positive whole number.");
+                Log.WarnFormat("Could not start session named {0}, does it exist?", arg);
             }
             return null;
         }

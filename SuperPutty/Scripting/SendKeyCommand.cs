@@ -20,9 +20,9 @@
  */
 
 using System;
+using System.Globalization;
 using System.Windows.Forms;
 using SuperPutty.Utils;
-using System.Globalization;
 
 namespace SuperPuTTY.Scripting
 {
