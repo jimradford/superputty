@@ -310,7 +310,7 @@ namespace SuperPutty
         {
             if (this.DockPanel.ActiveDocument == null)
             {
-                this.Text = string.Format("SuperPuTTY");
+                this.Text = "SuperPuTTY";
             }
             else
             {
@@ -1641,7 +1641,7 @@ namespace SuperPutty
             }
             catch (Exception ex)
             {
-                string msg = string.Format("");
+                string msg = "";
                 Log.Error(msg, ex);
                 MessageBox.Show(this, msg, "Error Cleaning Processes");
             }
