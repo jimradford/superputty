@@ -69,16 +69,7 @@ namespace SuperPutty.Utils
 
         public T Initialize()
         {
-            if (this.Initializer == null)
-            {
-                // assume defautl ctor ok
-                this.Instance = Activator.CreateInstance<T>();
-            }
-            else
-            {
-                // some kind of factor method throw in
-                this.Instance = this.Initializer(this);
-            }
+            this.Instance = this.Initializer == null ? Activator.CreateInstance<T>() : this.Initializer(this);
 
             this.Instance.FormClosed += new FormClosedEventHandler(Instance_FormClosed);
             if (InstanceChanged != null)

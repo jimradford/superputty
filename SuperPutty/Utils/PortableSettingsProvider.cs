@@ -199,14 +199,7 @@ namespace SuperPutty.Utils
             }
             catch (Exception)
             {
-                if (setting.DefaultValue != null)
-                {
-                    value = setting.DefaultValue.ToString();
-                }
-                else
-                {
-                    value = String.Empty;
-                }
+                value = setting.DefaultValue != null ? setting.DefaultValue.ToString() : String.Empty;
             }
 
             return value;

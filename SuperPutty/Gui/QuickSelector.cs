@@ -37,14 +37,7 @@ namespace SuperPutty.Gui
 
         void UpdateFilter()
         {
-            if (this.textBoxData.Text == string.Empty)
-            {
-                this.DataView.RowFilter = String.Empty;
-            }
-            else
-            {
-                this.DataView.RowFilter = FormatFilterString(this.textBoxData.Text);
-            }
+            this.DataView.RowFilter = String.IsNullOrEmpty(this.textBoxData.Text) ? String.Empty : FormatFilterString(this.textBoxData.Text);
             this.Text = string.Format("{0} [{1}]", this.Options.BaseText, this.DataView.Count);
         }
 

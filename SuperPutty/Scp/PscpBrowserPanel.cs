@@ -36,11 +36,7 @@ namespace SuperPutty.Scp
             //set the local path
             String localPath = "";
             if (String.IsNullOrEmpty(localStartingDir)){
-                if (String.IsNullOrEmpty(session.LocalPath)){
-                    localPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                }else{
-                    localPath = session.LocalPath;
-                }
+                localPath = String.IsNullOrEmpty(session.LocalPath) ? Environment.GetFolderPath(Environment.SpecialFolder.Desktop) : session.LocalPath;
             }else{
                 localPath = localStartingDir;
             }

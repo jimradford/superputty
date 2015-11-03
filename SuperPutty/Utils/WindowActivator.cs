@@ -172,14 +172,7 @@ namespace SuperPutty.Utils
                 IntPtr Dummy = IntPtr.Zero;
 
                 IntPtr hWnd = form.Handle;
-                if (NativeMethods.IsIconic(hWnd))
-                {
-                    NativeMethods.ShowWindowAsync(hWnd, SW_RESTORE);
-                }
-                else
-                {
-                    NativeMethods.ShowWindowAsync(hWnd, SW_SHOW);
-                }
+                NativeMethods.ShowWindowAsync(hWnd, NativeMethods.IsIconic(hWnd) ? SW_RESTORE : SW_SHOW);
                 NativeMethods.SetForegroundWindow(hWnd);
 
                 // Code from Karl E. Peterson, www.mvps.org/vb/sample.htm
@@ -251,14 +244,7 @@ namespace SuperPutty.Utils
                 IntPtr Dummy = IntPtr.Zero;
 
                 IntPtr hWnd = form.Handle;
-                if (NativeMethods.IsIconic(hWnd))
-                {
-                    NativeMethods.ShowWindowAsync(hWnd, SW_RESTORE);
-                }
-                else
-                {
-                    NativeMethods.ShowWindowAsync(hWnd, SW_SHOW);
-                }
+                NativeMethods.ShowWindowAsync(hWnd, NativeMethods.IsIconic(hWnd) ? SW_RESTORE : SW_SHOW);
                 NativeMethods.SetForegroundWindow(hWnd);
 
                 NativeMethods.FlashWindow(form.Handle, NativeMethods.FLASHW_STOP);

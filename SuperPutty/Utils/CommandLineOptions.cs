@@ -172,13 +172,7 @@ namespace SuperPutty.Utils
             {
                 if (myMatch.Success)
                 {
-                    if (String.IsNullOrEmpty(text))
-                    {
-                        allCommands = Regex.Replace(allCommands, strRegex, "");
-                    }
-                    else {
-                        allCommands = Regex.Replace(allCommands, strRegex, "${1}" + text); 
-                    }                                        
+                    allCommands = Regex.Replace(allCommands, strRegex, String.IsNullOrEmpty(text) ? "" : "${1}" + text);                                       
                 }
             }
             return allCommands;

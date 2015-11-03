@@ -423,15 +423,9 @@ namespace SuperPutty
 
 
        private void textBoxExtraArgs_TextChanged(object sender, EventArgs e)
-        {
-            //if extra Args contains a password, change the backgroudn
-            if (!String.IsNullOrEmpty(CommandLineOptions.getcommand(textBoxExtraArgs.Text, "-pw")))
-            {
-                textBoxExtraArgs.BackColor = Color.LightCoral;                
-            }
-            else {
-                textBoxExtraArgs.BackColor = Color.White;
-            }
-        }
+       {
+           //if extra Args contains a password, change the backgroudn
+           textBoxExtraArgs.BackColor = String.IsNullOrEmpty(CommandLineOptions.getcommand(textBoxExtraArgs.Text, "-pw")) ? Color.White : Color.LightCoral;
+       }
     }
 }
