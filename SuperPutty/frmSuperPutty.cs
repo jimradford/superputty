@@ -1182,8 +1182,7 @@ namespace SuperPutty
                     {
                         if (this.InvokeRequired)
                         {
-                            this.BeginInvoke((MethodInvoker)delegate ()
-                            {
+                            this.BeginInvoke((MethodInvoker)delegate {
                                 tsCommandHistory.Insert(0, new HistoryEntry() { Command = command.Command });
                             });
                         }
@@ -1195,8 +1194,7 @@ namespace SuperPutty
 
                     if (this.InvokeRequired)
                     {
-                        this.BeginInvoke((MethodInvoker)delegate ()
-                        {
+                        this.BeginInvoke((MethodInvoker)delegate {
                             this.tsSendCommandCombo.Text = string.Empty;
                         });
                     }

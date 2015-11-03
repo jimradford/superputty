@@ -287,7 +287,7 @@ namespace SuperPutty
                     }
                 };
 
-                m_processDir.Exited += delegate(object sender, EventArgs e)
+                m_processDir.Exited += delegate
                 {
                     if (m_processDir.ExitCode != 0)
                     {

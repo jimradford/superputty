@@ -332,8 +332,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                         m_Process.StartInfo.WorkingDirectory = this.ApplicationWorkingDirectory;
                     }
 
-                    m_Process.Exited += delegate(object sender, EventArgs ev)
-                    {
+                    m_Process.Exited += delegate {
                         m_CloseCallback(true);
                     };
 

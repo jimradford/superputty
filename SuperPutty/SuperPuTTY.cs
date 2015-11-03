@@ -437,7 +437,7 @@ namespace SuperPutty
             {
                 // This is the callback fired when the panel containing the terminal is closed
                 // We use this to save the last docking location and to close the panel
-                PuttyClosedCallback callback = delegate (bool closed)
+                PuttyClosedCallback callback = delegate
                 {
                     if (panel != null)
                     {
@@ -452,8 +452,7 @@ namespace SuperPutty
 
                         if (panel.InvokeRequired)
                         {
-                            panel.BeginInvoke((MethodInvoker)delegate ()
-                            {
+                            panel.BeginInvoke((MethodInvoker)delegate {
                                 panel.Close();
                             });
                         }

@@ -109,8 +109,7 @@ namespace SuperPutty
             if (this.IsDisposed) return;
             if (listView1.InvokeRequired)
             {
-                listView1.BeginInvoke((MethodInvoker)delegate()
-                {
+                listView1.BeginInvoke((MethodInvoker)delegate {
                     RefreshListView(new List<FileEntry>(files));
                 });
             }
