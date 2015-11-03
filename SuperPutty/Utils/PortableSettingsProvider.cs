@@ -135,9 +135,11 @@ namespace SuperPutty.Utils
             // Iterate through the settings to be retrieved
             foreach (SettingsProperty setting in collection)
             {
-                SettingsPropertyValue value = new SettingsPropertyValue(setting);
-                value.IsDirty = true;
-                value.SerializedValue = GetValue(setting);
+                SettingsPropertyValue value = new SettingsPropertyValue(setting)
+                {
+                    IsDirty = true,
+                    SerializedValue = GetValue(setting)
+                };
                 values.Add(value);
             }
 

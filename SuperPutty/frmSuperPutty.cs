@@ -118,8 +118,7 @@ namespace SuperPutty
             this.tbFocusHelperHost = new TextBoxFocusHelper(this.tbTxtBoxHost.TextBox);
             this.tbFocusHelperUserName = new TextBoxFocusHelper(this.tbTxtBoxLogin.TextBox);
             this.tbFocusHelperPassword = new TextBoxFocusHelper(this.tbTxtBoxPassword.TextBox);
-            this.sendCommandsDocumentSelector = new frmDocumentSelector(this.DockPanel);
-            this.sendCommandsDocumentSelector.Owner = this;
+            this.sendCommandsDocumentSelector = new frmDocumentSelector(this.DockPanel) {Owner = this};
 
             // Send Command toolbar history
             PropertyDescriptor pd = TypeDescriptor.GetProperties(typeof(HistoryEntry))["TimeStamp"];
@@ -354,10 +353,12 @@ namespace SuperPutty
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Filter = "XML Files|*.xml|All files|*.*";
-            saveDialog.FileName = "Sessions.XML";
-            saveDialog.InitialDirectory = Application.StartupPath;
+            SaveFileDialog saveDialog = new SaveFileDialog
+            {
+                Filter = "XML Files|*.xml|All files|*.*",
+                FileName = "Sessions.XML",
+                InitialDirectory = Application.StartupPath
+            };
             if (saveDialog.ShowDialog(this) == DialogResult.OK)
             {
                 SessionData.SaveSessionsToFile(SuperPuTTY.GetAllSessions(), saveDialog.FileName);
@@ -366,11 +367,13 @@ namespace SuperPutty
 
         private void fromFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Filter = "XML Files|*.xml|All files|*.*";
-            openDialog.FileName = "Sessions.XML";
-            openDialog.CheckFileExists = true;
-            openDialog.InitialDirectory = Application.StartupPath;
+            OpenFileDialog openDialog = new OpenFileDialog
+            {
+                Filter = "XML Files|*.xml|All files|*.*",
+                FileName = "Sessions.XML",
+                CheckFileExists = true,
+                InitialDirectory = Application.StartupPath
+            };
             if (openDialog.ShowDialog(this) == DialogResult.OK)
             {
                 SuperPuTTY.ImportSessionsFromFile(openDialog.FileName);
@@ -380,11 +383,13 @@ namespace SuperPutty
 
         private void fromPuTTYCMExportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Filter = "XML Files|*.xml|All files|*.*";
-            openDialog.FileName = "export.xml";
-            openDialog.CheckFileExists = true;
-            openDialog.InitialDirectory = Application.StartupPath;
+            OpenFileDialog openDialog = new OpenFileDialog
+            {
+                Filter = "XML Files|*.xml|All files|*.*",
+                FileName = "export.xml",
+                CheckFileExists = true,
+                InitialDirectory = Application.StartupPath
+            };
             if (openDialog.ShowDialog(this) == DialogResult.OK)
             {
                 SuperPuTTY.ImportSessionsFromPuttyCM(openDialog.FileName);
@@ -407,8 +412,10 @@ namespace SuperPutty
         private void openSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             QuickSelector q = new QuickSelector();
-            QuickSelectorData data = new QuickSelectorData();
-            data.CaseSensitive = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch;
+            QuickSelectorData data = new QuickSelectorData
+            {
+                CaseSensitive = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch
+            };
 
             foreach (SessionData sd in SuperPuTTY.Sessions)
             {
@@ -419,9 +426,11 @@ namespace SuperPutty
                     null);
             }
 
-            QuickSelectorOptions opt = new QuickSelectorOptions();
-            opt.Sort = data.ItemData.DetailColumn.ColumnName;
-            opt.BaseText = "Open Session";
+            QuickSelectorOptions opt = new QuickSelectorOptions
+            {
+                Sort = data.ItemData.DetailColumn.ColumnName,
+                BaseText = "Open Session"
+            };
 
             QuickSelector d = new QuickSelector();
             if (d.ShowDialog(this, data, opt) == DialogResult.OK)
@@ -433,8 +442,10 @@ namespace SuperPutty
         private void switchSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             QuickSelector q = new QuickSelector();
-            QuickSelectorData data = new QuickSelectorData();
-            data.CaseSensitive = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch;
+            QuickSelectorData data = new QuickSelectorData
+            {
+                CaseSensitive = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch
+            };
 
             foreach (ToolWindow content in this.tabSwitcher.Documents)
             {
@@ -450,10 +461,12 @@ namespace SuperPutty
                 }
             }
 
-            QuickSelectorOptions opt = new QuickSelectorOptions();
-            opt.Sort = data.ItemData.DetailColumn.ColumnName;
-            opt.BaseText = "Switch Session";
-            opt.ShowNameColumn = true;
+            QuickSelectorOptions opt = new QuickSelectorOptions
+            {
+                Sort = data.ItemData.DetailColumn.ColumnName,
+                BaseText = "Switch Session",
+                ShowNameColumn = true
+            };
 
             QuickSelector d = new QuickSelector();
             if (d.ShowDialog(this, data, opt) == DialogResult.OK)
@@ -882,8 +895,7 @@ namespace SuperPutty
 
         private void puTTYConfigurationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process p = new Process();
-            p.StartInfo.FileName = SuperPuTTY.Settings.PuttyExe;
+            Process p = new Process {StartInfo = {FileName = SuperPuTTY.Settings.PuttyExe}};
             p.Start();
 
             SuperPuTTY.ReportStatus("Lauched Putty Configuration");
@@ -1480,9 +1492,11 @@ namespace SuperPutty
                 case SuperPuttyAction.RenameTab:                    
                     if (activePanel != null && activePanel.Session != null)
                     {
-                        dlgRenameItem dialog = new dlgRenameItem();
-                        dialog.ItemName = activePanel.Text;
-                        dialog.DetailName = activePanel.Session.SessionId;
+                        dlgRenameItem dialog = new dlgRenameItem
+                        {
+                            ItemName = activePanel.Text,
+                            DetailName = activePanel.Session.SessionId
+                        };
 
                         if (dialog.ShowDialog(this) == DialogResult.OK)
                         {

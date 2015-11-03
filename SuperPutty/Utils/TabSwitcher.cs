@@ -36,10 +36,12 @@ namespace SuperPutty.Utils
         public static readonly ITabSwitchStrategy[] Strategies;
         static TabSwitcher()
         {
-            List<ITabSwitchStrategy> strats = new List<ITabSwitchStrategy>();
-            strats.Add(new VisualOrderTabSwitchStrategy());
-            strats.Add(new OpenOrderTabSwitchStrategy());
-            strats.Add(new MRUTabSwitchStrategy());
+            List<ITabSwitchStrategy> strats = new List<ITabSwitchStrategy>
+            {
+                new VisualOrderTabSwitchStrategy(),
+                new OpenOrderTabSwitchStrategy(),
+                new MRUTabSwitchStrategy()
+            };
             //strats.Add(new MRUTabSwitchStrategyOld());
             Strategies = strats.ToArray();
         }

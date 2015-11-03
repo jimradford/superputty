@@ -269,8 +269,7 @@ namespace SuperPutty
                     Log.WarnFormat("Dropped Unknown {0} on {1}", file, target);
             }
             //Logger.Log("Total Bytes: {0} Total Files: {1}", totalBytes, fileCount);
-            frmTransferStatus frmStatus = new frmTransferStatus();
-            frmStatus.Text = "Uploading files to " + m_Session.SessionName;
+            frmTransferStatus frmStatus = new frmTransferStatus {Text = "Uploading files to " + m_Session.SessionName};
             frmStatus.Show(m_DockPanel, DockState.DockBottom);
 
             TransferUpdateCallback callback = delegate(bool fileComplete, bool cancelTransfer, FileTransferStatus status)

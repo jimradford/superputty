@@ -201,15 +201,21 @@ namespace SuperPutty
 
             Thread threadListFiles = new Thread(delegate()
             {
-                m_processDir = new Process();
-                
-                m_processDir.EnableRaisingEvents = true;
-                m_processDir.StartInfo.UseShellExecute = false;
-                m_processDir.StartInfo.RedirectStandardError = true;
+                m_processDir = new Process
+                {
+                    EnableRaisingEvents = true,
+                    StartInfo =
+                    {
+                        UseShellExecute = false,
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = true,
+                        CreateNoWindow = true,
+                        FileName = SuperPuTTY.Settings.PscpExe
+                    }
+                };
+
                 //m_processDir.StartInfo.RedirectStandardInput = true;
-                m_processDir.StartInfo.RedirectStandardOutput = true;
-                m_processDir.StartInfo.CreateNoWindow = true;
-                m_processDir.StartInfo.FileName = SuperPuTTY.Settings.PscpExe;                
+
                 // process the various options from the session object and convert them into arguments pscp can understand
                 string args = MakeArgs(m_Session, true, path);
                 Logger.Log("Sending Command: '{0} {1}'", m_processDir.StartInfo.FileName, MakeArgs(m_Session, false, path));
@@ -332,7 +338,7 @@ namespace SuperPutty
             {
                 return;
             }
-            
+
             Thread timeoutThread = new Thread(delegate()
             {
                 while (m_DirIsBusy)
@@ -342,13 +348,13 @@ namespace SuperPutty
                      * This allows us to capture any interactive prompts/messages
                      * sent to us by putty.
                      */
-                    if (timeoutWatch.Elapsed.Seconds >= 5) 
+                    if (timeoutWatch.Elapsed.Seconds >= 5)
                     {
-                        Logger.Log("Timeout after {0} seconds", timeoutWatch.Elapsed.Seconds);                        
-                                                
+                        Logger.Log("Timeout after {0} seconds", timeoutWatch.Elapsed.Seconds);
+
                         if (!m_processDir.HasExited)
                         {
-                            m_processDir.Kill();                            
+                            m_processDir.Kill();
                         }
                         m_processDir.CancelErrorRead();
                         m_processDir.CancelOutputRead();
@@ -356,9 +362,11 @@ namespace SuperPutty
                     }
                     Thread.Sleep(1000);
                 }
-            });
-            timeoutThread.Name = "Timeout Watcher";
-            timeoutThread.IsBackground = true;
+            })
+            {
+                Name = "Timeout Watcher",
+                IsBackground = true
+            };
             timeoutThread.Start();
             timeoutWatch.Start();                                    
         }
@@ -440,16 +448,20 @@ namespace SuperPutty
                 try
                 {
                     processCopyToRemote.EnableRaisingEvents = true;
-                    processCopyToRemote.StartInfo.RedirectStandardError = true;                    
+                    processCopyToRemote.StartInfo.RedirectStandardError = true;
                     processCopyToRemote.StartInfo.RedirectStandardInput = true;
                     processCopyToRemote.StartInfo.RedirectStandardOutput = true;
                     processCopyToRemote.StartInfo.FileName = SuperPuTTY.Settings.PscpExe;
                     processCopyToRemote.StartInfo.CreateNoWindow = true;
                     // process the various options from the session object and convert them into arguments pscp can understand
                     string args = "-r -agent "; // default arguments
-                    args += (!String.IsNullOrEmpty(m_Session.PuttySession)) ? "-load \"" + m_Session.PuttySession + "\" " : "";
+                    args += (!String.IsNullOrEmpty(m_Session.PuttySession))
+                        ? "-load \"" + m_Session.PuttySession + "\" "
+                        : "";
                     //args += "-l " + Session.Username + " ";
-                    args += (!String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0) ? "-pw " + m_Session.Password + " " : "";
+                    args += (!String.IsNullOrEmpty(m_Session.Password) && m_Session.Password.Length > 0)
+                        ? "-pw " + m_Session.Password + " "
+                        : "";
                     args += "-P " + m_Session.Port + " ";
                     args += "\"" + files[0] + "\" ";
                     args += (!String.IsNullOrEmpty(m_Session.Username)) ? m_Session.Username + "@" : "";
@@ -487,17 +499,19 @@ namespace SuperPutty
 
                     processCopyToRemote.Start();
                     processCopyToRemote.BeginOutputReadLine();
-                    processCopyToRemote.WaitForExit();                    
+                    processCopyToRemote.WaitForExit();
                 }
                 catch (ThreadAbortException)
                 {
-                    if(!processCopyToRemote.HasExited)
+                    if (!processCopyToRemote.HasExited)
                         processCopyToRemote.Kill();
-                }                
-            });
+                }
+            })
+            {
+                IsBackground = true,
+                Name = "File Upload"
+            };
 
-            m_PscpThread.IsBackground = true;
-            m_PscpThread.Name = "File Upload";
             m_PscpThread.Start();
         }
 

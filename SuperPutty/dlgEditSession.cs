@@ -283,9 +283,11 @@ namespace SuperPutty
                 int cols = x;
                 int rows = x;
 
-                imgPopup = new ImageListPopup();
-                imgPopup.BackgroundColor = Color.FromArgb(241, 241, 241);
-                imgPopup.BackgroundOverColor = Color.FromArgb(102, 154, 204);
+                imgPopup = new ImageListPopup
+                {
+                    BackgroundColor = Color.FromArgb(241, 241, 241),
+                    BackgroundOverColor = Color.FromArgb(102, 154, 204)
+                };
                 imgPopup.Init(this.buttonImageSelect.ImageList, 8, 8, cols, rows);
                 imgPopup.ItemClick += new ImageListPopupEventHandler(this.OnItemClicked);
             }

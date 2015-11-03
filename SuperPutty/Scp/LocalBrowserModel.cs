@@ -48,9 +48,11 @@ namespace SuperPutty.Scp
                 if (newDir.Parent != null)
                 {
                     // has valid parent dir
-                    BrowserFileInfo bfiParent = new BrowserFileInfo(newDir.Parent);
-                    bfiParent.Name = "..";
-                    bfiParent.Type = FileType.ParentDirectory;
+                    BrowserFileInfo bfiParent = new BrowserFileInfo(newDir.Parent)
+                    {
+                        Name = "..",
+                        Type = FileType.ParentDirectory
+                    };
                     result.Add(bfiParent);
                 }
                 else

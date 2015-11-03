@@ -25,9 +25,11 @@ namespace SuperPutty.Scp
 
             if (session == null || session.Username == null)
             {
-                result = new ListDirectoryResult(path);
-                result.ErrorMsg = "Session invalid";
-                result.StatusCode = ResultStatusCode.Error;
+                result = new ListDirectoryResult(path)
+                {
+                    ErrorMsg = "Session invalid",
+                    StatusCode = ResultStatusCode.Error
+                };
             }
             else
             {

@@ -227,8 +227,7 @@ namespace SuperPutty.Gui
         {
             // bind data
             this.Options = options;
-            this.DataView = new DataView(data.ItemData);
-            this.DataView.Sort = options.Sort;
+            this.DataView = new DataView(data.ItemData) {Sort = options.Sort};
             this.dataGridViewData.DataSource = this.DataView;
 
             // configure grid

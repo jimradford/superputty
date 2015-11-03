@@ -29,8 +29,7 @@ namespace SuperPutty.Data
         }
         public static List<string> GetSessionNames()
         {
-            List<string> names = new List<string>();
-            names.Add(SessionEmptySettings);
+            List<string> names = new List<string> {SessionEmptySettings};
             RegistryKey key = RootAppKey;
             if (key != null)
             {
@@ -59,13 +58,18 @@ namespace SuperPutty.Data
                     RegistryKey sessionKey = key.OpenSubKey(keyName);
                     if (sessionKey != null)
                     {
-                        SessionData session = new SessionData();
-                        session.Host = (string)sessionKey.GetValue("HostName", "");
-                        session.Port = (int)sessionKey.GetValue("PortNumber", 22);
-                        session.Proto = (ConnectionProtocol)Enum.Parse(typeof(ConnectionProtocol), (string)sessionKey.GetValue("Protocol", "SSH"), true);
-                        session.PuttySession = (string)sessionKey.GetValue("PuttySession", HttpUtility.UrlDecode(keyName));
-                        session.SessionName = HttpUtility.UrlDecode(keyName);
-                        session.Username = (string)sessionKey.GetValue("UserName", "");
+                        SessionData session = new SessionData
+                        {
+                            Host = (string) sessionKey.GetValue("HostName", ""),
+                            Port = (int) sessionKey.GetValue("PortNumber", 22),
+                            Proto =
+                                (ConnectionProtocol)
+                                    Enum.Parse(typeof (ConnectionProtocol),
+                                        (string) sessionKey.GetValue("Protocol", "SSH"), true),
+                            PuttySession = (string) sessionKey.GetValue("PuttySession", HttpUtility.UrlDecode(keyName)),
+                            SessionName = HttpUtility.UrlDecode(keyName),
+                            Username = (string) sessionKey.GetValue("UserName", "")
+                        };
                         sessions.Add(session);
                     }
                 }
@@ -106,12 +110,16 @@ namespace SuperPutty.Data
                 XmlElement info = (XmlElement)connection.SelectSingleNode("connection_info");
                 XmlElement login = (XmlElement)connection.SelectSingleNode("login");
 
-                SessionData session = new SessionData();
-                session.SessionName = info.SelectSingleNode("name").InnerText;
-                session.Host = info.SelectSingleNode("host").InnerText;
-                session.Port = Convert.ToInt32(info.SelectSingleNode("port").InnerText);
-                session.Proto = (ConnectionProtocol)Enum.Parse(typeof(ConnectionProtocol), info.SelectSingleNode("protocol").InnerText);
-                session.PuttySession = info.SelectSingleNode("session").InnerText;
+                SessionData session = new SessionData
+                {
+                    SessionName = info.SelectSingleNode("name").InnerText,
+                    Host = info.SelectSingleNode("host").InnerText,
+                    Port = Convert.ToInt32(info.SelectSingleNode("port").InnerText),
+                    Proto =
+                        (ConnectionProtocol)
+                            Enum.Parse(typeof (ConnectionProtocol), info.SelectSingleNode("protocol").InnerText),
+                    PuttySession = info.SelectSingleNode("session").InnerText
+                };
                 session.SessionId = string.IsNullOrEmpty(parentPath) 
                     ? session.SessionName 
                     : SessionData.CombineSessionIds(parentPath, session.SessionName);

@@ -342,8 +342,7 @@ namespace SuperPutty
                 }
             }
 
-            dlgEditSession form = new dlgEditSession(session, this.treeView1.ImageList);
-            form.Text = title;
+            dlgEditSession form = new dlgEditSession(session, this.treeView1.ImageList) {Text = title};
             form.SessionNameValidator += delegate(string txt, out string error)
             {
                 bool IsValid = ValidateSessionNameChange(nodeRef, node, txt, out error);
@@ -494,27 +493,29 @@ namespace SuperPutty
             TreeNode node = this.treeView1.SelectedNode;
             if (node != null)
             {
-                dlgRenameItem dialog = new dlgRenameItem();
-                dialog.Text = "New Folder";
-                dialog.ItemName = "New Folder";
-                dialog.DetailName = "";
-                dialog.ItemNameValidator = delegate(string txt, out string error)
+                dlgRenameItem dialog = new dlgRenameItem
                 {
-                    error = String.Empty;
-                    if (node.Nodes.ContainsKey(txt))
+                    Text = "New Folder",
+                    ItemName = "New Folder",
+                    DetailName = "",
+                    ItemNameValidator = delegate(string txt, out string error)
                     {
-                        error = "Node with same name exists";
-                    }
-                    else if (txt.Contains(SessionIdDelim))
-                    {
-                        error = "Invalid character ( " + SessionIdDelim + " ) in name";
-                    }
-                    else if (string.IsNullOrEmpty(txt) || txt.Trim() == String.Empty)
-                    {
-                        error = "Empty folder name";
-                    }
+                        error = String.Empty;
+                        if (node.Nodes.ContainsKey(txt))
+                        {
+                            error = "Node with same name exists";
+                        }
+                        else if (txt.Contains(SessionIdDelim))
+                        {
+                            error = "Invalid character ( " + SessionIdDelim + " ) in name";
+                        }
+                        else if (string.IsNullOrEmpty(txt) || txt.Trim() == String.Empty)
+                        {
+                            error = "Empty folder name";
+                        }
 
-                    return string.IsNullOrEmpty(error);
+                        return string.IsNullOrEmpty(error);
+                    }
                 };
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
@@ -528,22 +529,24 @@ namespace SuperPutty
             TreeNode node = this.treeView1.SelectedNode;
             if (node != null)
             {
-                dlgRenameItem dialog = new dlgRenameItem();
-                dialog.Text = "Rename Folder";
-                dialog.ItemName = node.Text;
-                dialog.DetailName = "";
-                dialog.ItemNameValidator = delegate(string txt, out string error)
+                dlgRenameItem dialog = new dlgRenameItem
                 {
-                    error = String.Empty;
-                    if (node.Parent.Nodes.ContainsKey(txt) && txt != node.Text)
+                    Text = "Rename Folder",
+                    ItemName = node.Text,
+                    DetailName = "",
+                    ItemNameValidator = delegate(string txt, out string error)
                     {
-                        error = "Node with same name exists";
+                        error = String.Empty;
+                        if (node.Parent.Nodes.ContainsKey(txt) && txt != node.Text)
+                        {
+                            error = "Node with same name exists";
+                        }
+                        else if (txt.Contains(SessionIdDelim))
+                        {
+                            error = "Invalid character ( " + SessionIdDelim + " ) in name";
+                        }
+                        return string.IsNullOrEmpty(error);
                     }
-                    else if (txt.Contains(SessionIdDelim))
-                    {
-                        error = "Invalid character ( " + SessionIdDelim + " ) in name";
-                    }
-                    return string.IsNullOrEmpty(error);
                 };
                 if (dialog.ShowDialog(this) == DialogResult.OK && node.Text != dialog.ItemName)
                 {

@@ -506,8 +506,7 @@ namespace SuperPutty.Scp
                 this.DataUpdatedHandler = dataUpdated;
                 this.Lines = new List<string>();
 
-                this.Thread = new Thread(this.ReadAll);
-                this.Thread.IsBackground = true;
+                this.Thread = new Thread(this.ReadAll) {IsBackground = true};
                 this.Thread.Start();
             }
 

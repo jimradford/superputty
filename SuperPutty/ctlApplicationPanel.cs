@@ -315,11 +315,16 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                         MessageBox.Show("putty.exe not found in configured path, please go into tools->settings and set the correct path", "Application Not Found");
                         return;
                     }
-                    m_Process = new Process();
-                    m_Process.EnableRaisingEvents = true;
+                    m_Process = new Process
+                    {
+                        EnableRaisingEvents = true,
+                        StartInfo =
+                        {
+                            FileName = ApplicationName,
+                            Arguments = ApplicationParameters
+                        }
+                    };
                     //m_Process.Exited += new EventHandler(p_Exited);
-                    m_Process.StartInfo.FileName = ApplicationName;
-                    m_Process.StartInfo.Arguments = ApplicationParameters;
 
                     if (!string.IsNullOrEmpty(this.ApplicationWorkingDirectory) &&
                         Directory.Exists(this.ApplicationWorkingDirectory))

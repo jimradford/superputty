@@ -144,9 +144,11 @@ namespace SuperPutty
                     {
                         if (part == session.SessionName)
                         {
-                            ToolStripMenuItem newSessionTSMI = new ToolStripMenuItem();
-                            newSessionTSMI.Tag = session;
-                            newSessionTSMI.Text = session.SessionName;
+                            ToolStripMenuItem newSessionTSMI = new ToolStripMenuItem
+                            {
+                                Tag = session,
+                                Text = session.SessionName
+                            };
                             newSessionTSMI.Click += new System.EventHandler(newSessionTSMI_Click);
                             newSessionTSMI.ToolTipText = session.ToString();
                             tsmiParent.DropDownItems.Add(newSessionTSMI);
@@ -159,8 +161,7 @@ namespace SuperPutty
                             }
                             else
                             {
-                                ToolStripMenuItem newSessionFolder = new ToolStripMenuItem(part);
-                                newSessionFolder.Name = part;
+                                ToolStripMenuItem newSessionFolder = new ToolStripMenuItem(part) {Name = part};
                                 tsmiParent.DropDownItems.Add(newSessionFolder);
                                 tsmiParent = newSessionFolder;
                             }
@@ -367,9 +368,11 @@ namespace SuperPutty
 
         private void renameTabToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            dlgRenameItem dialog = new dlgRenameItem();
-            dialog.ItemName = this.Text;
-            dialog.DetailName = this.m_Session.SessionId;
+            dlgRenameItem dialog = new dlgRenameItem
+            {
+                ItemName = this.Text,
+                DetailName = this.m_Session.SessionId
+            };
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {

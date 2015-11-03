@@ -36,11 +36,12 @@ namespace SuperPutty
         void InitLogger()
         {
             //First create and configure the appender  
-            this.memoryAppender = new MemoryAppender();
-            this.memoryAppender.Name = this.GetType().Name + "MemoryAppender";
+            this.memoryAppender = new MemoryAppender {Name = this.GetType().Name + "MemoryAppender"};
 
-            PatternLayout layout = new PatternLayout();
-            layout.ConversionPattern = "%date %-5level %20.20logger{1} - %message%newline";
+            PatternLayout layout = new PatternLayout
+            {
+                ConversionPattern = "%date %-5level %20.20logger{1} - %message%newline"
+            };
             layout.ActivateOptions();
             this.memoryAppender.Layout = layout;
 

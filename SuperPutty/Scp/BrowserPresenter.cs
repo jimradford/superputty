@@ -47,9 +47,11 @@ namespace SuperPutty.Scp
             this.FileTransferPresenter = fileTransferPresenter;
             this.FileTransferPresenter.ViewModel.FileTransfers.ListChanged += (FileTransfers_ListChanged);
 
-            this.BackgroundWorker = new BackgroundWorker();
-            this.BackgroundWorker.WorkerReportsProgress = true;
-            this.BackgroundWorker.WorkerSupportsCancellation = true;
+            this.BackgroundWorker = new BackgroundWorker
+            {
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
+            };
             this.BackgroundWorker.DoWork += (BackgroundWorker_DoWork);
             this.BackgroundWorker.ProgressChanged += (BackgroundWorker_ProgressChanged);
             this.BackgroundWorker.RunWorkerCompleted += (BackgroundWorker_RunWorkerCompleted);

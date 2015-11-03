@@ -114,10 +114,12 @@ namespace SuperPutty
             LayoutData layout = (LayoutData)this.listBoxLayouts.SelectedItem;
             if (layout != null)
             {
-                dlgRenameItem renameDialog = new dlgRenameItem();
-                renameDialog.DetailName = String.Empty;
-                renameDialog.ItemName = layout.Name;
-                renameDialog.ItemNameValidator = this.ValidateLayoutName;
+                dlgRenameItem renameDialog = new dlgRenameItem
+                {
+                    DetailName = String.Empty,
+                    ItemName = layout.Name,
+                    ItemNameValidator = this.ValidateLayoutName
+                };
                 if (DialogResult.OK == renameDialog.ShowDialog(this))
                 {
                     SuperPuTTY.RenameLayout(layout, renameDialog.ItemName);

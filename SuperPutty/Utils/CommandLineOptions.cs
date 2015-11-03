@@ -217,19 +217,21 @@ namespace SuperPutty.Utils
                     sessionName = this.PuttySession;
                 }
 
-                ssi = new SessionDataStartInfo();
-                ssi.Session = new SessionData
+                ssi = new SessionDataStartInfo
                 {
-                    Host = this.Host,
-                    SessionName = sessionName,
-                    SessionId = SuperPuTTY.MakeUniqueSessionId(SessionData.CombineSessionIds("CLI", this.Host)),
-                    Port = this.Port.GetValueOrDefault(22),
-                    Proto = this.Protocol.GetValueOrDefault(ConnectionProtocol.SSH),
-                    Username = this.UserName,
-                    Password = this.Password,
-                    PuttySession = this.PuttySession
+                    Session = new SessionData
+                    {
+                        Host = this.Host,
+                        SessionName = sessionName,
+                        SessionId = SuperPuTTY.MakeUniqueSessionId(SessionData.CombineSessionIds("CLI", this.Host)),
+                        Port = this.Port.GetValueOrDefault(22),
+                        Proto = this.Protocol.GetValueOrDefault(ConnectionProtocol.SSH),
+                        Username = this.UserName,
+                        Password = this.Password,
+                        PuttySession = this.PuttySession
+                    },
+                    UseScp = this.UseScp
                 };
-                ssi.UseScp = this.UseScp;
             }
 
             if (ssi == null)
