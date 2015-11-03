@@ -520,8 +520,10 @@ namespace SuperPutty
 
             if (col == colEdit)
             {
-                KeyboardShortcutEditor editor = new KeyboardShortcutEditor();
-                editor.StartPosition = FormStartPosition.CenterParent;
+                KeyboardShortcutEditor editor = new KeyboardShortcutEditor
+                {
+                    StartPosition = FormStartPosition.CenterParent
+                };
                 if (DialogResult.OK == editor.ShowDialog(this, ks))
                 {
                     this.Shortcuts.ResetItem(this.Shortcuts.IndexOf(ks));

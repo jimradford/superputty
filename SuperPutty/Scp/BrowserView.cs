@@ -43,7 +43,7 @@ namespace SuperPutty.Scp
             if (this.initialized) return;
 
             this.Presenter = presenter;
-            this.Presenter.AuthRequest += (Presenter_AuthRequest);
+            this.Presenter.AuthRequest += Presenter_AuthRequest;
             this.Bind(this.Presenter.ViewModel);
 
             this.Presenter.LoadDirectory(startingDir);
@@ -82,7 +82,7 @@ namespace SuperPutty.Scp
 
             // Ugh, ListView not bindable, do it manually
             this.PopulateListView(model.Files);
-            model.Files.ListChanged += (Files_ListChanged);
+            model.Files.ListChanged += Files_ListChanged;
             model.PropertyChanged += (s, e) => EnableDisableControls(model.BrowserState);
         }
 

@@ -19,8 +19,8 @@
  * THE SOFTWARE.
  */
 
-using SuperPutty.Utils;
 using System.Windows.Forms;
+using SuperPutty.Utils;
 
 namespace SuperPuTTY.Scripting
 {

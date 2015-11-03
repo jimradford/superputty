@@ -34,7 +34,7 @@ namespace SuperPutty.Utils
     /// <typeparam name="T"></typeparam>
     public class SortableBindingList<T> : BindingList<T>, IList<T>
     {
-        protected override bool SupportsSortingCore { get { return true; } }
+        protected override bool SupportsSortingCore => true;
 
         protected override bool IsSortedCore
         {
@@ -77,22 +77,10 @@ namespace SuperPutty.Utils
         }
 
         private ListSortDirection sortDirection;
-        protected override ListSortDirection SortDirectionCore
-        {
-            get
-            {
-                return sortDirection;
-            }
-        }
+        protected override ListSortDirection SortDirectionCore => sortDirection;
 
         private PropertyDescriptor sortProperty;
-        protected override PropertyDescriptor SortPropertyCore
-        {
-            get
-            {
-                return sortProperty;
-            }
-        }
+        protected override PropertyDescriptor SortPropertyCore => sortProperty;
 
         protected override void ApplySortCore(PropertyDescriptor prop, ListSortDirection direction)
         {

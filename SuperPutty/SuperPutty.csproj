@@ -136,6 +136,7 @@
       <DependentUpon>QuickSelectorData.xsd</DependentUpon>
     </Compile>
     <Compile Include="HttpRequest.cs" />
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="Scp\BrowserCommon.cs" />
     <Compile Include="Scp\BrowserViewModel.cs" />
     <Compile Include="Scp\BrowserPresenter.cs" />
@@ -163,19 +164,19 @@
     </Compile>
     <Compile Include="Scp\PscpClient.cs" />
     <Compile Include="Scp\RemoteBrowserModel.cs" />
+    <Compile Include="Scripting\CloseSessionCommand.cs" />
+    <Compile Include="Scripting\OpenSessionCommand.cs" />
+    <Compile Include="Scripting\SendCharCommand.cs" />
+    <Compile Include="Scripting\SendKeyCommand.cs" />
+    <Compile Include="Scripting\SendLineCommand.cs" />
+    <Compile Include="Scripting\SleepCommand.cs" />
+    <Compile Include="Scripting\Spsl.cs" />
     <Compile Include="SessionDetail.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SessionDetail.Designer.cs">
       <DependentUpon>SessionDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Spsl\CloseSessionCommand.cs" />
-    <Compile Include="Spsl\OpenSessionCommand.cs" />
-    <Compile Include="Spsl\SendCharCommand.cs" />
-    <Compile Include="Spsl\SendKeyCommand.cs" />
-    <Compile Include="Spsl\SendLineCommand.cs" />
-    <Compile Include="Spsl\SleepCommand.cs" />
-    <Compile Include="Spsl\Spsl.cs" />
     <Compile Include="ToolWindowEx.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -396,7 +397,6 @@
     <Compile Include="ctlPuttyPanel.Designer.cs">
       <DependentUpon>ctlPuttyPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
     <Compile Include="SuperPuTTY.cs" />
     <Compile Include="ToolWindow.cs">
       <SubType>Form</SubType>

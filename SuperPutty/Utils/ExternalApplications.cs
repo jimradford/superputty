@@ -12,8 +12,7 @@ namespace SuperPutty.Utils
         /// <summary>
         /// Open the filezilla program with the sesion data, for sftp connection. 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="session"></param>
         public static void openFileZilla(SessionData session)
         {
             if (!String.IsNullOrEmpty(session.Password) && !SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg)
@@ -22,8 +21,8 @@ namespace SuperPutty.Utils
             // open filezilla with the session info (https://wiki.filezilla-project.org/Command-line_arguments_%28Client%29)
             String pw = session.Password;
             String user = Uri.EscapeDataString(session.Username);
-            String userPw =    (!String.IsNullOrEmpty(user)) ? (((!String.IsNullOrEmpty(pw)) && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg) ? user + ":" + pw      + "@" : user + "@") : "";
-            String userPwLog = (!String.IsNullOrEmpty(user)) ? (((!String.IsNullOrEmpty(pw)) && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg) ? user + ":" + "XXXXX" + "@" : user + "@") : "";
+            String userPw =    !String.IsNullOrEmpty(user) ? (!String.IsNullOrEmpty(pw) && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg ? user + ":" + pw      + "@" : user + "@") : "";
+            String userPwLog = !String.IsNullOrEmpty(user) ? (!String.IsNullOrEmpty(pw) && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg ? user + ":" + "XXXXX" + "@" : user + "@") : "";
             String rp = String.IsNullOrEmpty(session.RemotePath) ? "" : session.RemotePath;
             String lp = String.IsNullOrEmpty(session.LocalPath) ? "" : " --local=\"" + session.LocalPath + "\" ";
             String param = "sftp://" + userPw + session.Host + ":" + session.Port + rp + lp;
@@ -31,11 +30,11 @@ namespace SuperPutty.Utils
             Log.Debug("Send to FileZilla:" + SuperPuTTY.Settings.FileZillaExe + " params="+ "sftp://" + userPwLog + session.Host + ":" + session.Port + rp + lp);
             Process.Start(SuperPuTTY.Settings.FileZillaExe, param);
         }
+
         /// <summary>
         /// Open the WinSCP program with the sesion data, for sftp connection. 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="session"></param>
         public static void openWinSCP(SessionData session)
         {
             if (!String.IsNullOrEmpty(session.Password) && !SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg)
@@ -44,8 +43,8 @@ namespace SuperPutty.Utils
             // open WinSCP with the session info (https://winscp.net/eng/docs/commandline)           
             String pw = Uri.EscapeDataString(session.Password);
             String user = Uri.EscapeDataString(session.Username);
-            String userPw =    (!String.IsNullOrEmpty(user)) ? (((!String.IsNullOrEmpty(pw)) && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg) ? user + ":" + pw      + "@" : user + "@") : "";
-            String userPwLog = (!String.IsNullOrEmpty(user)) ? (((!String.IsNullOrEmpty(pw)) && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg) ? user + ":" + "XXXXX" + "@" : user + "@") : "";
+            String userPw =    !String.IsNullOrEmpty(user) ? (!String.IsNullOrEmpty(pw) && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg ? user + ":" + pw      + "@" : user + "@") : "";
+            String userPwLog = !String.IsNullOrEmpty(user) ? (!String.IsNullOrEmpty(pw) && SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg ? user + ":" + "XXXXX" + "@" : user + "@") : "";
             String rp = String.IsNullOrEmpty(session.RemotePath) ? "" : session.RemotePath;
             if (!rp.Substring(rp.Length).Equals("/"))
             {

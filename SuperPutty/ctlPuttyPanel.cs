@@ -78,7 +78,7 @@ namespace SuperPutty
             }
             set
             {
-                this.TabText = value != null ? value.Replace("&", "&&") : value;
+                this.TabText = value != null ? value.Replace("&", "&&") : null;
                 base.Text = value;
 
                 if (Log.Logger.IsEnabledFor(Level.Trace))
@@ -144,9 +144,11 @@ namespace SuperPutty
                     {
                         if (part == session.SessionName)
                         {
-                            ToolStripMenuItem newSessionTSMI = new ToolStripMenuItem();
-                            newSessionTSMI.Tag = session;
-                            newSessionTSMI.Text = session.SessionName;
+                            ToolStripMenuItem newSessionTSMI = new ToolStripMenuItem
+                            {
+                                Tag = session,
+                                Text = session.SessionName
+                            };
                             newSessionTSMI.Click += new System.EventHandler(newSessionTSMI_Click);
                             newSessionTSMI.ToolTipText = session.ToString();
                             tsmiParent.DropDownItems.Add(newSessionTSMI);
@@ -159,8 +161,7 @@ namespace SuperPutty
                             }
                             else
                             {
-                                ToolStripMenuItem newSessionFolder = new ToolStripMenuItem(part);
-                                newSessionFolder.Name = part;
+                                ToolStripMenuItem newSessionFolder = new ToolStripMenuItem(part) {Name = part};
                                 tsmiParent.DropDownItems.Add(newSessionFolder);
                                 tsmiParent = newSessionFolder;
                             }
@@ -255,14 +256,7 @@ namespace SuperPutty
 
         DockPane GetDockPane()
         {
-            foreach (DockPane pane in this.DockPanel.Panes)
-            {
-                if (pane.Contents.Contains(this))
-                {
-                    return pane;
-                }
-            }
-            return null;
+            return this.DockPanel.Panes.FirstOrDefault(pane => pane.Contents.Contains(this));
         }
 
         /// <summary>
@@ -374,9 +368,11 @@ namespace SuperPutty
 
         private void renameTabToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            dlgRenameItem dialog = new dlgRenameItem();
-            dialog.ItemName = this.Text;
-            dialog.DetailName = this.m_Session.SessionId;
+            dlgRenameItem dialog = new dlgRenameItem
+            {
+                ItemName = this.Text,
+                DetailName = this.m_Session.SessionId
+            };
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
@@ -393,8 +389,8 @@ namespace SuperPutty
             }
         }
 
-        public SessionData Session { get { return this.m_Session; } }
-        public ApplicationPanel AppPanel { get { return this.m_AppPanel; } }
+        public SessionData Session => this.m_Session;
+        public ApplicationPanel AppPanel => this.m_AppPanel;
         public ctlPuttyPanel previousPanel { get; set; }
         public ctlPuttyPanel nextPanel { get; set; }
 

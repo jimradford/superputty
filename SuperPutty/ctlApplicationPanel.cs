@@ -49,9 +49,6 @@ namespace SuperPutty
         private Process m_Process;
         private bool m_Created = false;
         private IntPtr m_AppWin;
-        private string m_ApplicationName = "";
-        private string m_ApplicationParameters = "";
-        private string m_ApplicationWorkingDirectory = "";
         private List<IntPtr> m_hWinEventHooks = new List<IntPtr>();
         private List<NativeMethods.WinEventDelegate> lpfnWinEventProcs = new List<NativeMethods.WinEventDelegate>();
         private WindowActivator m_windowActivator = null;
@@ -60,28 +57,17 @@ namespace SuperPutty
 
         /// <summary>Set the name of the application executable to launch</summary>
         [Category("Data"), Description("The path/file to launch"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public string ApplicationName
-        {
-            get { return m_ApplicationName; }
-            set { m_ApplicationName = value; }
-        }
-        
+        public string ApplicationName { get; set; } = "";
+
         [Category("Data"), Description("The parameters to pass to the application being launched"),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public string ApplicationParameters
-        {
-            get { return m_ApplicationParameters; }
-            set { m_ApplicationParameters = value; }
-        }
+        public string ApplicationParameters { get; set; } = "";
+
         [Category("Data"), Description("The starting directory for the putty shell.  Relevant only to cygterm sessions"),
 DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public string ApplicationWorkingDirectory
-        {
-            get { return m_ApplicationWorkingDirectory; }
-            set { m_ApplicationWorkingDirectory = value; }
-        }
+        public string ApplicationWorkingDirectory { get; set; } = "";
 
-        public IntPtr AppWindowHandle { get { return this.m_AppWin; } }
+        public IntPtr AppWindowHandle => this.m_AppWin;
 
         #endregion
 
@@ -329,11 +315,16 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                         MessageBox.Show("putty.exe not found in configured path, please go into tools->settings and set the correct path", "Application Not Found");
                         return;
                     }
-                    m_Process = new Process();
-                    m_Process.EnableRaisingEvents = true;
+                    m_Process = new Process
+                    {
+                        EnableRaisingEvents = true,
+                        StartInfo =
+                        {
+                            FileName = ApplicationName,
+                            Arguments = ApplicationParameters
+                        }
+                    };
                     //m_Process.Exited += new EventHandler(p_Exited);
-                    m_Process.StartInfo.FileName = ApplicationName;
-                    m_Process.StartInfo.Arguments = ApplicationParameters;
 
                     if (!string.IsNullOrEmpty(this.ApplicationWorkingDirectory) &&
                         Directory.Exists(this.ApplicationWorkingDirectory))
@@ -341,8 +332,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                         m_Process.StartInfo.WorkingDirectory = this.ApplicationWorkingDirectory;
                     }
 
-                    m_Process.Exited += delegate(object sender, EventArgs ev)
-                    {
+                    m_Process.Exited += delegate {
                         m_CloseCallback(true);
                     };
 
@@ -496,13 +486,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             base.OnResize(e);
         }
 
-        public bool ExternalProcessCaptured
-        {
-            get
-            {
-                return this.m_AppWin != IntPtr.Zero;
-            }
-        }
+        public bool ExternalProcessCaptured => this.m_AppWin != IntPtr.Zero;
 
         #endregion    
     

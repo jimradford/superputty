@@ -194,10 +194,10 @@ namespace SuperPutty.Scp
         {
             lock(this)
             {
-                /// Known Issues:
-                /// - If a large exe (or other file that the OS will virus scan) is tranfered, the operation will timeout.
-                ///   After completion, the OS seems to block on the final write (while scanning).  During this time the process looks like it's
-                ///   hanging and the timeout logic kicks in.  Hacked in "completed" logic into inlineOut/Err handlers but this is awkward
+                // Known Issues:
+                // - If a large exe (or other file that the OS will virus scan) is tranfered, the operation will timeout.
+                //   After completion, the OS seems to block on the final write (while scanning).  During this time the process looks like it's
+                //   hanging and the timeout logic kicks in.  Hacked in "completed" logic into inlineOut/Err handlers but this is awkward
                 
                 FileTransferResult result = new FileTransferResult();
 
@@ -506,8 +506,7 @@ namespace SuperPutty.Scp
                 this.DataUpdatedHandler = dataUpdated;
                 this.Lines = new List<string>();
 
-                this.Thread = new Thread(this.ReadAll);
-                this.Thread.IsBackground = true;
+                this.Thread = new Thread(this.ReadAll) {IsBackground = true};
                 this.Thread.Start();
             }
 

@@ -93,9 +93,11 @@ namespace SuperPutty.Utils
         /// </summary>
         public void StartStandalone()
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = this.Executable;
-            startInfo.Arguments = this.Args;
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = this.Executable,
+                Arguments = this.Args
+            };
             if (this.WorkingDir != null && Directory.Exists(this.WorkingDir))
             {
                 startInfo.WorkingDirectory = this.WorkingDir;

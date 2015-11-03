@@ -20,9 +20,10 @@
  */
 
 using System;
-using SuperPutty.Utils;
-using SuperPutty;
+using System.Linq;
 using log4net;
+using SuperPutty;
+using SuperPutty.Utils;
 
 namespace SuperPuTTY.Scripting
 {
@@ -125,14 +126,10 @@ namespace SuperPuTTY.Scripting
         /// <returns>The Function associated with the command or null of the command is invalid</returns>
         private static Func<string, CommandData> MatchCommand(string command)
         {
-            for (int i = 0; i < keywords.Length; i++)
-            {
-                if (String.Equals(keywords[i].command, command, StringComparison.OrdinalIgnoreCase))
-                {
-                    return keywords[i].function;
-                }
-            }
-            return null;
-        }        
+            return (from t 
+                    in keywords
+                    where String.Equals(t.command, command, StringComparison.OrdinalIgnoreCase)
+                    select t.function).FirstOrDefault();
+        }
     }
 }

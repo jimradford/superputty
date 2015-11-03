@@ -26,6 +26,7 @@ using System.IO;
 using System.Xml;
 using log4net;
 using System.Collections;
+using System.Linq;
 
 namespace SuperPutty.Utils
 {
@@ -134,9 +135,11 @@ namespace SuperPutty.Utils
             // Iterate through the settings to be retrieved
             foreach (SettingsProperty setting in collection)
             {
-                SettingsPropertyValue value = new SettingsPropertyValue(setting);
-                value.IsDirty = true;
-                value.SerializedValue = GetValue(setting);
+                SettingsPropertyValue value = new SettingsPropertyValue(setting)
+                {
+                    IsDirty = true,
+                    SerializedValue = GetValue(setting)
+                };
                 values.Add(value);
             }
 
@@ -198,14 +201,7 @@ namespace SuperPutty.Utils
             }
             catch (Exception)
             {
-                if (setting.DefaultValue != null)
-                {
-                    value = setting.DefaultValue.ToString();
-                }
-                else
-                {
-                    value = String.Empty;
-                }
+                value = setting.DefaultValue != null ? setting.DefaultValue.ToString() : String.Empty;
             }
 
             return value;
@@ -288,15 +284,9 @@ namespace SuperPutty.Utils
             }
 
             // Determine if the setting is marked as Roaming
-            foreach (DictionaryEntry de in prop.Attributes)
-            {
-                Attribute attr = (Attribute) de.Value;
-                if (attr is SettingsManageabilityAttribute)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return (from DictionaryEntry de 
+                    in prop.Attributes
+                    select (Attribute) de.Value).OfType<SettingsManageabilityAttribute>().Any();
         }
     }
 }

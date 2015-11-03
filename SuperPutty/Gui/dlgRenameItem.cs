@@ -72,7 +72,7 @@ namespace SuperPutty.Gui
 
         private void folderForm_TextChanged(object sender, EventArgs e)
         {
-            btnOK.Enabled = (txtItemName.Text.Length > 0);
+            btnOK.Enabled = txtItemName.Text.Length > 0;
         }
 
     }

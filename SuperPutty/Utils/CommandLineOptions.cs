@@ -157,7 +157,7 @@ namespace SuperPutty.Utils
         /// replace the value of "-pw" command included in allcomands with text
         /// </summary>
         /// <param name="allCommands"></param>
-        /// <param name="key">text, if is null or empty delete the -pw command</param>
+        /// <param name="text"></param>
         /// <returns></returns>
         public static String replacePassword(String allCommands, String text)
         {            
@@ -172,13 +172,7 @@ namespace SuperPutty.Utils
             {
                 if (myMatch.Success)
                 {
-                    if (String.IsNullOrEmpty(text))
-                    {
-                        allCommands = Regex.Replace(allCommands, strRegex, "");
-                    }
-                    else {
-                        allCommands = Regex.Replace(allCommands, strRegex, "${1}" + text); 
-                    }                                        
+                    allCommands = Regex.Replace(allCommands, strRegex, String.IsNullOrEmpty(text) ? "" : "${1}" + text);                                       
                 }
             }
             return allCommands;
@@ -223,19 +217,21 @@ namespace SuperPutty.Utils
                     sessionName = this.PuttySession;
                 }
 
-                ssi = new SessionDataStartInfo();
-                ssi.Session = new SessionData
+                ssi = new SessionDataStartInfo
                 {
-                    Host = this.Host,
-                    SessionName = sessionName,
-                    SessionId = SuperPuTTY.MakeUniqueSessionId(SessionData.CombineSessionIds("CLI", this.Host)),
-                    Port = this.Port.GetValueOrDefault(22),
-                    Proto = this.Protocol.GetValueOrDefault(ConnectionProtocol.SSH),
-                    Username = this.UserName,
-                    Password = this.Password,
-                    PuttySession = this.PuttySession
+                    Session = new SessionData
+                    {
+                        Host = this.Host,
+                        SessionName = sessionName,
+                        SessionId = SuperPuTTY.MakeUniqueSessionId(SessionData.CombineSessionIds("CLI", this.Host)),
+                        Port = this.Port.GetValueOrDefault(22),
+                        Proto = this.Protocol.GetValueOrDefault(ConnectionProtocol.SSH),
+                        Username = this.UserName,
+                        Password = this.Password,
+                        PuttySession = this.PuttySession
+                    },
+                    UseScp = this.UseScp
                 };
-                ssi.UseScp = this.UseScp;
             }
 
             if (ssi == null)

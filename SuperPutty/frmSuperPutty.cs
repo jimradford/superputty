@@ -34,6 +34,7 @@ using System.Runtime.InteropServices;
 using SuperPutty.Utils;
 using SuperPuTTY.Scripting;
 using System.Configuration;
+using System.Linq;
 using SuperPutty.Gui;
 using log4net.Core;
 using System.Text.RegularExpressions;
@@ -48,7 +49,7 @@ namespace SuperPutty
 
         private static string XmlEditor = ConfigurationManager.AppSettings["SuperPuTTY.XmlEditor"];
 
-        internal DockPanel DockPanel { get { return this.dockPanel1; } }
+        internal DockPanel DockPanel { get; private set; }
 
         public ToolWindowDocument CurrentPanel { get; set; }
 
@@ -117,8 +118,7 @@ namespace SuperPutty
             this.tbFocusHelperHost = new TextBoxFocusHelper(this.tbTxtBoxHost.TextBox);
             this.tbFocusHelperUserName = new TextBoxFocusHelper(this.tbTxtBoxLogin.TextBox);
             this.tbFocusHelperPassword = new TextBoxFocusHelper(this.tbTxtBoxPassword.TextBox);
-            this.sendCommandsDocumentSelector = new frmDocumentSelector(this.DockPanel);
-            this.sendCommandsDocumentSelector.Owner = this;
+            this.sendCommandsDocumentSelector = new frmDocumentSelector(this.DockPanel) {Owner = this};
 
             // Send Command toolbar history
             PropertyDescriptor pd = TypeDescriptor.GetProperties(typeof(HistoryEntry))["TimeStamp"];
@@ -310,7 +310,7 @@ namespace SuperPutty
         {
             if (this.DockPanel.ActiveDocument == null)
             {
-                this.Text = string.Format("SuperPuTTY");
+                this.Text = "SuperPuTTY";
             }
             else
             {
@@ -353,10 +353,12 @@ namespace SuperPutty
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Filter = "XML Files|*.xml|All files|*.*";
-            saveDialog.FileName = "Sessions.XML";
-            saveDialog.InitialDirectory = Application.StartupPath;
+            SaveFileDialog saveDialog = new SaveFileDialog
+            {
+                Filter = "XML Files|*.xml|All files|*.*",
+                FileName = "Sessions.XML",
+                InitialDirectory = Application.StartupPath
+            };
             if (saveDialog.ShowDialog(this) == DialogResult.OK)
             {
                 SessionData.SaveSessionsToFile(SuperPuTTY.GetAllSessions(), saveDialog.FileName);
@@ -365,11 +367,13 @@ namespace SuperPutty
 
         private void fromFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Filter = "XML Files|*.xml|All files|*.*";
-            openDialog.FileName = "Sessions.XML";
-            openDialog.CheckFileExists = true;
-            openDialog.InitialDirectory = Application.StartupPath;
+            OpenFileDialog openDialog = new OpenFileDialog
+            {
+                Filter = "XML Files|*.xml|All files|*.*",
+                FileName = "Sessions.XML",
+                CheckFileExists = true,
+                InitialDirectory = Application.StartupPath
+            };
             if (openDialog.ShowDialog(this) == DialogResult.OK)
             {
                 SuperPuTTY.ImportSessionsFromFile(openDialog.FileName);
@@ -379,11 +383,13 @@ namespace SuperPutty
 
         private void fromPuTTYCMExportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Filter = "XML Files|*.xml|All files|*.*";
-            openDialog.FileName = "export.xml";
-            openDialog.CheckFileExists = true;
-            openDialog.InitialDirectory = Application.StartupPath;
+            OpenFileDialog openDialog = new OpenFileDialog
+            {
+                Filter = "XML Files|*.xml|All files|*.*",
+                FileName = "export.xml",
+                CheckFileExists = true,
+                InitialDirectory = Application.StartupPath
+            };
             if (openDialog.ShowDialog(this) == DialogResult.OK)
             {
                 SuperPuTTY.ImportSessionsFromPuttyCM(openDialog.FileName);
@@ -406,8 +412,10 @@ namespace SuperPutty
         private void openSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             QuickSelector q = new QuickSelector();
-            QuickSelectorData data = new QuickSelectorData();
-            data.CaseSensitive = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch;
+            QuickSelectorData data = new QuickSelectorData
+            {
+                CaseSensitive = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch
+            };
 
             foreach (SessionData sd in SuperPuTTY.Sessions)
             {
@@ -418,9 +426,11 @@ namespace SuperPutty
                     null);
             }
 
-            QuickSelectorOptions opt = new QuickSelectorOptions();
-            opt.Sort = data.ItemData.DetailColumn.ColumnName;
-            opt.BaseText = "Open Session";
+            QuickSelectorOptions opt = new QuickSelectorOptions
+            {
+                Sort = data.ItemData.DetailColumn.ColumnName,
+                BaseText = "Open Session"
+            };
 
             QuickSelector d = new QuickSelector();
             if (d.ShowDialog(this, data, opt) == DialogResult.OK)
@@ -432,8 +442,10 @@ namespace SuperPutty
         private void switchSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             QuickSelector q = new QuickSelector();
-            QuickSelectorData data = new QuickSelectorData();
-            data.CaseSensitive = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch;
+            QuickSelectorData data = new QuickSelectorData
+            {
+                CaseSensitive = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch
+            };
 
             foreach (ToolWindow content in this.tabSwitcher.Documents)
             {
@@ -449,10 +461,12 @@ namespace SuperPutty
                 }
             }
 
-            QuickSelectorOptions opt = new QuickSelectorOptions();
-            opt.Sort = data.ItemData.DetailColumn.ColumnName;
-            opt.BaseText = "Switch Session";
-            opt.ShowNameColumn = true;
+            QuickSelectorOptions opt = new QuickSelectorOptions
+            {
+                Sort = data.ItemData.DetailColumn.ColumnName,
+                BaseText = "Switch Session",
+                ShowNameColumn = true
+            };
 
             QuickSelector d = new QuickSelector();
             if (d.ShowDialog(this, data, opt) == DialogResult.OK)
@@ -765,11 +779,7 @@ namespace SuperPutty
                         dockContent.Close();
                     }
                 }
-                List<DockContent> contents = new List<DockContent>();
-                foreach (DockContent dockContent in this.DockPanel.Contents)
-                {
-                    contents.Add(dockContent);
-                }
+                List<DockContent> contents = this.DockPanel.Contents.Cast<DockContent>().ToList();
                 foreach (DockContent dockContent in contents)
                 {
                     Log.Debug("Unhooking dock content: " + dockContent);
@@ -885,8 +895,7 @@ namespace SuperPutty
 
         private void puTTYConfigurationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process p = new Process();
-            p.StartInfo.FileName = SuperPuTTY.Settings.PuttyExe;
+            Process p = new Process {StartInfo = {FileName = SuperPuTTY.Settings.PuttyExe}};
             p.Start();
 
             SuperPuTTY.ReportStatus("Lauched Putty Configuration");
@@ -1097,7 +1106,7 @@ namespace SuperPutty
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
-            else if ((e.Control && e.KeyCode != Keys.ControlKey))
+            else if (e.Control && e.KeyCode != Keys.ControlKey)
             {
                 // special keys
                 TrySendCommandsFromToolbar(new CommandData(e), !this.tbBtnMaskText.Checked);
@@ -1154,7 +1163,7 @@ namespace SuperPutty
                     if (doc is ctlPuttyPanel)
                     {
                         ctlPuttyPanel panel = doc as ctlPuttyPanel;
-                        if (panel != null && this.sendCommandsDocumentSelector.IsDocumentSelected(panel))
+                        if (this.sendCommandsDocumentSelector.IsDocumentSelected(panel))
                         {
                             int handle = panel.AppPanel.AppWindowHandle.ToInt32();
                             //Log.InfoFormat("SendCommand: session={0}, command=[{1}], handle={2}", panel.Session.SessionId, command, handle);
@@ -1173,8 +1182,7 @@ namespace SuperPutty
                     {
                         if (this.InvokeRequired)
                         {
-                            this.BeginInvoke((MethodInvoker)delegate ()
-                            {
+                            this.BeginInvoke((MethodInvoker)delegate {
                                 tsCommandHistory.Insert(0, new HistoryEntry() { Command = command.Command });
                             });
                         }
@@ -1186,8 +1194,7 @@ namespace SuperPutty
 
                     if (this.InvokeRequired)
                     {
-                        this.BeginInvoke((MethodInvoker)delegate ()
-                        {
+                        this.BeginInvoke((MethodInvoker)delegate {
                             this.tsSendCommandCombo.Text = string.Empty;
                         });
                     }
@@ -1222,7 +1229,7 @@ namespace SuperPutty
                 Keys keys = (Keys)vkCode;
 
                 // track key state globally for control/alt/shift is up/down
-                bool isKeyDown = (wParam == (IntPtr)NativeMethods.WM_KEYDOWN || wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN);
+                bool isKeyDown = wParam == (IntPtr)NativeMethods.WM_KEYDOWN || wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN;
                 if (keys == Keys.LControlKey || keys == Keys.RControlKey) { isControlDown = isKeyDown; }
                 if (keys == Keys.LShiftKey || keys == Keys.RShiftKey) { isShiftDown = isKeyDown; }
                 if (keys == Keys.LMenu || keys == Keys.RMenu) { isAltDown = isKeyDown; }
@@ -1231,7 +1238,7 @@ namespace SuperPutty
                 {
                     Log.DebugFormat("### KBHook: nCode={0}, wParam={1}, lParam={2} ({4,-4} - {3}) [{5}{6}{7}]",
                         nCode, wParam, vkCode, keys, isKeyDown ? "Down" : "Up",
-                        (isControlDown ? "Ctrl" : ""), (isAltDown ? "Alt" : ""), (isAltDown ? "Shift" : ""));
+                        isControlDown ? "Ctrl" : "", isAltDown ? "Alt" : "", isAltDown ? "Shift" : "");
                 }
 
                 if (IsForegroundWindow(this))
@@ -1483,9 +1490,11 @@ namespace SuperPutty
                 case SuperPuttyAction.RenameTab:                    
                     if (activePanel != null && activePanel.Session != null)
                     {
-                        dlgRenameItem dialog = new dlgRenameItem();
-                        dialog.ItemName = activePanel.Text;
-                        dialog.DetailName = activePanel.Session.SessionId;
+                        dlgRenameItem dialog = new dlgRenameItem
+                        {
+                            ItemName = activePanel.Text,
+                            DetailName = activePanel.Session.SessionId
+                        };
 
                         if (dialog.ShowDialog(this) == DialogResult.OK)
                         {
@@ -1632,7 +1641,7 @@ namespace SuperPutty
             }
             catch (Exception ex)
             {
-                string msg = string.Format("");
+                string msg = "";
                 Log.Error(msg, ex);
                 MessageBox.Show(this, msg, "Error Cleaning Processes");
             }

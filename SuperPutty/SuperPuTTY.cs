@@ -132,10 +132,13 @@ namespace SuperPutty
 
         /// <summary>Send status message to toolstrip</summary>
         /// <param name="status">A string containing the message</param>
-        /// <param name="args">optional arguments <seealso cref="String.Format"/></param>
+        /// <param name="args">optional arguments <seealso>
+        ///         <cref>String.Format</cref>
+        ///     </seealso>
+        /// </param>
         public static void ReportStatus(String status, params Object[] args)
         {
-            String msg = (args.Length > 0) ? String.Format(status, args) : status;
+            String msg = args.Length > 0 ? String.Format(status, args) : status;
             Log.DebugFormat("STATUS: {0}", msg);
 
             if (StatusEvent != null)
@@ -198,17 +201,9 @@ namespace SuperPutty
 
         public static LayoutData FindLayout(String name)
         {
-            LayoutData target = null;
-            foreach (LayoutData layout in layouts)
-            {
-                if (name == layout.Name)
-                {
-                    target = layout;
-                    break;
-                }
-            }
-            return target;
+            return layouts.FirstOrDefault(layout => name == layout.Name);
         }
+
         public static void LoadLayouts()
         {
             if (!String.IsNullOrEmpty(Settings.SettingsFolder))
@@ -216,11 +211,7 @@ namespace SuperPutty
                 LayoutData autoRestore = new LayoutData(AutoRestoreLayoutPath) { Name = LayoutData.AutoRestore, IsReadOnly = true };
                 if (Directory.Exists(LayoutsDir))
                 {
-                    List<LayoutData> newLayouts = new List<LayoutData>();
-                    foreach (String file in Directory.GetFiles(LayoutsDir))
-                    {
-                        newLayouts.Add(new LayoutData(file));
-                    }
+                    List<LayoutData> newLayouts = Directory.GetFiles(LayoutsDir).Select(file => new LayoutData(file)).ToList();
 
                     layouts.Clear();
                     layouts.Add(autoRestore);
@@ -312,13 +303,7 @@ namespace SuperPutty
         #region Sessions
 
         /// <summary>Returns A string containing the path to the saved sessions database on disk</summary>
-        private static string SessionsFileName
-        {
-            get
-            {
-                return Path.Combine(Settings.SettingsFolder, "Sessions.XML");
-            }
-        }
+        private static string SessionsFileName => Path.Combine(Settings.SettingsFolder, "Sessions.XML");
 
         /// <summary>Load sessions database from file into the application</summary>
         public static void LoadSessions()
@@ -362,7 +347,7 @@ namespace SuperPutty
         /// <summary>
         /// Remove a session from the in-application sessions database. 
         /// </summary>
-        /// <param name="sessionId">The <seealso cref="SessionData.SessionID"/> of the session to remove</param>
+        /// <param name="sessionId">The <seealso cref="SessionData.SessionId"/> of the session to remove</param>
         /// <returns>true on success, or false on failure or if session did not exist</returns>
         public static bool RemoveSession(string sessionId)
         {
@@ -371,13 +356,13 @@ namespace SuperPutty
             {
                 sessionsMap.Remove(sessionId);
                 sessionsList.Remove(session);
-                Log.InfoFormat("Removed Session, id={0}, success={1}", sessionId, session != null);
+                Log.InfoFormat("Removed Session, id={0}, success={1}", sessionId, true);
                 return true;
             }            
             return false;
         }
 
-        /// <summary>Get a Session by its <seealso cref="SessionData.SessionID"/></summary>
+        /// <summary>Get a Session by its <seealso cref="SessionData.SessionId"/></summary>
         /// <param name="sessionId">A string which represents a session</param>
         /// <returns>A <seealso cref="SessionData"/> object containing the session details</returns>
         public static SessionData GetSessionById(string sessionId)
@@ -429,14 +414,14 @@ namespace SuperPutty
         }
 
         /// <summary>Get a list of all sessions from the in-application database</summary>
-        /// <returns>A <seealso cref="List"/> of <seealso cref="SessionData"/> objects</returns>
+        /// <returns>A List of <seealso cref="SessionData"/> objects</returns>
         public static List<SessionData> GetAllSessions()
         {
             return sessionsMap.Values.ToList();
         }
 
         /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty window</summary>
-        /// <param name="sessionId">A string containing the <seealso cref="SessionData.SessionID"/> of the session</param>
+        /// <param name="sessionId">A string containing the <seealso cref="SessionData.SessionId"/> of the session</param>
         public static void OpenPuttySession(string sessionId)
         {
             OpenPuttySession(GetSessionById(sessionId));
@@ -452,7 +437,7 @@ namespace SuperPutty
             {
                 // This is the callback fired when the panel containing the terminal is closed
                 // We use this to save the last docking location and to close the panel
-                PuttyClosedCallback callback = delegate (bool closed)
+                PuttyClosedCallback callback = delegate
                 {
                     if (panel != null)
                     {
@@ -467,8 +452,7 @@ namespace SuperPutty
 
                         if (panel.InvokeRequired)
                         {
-                            panel.BeginInvoke((MethodInvoker)delegate ()
-                            {
+                            panel.BeginInvoke((MethodInvoker)delegate {
                                 panel.Close();
                             });
                         }
@@ -505,7 +489,7 @@ namespace SuperPutty
         }
 
         /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty scp window</summary>
-        /// <param name="sessionId">A string containing the <seealso cref="SessionData.SessionID"/> of the session</param>
+        /// <param name="sessionId">A string containing the <seealso cref="SessionData.SessionId"/> of the session</param>
         public static void OpenScpSession(string sessionId)
         {
             OpenScpSession(GetSessionById(sessionId));
@@ -615,8 +599,8 @@ namespace SuperPutty
             ImportSessions(sessions, "ImportedFromPuTTYCM");
         }
 
-        /// <summary>Import sessions from a from a <seealso cref="List"/> object into the specified folder</summary>
-        /// <param name="sessions">A <seealso cref="List"/> of <seealso cref="SessionData"/> objects</param>
+        /// <summary>Import sessions from a from a List object into the specified folder</summary>
+        /// <param name="sessions">A List of <seealso cref="SessionData"/> objects</param>
         /// <param name="folder">The destination folder name</param>
         public static void ImportSessions(List<SessionData> sessions, string folder)
         {
@@ -731,7 +715,7 @@ namespace SuperPutty
             Icon icon = null;
             if (session != null)
             {
-                string imageKey = (session.ImageKey == null || !Images.Images.ContainsKey(session.ImageKey))
+                string imageKey = session.ImageKey == null || !Images.Images.ContainsKey(session.ImageKey)
                     ? SessionTreeview.ImageKeySession : session.ImageKey;
                 try
                 {
@@ -771,40 +755,25 @@ namespace SuperPutty
         }
 
         /// <summary>true if the application has not defined where the putty scp program is located</summary>
-        public static bool IsScpEnabled
-        {
-            get { return File.Exists(SuperPuTTY.Settings.PscpExe); }
-        }
+        public static bool IsScpEnabled => File.Exists(SuperPuTTY.Settings.PscpExe);
 
         /// <summary>true if the application has defined where the filezilla program is located</summary>
-        public static bool IsFilezillaEnabled
-        {
-            get { return File.Exists(SuperPuTTY.Settings.FileZillaExe); }
-        }
+        public static bool IsFilezillaEnabled => File.Exists(SuperPuTTY.Settings.FileZillaExe);
 
         /// <summary>true if the application has defined where the winSCP program is located</summary>
-        public static bool IsWinSCPEnabled
-        {
-            get { return File.Exists(SuperPuTTY.Settings.WinSCPExe); }
-        }
+        public static bool IsWinSCPEnabled => File.Exists(SuperPuTTY.Settings.WinSCPExe);
 
         /// <summary>Returns a string containing the current version of SuperPuTTY</summary>
-        public static string Version
-        {
-            get
-            {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            }
-        }
+        public static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        internal static Settings Settings { get { return Settings.Default; } }
+        internal static Settings Settings => Settings.Default;
         public static frmSuperPutty MainForm { get; set; }        
-        public static string LayoutsDir { get { return Path.Combine(Settings.SettingsFolder, "layouts"); } }
+        public static string LayoutsDir => Path.Combine(Settings.SettingsFolder, "layouts");
         public static LayoutData CurrentLayout { get; private set; }
         public static LayoutData StartingLayout { get; private set; }
         public static SessionDataStartInfo StartingSession { get; private set; }
-        public static BindingList<LayoutData> Layouts { get { return layouts; } }
-        public static BindingList<SessionData> Sessions { get { return sessionsList; } }
+        public static BindingList<LayoutData> Layouts => layouts;
+        public static BindingList<SessionData> Sessions => sessionsList;
         public static CommandLineOptions CommandLine { get; private set; }
         public static ImageList Images { get; private set; }
         public static GlobalWindowEvents WindowEvents { get; private set; }
@@ -836,13 +805,8 @@ namespace SuperPutty
         }
 
         /// <summary>The path to the default AutoRestore layout configuration</summary>
-        public static string AutoRestoreLayoutPath
-        {
-            get
-            {
-                return Path.Combine(Settings.SettingsFolder, LayoutData.AutoRestoreLayoutFileName);
-            }
-        }
+        public static string AutoRestoreLayoutPath => Path.Combine(Settings.SettingsFolder, LayoutData.AutoRestoreLayoutFileName);
+
         #endregion
     }
 

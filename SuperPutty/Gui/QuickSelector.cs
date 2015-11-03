@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using log4net;
 
@@ -26,7 +27,7 @@ namespace SuperPutty.Gui
         void DoSelectItem()
         {
             DataGridViewSelectedRowCollection selectedRows = this.dataGridViewData.SelectedRows;
-            if (selectedRows != null && selectedRows.Count == 1)
+            if (selectedRows.Count == 1)
             {
                 DataRowView row = (DataRowView) selectedRows[0].DataBoundItem;
                 this.SelectedItem = (QuickSelectorData.ItemDataRow) row.Row;
@@ -36,14 +37,7 @@ namespace SuperPutty.Gui
 
         void UpdateFilter()
         {
-            if (this.textBoxData.Text == string.Empty)
-            {
-                this.DataView.RowFilter = String.Empty;
-            }
-            else
-            {
-                this.DataView.RowFilter = FormatFilterString(this.textBoxData.Text);
-            }
+            this.DataView.RowFilter = String.IsNullOrEmpty(this.textBoxData.Text) ? String.Empty : FormatFilterString(this.textBoxData.Text);
             this.Text = string.Format("{0} [{1}]", this.Options.BaseText, this.DataView.Count);
         }
 
@@ -71,14 +65,7 @@ namespace SuperPutty.Gui
 
         string[] cleanTokens(string[] tokens)
         {
-            int i = 0;
-            foreach (string token in tokens)
-            {
-                if (token.Length > 0)
-                {
-                    i++;
-                }
-            }
+            int i = tokens.Count(token => token.Length > 0);
 
             string[] result = new string[i];
 
@@ -96,12 +83,7 @@ namespace SuperPutty.Gui
 
         string tokenSanitize(string token)
         {
-            foreach (char sanitizeChar in sanitizeChars)
-            {
-                token = token.Replace(Convert.ToString(sanitizeChar), "");
-            }
-
-            return token;
+            return sanitizeChars.Aggregate(token, (current, sanitizeChar) => current.Replace(Convert.ToString(sanitizeChar), ""));
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
@@ -245,8 +227,7 @@ namespace SuperPutty.Gui
         {
             // bind data
             this.Options = options;
-            this.DataView = new DataView(data.ItemData);
-            this.DataView.Sort = options.Sort;
+            this.DataView = new DataView(data.ItemData) {Sort = options.Sort};
             this.dataGridViewData.DataSource = this.DataView;
 
             // configure grid

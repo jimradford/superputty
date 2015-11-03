@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using SuperPutty.Data;
 
@@ -44,18 +45,12 @@ namespace SuperPutty.Utils
 
         private static bool IsSet(Keys keys, params Keys[] modifiers)
         {
-            foreach(Keys modifier in modifiers)
-            {
-                if ((keys & modifier) == modifier)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return modifiers.Any(modifier => (keys & modifier) == modifier);
         }
-        public bool IsControlSet { get { return IsSet(this.Shortcut.Modifiers, Keys.Control); } }
-        public bool IsAltSet { get { return IsSet(this.Shortcut.Modifiers, Keys.Alt); } }
-        public bool IsShiftSet { get { return IsSet(this.Shortcut.Modifiers, Keys.Shift); } }
+
+        public bool IsControlSet => IsSet(this.Shortcut.Modifiers, Keys.Control);
+        public bool IsAltSet => IsSet(this.Shortcut.Modifiers, Keys.Alt);
+        public bool IsShiftSet => IsSet(this.Shortcut.Modifiers, Keys.Shift);
 
         public KeyboardShortcut Shortcut { get; private set; }
         public Form Form { get; private set; }
