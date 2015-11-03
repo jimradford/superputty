@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using log4net;
 
@@ -71,14 +72,7 @@ namespace SuperPutty.Gui
 
         string[] cleanTokens(string[] tokens)
         {
-            int i = 0;
-            foreach (string token in tokens)
-            {
-                if (token.Length > 0)
-                {
-                    i++;
-                }
-            }
+            int i = tokens.Count(token => token.Length > 0);
 
             string[] result = new string[i];
 
@@ -96,12 +90,7 @@ namespace SuperPutty.Gui
 
         string tokenSanitize(string token)
         {
-            foreach (char sanitizeChar in sanitizeChars)
-            {
-                token = token.Replace(Convert.ToString(sanitizeChar), "");
-            }
-
-            return token;
+            return sanitizeChars.Aggregate(token, (current, sanitizeChar) => current.Replace(Convert.ToString(sanitizeChar), ""));
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)

@@ -255,14 +255,7 @@ namespace SuperPutty
 
         DockPane GetDockPane()
         {
-            foreach (DockPane pane in this.DockPanel.Panes)
-            {
-                if (pane.Contents.Contains(this))
-                {
-                    return pane;
-                }
-            }
-            return null;
+            return this.DockPanel.Panes.FirstOrDefault(pane => pane.Contents.Contains(this));
         }
 
         /// <summary>

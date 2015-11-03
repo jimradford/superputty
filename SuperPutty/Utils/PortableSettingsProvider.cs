@@ -26,6 +26,7 @@ using System.IO;
 using System.Xml;
 using log4net;
 using System.Collections;
+using System.Linq;
 
 namespace SuperPutty.Utils
 {
@@ -288,15 +289,9 @@ namespace SuperPutty.Utils
             }
 
             // Determine if the setting is marked as Roaming
-            foreach (DictionaryEntry de in prop.Attributes)
-            {
-                Attribute attr = (Attribute) de.Value;
-                if (attr is SettingsManageabilityAttribute)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return (from DictionaryEntry de 
+                    in prop.Attributes
+                    select (Attribute) de.Value).OfType<SettingsManageabilityAttribute>().Any();
         }
     }
 }

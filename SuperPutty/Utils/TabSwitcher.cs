@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using WeifenLuo.WinFormsUI.Docking;
 using log4net;
@@ -281,11 +282,7 @@ namespace SuperPutty.Utils
                 });
                 foreach (DockPane pane in panes)
                 {
-                    foreach (IDockContent content in pane.Contents)
-                    {
-                        if(content is ctlPuttyPanel)
-                            docs.Add(content);
-                    }
+                    docs.AddRange(pane.Contents.OfType<ctlPuttyPanel>().Cast<IDockContent>());
                 }
             }
             return docs;

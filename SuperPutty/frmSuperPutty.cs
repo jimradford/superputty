@@ -34,6 +34,7 @@ using System.Runtime.InteropServices;
 using SuperPutty.Utils;
 using SuperPuTTY.Scripting;
 using System.Configuration;
+using System.Linq;
 using SuperPutty.Gui;
 using log4net.Core;
 using System.Text.RegularExpressions;
@@ -765,11 +766,7 @@ namespace SuperPutty
                         dockContent.Close();
                     }
                 }
-                List<DockContent> contents = new List<DockContent>();
-                foreach (DockContent dockContent in this.DockPanel.Contents)
-                {
-                    contents.Add(dockContent);
-                }
+                List<DockContent> contents = this.DockPanel.Contents.Cast<DockContent>().ToList();
                 foreach (DockContent dockContent in contents)
                 {
                     Log.Debug("Unhooking dock content: " + dockContent);

@@ -198,17 +198,9 @@ namespace SuperPutty
 
         public static LayoutData FindLayout(String name)
         {
-            LayoutData target = null;
-            foreach (LayoutData layout in layouts)
-            {
-                if (name == layout.Name)
-                {
-                    target = layout;
-                    break;
-                }
-            }
-            return target;
+            return layouts.FirstOrDefault(layout => name == layout.Name);
         }
+
         public static void LoadLayouts()
         {
             if (!String.IsNullOrEmpty(Settings.SettingsFolder))
@@ -216,11 +208,7 @@ namespace SuperPutty
                 LayoutData autoRestore = new LayoutData(AutoRestoreLayoutPath) { Name = LayoutData.AutoRestore, IsReadOnly = true };
                 if (Directory.Exists(LayoutsDir))
                 {
-                    List<LayoutData> newLayouts = new List<LayoutData>();
-                    foreach (String file in Directory.GetFiles(LayoutsDir))
-                    {
-                        newLayouts.Add(new LayoutData(file));
-                    }
+                    List<LayoutData> newLayouts = Directory.GetFiles(LayoutsDir).Select(file => new LayoutData(file)).ToList();
 
                     layouts.Clear();
                     layouts.Add(autoRestore);

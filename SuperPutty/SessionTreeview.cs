@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using log4net;
 using SuperPutty.Data;
@@ -264,11 +265,8 @@ namespace SuperPutty
             else if (e.ListChangedType == ListChangedType.Reset)
             {
                 // clear
-                List<TreeNode> nodesToRemove = new List<TreeNode>();
-                foreach(TreeNode node in nodeRoot.Nodes)
-                {
-                    nodesToRemove.Add(node);
-                }
+                List<TreeNode> nodesToRemove = nodeRoot.Nodes.Cast<TreeNode>().ToList();
+
                 foreach (TreeNode node in nodesToRemove)
                 {
                     node.Remove();

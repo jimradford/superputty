@@ -5,6 +5,7 @@ using System.Web;
 using log4net;
 using System.Xml;
 using System.IO;
+using System.Linq;
 
 namespace SuperPutty.Data
 {
@@ -34,10 +35,7 @@ namespace SuperPutty.Data
             if (key != null)
             {
                 string[] savedSessionNames = key.GetSubKeyNames();
-                foreach (string rawSession in savedSessionNames)
-                {
-                    names.Add(HttpUtility.UrlDecode(rawSession));
-                }
+                names.AddRange(savedSessionNames.Select(HttpUtility.UrlDecode));
             }
 
             if (!names.Contains(SessionDefaultSettings))

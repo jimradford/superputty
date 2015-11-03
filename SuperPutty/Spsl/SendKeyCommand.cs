@@ -236,14 +236,14 @@ namespace SuperPuTTY.Scripting
         /// <returns>An Integer corresponding to the matched keyword, or -1 if none exists</returns>
         private static int MatchKeyword(string keyword)
         {
-            for (int i = 0; i < keywords.Length; i++)
+            foreach (KeywordVk t in keywords)
             {
-                if (String.Equals(keywords[i].keyword, keyword, StringComparison.OrdinalIgnoreCase))
+                if (String.Equals(t.keyword, keyword, StringComparison.OrdinalIgnoreCase))
                 {
-                    return keywords[i].vk;
+                    return t.vk;
                 }
             }
             return -1;
-        }        
+        }
     }
 }
