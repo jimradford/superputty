@@ -27,7 +27,7 @@ namespace SuperPutty.Gui
         void DoSelectItem()
         {
             DataGridViewSelectedRowCollection selectedRows = this.dataGridViewData.SelectedRows;
-            if (selectedRows != null && selectedRows.Count == 1)
+            if (selectedRows.Count == 1)
             {
                 DataRowView row = (DataRowView) selectedRows[0].DataBoundItem;
                 this.SelectedItem = (QuickSelectorData.ItemDataRow) row.Row;

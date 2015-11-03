@@ -356,7 +356,7 @@ namespace SuperPutty
             {
                 sessionsMap.Remove(sessionId);
                 sessionsList.Remove(session);
-                Log.InfoFormat("Removed Session, id={0}, success={1}", sessionId, session != null);
+                Log.InfoFormat("Removed Session, id={0}, success={1}", sessionId, true);
                 return true;
             }            
             return false;

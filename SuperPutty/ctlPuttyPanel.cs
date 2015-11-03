@@ -78,7 +78,7 @@ namespace SuperPutty
             }
             set
             {
-                this.TabText = value != null ? value.Replace("&", "&&") : value;
+                this.TabText = value != null ? value.Replace("&", "&&") : null;
                 base.Text = value;
 
                 if (Log.Logger.IsEnabledFor(Level.Trace))

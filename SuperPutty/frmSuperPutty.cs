@@ -1163,7 +1163,7 @@ namespace SuperPutty
                     if (doc is ctlPuttyPanel)
                     {
                         ctlPuttyPanel panel = doc as ctlPuttyPanel;
-                        if (panel != null && this.sendCommandsDocumentSelector.IsDocumentSelected(panel))
+                        if (this.sendCommandsDocumentSelector.IsDocumentSelected(panel))
                         {
                             int handle = panel.AppPanel.AppWindowHandle.ToInt32();
                             //Log.InfoFormat("SendCommand: session={0}, command=[{1}], handle={2}", panel.Session.SessionId, command, handle);
