@@ -165,15 +165,9 @@ namespace SuperPutty.Utils
             }
         }
 
-        public IList<IDockContent> Documents
-        {
-            get
-            {
-                return this.tabSwitchStrategy.GetDocuments();
-            }
-        }
+        public IList<IDockContent> Documents => this.tabSwitchStrategy.GetDocuments();
 
-        public ToolWindow ActiveDocument { get { return (ToolWindow)this.DockPanel.ActiveDocument; } }
+        public ToolWindow ActiveDocument => (ToolWindow)this.DockPanel.ActiveDocument;
         public DockPanel DockPanel { get; private set; }
         public bool IsSwitchingTabs { get; set; }
 
@@ -311,10 +305,7 @@ namespace SuperPutty.Utils
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(MRUTabSwitchStrategy));
 
-        public string Description
-        {
-            get { return "MRU: Similar to Windows Alt-Tab"; }
-        }
+        public string Description => "MRU: Similar to Windows Alt-Tab";
 
         public void Initialize(DockPanel panel)
         {

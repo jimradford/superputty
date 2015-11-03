@@ -264,28 +264,15 @@ namespace SuperPutty.Data
         }
 
 
-
-         private string _RemotePath;
         [XmlAttribute]
         [DisplayName("Remote Path")]
         [Description("Remote Path used in file transfer")]
-        public string RemotePath
-        {
-            get { return _RemotePath; }
-            set { _RemotePath = value; }
-        }
+        public string RemotePath { get; set; }
 
-        private string _LocalPath;
         [XmlAttribute]
         [DisplayName("Local Path")]
         [Description("Local path used in file transfer")]
-        public string LocalPath
-        {
-            get { return _LocalPath; }
-            set { _LocalPath = value; }
-        }
-
-
+        public string LocalPath { get; set; }
 
 
         /// <summary>Construct a new session data object</summary>

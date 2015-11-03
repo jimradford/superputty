@@ -65,13 +65,7 @@ namespace SuperPutty.Utils
             SuperPuTTY.ReportStatus("Showing " + this.Name);
         }
 
-        public bool IsVisibleAsToolWindow
-        {
-            get
-            {
-                return this.Instance != null && this.Instance.DockHandler.Pane != null && !this.Instance.DockHandler.Pane.IsAutoHide;
-            }
-        }
+        public bool IsVisibleAsToolWindow => this.Instance != null && this.Instance.DockHandler.Pane != null && !this.Instance.DockHandler.Pane.IsAutoHide;
 
         public T Initialize()
         {
@@ -116,10 +110,7 @@ namespace SuperPutty.Utils
             }
         }
 
-        public bool IsVisible
-        {
-            get { return this.Instance != null && this.Instance.Visible; }
-        }
+        public bool IsVisible => this.Instance != null && this.Instance.Visible;
 
 
         public string Name { get; private set; }

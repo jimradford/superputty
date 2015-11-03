@@ -48,9 +48,9 @@ namespace SuperPutty.Utils
             return modifiers.Any(modifier => (keys & modifier) == modifier);
         }
 
-        public bool IsControlSet { get { return IsSet(this.Shortcut.Modifiers, Keys.Control); } }
-        public bool IsAltSet { get { return IsSet(this.Shortcut.Modifiers, Keys.Alt); } }
-        public bool IsShiftSet { get { return IsSet(this.Shortcut.Modifiers, Keys.Shift); } }
+        public bool IsControlSet => IsSet(this.Shortcut.Modifiers, Keys.Control);
+        public bool IsAltSet => IsSet(this.Shortcut.Modifiers, Keys.Alt);
+        public bool IsShiftSet => IsSet(this.Shortcut.Modifiers, Keys.Shift);
 
         public KeyboardShortcut Shortcut { get; private set; }
         public Form Form { get; private set; }

@@ -29,28 +29,11 @@ namespace SuperPutty
 {
     public partial class dlgLogin : Form
     {
-        private string _Username = WindowsIdentity.GetCurrent().Name.Split('\\')[1];
+        public string Username { get; private set; } = WindowsIdentity.GetCurrent().Name.Split('\\')[1];
 
-        public string Username
-        {
-            get { return _Username; }
-            private set { _Username = value; }
-        }
+        public string Password { get; private set; }
 
-        private string _Password;
-
-        public string Password
-        {
-            get { return _Password; }
-            private set { _Password = value; }
-        }
-
-        private bool _Remember = false;
-        public bool Remember
-        {
-            get { return _Remember; }
-            private set { _Remember = value; }
-        }
+        public bool Remember { get; private set; }
 
         private SessionData m_Session;
 

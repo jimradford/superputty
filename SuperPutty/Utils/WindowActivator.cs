@@ -7,7 +7,7 @@ namespace SuperPutty.Utils
     #region WindowActivator
     public abstract class WindowActivator
     {
-        protected ILog Log { get {  return LogManager.GetLogger(this.GetType()); } }
+        protected ILog Log => LogManager.GetLogger(this.GetType());
 
         public abstract void ActivateForm(Form form, DesktopWindow window, IntPtr hwnd);
     } 

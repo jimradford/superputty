@@ -86,13 +86,7 @@ namespace SuperPutty.Gui
         }
 
 
-        private DataGridViewProgressCell ProgressBarCellTemplate
-        {
-            get
-            {
-                return (DataGridViewProgressCell)this.CellTemplate;
-            }
-        }
+        private DataGridViewProgressCell ProgressBarCellTemplate => (DataGridViewProgressCell)this.CellTemplate;
     }
 
     class DataGridViewProgressCell : DataGridViewImageCell

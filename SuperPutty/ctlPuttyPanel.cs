@@ -386,8 +386,8 @@ namespace SuperPutty
             }
         }
 
-        public SessionData Session { get { return this.m_Session; } }
-        public ApplicationPanel AppPanel { get { return this.m_AppPanel; } }
+        public SessionData Session => this.m_Session;
+        public ApplicationPanel AppPanel => this.m_AppPanel;
         public ctlPuttyPanel previousPanel { get; set; }
         public ctlPuttyPanel nextPanel { get; set; }
 

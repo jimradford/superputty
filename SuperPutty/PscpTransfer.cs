@@ -60,35 +60,14 @@ namespace SuperPutty
     public struct FileEntry
     {
         // lrwxrwxrwx  1 jradford users       11 2009-08-02 08:33 lm -> landmachine
-        private bool _IsFolder;
 
-        public bool IsFolder
-        {
-            get { return _IsFolder; }
-            private set { _IsFolder = value; }
-        }
-        private bool _IsSymLink;
+        public bool IsFolder { get; private set; }
 
-        public bool IsSymLink
-        {
-            get { return _IsSymLink; }
-            private set { _IsSymLink = value; }
-        }
-        private bool _IsFile;
+        public bool IsSymLink { get; private set; }
 
-        public bool IsFile
-        {
-            get { return _IsFile; }
-            private set { _IsFile = value; }
-        }
+        public bool IsFile { get; private set; }
 
-        private string _PermissionString;
-
-        public string PermissionString
-        {
-            get { return _PermissionString; }
-            set { _PermissionString = value; }
-        }
+        public string PermissionString { get; set; }
 
         public int LinkCount; // second column
         public string OwnerName;
