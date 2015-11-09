@@ -136,9 +136,8 @@ namespace SuperPutty
                 if (rs.RequestData.Length > 0)
                 {
                     //  Display data to the console.
-                    string strContent;
-                    strContent = rs.RequestData.ToString();                    
-                    rs.Callback(true, strContent);                    
+                    string strContent = rs.RequestData.ToString();
+                    rs.Callback(true, strContent);
                 }
                 // Close down the response stream.
                 responseStream.Close();
