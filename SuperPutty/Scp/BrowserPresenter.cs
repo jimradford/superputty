@@ -22,6 +22,7 @@ using System;
 using log4net;
 using System.ComponentModel;
 using SuperPutty.Data;
+using SuperPutty.Gui;
 
 namespace SuperPutty.Scp
 {
@@ -137,7 +138,7 @@ namespace SuperPutty.Scp
                         this.ViewModel.Status = string.Format("{0} @ {1}", msg, DateTime.Now);
                         this.CurrentPath = result.Path;
                         this.ViewModel.CurrentPath = result.Path.Path;
-                        BrowserViewModel.UpdateList(this.ViewModel.Files, result.Files);
+                        BaseViewModel.UpdateList(this.ViewModel.Files, result.Files);
                         break;
                     case ResultStatusCode.Error:
                         string errMsg = result.ErrorMsg != null
