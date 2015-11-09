@@ -22,7 +22,7 @@ namespace SuperPutty.Gui
 
         public DataGridViewProgressColumn()
         {
-            CellTemplate = new DataGridViewProgressCell(); ;
+            CellTemplate = new DataGridViewProgressCell();
         }
 
         public override DataGridViewCell CellTemplate
