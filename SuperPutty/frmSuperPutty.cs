@@ -1665,7 +1665,7 @@ namespace SuperPutty
                     if (success)
                     {
                         DataContractJsonSerializer js = new DataContractJsonSerializer(typeof(GitRelease));
-                        MemoryStream ms = new MemoryStream(ASCIIEncoding.ASCII.GetBytes(content));
+                        MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(content));
                         GitRelease latest = (GitRelease)js.ReadObject(ms);
                         ms.Close();
 
