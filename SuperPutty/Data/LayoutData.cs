@@ -12,6 +12,7 @@ namespace SuperPutty.Data
         {
             this.FilePath = filePath;
             this.Name = Path.GetFileNameWithoutExtension(filePath);
+            this.IsDefault = (this.Name == SuperPuTTY.Settings.DefaultLayoutName);
         }
 
         public string Name { get; set; }
@@ -19,7 +20,7 @@ namespace SuperPutty.Data
 
         public bool IsReadOnly { get; set; }
 
-        public bool IsDefault => this.Name == SuperPuTTY.Settings.DefaultLayoutName;
+        public bool IsDefault;
 
         public override string ToString()
         {

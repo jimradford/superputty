@@ -29,7 +29,7 @@ namespace SuperPutty
 {
     public partial class dlgLogin : Form
     {
-        public string Username { get; private set; } = WindowsIdentity.GetCurrent().Name.Split('\\')[1];
+        public string Username { get; private set; }
 
         public string Password { get; private set; }
 
@@ -39,6 +39,7 @@ namespace SuperPutty
 
         public dlgLogin(string userName)
         {
+            this.Username = WindowsIdentity.GetCurrent().Name.Split('\\')[1];
             InitializeComponent();
 
             if (!String.IsNullOrEmpty(userName))
