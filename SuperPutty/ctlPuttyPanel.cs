@@ -463,7 +463,7 @@ namespace SuperPutty
                 try
                 {
                     this.SetFocusToChildApplication("MenuHandler");
-                    for (int i = 0; i < tags.Length; ++i)
+                    for (int i = 0; i < commands.Length; ++i)
                     {
                         NativeMethods.SendMessage(m_AppPanel.AppWindowHandle, (uint)NativeMethods.WM.SYSCOMMAND, commands[i], 0);
                     }
