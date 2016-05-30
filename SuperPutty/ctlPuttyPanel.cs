@@ -412,16 +412,23 @@ namespace SuperPutty
         private void puTTYMenuTSMI_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem menuItem = (ToolStripMenuItem) sender;
-            string tag = ((ToolStripMenuItem)sender).Tag.ToString();
-            uint command = Convert.ToUInt32(tag, 16);
+            string[] tags = ((ToolStripMenuItem)sender).Tag.ToString().Split(';');
+            uint[] commands = new uint[tags.Length];
+            for (int i = 0; i < tags.Length; ++i)
+            {
+                commands[i] = Convert.ToUInt32(tags[i], 16);
+                Log.DebugFormat("Sending Putty Command: menu={2}, tag={0}, command={1}", tags[i], commands[i], menuItem.Text);
+            }
 
-            Log.DebugFormat("Sending Putty Command: menu={2}, tag={0}, command={1}", tag, command, menuItem.Text);
             ThreadPool.QueueUserWorkItem(delegate
             {
                 try
                 {
                     this.SetFocusToChildApplication("MenuHandler");
-                    NativeMethods.SendMessage(m_AppPanel.AppWindowHandle, (uint)NativeMethods.WM.SYSCOMMAND, command, 0);
+                    for (int i = 0; i < commands.Length; ++i)
+                    {
+                        NativeMethods.SendMessage(m_AppPanel.AppWindowHandle, (uint)NativeMethods.WM.SYSCOMMAND, commands[i], 0);
+                    }
                 }
                 catch (Exception ex)
                 {
