@@ -57,17 +57,17 @@ namespace SuperPutty
 
         /// <summary>Set the name of the application executable to launch</summary>
         [Category("Data"), Description("The path/file to launch"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public string ApplicationName { get; set; } = "";
+        public string ApplicationName { get; set; }
 
         [Category("Data"), Description("The parameters to pass to the application being launched"),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public string ApplicationParameters { get; set; } = "";
+        public string ApplicationParameters { get; set; }
 
         [Category("Data"), Description("The starting directory for the putty shell.  Relevant only to cygterm sessions"),
 DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public string ApplicationWorkingDirectory { get; set; } = "";
+        public string ApplicationWorkingDirectory { get; set; }
 
-        public IntPtr AppWindowHandle => this.m_AppWin;
+        public IntPtr AppWindowHandle;
 
         #endregion
 
@@ -83,6 +83,11 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             //this.m_windowActivator = new SetFGCombinedWindowActivator();
             SuperPuTTY.Settings.SettingsSaving += Settings_SettingsSaving;
             SuperPuTTY.WindowEvents.SystemSwitch += new EventHandler<GlobalWindowEventArgs>(OnSystemSwitch);
+            this.ApplicationName = "";
+            this.ApplicationParameters = "";
+            this.ApplicationWorkingDirectory = "";
+            this.AppWindowHandle = this.m_AppWin;
+            this.ExternalProcessCaptured = (this.m_AppWin != IntPtr.Zero);
         }
 
         void Settings_SettingsSaving(object sender, CancelEventArgs e)
@@ -486,7 +491,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             base.OnResize(e);
         }
 
-        public bool ExternalProcessCaptured => this.m_AppWin != IntPtr.Zero;
+        public bool ExternalProcessCaptured;
 
         #endregion    
     
