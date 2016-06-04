@@ -4,7 +4,7 @@ using SuperPutty.Data;
 
 namespace SuperPutty.Gui
 {
-    public partial class KeyboardShortcutEditor : Form
+    public partial class KeyboardShortcutEditor : TopForm
     {
         KeyboardShortcut KeyboardShortcut { get; set; }
 

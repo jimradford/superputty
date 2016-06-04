@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace SuperPutty.Gui
 {
-    public partial class dlgRenameItem : Form
+    public partial class dlgRenameItem : TopForm
     {
         public delegate bool ItemNameValidationHandler(string name, out string error);
 

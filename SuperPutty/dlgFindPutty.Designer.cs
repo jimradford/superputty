@@ -74,7 +74,7 @@
             this.checkBoxCheckForUpdates = new System.Windows.Forms.CheckBox();
             this.checkSessionTreeFoldersFirst = new System.Windows.Forms.CheckBox();
             this.checkBoxPersistTsHistory = new System.Windows.Forms.CheckBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownHistory = new System.Windows.Forms.NumericUpDown();
             this.checkBoxAllowPuttyPWArg = new System.Windows.Forms.CheckBox();
             this.checkConfirmTabClose = new System.Windows.Forms.CheckBox();
             this.tabControl = new System.Windows.Forms.TabControl();
@@ -104,7 +104,6 @@
             this.label15 = new System.Windows.Forms.Label();
             this.checkQuickSelectorCaseSensitiveSearch = new System.Windows.Forms.CheckBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.numericUpDownOpacity = new System.Windows.Forms.NumericUpDown();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboSearchMode = new System.Windows.Forms.ComboBox();
@@ -120,12 +119,13 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
+            this.trackBarOpacity = new System.Windows.Forms.TrackBar();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.shortcutStringDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.keyboardShortcutBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHistory)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageGUI.SuspendLayout();
@@ -134,7 +134,6 @@
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOpacity)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPageShortcuts.SuspendLayout();
@@ -143,6 +142,7 @@
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.panelBottom.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarOpacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -369,7 +369,7 @@
             // checkMinimizeToTray
             // 
             this.checkMinimizeToTray.AutoSize = true;
-            this.checkMinimizeToTray.Location = new System.Drawing.Point(71, 49);
+            this.checkMinimizeToTray.Location = new System.Drawing.Point(71, 61);
             this.checkMinimizeToTray.Name = "checkMinimizeToTray";
             this.checkMinimizeToTray.Size = new System.Drawing.Size(110, 17);
             this.checkMinimizeToTray.TabIndex = 30;
@@ -584,15 +584,15 @@
             this.toolTip.SetToolTip(this.checkBoxPersistTsHistory, "Persist command bar history between program restarts");
             this.checkBoxPersistTsHistory.UseVisualStyleBackColor = true;
             // 
-            // numericUpDown1
+            // numericUpDownHistory
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(128, 25);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(48, 22);
-            this.numericUpDown1.TabIndex = 1;
-            this.toolTip.SetToolTip(this.numericUpDown1, "The number of days to save history for. Entries older than the selected number of" +
+            this.numericUpDownHistory.Location = new System.Drawing.Point(128, 25);
+            this.numericUpDownHistory.Name = "numericUpDownHistory";
+            this.numericUpDownHistory.Size = new System.Drawing.Size(48, 22);
+            this.numericUpDownHistory.TabIndex = 1;
+            this.toolTip.SetToolTip(this.numericUpDownHistory, "The number of days to save history for. Entries older than the selected number of" +
         " days will be automatically deleted.");
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.numericUpDownHistory.Value = new decimal(new int[] {
             7,
             0,
             0,
@@ -778,7 +778,7 @@
             // 
             this.groupBox8.Controls.Add(this.label20);
             this.groupBox8.Controls.Add(this.label19);
-            this.groupBox8.Controls.Add(this.numericUpDown1);
+            this.groupBox8.Controls.Add(this.numericUpDownHistory);
             this.groupBox8.Controls.Add(this.checkBoxPersistTsHistory);
             this.groupBox8.Location = new System.Drawing.Point(367, 150);
             this.groupBox8.Name = "groupBox8";
@@ -877,12 +877,12 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.trackBarOpacity);
             this.groupBox3.Controls.Add(this.checkShowDocumentIcons);
             this.groupBox3.Controls.Add(this.label15);
             this.groupBox3.Controls.Add(this.checkQuickSelectorCaseSensitiveSearch);
             this.groupBox3.Controls.Add(this.label13);
             this.groupBox3.Controls.Add(this.label12);
-            this.groupBox3.Controls.Add(this.numericUpDownOpacity);
             this.groupBox3.Controls.Add(this.checkMinimizeToTray);
             this.groupBox3.Location = new System.Drawing.Point(367, 211);
             this.groupBox3.Name = "groupBox3";
@@ -894,7 +894,7 @@
             // checkShowDocumentIcons
             // 
             this.checkShowDocumentIcons.AutoSize = true;
-            this.checkShowDocumentIcons.Location = new System.Drawing.Point(71, 72);
+            this.checkShowDocumentIcons.Location = new System.Drawing.Point(71, 84);
             this.checkShowDocumentIcons.Name = "checkShowDocumentIcons";
             this.checkShowDocumentIcons.Size = new System.Drawing.Size(141, 17);
             this.checkShowDocumentIcons.TabIndex = 39;
@@ -905,7 +905,7 @@
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.Location = new System.Drawing.Point(10, 97);
+            this.label15.Location = new System.Drawing.Point(10, 106);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(121, 15);
             this.label15.TabIndex = 38;
@@ -914,7 +914,7 @@
             // checkQuickSelectorCaseSensitiveSearch
             // 
             this.checkQuickSelectorCaseSensitiveSearch.AutoSize = true;
-            this.checkQuickSelectorCaseSensitiveSearch.Location = new System.Drawing.Point(71, 119);
+            this.checkQuickSelectorCaseSensitiveSearch.Location = new System.Drawing.Point(71, 128);
             this.checkQuickSelectorCaseSensitiveSearch.Name = "checkQuickSelectorCaseSensitiveSearch";
             this.checkQuickSelectorCaseSensitiveSearch.Size = new System.Drawing.Size(135, 17);
             this.checkQuickSelectorCaseSensitiveSearch.TabIndex = 37;
@@ -925,33 +925,11 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(10, 49);
+            this.label13.Location = new System.Drawing.Point(10, 61);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(40, 15);
             this.label13.TabIndex = 36;
             this.label13.Text = "Other:";
-            // 
-            // numericUpDownOpacity
-            // 
-            this.numericUpDownOpacity.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.numericUpDownOpacity.Location = new System.Drawing.Point(71, 16);
-            this.numericUpDownOpacity.Minimum = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.numericUpDownOpacity.Name = "numericUpDownOpacity";
-            this.numericUpDownOpacity.Size = new System.Drawing.Size(120, 22);
-            this.numericUpDownOpacity.TabIndex = 32;
-            this.numericUpDownOpacity.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
             // 
             // groupBox2
             // 
@@ -1129,6 +1107,19 @@
             this.panelBottom.Size = new System.Drawing.Size(624, 27);
             this.panelBottom.TabIndex = 39;
             // 
+            // trackBarOpacity
+            // 
+            this.trackBarOpacity.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.trackBarOpacity.Location = new System.Drawing.Point(62, 15);
+            this.trackBarOpacity.Maximum = 100;
+            this.trackBarOpacity.Minimum = 10;
+            this.trackBarOpacity.Name = "trackBarOpacity";
+            this.trackBarOpacity.Size = new System.Drawing.Size(135, 45);
+            this.trackBarOpacity.TabIndex = 40;
+            this.trackBarOpacity.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBarOpacity.Value = 100;
+            this.trackBarOpacity.Scroll += new System.EventHandler(this.trackBarOpacity_Scroll);
+            // 
             // nameDataGridViewTextBoxColumn
             // 
             this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
@@ -1185,7 +1176,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SuperPuTTY Options";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHistory)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabPageGeneral.ResumeLayout(false);
             this.tabPageGeneral.PerformLayout();
@@ -1200,7 +1191,6 @@
             this.groupBox6.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOpacity)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -1213,6 +1203,7 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.panelBottom.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarOpacity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.keyboardShortcutBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -1279,7 +1270,6 @@
         private System.Windows.Forms.DataGridViewButtonColumn colClear;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.NumericUpDown numericUpDownOpacity;
         private System.Windows.Forms.CheckBox checkConfirmTabClose;
         private System.Windows.Forms.CheckBox checkEnableKeyboardShortcuts;
         private System.Windows.Forms.CheckBox checkEnableControlTabSwitching;
@@ -1304,7 +1294,7 @@
         private System.Windows.Forms.CheckBox checkBoxPersistTsHistory;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown numericUpDownHistory;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.CheckBox checkBoxAllowPuttyPWArg;
         private System.Windows.Forms.Button buttonBrowseFilezilla;
@@ -1315,5 +1305,6 @@
         private System.Windows.Forms.TextBox textBoxWinSCPLocation;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.TextBox textBoxPuttyDefaultParameters;
+        private System.Windows.Forms.TrackBar trackBarOpacity;
     }
 }
