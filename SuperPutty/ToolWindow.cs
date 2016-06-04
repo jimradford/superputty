@@ -28,7 +28,7 @@ namespace SuperPutty
         public ToolWindow()
         {
             InitializeComponent();
-            
+            this.Opacity = SuperPuTTY.Settings.Opacity;
         }
     }
 }

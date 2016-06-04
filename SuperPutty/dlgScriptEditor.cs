@@ -25,7 +25,7 @@ using System.IO;
 
 namespace SuperPutty
 {
-    public partial class dlgScriptEditor : Form
+    public partial class dlgScriptEditor : TopForm
     {
         /// <summary>Raised when a script is ready to execute.</summary>
         public event ExecuteScriptEventHandler ScriptReady;

@@ -34,7 +34,7 @@ using SuperPutty.Gui;
 
 namespace SuperPutty
 {
-    public partial class dlgFindPutty : Form
+    public partial class dlgFindPutty : TopForm
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(dlgFindPutty));
 
@@ -174,7 +174,7 @@ namespace SuperPutty
             this.checkEnableKeyboardShortcuts.Checked = SuperPuTTY.Settings.EnableKeyboadShortcuts;
             this.btnFont.Font = SuperPuTTY.Settings.SessionsTreeFont;
             this.btnFont.Text = ToShortString(SuperPuTTY.Settings.SessionsTreeFont);
-            this.numericUpDownOpacity.Value = (decimal) SuperPuTTY.Settings.Opacity * 100;
+            this.trackBarOpacity.Value = (int)(SuperPuTTY.Settings.Opacity * 100);
             this.checkQuickSelectorCaseSensitiveSearch.Checked = SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch;
             this.checkShowDocumentIcons.Checked = SuperPuTTY.Settings.ShowDocumentIcons;
             this.checkRestrictFloatingWindows.Checked = SuperPuTTY.Settings.DockingRestrictFloatingWindows;
@@ -185,7 +185,7 @@ namespace SuperPutty
             this.textBoxRootDirPrefix.Text = SuperPuTTY.Settings.PscpRootHomePrefix;
             this.checkSessionTreeFoldersFirst.Checked = SuperPuTTY.Settings.SessiontreeShowFoldersFirst;
             this.checkBoxPersistTsHistory.Checked = SuperPuTTY.Settings.PersistCommandBarHistory;
-            this.numericUpDown1.Value = SuperPuTTY.Settings.SaveCommandHistoryDays;
+            this.numericUpDownHistory.Value = SuperPuTTY.Settings.SaveCommandHistoryDays;
             this.checkBoxAllowPuttyPWArg.Checked = SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg;
             this.textBoxPuttyDefaultParameters.Text = SuperPuTTY.Settings.PuttyDefaultParameters;
 
@@ -338,7 +338,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.SessionsTreeShowLines = this.checkSessionsTreeShowLines.Checked;
                 SuperPuTTY.Settings.SessionsTreeFont = this.btnFont.Font;
                 SuperPuTTY.Settings.WindowActivator = (string) this.comboBoxActivatorType.SelectedItem;
-                SuperPuTTY.Settings.Opacity = (double) this.numericUpDownOpacity.Value / 100.0;
+                SuperPuTTY.Settings.Opacity = (double)this.trackBarOpacity.Value / 100.0;
                 SuperPuTTY.Settings.SessionsSearchMode = (string) this.comboSearchMode.SelectedItem;
                 SuperPuTTY.Settings.QuickSelectorCaseSensitiveSearch = this.checkQuickSelectorCaseSensitiveSearch.Checked;
                 SuperPuTTY.Settings.ShowDocumentIcons = this.checkShowDocumentIcons.Checked;
@@ -350,7 +350,7 @@ namespace SuperPutty
                 SuperPuTTY.Settings.PscpRootHomePrefix = this.textBoxRootDirPrefix.Text;
                 SuperPuTTY.Settings.SessiontreeShowFoldersFirst = this.checkSessionTreeFoldersFirst.Checked;
                 SuperPuTTY.Settings.PersistCommandBarHistory = this.checkBoxPersistTsHistory.Checked;
-                SuperPuTTY.Settings.SaveCommandHistoryDays = (int)this.numericUpDown1.Value;
+                SuperPuTTY.Settings.SaveCommandHistoryDays = (int)this.numericUpDownHistory.Value;
                 SuperPuTTY.Settings.AllowPlainTextPuttyPasswordArg = this.checkBoxAllowPuttyPWArg.Checked;
                 SuperPuTTY.Settings.PuttyDefaultParameters = this.textBoxPuttyDefaultParameters.Text;
 
@@ -496,6 +496,7 @@ namespace SuperPutty
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
+            SuperPuTTY.MainForm.Opacity = SuperPuTTY.Settings.Opacity;
             this.Close();
         }
 
@@ -541,7 +542,14 @@ namespace SuperPutty
         static string ToShortString(Font font)
         {
             return String.Format("{0}, {1} pt, {2}", font.FontFamily.Name, font.Size, font.Style);
-        }       
+        }
+
+        private void trackBarOpacity_Scroll(object sender, EventArgs e)
+        {
+            double opacity = (double)trackBarOpacity.Value / 100;
+            SuperPuTTY.MainForm.Opacity = opacity;
+            this.Opacity = opacity;
+        }
     }
 
 }

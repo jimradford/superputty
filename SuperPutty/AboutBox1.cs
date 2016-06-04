@@ -26,7 +26,7 @@ using System.Diagnostics;
 
 namespace SuperPutty
 {
-    partial class AboutBox1 : Form
+    partial class AboutBox1 : TopForm
     {
         public AboutBox1()
         {

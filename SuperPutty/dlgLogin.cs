@@ -27,7 +27,7 @@ using SuperPutty.Data;
 
 namespace SuperPutty
 {
-    public partial class dlgLogin : Form
+    public partial class dlgLogin : TopForm
     {
         public string Username { get; private set; } = WindowsIdentity.GetCurrent().Name.Split('\\')[1];
 

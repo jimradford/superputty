@@ -43,7 +43,7 @@ using System.Threading;
 
 namespace SuperPutty
 {
-    public partial class frmSuperPutty : Form
+    public partial class frmSuperPutty : TopForm
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(frmSuperPutty));
 

@@ -31,7 +31,7 @@ using System.IO;
 
 namespace SuperPutty
 {
-    public partial class dlgEditSession : Form
+    public partial class dlgEditSession : TopForm
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(dlgEditSession));
 
