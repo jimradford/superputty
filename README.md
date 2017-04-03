@@ -9,7 +9,9 @@ https://github.com/jimradford/superputty
 
 ### Latest Releases
 The latest release is available for download at https://github.com/jimradford/superputty/releases/latest
+
 Previous releases can be found at https://github.com/jimradford/superputty/releases
+
 Documentation is at https://github.com/jimradford/superputty/wiki/Documentation
 
 ### News and Updates
