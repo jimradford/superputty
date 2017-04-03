@@ -1,7 +1,9 @@
 # SuperPuTTY Application
 
 ### License
-For License information please read the License.txt included with the download
+MIT
+
+For additional License information please read the License.txt included with the download
 
 ### Issue Tracking
 For issue tracking, documentation and downloads please visit the SuperPuTTY Project on Github
