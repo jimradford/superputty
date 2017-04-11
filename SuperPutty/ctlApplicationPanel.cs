@@ -141,7 +141,13 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         {
             if (!SuperPuTTY.IsLayoutChanging)
             {
-                bool success = NativeMethods.MoveWindow(m_AppWin, x, y, this.Width, this.Height, this.Visible);
+                // OG hack
+                // Last line of terminal can be hidden due to the height being a fraction of the line height.
+                // Need to make height a multiple of the line height. But don't have putty configuration font,
+                // so I'm hacking this and assuming a line height of 17 px.
+                int HeightMultipleOfFont = this.Height - this.Height % 17;
+
+                bool success = NativeMethods.MoveWindow(m_AppWin, x, y, this.Width, HeightMultipleOfFont, this.Visible);
                 if (Log.IsInfoEnabled)
                 {
                     Log.InfoFormat("MoveWindow [{3,-15}{4,20}] w={0,4}, h={1,4}, visible={2}, success={5}", this.Width, this.Height, this.Visible, src, this.Name, success);
