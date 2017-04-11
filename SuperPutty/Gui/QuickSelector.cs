@@ -7,7 +7,7 @@ using log4net;
 
 namespace SuperPutty.Gui
 {
-    public partial class QuickSelector : Form
+    public partial class QuickSelector : TopForm
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(QuickSelector));
         private static char[] sanitizeChars = { '*', '[', ',' };

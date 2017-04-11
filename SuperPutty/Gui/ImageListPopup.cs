@@ -14,7 +14,7 @@ namespace SuperPutty.Gui
 {
     public delegate void ImageListPopupEventHandler(object sender, ImageListPopupEventArgs ilpea);
 
-    public class ImageListPopup : System.Windows.Forms.Form
+    public class ImageListPopup : TopForm
     {
         #region Protected Member Variables
         protected Bitmap _Bitmap = null;

@@ -28,7 +28,7 @@ using SuperPutty.Utils;
 
 namespace SuperPutty
 {
-    public partial class frmDocumentSelector : Form
+    public partial class frmDocumentSelector : TopForm
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(frmDocumentSelector));
 
