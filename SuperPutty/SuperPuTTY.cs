@@ -58,11 +58,6 @@ namespace SuperPutty
 
         public static void Initialize(string[] args)
         {
-            IsScpEnabled = File.Exists(SuperPuTTY.Settings.PscpExe);
-            IsFilezillaEnabled = File.Exists(SuperPuTTY.Settings.FileZillaExe);
-            IsWinSCPEnabled = File.Exists(SuperPuTTY.Settings.WinSCPExe);
-            SessionsFileName = Path.Combine(Settings.SettingsFolder, "Sessions.XML");
-
             Log.InfoFormat(
                 "Initializing.  Version={0}, UserSettings={1}, SettingsFolder={2}", 
                 Version, Settings.SettingsFilePath, Settings.SettingsFolder);
@@ -308,7 +303,7 @@ namespace SuperPutty
         #region Sessions
 
         /// <summary>Returns A string containing the path to the saved sessions database on disk</summary>
-        private static string SessionsFileName;
+        private static string SessionsFileName { get { return Path.Combine(Settings.SettingsFolder, "Sessions.XML"); } }
 
         /// <summary>Load sessions database from file into the application</summary>
         public static void LoadSessions()
@@ -760,25 +755,25 @@ namespace SuperPutty
         }
 
         /// <summary>true if the application has not defined where the putty scp program is located</summary>
-        public static bool IsScpEnabled;
+        public static bool IsScpEnabled { get { return File.Exists(SuperPuTTY.Settings.PscpExe); } }
 
         /// <summary>true if the application has defined where the filezilla program is located</summary>
-        public static bool IsFilezillaEnabled;
+        public static bool IsFilezillaEnabled { get { return File.Exists(SuperPuTTY.Settings.FileZillaExe); } }
 
         /// <summary>true if the application has defined where the winSCP program is located</summary>
-        public static bool IsWinSCPEnabled;
+        public static bool IsWinSCPEnabled { get { return File.Exists(SuperPuTTY.Settings.WinSCPExe); } }
 
         /// <summary>Returns a string containing the current version of SuperPuTTY</summary>
-        public static string Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public static string Version { get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
 
-        internal static Settings Settings = Settings.Default;
+        internal static Settings Settings { get { return Settings.Default; } }
         public static frmSuperPutty MainForm { get; set; }        
-        public static string LayoutsDir = Path.Combine(Settings.SettingsFolder, "layouts");
+        public static string LayoutsDir { get { return Path.Combine(Settings.SettingsFolder, "layouts"); } }
         public static LayoutData CurrentLayout { get; private set; }
         public static LayoutData StartingLayout { get; private set; }
         public static SessionDataStartInfo StartingSession { get; private set; }
-        public static BindingList<LayoutData> Layouts = layouts;
-        public static BindingList<SessionData> Sessions = sessionsList;
+        public static BindingList<LayoutData> Layouts { get { return layouts; } }
+        public static BindingList<SessionData> Sessions { get { return sessionsList; } }
         public static CommandLineOptions CommandLine { get; private set; }
         public static ImageList Images { get; private set; }
         public static GlobalWindowEvents WindowEvents { get; private set; }
@@ -810,7 +805,7 @@ namespace SuperPutty
         }
 
         /// <summary>The path to the default AutoRestore layout configuration</summary>
-        public static string AutoRestoreLayoutPath = Path.Combine(Settings.SettingsFolder, LayoutData.AutoRestoreLayoutFileName);
+        public static string AutoRestoreLayoutPath { get { return Path.Combine(Settings.SettingsFolder, LayoutData.AutoRestoreLayoutFileName); } }
 
         #endregion
     }

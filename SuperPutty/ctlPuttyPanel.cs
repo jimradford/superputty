@@ -66,8 +66,6 @@ namespace SuperPutty
             this.TextOverride = session.SessionName;
 
             CreatePanel();
-            this.Session = this.m_Session;
-            this.AppPanel = this.m_AppPanel;
             AdjustMenu();
         }
 
@@ -391,8 +389,8 @@ namespace SuperPutty
             }
         }
 
-        public SessionData Session;
-        public ApplicationPanel AppPanel;
+        public SessionData Session { get { return this.m_Session; } }
+        public ApplicationPanel AppPanel { get { return this.m_AppPanel; } }
         public ctlPuttyPanel previousPanel { get; set; }
         public ctlPuttyPanel nextPanel { get; set; }
 
