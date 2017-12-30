@@ -67,12 +67,16 @@ namespace SuperPutty
 DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string ApplicationWorkingDirectory { get; set; }
 
-        public IntPtr AppWindowHandle;
+        public IntPtr AppWindowHandle { get { return this.m_AppWin; } } 
 
         #endregion
 
         public ApplicationPanel()
         {
+            this.ApplicationName = "";
+            this.ApplicationParameters = "";
+            this.ApplicationWorkingDirectory = "";
+
             this.Disposed += new EventHandler(ApplicationPanel_Disposed);
             SuperPuTTY.LayoutChanged += new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
 
@@ -83,11 +87,6 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             //this.m_windowActivator = new SetFGCombinedWindowActivator();
             SuperPuTTY.Settings.SettingsSaving += Settings_SettingsSaving;
             SuperPuTTY.WindowEvents.SystemSwitch += new EventHandler<GlobalWindowEventArgs>(OnSystemSwitch);
-            this.ApplicationName = "";
-            this.ApplicationParameters = "";
-            this.ApplicationWorkingDirectory = "";
-            this.AppWindowHandle = this.m_AppWin;
-            this.ExternalProcessCaptured = (this.m_AppWin != IntPtr.Zero);
         }
 
         void Settings_SettingsSaving(object sender, CancelEventArgs e)
@@ -491,7 +490,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             base.OnResize(e);
         }
 
-        public bool ExternalProcessCaptured;
+        public bool ExternalProcessCaptured { get { return this.m_AppWin != IntPtr.Zero; } }
 
         #endregion    
     

@@ -34,7 +34,7 @@ namespace SuperPutty.Utils
     /// <typeparam name="T"></typeparam>
     public class SortableBindingList<T> : BindingList<T>, IList<T>
     {
-        //protected bool SupportsSortingCore = true;
+        protected override bool SupportsSortingCore { get { return true; } }
 
         protected override bool IsSortedCore
         {
@@ -77,17 +77,15 @@ namespace SuperPutty.Utils
         }
 
         private ListSortDirection sortDirection;
-        protected new ListSortDirection SortDirectionCore;
+        protected override ListSortDirection SortDirectionCore { get { return sortDirection; } } 
 
         private PropertyDescriptor sortProperty;
-        protected new PropertyDescriptor SortPropertyCore;
+        protected override PropertyDescriptor SortPropertyCore { get { return sortProperty; } }
 
         protected override void ApplySortCore(PropertyDescriptor prop, ListSortDirection direction)
         {
             sortProperty = prop;
             sortDirection = direction;
-            SortDirectionCore = sortDirection;
-            SortPropertyCore = sortProperty;
 
             List<T> list = (List<T>)Items;
             list.Sort(delegate(T lhs, T rhs)
@@ -126,9 +124,7 @@ namespace SuperPutty.Utils
         protected override void RemoveSortCore()
         {
             sortDirection = ListSortDirection.Ascending;
-            SortDirectionCore = sortDirection;
             sortProperty = null;
-            SortPropertyCore = sortProperty;
         }
 
         /// <summary>Overrides call to EndNew fired when an item is added to the collection</summary>

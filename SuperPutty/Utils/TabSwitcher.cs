@@ -33,36 +33,21 @@ namespace SuperPutty.Utils
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(TabSwitcher));
 
-        public static ITabSwitchStrategy[] Strategies;
-        public TabSwitcher()
+        public static readonly ITabSwitchStrategy[] Strategies;
+        static TabSwitcher()
         {
-            this.Documents = this.tabSwitchStrategy.GetDocuments();
-            this.ActiveDocument = (ToolWindow)this.DockPanel.ActiveDocument;
-
-            if(Strategies == null)
+            List<ITabSwitchStrategy> strats = new List<ITabSwitchStrategy>
             {
-                List<ITabSwitchStrategy> strats = new List<ITabSwitchStrategy>
-                {
-                    new VisualOrderTabSwitchStrategy(),
-                    new OpenOrderTabSwitchStrategy(),
-                    new MRUTabSwitchStrategy()
-                };
-                Strategies = strats.ToArray();
-            }
+                new VisualOrderTabSwitchStrategy(),
+                new OpenOrderTabSwitchStrategy(),
+                new MRUTabSwitchStrategy()
+            };
+            //strats.Add(new MRUTabSwitchStrategyOld());
+            Strategies = strats.ToArray();
         }
 
         public static ITabSwitchStrategy StrategyFromTypeName(String typeName)
         {
-            if(Strategies == null)
-            {
-                List<ITabSwitchStrategy> strats = new List<ITabSwitchStrategy>
-                {
-                    new VisualOrderTabSwitchStrategy(),
-                    new OpenOrderTabSwitchStrategy(),
-                    new MRUTabSwitchStrategy()
-                };
-                Strategies = strats.ToArray();
-            }
             ITabSwitchStrategy strategy = Strategies[0];
             try
             {
@@ -182,8 +167,9 @@ namespace SuperPutty.Utils
             }
         }
 
-        public IList<IDockContent> Documents;
-        public ToolWindow ActiveDocument;
+        public IList<IDockContent> Documents { get { return this.tabSwitchStrategy.GetDocuments(); } } 
+
+        public ToolWindow ActiveDocument { get { return (ToolWindow)this.DockPanel.ActiveDocument; } }
         public DockPanel DockPanel { get; private set; }
         public bool IsSwitchingTabs { get; set; }
 
@@ -195,7 +181,7 @@ namespace SuperPutty.Utils
     #region ITabSwitchStrategy
     public interface ITabSwitchStrategy : IDisposable
     {
-        string Description { get; }         
+        string Description { get; }
         IList<IDockContent> GetDocuments();
         void Initialize(DockPanel panel);
         void AddTab(ToolWindow tab);
@@ -320,12 +306,12 @@ namespace SuperPutty.Utils
     public class MRUTabSwitchStrategy : ITabSwitchStrategy
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(MRUTabSwitchStrategy));
-        public string Description { get; protected set; }
+
+        public string Description { get { return "MRU: Similar to Windows Alt-Tab"; } }
 
         public void Initialize(DockPanel panel)
         {
             this.DockPanel = panel;
-			Description = "MRU: Similar to Windows Alt-Tab";
         }
 
         public void AddTab(ToolWindow newTab)

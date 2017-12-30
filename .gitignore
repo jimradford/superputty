@@ -1,7 +1,10 @@
+.vs/
 bin/*
 SuperPutty/obj/*
 SuperPuttySetup/Debug/*
 SuperPuttySetup/Release/*
 SuperPuttyUnitTests/bin/*
 SuperPuttyUnitTests/obj/*
+SuperPuttyInstaller/bin/
+SuperPuttyInstaller/obj/
 SuperPutty.v12.suo

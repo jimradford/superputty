@@ -19,12 +19,10 @@ namespace SuperPutty.Gui
     public class DataGridViewProgressColumn : DataGridViewImageColumn
     {
         public static Color _ProgressBarColor;
-        private DataGridViewProgressCell ProgressBarCellTemplate;
 
         public DataGridViewProgressColumn()
         {
             CellTemplate = new DataGridViewProgressCell();
-            this.ProgressBarCellTemplate = (DataGridViewProgressCell)CellTemplate;
         }
 
         public override DataGridViewCell CellTemplate
@@ -86,6 +84,9 @@ namespace SuperPutty.Gui
                 }
             }
         }
+
+
+        private DataGridViewProgressCell ProgressBarCellTemplate { get { return (DataGridViewProgressCell)this.CellTemplate; } } 
     }
 
     class DataGridViewProgressCell : DataGridViewImageCell

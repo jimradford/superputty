@@ -11,9 +11,6 @@ namespace SuperPutty.Utils
         {
             this.Form = form;
             this.Shortcut = shortcut;
-            this.IsControlSet = IsSet(this.Shortcut.Modifiers, Keys.Control);
-            this.IsAltSet = IsSet(this.Shortcut.Modifiers, Keys.Alt);
-            this.IsShiftSet = IsSet(this.Shortcut.Modifiers, Keys.Shift);
 
             // convert the Keys to modifiers
             this.Modifiers = NativeMethods.HotKeysConstants.NOMOD;
@@ -51,9 +48,9 @@ namespace SuperPutty.Utils
             return modifiers.Any(modifier => (keys & modifier) == modifier);
         }
 
-        public bool IsControlSet;
-        public bool IsAltSet;
-        public bool IsShiftSet;
+        public bool IsControlSet { get { return IsSet(this.Shortcut.Modifiers, Keys.Control); } }
+        public bool IsAltSet { get { return IsSet(this.Shortcut.Modifiers, Keys.Alt); } }
+        public bool IsShiftSet { get { return IsSet(this.Shortcut.Modifiers, Keys.Shift); } }
 
         public KeyboardShortcut Shortcut { get; private set; }
         public Form Form { get; private set; }

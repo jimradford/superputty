@@ -22,8 +22,6 @@ namespace SuperPutty.Utils
             this.DockPanel = dockPanel;
             this.Initializer = initializer;
             this.InitializerResource = InitializerResource;
-            this.IsVisibleAsToolWindow = (this.Instance != null && this.Instance.DockHandler.Pane != null && !this.Instance.DockHandler.Pane.IsAutoHide);
-            this.IsVisible = (this.Instance != null && this.Instance.Visible);
         }
 
         public void ShowWindow(DockState dockState)
@@ -67,7 +65,7 @@ namespace SuperPutty.Utils
             SuperPuTTY.ReportStatus("Showing " + this.Name);
         }
 
-        public bool IsVisibleAsToolWindow;
+        public bool IsVisibleAsToolWindow { get { return this.Instance != null && this.Instance.DockHandler.Pane != null && !this.Instance.DockHandler.Pane.IsAutoHide; } }
 
         public T Initialize()
         {
@@ -103,7 +101,7 @@ namespace SuperPutty.Utils
             }
         }
 
-        public bool IsVisible;
+        public bool IsVisible { get { return this.Instance != null && this.Instance.Visible; } }
 
 
         public string Name { get; private set; }
