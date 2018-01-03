@@ -53,6 +53,7 @@ namespace SuperPutty
             bool firstExecution = String.IsNullOrEmpty(puttyExe);
             textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe, firstExecution);
             textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe, firstExecution);
+            textBoxVNCLocation.Text = getPathExe(@"\TightVNC\tvnviewer.exe", SuperPuTTY.Settings.VNCExe, firstExecution);
 
             // check for location of putty/pscp
             if (!String.IsNullOrEmpty(puttyExe) && File.Exists(puttyExe))
@@ -100,6 +101,10 @@ namespace SuperPutty
                 if (File.Exists(@"C:\cygwin\bin\mintty.exe"))
                 {
                     this.textBoxMinttyLocation.Text = @"C:\cygwin\bin\mintty.exe";
+                }
+                if (File.Exists(@"C:\cygwin64\bin\mintty.exe"))
+                {
+                    this.textBoxMinttyLocation.Text = @"C:\cygwin64\bin\mintty.exe";
                 }
             }
             else
@@ -292,6 +297,11 @@ namespace SuperPutty
                 SuperPuTTY.Settings.PscpExe = textBoxPscpLocation.Text;
             }
 
+            if (String.IsNullOrEmpty(textBoxVNCLocation.Text) || File.Exists(textBoxVNCLocation.Text))
+            {
+                SuperPuTTY.Settings.VNCExe = textBoxVNCLocation.Text;
+            }
+
             string settingsDir = textBoxSettingsFolder.Text;
             if (String.IsNullOrEmpty(settingsDir) || !Directory.Exists(settingsDir))
             {
@@ -425,6 +435,11 @@ namespace SuperPutty
             dialogBrowseExe("WinSCP|WinSCP.exe", "WinSCP.exe", textBoxWinSCPLocation);
         }
 
+        private void btnBrowseVNC_Click(object sender, EventArgs e)
+        {
+            dialogBrowseExe("tvnviewer|tvnviewer.exe", "tvnviewer.exe", textBoxVNCLocation);
+        }
+
         private void dialogBrowseExe(String filter, string filename, TextBox textbox)
         {
             openFileDialog1.Filter = filter;
@@ -452,6 +467,12 @@ namespace SuperPutty
         private void textBoxWinSCPLocation_DoubleClick(object sender, EventArgs e)
         {
             textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe, true);
+        }
+
+        //Search automaticaly the path of WinSCP when doubleClick when it is empty
+        private void textBoxVNCLocation_DoubleClick(object sender, EventArgs e)
+        {
+            textBoxVNCLocation.Text = getPathExe(@"\TightVNC\tvnviewer.exe", SuperPuTTY.Settings.VNCExe, true);
         }
 
 

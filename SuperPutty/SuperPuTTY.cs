@@ -435,6 +435,25 @@ namespace SuperPutty
             ctlPuttyPanel panel = null;
             if (session != null)
             {
+                String Executable = PuttyStartInfo.GetExecutable(session);
+                if (String.IsNullOrEmpty(Executable))
+                {
+                    MessageBox.Show("Error trying to create session: " + session.ToString() +
+                        "\nExecutable not set for " + session.Proto.ToString() + " protocol." +
+                        "\nGo to tools->options->General tab to set the path to the executable."
+                        , "Failed to create a session", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return null;
+                }
+                if (!File.Exists(Executable))
+                {
+                    MessageBox.Show("Error trying to create session: " + session.ToString() +
+                        "\nExecutable not found for " + session.Proto.ToString() + " protocol." +
+                        "\nThe path for the executable was set as \"" + Executable + "\"." +
+                        "\nGo to tools->options->General tab to set the path to the executable."
+                        , "Failed to create a session", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return null;
+                }
+
                 // This is the callback fired when the panel containing the terminal is closed
                 // We use this to save the last docking location and to close the panel
                 PuttyClosedCallback callback = delegate

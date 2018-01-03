@@ -86,6 +86,11 @@ namespace SuperPutty
                     case ConnectionProtocol.Mintty:
                         radioButtonMintty.Checked = true;
                         break;
+                    case ConnectionProtocol.VNC:
+                        radioButtonVNC.Checked = true;
+                        if (Session.Port == 0)
+                            this.textBoxPort.Text = "";
+                        break;
                     default:
                         radioButtonSSH.Checked = true;
                         break;
@@ -144,6 +149,7 @@ namespace SuperPutty
         private void buttonSave_Click(object sender, EventArgs e)
         {
 
+            int val = 0;
             if (!String.IsNullOrEmpty(CommandLineOptions.getcommand(textBoxExtraArgs.Text, "-pw")))
             {
                 if (MessageBox.Show("SuperPutty save the password in Sessions.xml file in plain text.\nUse a password in 'Extra PuTTY Arguments' is very insecure.\nFor a secure connection use SSH authentication with Pageant. \nSelect yes, if you want save the password", "Are you sure that you want to save the password?",
@@ -157,7 +163,10 @@ namespace SuperPutty
             Session.PuttySession = comboBoxPuttyProfile.Text.Trim();
             Session.Host         = textBoxHostname.Text.Trim();
             Session.ExtraArgs    = textBoxExtraArgs.Text.Trim();
-            Session.Port         = int.Parse(textBoxPort.Text.Trim());
+            if (!Int32.TryParse(this.textBoxPort.Text, out val))
+                Session.Port     = 0;
+            else
+                Session.Port     = int.Parse(textBoxPort.Text.Trim());
             Session.Username     = textBoxUsername.Text.Trim();
             Session.SessionId    = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
             Session.ImageKey     = buttonImageSelect.ImageKey;
@@ -252,6 +261,20 @@ namespace SuperPutty
             }
         }
 
+        private void radioButtonVNC_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.radioButtonVNC.Checked && this.isInitialized)
+            {
+                if (!string.IsNullOrEmpty(OldHostname))
+                {
+                    this.textBoxHostname.Text = OldHostname;
+                    OldHostname = null;
+                }
+                this.textBoxPort.Text = "";
+            }
+            this.comboBoxPuttyProfile.Enabled = !this.radioButtonVNC.Checked;
+        }
+
         public static int GetDefaultPort(ConnectionProtocol protocol)
         {
             int port = 22;
@@ -266,6 +289,9 @@ namespace SuperPutty
                     break;
                 case ConnectionProtocol.Telnet:
                     port = 23;
+                    break;
+                case ConnectionProtocol.VNC:
+                    port = 0;
                     break;
             }
             return port;
@@ -334,6 +360,10 @@ namespace SuperPutty
             int val;
             if (!Int32.TryParse(this.textBoxPort.Text, out val))
             {
+                if (this.textBoxPort.Text == "")
+                    if (this.radioButtonVNC.Checked || this.radioButtonMintty.Checked || this.radioButtonCygterm.Checked)
+                        return;
+
                 e.Cancel = true;
                 this.SetError(this.textBoxPort, "Invalid Port");
             }

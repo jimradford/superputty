@@ -20,12 +20,12 @@ namespace SuperPutty.Utils
     /// SuperPutty.exe -l USER -pw PASSWORD -load SETTINGS PROTOCOL://HOSTNAME:port
     /// ------------
     /// Options:
-    /// -ssh|-serial|-telnet|-scp|-raw|-rlogin|-cygterm   -Choose Protocol (default: ssh)
-    /// -P                                                -Port            (default: 22)
-    /// -l                                                -Login Name
-    /// -pw                                               -Login Password
-    /// -load                                             -Session to load (default: Default Session)
-    /// --------------------------------------------------------------------------
+    /// -ssh|-serial|-telnet|-scp|-raw|-rlogin|-cygterm|-vnc  -Choose Protocol (default: ssh)
+    /// -P                                                    -Port            (default: 22)
+    /// -l                                                    -Login Name
+    /// -pw                                                   -Login Password
+    /// -load                                                 -Session to load (default: Default Session)
+    /// ------------------------------------------------------------------------------
     /// SuperPutty.exe -layout LAYOUT_NAME
     /// SuperPutty.exe -session SESSION_ID
     /// SuperPutty.exe -ssh -P 22 -l homer -pw springfield -load pp1 prod-reactor
@@ -98,6 +98,9 @@ namespace SuperPutty.Utils
                         break;
                     case "-cygterm":
                         this.Protocol = ConnectionProtocol.Cygterm;
+                        break;
+                    case "-vnc":
+                        this.Protocol = ConnectionProtocol.VNC;
                         break;
                     case "-scp":
                         this.UseScp = true;
@@ -262,7 +265,7 @@ namespace SuperPutty.Utils
             sb.AppendLine("  SESSION\t\t - Session id");
             sb.AppendLine("  LAYOUT\t\t - Layout name");
             sb.AppendLine("  SETTINGS\t - Putty Saved Session Profile");
-            sb.AppendLine("  PROTO\t\t - Protocol - (ssh|ssh2|telnet|serial|raw|scp|cygterm|rlogin|mintty)");
+            sb.AppendLine("  PROTO\t\t - Protocol - (ssh|ssh2|telnet|serial|raw|scp|cygterm|rlogin|mintty|vnc)");
             sb.AppendLine("  USER\t\t - User name");
             sb.AppendLine("  PASSWORD\t - Login Password");
             sb.AppendLine("  HOST\t\t - Hostname");
@@ -272,6 +275,7 @@ namespace SuperPutty.Utils
             sb.AppendLine("  SuperPutty.exe -session nyc-qa-1");
             sb.AppendLine("  SuperPutty.exe -layout prod");
             sb.AppendLine("  SuperPutty.exe -ssh -P 22 -l homer -pw springfield -load pp1 prod-reactor");
+            sb.AppendLine("  SuperPutty.exe -vnc stewie01");
             sb.AppendLine("  SuperPutty.exe -l peter -pw griffin stewie01");
             sb.AppendLine("  SuperPutty.exe -load localhost");
             
