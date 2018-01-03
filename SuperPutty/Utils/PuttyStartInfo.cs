@@ -14,11 +14,26 @@ namespace SuperPutty.Utils
 
         private static readonly Regex regExEnvVars = new Regex(@"(%\w+%)");
 
+        public static String GetExecutable(SessionData session)
+        {
+            switch (session.Proto)
+            {
+                case ConnectionProtocol.Mintty:
+                    return TryParseEnvVars(SuperPuTTY.Settings.MinttyExe);
+
+                case ConnectionProtocol.VNC:
+                    return TryParseEnvVars(SuperPuTTY.Settings.VNCExe);
+
+                default:
+                    return TryParseEnvVars(SuperPuTTY.Settings.PuttyExe);
+            }
+        }
+
         public PuttyStartInfo(SessionData session)
         {
             string argsToLog = null;
 
-            this.Executable = SuperPuTTY.Settings.PuttyExe;
+            this.Executable = GetExecutable(session);
 
             if (session.Proto == ConnectionProtocol.Cygterm)
             {
@@ -31,7 +46,12 @@ namespace SuperPutty.Utils
                 MinttyStartInfo mintty = new MinttyStartInfo(session);
                 this.Args = mintty.Args;
                 this.WorkingDir = mintty.StartingDir;
-                this.Executable = SuperPuTTY.Settings.MinttyExe;
+            }
+            else if (session.Proto == ConnectionProtocol.VNC)
+            {
+                VNCStartInfo vnc = new VNCStartInfo(session);
+                this.Args = vnc.Args;
+                this.WorkingDir = vnc.StartingDir;
             }
             else
             {

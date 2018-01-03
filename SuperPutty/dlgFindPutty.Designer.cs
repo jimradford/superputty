@@ -84,6 +84,9 @@
             this.buttonBrowseFilezilla = new System.Windows.Forms.Button();
             this.label22 = new System.Windows.Forms.Label();
             this.textBoxFilezillaLocation = new System.Windows.Forms.TextBox();
+            this.textBoxVNCLocation = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.btnBrowseVNC = new System.Windows.Forms.Button();
             this.buttonBrowseWinSCP = new System.Windows.Forms.Button();
             this.label21 = new System.Windows.Forms.Label();
             this.textBoxWinSCPLocation = new System.Windows.Forms.TextBox();
@@ -240,7 +243,7 @@
             // 
             this.textBoxSettingsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSettingsFolder.Location = new System.Drawing.Point(172, 243);
+            this.textBoxSettingsFolder.Location = new System.Drawing.Point(172, 270);
             this.textBoxSettingsFolder.Name = "textBoxSettingsFolder";
             this.textBoxSettingsFolder.Size = new System.Drawing.Size(357, 22);
             this.textBoxSettingsFolder.TabIndex = 4;
@@ -249,7 +252,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(4, 246);
+            this.label3.Location = new System.Drawing.Point(4, 273);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(143, 15);
             this.label3.TabIndex = 9;
@@ -259,7 +262,7 @@
             // buttonBrowseLayoutsFolder
             // 
             this.buttonBrowseLayoutsFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(535, 243);
+            this.buttonBrowseLayoutsFolder.Location = new System.Drawing.Point(535, 270);
             this.buttonBrowseLayoutsFolder.Name = "buttonBrowseLayoutsFolder";
             this.buttonBrowseLayoutsFolder.Size = new System.Drawing.Size(75, 23);
             this.buttonBrowseLayoutsFolder.TabIndex = 5;
@@ -271,7 +274,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(4, 274);
+            this.label4.Location = new System.Drawing.Point(4, 301);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(84, 15);
             this.label4.TabIndex = 12;
@@ -284,7 +287,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxLayouts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLayouts.FormattingEnabled = true;
-            this.comboBoxLayouts.Location = new System.Drawing.Point(172, 270);
+            this.comboBoxLayouts.Location = new System.Drawing.Point(172, 297);
             this.comboBoxLayouts.Name = "comboBoxLayouts";
             this.comboBoxLayouts.Size = new System.Drawing.Size(357, 21);
             this.comboBoxLayouts.TabIndex = 6;
@@ -640,6 +643,9 @@
             this.tabPageGeneral.Controls.Add(this.buttonBrowseFilezilla);
             this.tabPageGeneral.Controls.Add(this.label22);
             this.tabPageGeneral.Controls.Add(this.textBoxFilezillaLocation);
+            this.tabPageGeneral.Controls.Add(this.btnBrowseVNC);
+            this.tabPageGeneral.Controls.Add(this.label24);
+            this.tabPageGeneral.Controls.Add(this.textBoxVNCLocation);
             this.tabPageGeneral.Controls.Add(this.buttonBrowseWinSCP);
             this.tabPageGeneral.Controls.Add(this.label21);
             this.tabPageGeneral.Controls.Add(this.textBoxWinSCPLocation);
@@ -670,7 +676,7 @@
             // 
             this.label23.AutoSize = true;
             this.label23.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label23.Location = new System.Drawing.Point(4, 300);
+            this.label23.Location = new System.Drawing.Point(4, 327);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(145, 15);
             this.label23.TabIndex = 41;
@@ -680,7 +686,7 @@
             // 
             this.textBoxPuttyDefaultParameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPuttyDefaultParameters.Location = new System.Drawing.Point(172, 297);
+            this.textBoxPuttyDefaultParameters.Location = new System.Drawing.Point(172, 324);
             this.textBoxPuttyDefaultParameters.Name = "textBoxPuttyDefaultParameters";
             this.textBoxPuttyDefaultParameters.Size = new System.Drawing.Size(357, 22);
             this.textBoxPuttyDefaultParameters.TabIndex = 40;
@@ -715,6 +721,36 @@
             this.textBoxFilezillaLocation.Size = new System.Drawing.Size(357, 22);
             this.textBoxFilezillaLocation.TabIndex = 37;
             this.textBoxFilezillaLocation.DoubleClick += new System.EventHandler(this.textBoxFilezillaLocation_DoubleClick);
+            // 
+            // textBoxVNCLocation
+            // 
+            this.textBoxVNCLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxVNCLocation.Location = new System.Drawing.Point(172, 243);
+            this.textBoxVNCLocation.Name = "textBoxVNCLocation";
+            this.textBoxVNCLocation.Size = new System.Drawing.Size(357, 22);
+            this.textBoxVNCLocation.TabIndex = 31;
+            // 
+            // label7
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label24.Location = new System.Drawing.Point(4, 246);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(111, 15);
+            this.label24.TabIndex = 33;
+            this.label24.Text = "TightVNC Viewer Location";
+            // 
+            // btnBrowseVNC
+            // 
+            this.btnBrowseVNC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBrowseVNC.Location = new System.Drawing.Point(535, 243);
+            this.btnBrowseVNC.Name = "btnBrowseVNC";
+            this.btnBrowseVNC.Size = new System.Drawing.Size(75, 23);
+            this.btnBrowseVNC.TabIndex = 32;
+            this.btnBrowseVNC.Text = "Browse";
+            this.btnBrowseVNC.UseVisualStyleBackColor = true;
+            this.btnBrowseVNC.Click += new System.EventHandler(this.btnBrowseVNC_Click);
             // 
             // buttonBrowseWinSCP
             // 
@@ -1246,6 +1282,9 @@
         private System.Windows.Forms.TextBox textBoxMinttyLocation;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnBrowseMintty;
+        private System.Windows.Forms.TextBox textBoxVNCLocation;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Button btnBrowseVNC;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboBoxTabText;
         private System.Windows.Forms.Label label9;

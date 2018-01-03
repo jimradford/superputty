@@ -37,6 +37,7 @@ namespace SuperPutty
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.radioButtonMintty = new System.Windows.Forms.RadioButton();
+            this.radioButtonVNC = new System.Windows.Forms.RadioButton();
             this.radioButtonCygterm = new System.Windows.Forms.RadioButton();
             this.radioButtonSerial = new System.Windows.Forms.RadioButton();
             this.radioButtonSSH = new System.Windows.Forms.RadioButton();
@@ -79,7 +80,7 @@ namespace SuperPutty
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSessionName.Location = new System.Drawing.Point(6, 33);
             this.textBoxSessionName.Name = "textBoxSessionName";
-            this.textBoxSessionName.Size = new System.Drawing.Size(416, 20);
+            this.textBoxSessionName.Size = new System.Drawing.Size(464, 20);
             this.textBoxSessionName.TabIndex = 0;
             this.textBoxSessionName.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxSessionName_Validating);
             this.textBoxSessionName.Validated += new System.EventHandler(this.textBoxSessionName_Validated);
@@ -110,14 +111,14 @@ namespace SuperPutty
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxHostname.Location = new System.Drawing.Point(6, 74);
             this.textBoxHostname.Name = "textBoxHostname";
-            this.textBoxHostname.Size = new System.Drawing.Size(316, 20);
+            this.textBoxHostname.Size = new System.Drawing.Size(361, 20);
             this.textBoxHostname.TabIndex = 1;
             this.textBoxHostname.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxHostname_Validating);
             // 
             // textBoxPort
             // 
             this.textBoxPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPort.Location = new System.Drawing.Point(345, 74);
+            this.textBoxPort.Location = new System.Drawing.Point(390, 74);
             this.textBoxPort.Name = "textBoxPort";
             this.textBoxPort.Size = new System.Drawing.Size(80, 20);
             this.textBoxPort.TabIndex = 2;
@@ -130,16 +131,17 @@ namespace SuperPutty
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(342, 56);
+            this.label3.Location = new System.Drawing.Point(387, 56);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(29, 15);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Port";
+            this.label3.Text = "TCP Port";
             // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.radioButtonVNC);
             this.groupBox1.Controls.Add(this.radioButtonMintty);
             this.groupBox1.Controls.Add(this.radioButtonCygterm);
             this.groupBox1.Controls.Add(this.radioButtonSerial);
@@ -150,10 +152,23 @@ namespace SuperPutty
             this.groupBox1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(14, 117);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(440, 49);
+            this.groupBox1.Size = new System.Drawing.Size(485, 49);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Connection type:";
+            // 
+            // radioButtonVNC
+            // 
+            this.radioButtonVNC.AutoSize = true;
+            this.radioButtonVNC.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radioButtonVNC.Location = new System.Drawing.Point(432, 19);
+            this.radioButtonVNC.Name = "radioButtonVNC";
+            this.radioButtonVNC.Size = new System.Drawing.Size(60, 19);
+            this.radioButtonVNC.TabIndex = 9;
+            this.radioButtonVNC.Tag = SuperPutty.Data.ConnectionProtocol.VNC;
+            this.radioButtonVNC.Text = "VNC";
+            this.radioButtonVNC.UseVisualStyleBackColor = true;
+            this.radioButtonVNC.CheckedChanged += new System.EventHandler(this.radioButtonVNC_CheckedChanged);
             // 
             // radioButtonMintty
             // 
@@ -253,7 +268,7 @@ namespace SuperPutty
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxExtraArgs.Location = new System.Drawing.Point(150, 229);
             this.textBoxExtraArgs.Name = "textBoxExtraArgs";
-            this.textBoxExtraArgs.Size = new System.Drawing.Size(304, 20);
+            this.textBoxExtraArgs.Size = new System.Drawing.Size(349, 20);
             this.textBoxExtraArgs.TabIndex = 6;
             this.textBoxExtraArgs.TextChanged += new System.EventHandler(this.textBoxExtraArgs_TextChanged);
             // 
@@ -270,7 +285,7 @@ namespace SuperPutty
             // buttonSave
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSave.Location = new System.Drawing.Point(298, 401);
+            this.buttonSave.Location = new System.Drawing.Point(343, 401);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(75, 23);
             this.buttonSave.TabIndex = 8;
@@ -283,7 +298,7 @@ namespace SuperPutty
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.CausesValidation = false;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(379, 401);
+            this.buttonCancel.Location = new System.Drawing.Point(424, 401);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 9;
@@ -308,7 +323,7 @@ namespace SuperPutty
             this.comboBoxPuttyProfile.FormattingEnabled = true;
             this.comboBoxPuttyProfile.Location = new System.Drawing.Point(150, 176);
             this.comboBoxPuttyProfile.Name = "comboBoxPuttyProfile";
-            this.comboBoxPuttyProfile.Size = new System.Drawing.Size(304, 21);
+            this.comboBoxPuttyProfile.Size = new System.Drawing.Size(349, 21);
             this.comboBoxPuttyProfile.TabIndex = 4;
             this.comboBoxPuttyProfile.SelectedIndexChanged += new System.EventHandler(this.comboBoxPuttyProfile_SelectedIndexChanged);
             this.comboBoxPuttyProfile.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxPuttyProfile_Validating);
@@ -325,7 +340,7 @@ namespace SuperPutty
             this.groupBox2.Controls.Add(this.textBoxPort);
             this.groupBox2.Location = new System.Drawing.Point(14, 5);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(440, 109);
+            this.groupBox2.Size = new System.Drawing.Size(485, 109);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             // 
@@ -345,7 +360,7 @@ namespace SuperPutty
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxUsername.Location = new System.Drawing.Point(150, 203);
             this.textBoxUsername.Name = "textBoxUsername";
-            this.textBoxUsername.Size = new System.Drawing.Size(304, 20);
+            this.textBoxUsername.Size = new System.Drawing.Size(349, 20);
             this.textBoxUsername.TabIndex = 5;
             // 
             // errorProvider
@@ -364,7 +379,8 @@ namespace SuperPutty
             // 
             // buttonBrowse
             // 
-            this.buttonBrowse.Location = new System.Drawing.Point(379, 253);
+            this.buttonBrowse.Location = new System.Drawing.Point(424, 253);
+            this.buttonBrowse.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonBrowse.Name = "buttonBrowse";
             this.buttonBrowse.Size = new System.Drawing.Size(75, 23);
             this.buttonBrowse.TabIndex = 15;
@@ -375,8 +391,9 @@ namespace SuperPutty
             // textBoxSPSLScriptFile
             // 
             this.textBoxSPSLScriptFile.Location = new System.Drawing.Point(150, 255);
+            this.textBoxSPSLScriptFile.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right);
             this.textBoxSPSLScriptFile.Name = "textBoxSPSLScriptFile";
-            this.textBoxSPSLScriptFile.Size = new System.Drawing.Size(142, 20);
+            this.textBoxSPSLScriptFile.Size = new System.Drawing.Size(187, 20);
             this.textBoxSPSLScriptFile.TabIndex = 16;
             // 
             // label7
@@ -396,7 +413,8 @@ namespace SuperPutty
             // 
             // buttonClearSPSLFile
             // 
-            this.buttonClearSPSLFile.Location = new System.Drawing.Point(298, 253);
+            this.buttonClearSPSLFile.Location = new System.Drawing.Point(343, 253);
+            this.buttonClearSPSLFile.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonClearSPSLFile.Name = "buttonClearSPSLFile";
             this.buttonClearSPSLFile.Size = new System.Drawing.Size(75, 23);
             this.buttonClearSPSLFile.TabIndex = 18;
@@ -413,8 +431,9 @@ namespace SuperPutty
             this.groupBoxFileTransferOptions.Controls.Add(this.lbLocalPath);
             this.groupBoxFileTransferOptions.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.groupBoxFileTransferOptions.Location = new System.Drawing.Point(14, 289);
+            this.groupBoxFileTransferOptions.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right);
             this.groupBoxFileTransferOptions.Name = "groupBoxFileTransferOptions";
-            this.groupBoxFileTransferOptions.Size = new System.Drawing.Size(440, 100);
+            this.groupBoxFileTransferOptions.Size = new System.Drawing.Size(485, 100);
             this.groupBoxFileTransferOptions.TabIndex = 19;
             this.groupBoxFileTransferOptions.TabStop = false;
             this.groupBoxFileTransferOptions.Text = "File Transfer Options";
@@ -422,8 +441,9 @@ namespace SuperPutty
             // textBoxRemotePathSesion
             // 
             this.textBoxRemotePathSesion.Location = new System.Drawing.Point(91, 61);
+            this.textBoxRemotePathSesion.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right);
             this.textBoxRemotePathSesion.Name = "textBoxRemotePathSesion";
-            this.textBoxRemotePathSesion.Size = new System.Drawing.Size(334, 23);
+            this.textBoxRemotePathSesion.Size = new System.Drawing.Size(379, 23);
             this.textBoxRemotePathSesion.TabIndex = 18;
             // 
             // lbRemotePath
@@ -437,7 +457,8 @@ namespace SuperPutty
             // 
             // buttonBrowseLocalPath
             // 
-            this.buttonBrowseLocalPath.Location = new System.Drawing.Point(350, 28);
+            this.buttonBrowseLocalPath.Location = new System.Drawing.Point(395, 28);
+            this.buttonBrowseLocalPath.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonBrowseLocalPath.Name = "buttonBrowseLocalPath";
             this.buttonBrowseLocalPath.Size = new System.Drawing.Size(75, 23);
             this.buttonBrowseLocalPath.TabIndex = 16;
@@ -448,8 +469,9 @@ namespace SuperPutty
             // textBoxLocalPathSesion
             // 
             this.textBoxLocalPathSesion.Location = new System.Drawing.Point(90, 29);
+            this.textBoxLocalPathSesion.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right);
             this.textBoxLocalPathSesion.Name = "textBoxLocalPathSesion";
-            this.textBoxLocalPathSesion.Size = new System.Drawing.Size(249, 23);
+            this.textBoxLocalPathSesion.Size = new System.Drawing.Size(294, 23);
             this.textBoxLocalPathSesion.TabIndex = 1;
             // 
             // lbLocalPath
@@ -467,7 +489,7 @@ namespace SuperPutty
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(470, 431);
+            this.ClientSize = new System.Drawing.Size(515, 431);
             this.Controls.Add(this.groupBoxFileTransferOptions);
             this.Controls.Add(this.buttonClearSPSLFile);
             this.Controls.Add(this.label7);
@@ -531,6 +553,7 @@ namespace SuperPutty
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBoxExtraArgs;
         private System.Windows.Forms.RadioButton radioButtonMintty;
+        private System.Windows.Forms.RadioButton radioButtonVNC;
         private System.Windows.Forms.Button buttonImageSelect;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Label label7;

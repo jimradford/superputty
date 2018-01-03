@@ -44,7 +44,8 @@ namespace SuperPutty.Data
         Raw,
         Serial,
         Cygterm,
-        Mintty
+        Mintty,
+        VNC
     }
 
     /// <summary>The main class containing configuration settings for a session</summary>
@@ -535,10 +536,16 @@ namespace SuperPutty.Data
             {
                 return string.Format("{0}://{1}", this.Proto.ToString().ToLower(), this.Host);
             }
-            else
+
+            if (this.Proto == ConnectionProtocol.VNC)
             {
-                return string.Format("{0}://{1}:{2}", this.Proto.ToString().ToLower(), this.Host, this.Port);
+                if (this.Port == 0)
+                    return string.Format("{0}://{1}", this.Proto.ToString().ToLower(), this.Host);
+                else
+                    return string.Format("{0}://{1}::{2}", this.Proto.ToString().ToLower(), this.Host, this.Port);
             }
+
+            return string.Format("{0}://{1}:{2}", this.Proto.ToString().ToLower(), this.Host, this.Port);
         }
 
         class PuttySessionConverter : StringConverter

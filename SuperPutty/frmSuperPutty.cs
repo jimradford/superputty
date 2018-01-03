@@ -986,8 +986,9 @@ namespace SuperPutty
 
             if (!String.IsNullOrEmpty(host))
             {
-                HostConnectionString connStr = new HostConnectionString(host);
                 bool isScp = "SCP" == protoString;
+                bool isVnc = "VNC" == protoString;
+                HostConnectionString connStr = new HostConnectionString(host, isVnc);
                 ConnectionProtocol proto = isScp
                     ? ConnectionProtocol.SSH
                     : connStr.Protocol.GetValueOrDefault((ConnectionProtocol)Enum.Parse(typeof(ConnectionProtocol), protoString));
@@ -1670,7 +1671,10 @@ namespace SuperPutty
                         GitRelease latest = (GitRelease)js.ReadObject(ms);
                         ms.Close();
 
-                        if (!latest.version.Trim().Contains(SuperPuTTY.Version))
+                        Version latest_version = new Version(latest.version.Trim());
+                        Version SuperPuTTY_version = new Version(SuperPuTTY.Version);
+
+                        if (latest_version.CompareTo(SuperPuTTY_version) > 0)
                         {
                             Log.Info("New Application version found! " + latest.version);
 
@@ -1700,6 +1704,10 @@ namespace SuperPutty
                 });
             }
             catch (System.Net.WebException ex)
+            {
+                Log.Warn("An Exception occurred while trying to check for program updates: " + ex.ToString());
+            }
+            catch (System.FormatException ex)
             {
                 Log.Warn("An Exception occurred while trying to check for program updates: " + ex.ToString());
             }
