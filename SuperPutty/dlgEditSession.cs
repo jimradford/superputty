@@ -197,8 +197,6 @@ namespace SuperPutty
             this.textBoxPort.Enabled = !isLocalShell;
             this.textBoxExtraArgs.Enabled = !isLocalShell;
             this.textBoxUsername.Enabled = !isLocalShell;
-            this.textBoxHostname.Enabled = !isLocalShell;
-            this.comboBoxPuttyProfile.Enabled = !isLocalShell;
 
             if (isLocalShell)
             {
