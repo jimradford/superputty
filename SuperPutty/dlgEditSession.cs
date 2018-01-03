@@ -149,6 +149,7 @@ namespace SuperPutty
         private void buttonSave_Click(object sender, EventArgs e)
         {
 
+            int val = 0;
             if (!String.IsNullOrEmpty(CommandLineOptions.getcommand(textBoxExtraArgs.Text, "-pw")))
             {
                 if (MessageBox.Show("SuperPutty save the password in Sessions.xml file in plain text.\nUse a password in 'Extra PuTTY Arguments' is very insecure.\nFor a secure connection use SSH authentication with Pageant. \nSelect yes, if you want save the password", "Are you sure that you want to save the password?",
@@ -162,7 +163,7 @@ namespace SuperPutty
             Session.PuttySession = comboBoxPuttyProfile.Text.Trim();
             Session.Host         = textBoxHostname.Text.Trim();
             Session.ExtraArgs    = textBoxExtraArgs.Text.Trim();
-            if (!Int32.TryParse(this.textBoxPort.Text, out int val))
+            if (!Int32.TryParse(this.textBoxPort.Text, out val))
                 Session.Port     = 0;
             else
                 Session.Port     = int.Parse(textBoxPort.Text.Trim());
