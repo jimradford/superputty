@@ -14,6 +14,8 @@ The latest release is available for download at https://github.com/jimradford/su
 
 Previous releases can be found at https://github.com/jimradford/superputty/releases
 
+Most Recent non-release/test [![Build status](https://ci.appveyor.com/api/projects/status/s6thtyntec4beaqk/branch/master?svg=true)](https://ci.appveyor.com/project/jimradford/superputty/branch/master)
+
 Documentation is at https://github.com/jimradford/superputty/wiki/Documentation
 
 ### News and Updates
