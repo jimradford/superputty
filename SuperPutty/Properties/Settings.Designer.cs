@@ -12,7 +12,7 @@ namespace SuperPutty.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -635,7 +635,6 @@ namespace SuperPutty.Properties {
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("/home/")]
         public string PscpHomePrefix {
@@ -648,7 +647,6 @@ namespace SuperPutty.Properties {
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool AutoUpdateCheck {
@@ -661,7 +659,6 @@ namespace SuperPutty.Properties {
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("/")]
         public string PscpRootHomePrefix {
@@ -674,7 +671,6 @@ namespace SuperPutty.Properties {
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("None")]
         public global::System.Windows.Forms.Keys Action_OpenScriptEditor_Shortcut {
@@ -689,143 +685,96 @@ namespace SuperPutty.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SessiontreeShowFoldersFirst
-        {
-            get
-            {
+        public bool SessiontreeShowFoldersFirst {
+            get {
                 return ((bool)(this["SessiontreeShowFoldersFirst"]));
             }
-            set
-            {
+            set {
                 this["SessiontreeShowFoldersFirst"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool PersistCommandBarHistory
-        {
-            get
-            {
-                return ((bool)(this["PersistCommandBarHistory"]));
-            }
-            set
-            {
-                this["PersistCommandBarHistory"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string CommandBarHistory
-        {
-            get
-            {
-                return ((string)(this["CommandBarHistory"]));
-            }
-            set
-            {
-                this["CommandBarHistory"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("7")]
-        public int SaveCommandHistoryDays
-        {
-            get
-            {
-                return ((int)(this["SaveCommandHistoryDays"]));
-            }
-            set
-            {
-                this["SaveCommandHistoryDays"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("None")]
-        public global::System.Windows.Forms.Keys Action_RenameTab_Shortcut
-        {
-            get
-            {
-                return ((global::System.Windows.Forms.Keys)(this["Action_RenameTab_Shortcut"]));
-            }
-            set
-            {
-                this["Action_RenameTab_Shortcut"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AllowPlainTextPuttyPasswordArg
-        {
-            get
-            {
-                return ((bool)(this["AllowPlainTextPuttyPasswordArg"]));
-            }
-            set
-            {
-                this["AllowPlainTextPuttyPasswordArg"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]        
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string FileZillaExe
-        {
-            get
-            {
+        public string FileZillaExe {
+            get {
                 return ((string)(this["FileZillaExe"]));
             }
-            set
-            {
+            set {
                 this["FileZillaExe"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string WinSCPExe
-        {
-            get
-            {
+        public string WinSCPExe {
+            get {
                 return ((string)(this["WinSCPExe"]));
             }
-            set
-            {
+            set {
                 this["WinSCPExe"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PersistCommandBarHistory {
+            get {
+                return ((bool)(this["PersistCommandBarHistory"]));
+            }
+            set {
+                this["PersistCommandBarHistory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AllowPlainTextPuttyPasswordArg {
+            get {
+                return ((bool)(this["AllowPlainTextPuttyPasswordArg"]));
+            }
+            set {
+                this["AllowPlainTextPuttyPasswordArg"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PuttyDefaultParameters
-        {
-            get
-            {
+        public string PuttyDefaultParameters {
+            get {
                 return ((string)(this["PuttyDefaultParameters"]));
             }
-            set
-            {
+            set {
                 this["PuttyDefaultParameters"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SaveCommandHistoryDays {
+            get {
+                return ((int)(this["SaveCommandHistoryDays"]));
+            }
+            set {
+                this["SaveCommandHistoryDays"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CommandBarHistory {
+            get {
+                return ((string)(this["CommandBarHistory"]));
+            }
+            set {
+                this["CommandBarHistory"] = value;
             }
         }
     }

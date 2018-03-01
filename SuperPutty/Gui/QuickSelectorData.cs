@@ -1,6 +1,8 @@
-﻿namespace SuperPutty.Gui {
-    
-    
-    public partial class QuickSelectorData {
+﻿namespace SuperPutty.Gui
+{
+
+
+    public partial class QuickSelectorData
+    {
     }
 }
