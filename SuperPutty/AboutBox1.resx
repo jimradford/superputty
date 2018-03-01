@@ -112,12 +112,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="logoPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGUAAABgCAYAAAAEsbx8AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
@@ -262,7 +262,10 @@
 </value>
   </data>
   <data name="richTextBox1.Text" xml:space="preserve">
-    <value>PuTTY is a SSH Terminal application written by Simon Tatham 
+    <value>Many contributors of code: 
+https://github.com/jimradford/superputty/graphs/contributors 
+
+PuTTY is a SSH Terminal application written by Simon Tatham 
 http://www.chiark.greenend.org.uk/~sgtatham/putty/
 
 Icons courtesy of FamFamFam  
@@ -275,7 +278,7 @@ Inspired by PuTTY Connection Manager
 http://puttycm.free.fr/</value>
   </data>
   <data name="textBox2.Text" xml:space="preserve">
-    <value>Copyright (c) 2009 - 2014 Jim Radford
+    <value>Copyright (c) 2009 - 2018 Jim Radford
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
