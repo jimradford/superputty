@@ -8,6 +8,8 @@ namespace SuperPutty.Utils
     {
 
         #region Win32 Constants/Enums
+        public const int KEY_TOGGLED = 0x1;
+        public const int KEY_PRESSED = 0x80;
 
         public const int WM_CLOSE = 0x10;
         public const int WM_DESTROY = 0x02;
@@ -30,13 +32,14 @@ namespace SuperPutty.Utils
 
         public const int 
             SC_MAXIMIZE = 0xF030,
-            SC_RESTORE = 0xF120;
+            SC_RESTORE = 0xF120,
+            SWP_NOZORDER = 0x0004;
 
         public const int
             ERROR_FILE_NOT_FOUND = 2,
             ERROR_ACCESS_DENIED = 5,
             GWL_STYLE = -16;
-            
+
         public const uint
             WH_KEYBOARD_LL = 0x000d,
             WH_MOUSE_LL = 0x000e,
@@ -44,7 +47,8 @@ namespace SuperPutty.Utils
             WS_BORDER = 0x00800000,
             WS_VSCROLL = 0x00200000,
             WS_THICKFRAME = 0x00040000,
-            WS_EX_APPWINDOW= 0x00040000,
+            WS_MAXIMIZE = 0x01000000,
+            WS_EX_APPWINDOW = 0x00040000,
             WS_EX_TOOLWINDOW = 0x00000080,
             WS_EX_NOACTIVATE = 0x08000000;
 
@@ -132,6 +136,19 @@ namespace SuperPutty.Utils
             /// <remarks>See SW_FORCEMINIMIZE</remarks>
             ForceMinimized = 11
         }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct WINDOWPLACEMENT
+        {
+            public int length;
+            public int flags;
+            public WindowShowStyle showCmd;
+            public System.Drawing.Point ptMinPosition;
+            public System.Drawing.Point ptMaxPosition;
+            public System.Drawing.Rectangle rcNormalPosition;
+            public System.Drawing.Rectangle rcDevice;
+        }
+
         #region Windows Messages Enum
         /// <summary>
         /// Windows Messages
@@ -1066,6 +1083,12 @@ namespace SuperPutty.Utils
         #endregion
 
         #region Pinvoke/Win32 Methods
+
+        [DllImport("user32.dll")]
+        public static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref WINDOWPLACEMENT lpwndpl);
+
+        [DllImport("user32.dll")]
+        public static extern short GetKeyState(int nVirtKey);
 
         [DllImport("user32.dll")]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);

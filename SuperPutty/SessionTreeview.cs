@@ -1008,7 +1008,14 @@ namespace SuperPutty
             switch (e.KeyCode)
             {
                 case Keys.Enter:
-                    this.ApplySearch(this.txtSearch.Text);
+                    if (SuperPuTTY.Settings.FilterSessionsOnChange)
+                    {
+                        treeView1.Focus();
+                    }
+                    else
+                    {
+                        this.ApplySearch(this.txtSearch.Text);
+                    }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;
@@ -1084,7 +1091,9 @@ namespace SuperPutty
             {
                 if (this.Mode == SearchMode.CaseInSensitive)
                 {
-                    return s.SessionName.ToLower().Contains(this.Filter.ToLower());
+                    return
+                        (s.SessionName.ToLower().Contains(this.Filter.ToLower())) ||
+                        (s.Host.ToLower().Contains(this.Filter.ToLower()));
                 }
                 else if (this.Mode == SearchMode.Regex)
                 {
@@ -1093,7 +1102,9 @@ namespace SuperPutty
                 else
                 {
                     // case sensitive
-                    return s.SessionName.Contains(this.Filter);
+                    return
+                        s.SessionName.Contains(this.Filter) ||
+                        s.Host.Contains(this.Filter);
                 }
             }
             public SearchMode Mode { get; set; }
@@ -1133,6 +1144,13 @@ namespace SuperPutty
             ExternalApplications.openFileZilla(session); 
         }
 
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            if (SuperPuTTY.Settings.FilterSessionsOnChange)
+            {
+                this.ApplySearch(this.txtSearch.Text);
+            }
+        }
     }
 
 }

@@ -67,6 +67,7 @@ namespace SuperPutty
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sessionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sessionDetailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.layoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
@@ -125,7 +126,6 @@ namespace SuperPutty
             this.notifyicon = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.exitSuperPuTTYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sessionDetailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -305,6 +305,14 @@ namespace SuperPutty
             this.sessionsToolStripMenuItem.Text = "&Sessions";
             this.sessionsToolStripMenuItem.Click += new System.EventHandler(this.sessionsToolStripMenuItem_Click);
             // 
+            // sessionDetailToolStripMenuItem
+            // 
+            this.sessionDetailToolStripMenuItem.Name = "sessionDetailToolStripMenuItem";
+            this.sessionDetailToolStripMenuItem.ShortcutKeyDisplayString = "";
+            this.sessionDetailToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.sessionDetailToolStripMenuItem.Text = "Session &Detail";
+            this.sessionDetailToolStripMenuItem.Click += new System.EventHandler(this.sessionDetailMenuItem_Click);
+            // 
             // layoutsToolStripMenuItem
             // 
             this.layoutsToolStripMenuItem.Name = "layoutsToolStripMenuItem";
@@ -409,34 +417,34 @@ namespace SuperPutty
             // puTTYConfigurationToolStripMenuItem
             // 
             this.puTTYConfigurationToolStripMenuItem.Name = "puTTYConfigurationToolStripMenuItem";
-            this.puTTYConfigurationToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
+            this.puTTYConfigurationToolStripMenuItem.Size = new System.Drawing.Size(273, 22);
             this.puTTYConfigurationToolStripMenuItem.Text = "&PuTTY Configuration";
             this.puTTYConfigurationToolStripMenuItem.Click += new System.EventHandler(this.puTTYConfigurationToolStripMenuItem_Click);
             // 
             // toolStripMenuItem11
             // 
             this.toolStripMenuItem11.Name = "toolStripMenuItem11";
-            this.toolStripMenuItem11.Size = new System.Drawing.Size(266, 6);
+            this.toolStripMenuItem11.Size = new System.Drawing.Size(270, 6);
             // 
             // toggleCommandMaskToolStripMenuItem
             // 
             this.toggleCommandMaskToolStripMenuItem.Name = "toggleCommandMaskToolStripMenuItem";
             this.toggleCommandMaskToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.D8)));
-            this.toggleCommandMaskToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
+            this.toggleCommandMaskToolStripMenuItem.Size = new System.Drawing.Size(273, 22);
             this.toggleCommandMaskToolStripMenuItem.Text = "Toggle &Command Mask";
             this.toggleCommandMaskToolStripMenuItem.Click += new System.EventHandler(this.toggleCommandMaskToolStripMenuItem_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(266, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(270, 6);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(273, 22);
             this.optionsToolStripMenuItem.Text = "&Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
@@ -501,7 +509,7 @@ namespace SuperPutty
             this.aboutSuperPuTTYToolStripMenuItem.Text = "&About SuperPuTTY";
             this.aboutSuperPuTTYToolStripMenuItem.Click += new System.EventHandler(this.aboutSuperPuttyToolStripMenuItem_Click);
             // 
-            // dockPanel1
+            // DockPanel
             // 
             this.DockPanel.DefaultFloatWindowSize = new System.Drawing.Size(800, 600);
             this.DockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -512,8 +520,8 @@ namespace SuperPutty
             this.DockPanel.Location = new System.Drawing.Point(0, 0);
             this.DockPanel.Name = "DockPanel";
             this.DockPanel.Size = new System.Drawing.Size(1008, 614);
-            dockPanelGradient1.EndColor = System.Drawing.Color.Black;
-            dockPanelGradient1.StartColor = System.Drawing.Color.Black;
+            dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
+            dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
             autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
             tabGradient1.EndColor = System.Drawing.SystemColors.Control;
             tabGradient1.StartColor = System.Drawing.SystemColors.Control;
@@ -522,8 +530,7 @@ namespace SuperPutty
             autoHideStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
             dockPanelSkin1.AutoHideStripSkin = autoHideStripSkin1;
             tabGradient2.EndColor = System.Drawing.SystemColors.ControlLightLight;
-            tabGradient2.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-            tabGradient2.StartColor = System.Drawing.Color.LightSteelBlue;
+            tabGradient2.StartColor = System.Drawing.SystemColors.ControlLightLight;
             tabGradient2.TextColor = System.Drawing.SystemColors.ControlText;
             dockPaneStripGradient1.ActiveTabGradient = tabGradient2;
             dockPanelGradient2.EndColor = System.Drawing.SystemColors.Control;
@@ -547,10 +554,10 @@ namespace SuperPutty
             dockPanelGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
             dockPanelGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
             dockPaneStripToolWindowGradient1.DockStripGradient = dockPanelGradient3;
-            tabGradient6.EndColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            tabGradient6.EndColor = System.Drawing.SystemColors.InactiveCaption;
             tabGradient6.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
             tabGradient6.StartColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            tabGradient6.TextColor = System.Drawing.SystemColors.ControlText;
+            tabGradient6.TextColor = System.Drawing.SystemColors.InactiveCaptionText;
             dockPaneStripToolWindowGradient1.InactiveCaptionGradient = tabGradient6;
             tabGradient7.EndColor = System.Drawing.Color.Transparent;
             tabGradient7.StartColor = System.Drawing.Color.Transparent;
@@ -558,7 +565,7 @@ namespace SuperPutty
             dockPaneStripToolWindowGradient1.InactiveTabGradient = tabGradient7;
             dockPaneStripSkin1.ToolWindowGradient = dockPaneStripToolWindowGradient1;
             dockPanelSkin1.DockPaneStripSkin = dockPaneStripSkin1;
-            //this.dockPanel1.Skin = dockPanelSkin1;
+            this.DockPanel.Skin = dockPanelSkin1;
             this.DockPanel.TabIndex = 3;
             this.DockPanel.ActiveDocumentChanged += new System.EventHandler(this.dockPanel1_ActiveDocumentChanged);
             // 
@@ -841,14 +848,6 @@ namespace SuperPutty
             this.exitSuperPuTTYToolStripMenuItem.Text = "Exit SuperPuTTY";
             this.exitSuperPuTTYToolStripMenuItem.Click += new System.EventHandler(this.exitSuperPuTTYToolStripMenuItem_Click);
             // 
-            // sessionDetailToolStripMenuItem
-            // 
-            this.sessionDetailToolStripMenuItem.Name = "sessionDetailToolStripMenuItem";
-            this.sessionDetailToolStripMenuItem.ShortcutKeyDisplayString = "";
-            this.sessionDetailToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.sessionDetailToolStripMenuItem.Text = "Session &Detail";
-            this.sessionDetailToolStripMenuItem.Click += new System.EventHandler(this.sessionDetailMenuItem_Click);
-            // 
             // frmSuperPutty
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -964,6 +963,7 @@ namespace SuperPutty
         private System.Windows.Forms.ToolStripMenuItem checkForUpdatesToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButtonRunScript;
         private System.Windows.Forms.ToolStripMenuItem sessionDetailToolStripMenuItem;
+        internal WeifenLuo.WinFormsUI.Docking.DockPanel DockPanel;
     }
 }
 

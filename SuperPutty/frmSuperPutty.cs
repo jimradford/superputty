@@ -49,8 +49,6 @@ namespace SuperPutty
 
         private static string XmlEditor = ConfigurationManager.AppSettings["SuperPuTTY.XmlEditor"];
 
-        internal DockPanel DockPanel { get; private set; }
-
         public ToolWindowDocument CurrentPanel { get; set; }
 
         private SingletonToolWindowHelper<SessionTreeview> sessions;
@@ -74,6 +72,7 @@ namespace SuperPutty
         bool isControlDown = false;
         bool isShiftDown = false;
         bool isAltDown = false;
+        bool isWinDown = false;
         int commandMRUIndex = -1;
 
         private readonly TabSwitcher tabSwitcher;
@@ -1236,15 +1235,16 @@ namespace SuperPutty
                 if (keys == Keys.LControlKey || keys == Keys.RControlKey) { isControlDown = isKeyDown; }
                 if (keys == Keys.LShiftKey || keys == Keys.RShiftKey) { isShiftDown = isKeyDown; }
                 if (keys == Keys.LMenu || keys == Keys.RMenu) { isAltDown = isKeyDown; }
+                if (keys == Keys.LWin || keys == Keys.RWin) { isWinDown = isKeyDown; }
 
                 if (Log.Logger.IsEnabledFor(Level.Trace))
                 {
-                    Log.DebugFormat("### KBHook: nCode={0}, wParam={1}, lParam={2} ({4,-4} - {3}) [{5}{6}{7}]",
+                    Log.DebugFormat("### KBHook: nCode={0}, wParam={1}, lParam={2} ({4,-4} - {3}) [{5}{6}{7}{8}]",
                         nCode, wParam, vkCode, keys, isKeyDown ? "Down" : "Up",
-                        isControlDown ? "Ctrl" : "", isAltDown ? "Alt" : "", isAltDown ? "Shift" : "");
+                        isControlDown ? "Ctrl" : "", isAltDown ? "Alt" : "", isAltDown ? "Shift" : "", isWinDown ? "Win" : "");
                 }
 
-                if (IsForegroundWindow(this))
+                if (IsForegroundWindow(true))
                 {
                     // SuperPutty or Putty is the window in front...
 
@@ -1322,6 +1322,34 @@ namespace SuperPutty
                     }
                 }
 
+                if (IsForegroundWindow(false))
+                {
+                    if (isKeyDown && isWinDown && (keys & Keys.Modifiers) == Keys.Shift && (keys & Keys.KeyCode) == Keys.Left)
+                    {
+                        ShiftWindow(-1);
+                        return (IntPtr)1;
+                    }
+                    if (isKeyDown && isWinDown && (keys & Keys.Modifiers) == Keys.Shift && (keys & Keys.KeyCode) == Keys.Right)
+                    {
+                        ShiftWindow(1);
+                        return (IntPtr)1;
+                    }
+                    if (isKeyDown && isWinDown && (keys & Keys.KeyCode) == Keys.Up)
+                    {
+                        WindowState = FormWindowState.Maximized;
+                        return (IntPtr)1;
+                    }
+                    if (isKeyDown && isWinDown && (keys & Keys.KeyCode) == Keys.Down)
+                    {
+                        WindowState = (WindowState == FormWindowState.Maximized) ? FormWindowState.Normal : FormWindowState.Minimized;
+                        return (IntPtr)1;
+                    }
+                    if (isKeyDown && (keys & Keys.Modifiers) == Keys.Alt && (keys & Keys.KeyCode) == Keys.F4)
+                    {
+                        Application.Exit();
+                        return (IntPtr)1;
+                    }
+                }
 
             }
 
@@ -1339,7 +1367,7 @@ namespace SuperPutty
 
         private IntPtr MHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0 && (wParam == (IntPtr)NativeMethods.WM.LBUTTONUP || wParam == (IntPtr)NativeMethods.WM.RBUTTONUP) && IsForegroundWindow(this))
+            if (nCode >= 0 && (wParam == (IntPtr)NativeMethods.WM.LBUTTONUP || wParam == (IntPtr)NativeMethods.WM.RBUTTONUP) && IsForegroundWindow(true))
             {
                 this.BringToFront();
                 //if (!Menu_IsMouseOver()) dockPanel.Focus();
@@ -1347,33 +1375,66 @@ namespace SuperPutty
             return NativeMethods.CallNextHookEx(mHookID, nCode, wParam, lParam);
         }
 
-        private static bool IsForegroundWindow(Form parent)
+        private bool FindChildControl(Control control, IntPtr hWnd)
+        {
+            if (control.Handle == hWnd)
+                return true;
+
+            ctlPuttyPanel p = control as ctlPuttyPanel;
+            if (p != null && p.AppPanel.AppWindowHandle == hWnd)
+                return true;
+
+            foreach (Control child in control.Controls)
+                if (FindChildControl(child, hWnd))
+                    return true;
+
+            return false;
+        }
+
+        private bool IsForegroundWindow(bool includeMainForm)
         {
             IntPtr fgWindow = NativeMethods.GetForegroundWindow();
-            if (parent.Handle == fgWindow) return true; // main form is FG
+            if (includeMainForm && this.Handle == fgWindow) return true; // main form is FG
+
+            if (FindChildControl(this.DockPanel, fgWindow))
+            {
+                return true;
+            }
+            foreach (FloatWindow fw in this.DockPanel.FloatWindows)
+            {
+                if (FindChildControl(fw, fgWindow))
+                {
+                    return true;
+                }
+            }
+            return false;
+
             //foreach (Form f in Application.OpenForms) { if (f.Handle == fgWindow) return true; }
-            List<IntPtr> result = new List<IntPtr>();
+            /*List<IntPtr> result = new List<IntPtr>();
             GCHandle listHandle = GCHandle.Alloc(result);
             try
             {
                 NativeMethods.EnumWindowProc childProc = new NativeMethods.EnumWindowProc(EnumWindow);
-                NativeMethods.EnumChildWindows(parent.Handle, childProc, GCHandle.ToIntPtr(listHandle));
+                NativeMethods.EnumChildWindows(this.Handle, childProc, GCHandle.ToIntPtr(listHandle));
             }
             finally
             {
                 if (listHandle.IsAllocated)
                     listHandle.Free();
             }
-            return result.Count > 0;
+            return result.Count > 0;*/
         }
-
-        private static bool EnumWindow(IntPtr handle, IntPtr pointer)
+        
+        /*private static bool EnumWindow(IntPtr handle, IntPtr pointer)
         {
             GCHandle gch = GCHandle.FromIntPtr(pointer);
+            StringBuilder sb = new StringBuilder(128);
+            NativeMethods.GetWindowText(handle, sb, 127);
+            Log.DebugFormat("Enumerated Window: {0} # {1}", handle, sb.ToString());
             List<IntPtr> list = gch.Target as List<IntPtr>;
             if (handle == NativeMethods.GetForegroundWindow()) list.Add(handle);
             if (list.Count == 0) return true; else return false;
-        }
+        }*/
 
         void UpdateShortcutsFromSettings()
         {
@@ -1773,6 +1834,41 @@ namespace SuperPutty
                         TrySendCommandsFromToolbar(new CommandData(line.TrimEnd('\n'), new KeyEventArgs(Keys.Enter)), !this.tbBtnMaskText.Checked);
                     }
                 }
+            }
+        }
+
+        private void ShiftWindow(int offset)
+        {
+            if (Screen.AllScreens.Length < 2)
+                return;
+
+            Screen currentScreen = Screen.FromControl(this);
+            List<Screen> orderedScreens = new List<Screen>(Screen.AllScreens);
+            orderedScreens.Sort((screen1, screen2) => (screen1.Bounds.Left < screen2.Bounds.Left) ? -1 : 1);
+
+            int nextScreenIndex = (orderedScreens.IndexOf(currentScreen) + offset + Screen.AllScreens.Length) % Screen.AllScreens.Length;
+            Screen nextScreen = orderedScreens[nextScreenIndex];
+
+            if (this.WindowState == FormWindowState.Maximized)
+            {
+                NativeMethods.SetWindowPos(this.Handle, 0,
+                    nextScreen.Bounds.X, nextScreen.Bounds.Y, nextScreen.Bounds.Width, nextScreen.Bounds.Height,
+                    NativeMethods.SWP_NOZORDER);
+            }
+            else
+            {
+                Rectangle newBounds = this.Bounds;
+                newBounds.X = Left - currentScreen.Bounds.Left + nextScreen.Bounds.Left;
+                newBounds.Y = Top - currentScreen.Bounds.Top + nextScreen.Bounds.Top;
+                if (newBounds.Width > nextScreen.Bounds.Width)
+                    newBounds.Width = nextScreen.Bounds.Width;
+                if (newBounds.Height > nextScreen.Bounds.Height)
+                    newBounds.Height = nextScreen.Bounds.Height;
+                if (newBounds.Right > nextScreen.Bounds.Right)
+                    newBounds.X = nextScreen.Bounds.Right - newBounds.Width;
+                if (newBounds.Top > nextScreen.Bounds.Bottom)
+                    newBounds.Y = nextScreen.Bounds.Bottom - newBounds.Height;
+                this.Bounds = newBounds;
             }
         }
     }

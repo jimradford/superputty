@@ -43,6 +43,8 @@
             this.connectInNewSuperPuTTYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.fileBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.winSCPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileZillaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripFolder = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.newSessionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -60,8 +62,6 @@
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
-            this.winSCPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fileZillaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripAddTreeItem.SuspendLayout();
             this.contextMenuStripFolder.SuspendLayout();
             this.panelSearch.SuspendLayout();
@@ -115,7 +115,7 @@
             this.fileZillaToolStripMenuItem});
             this.contextMenuStripAddTreeItem.Name = "contextMenuStripAddTreeItem";
             this.contextMenuStripAddTreeItem.ShowImageMargin = false;
-            this.contextMenuStripAddTreeItem.Size = new System.Drawing.Size(182, 258);
+            this.contextMenuStripAddTreeItem.Size = new System.Drawing.Size(182, 236);
             this.contextMenuStripAddTreeItem.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripAddTreeItem_Opening);
             // 
             // newSessionToolStripMenuItem
@@ -183,6 +183,20 @@
             this.fileBrowserToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.fileBrowserToolStripMenuItem.Text = "File Transfer";
             this.fileBrowserToolStripMenuItem.Click += new System.EventHandler(this.fileBrowserToolStripMenuItem_Click);
+            // 
+            // winSCPToolStripMenuItem
+            // 
+            this.winSCPToolStripMenuItem.Name = "winSCPToolStripMenuItem";
+            this.winSCPToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.winSCPToolStripMenuItem.Text = "WinSCP";
+            this.winSCPToolStripMenuItem.Click += new System.EventHandler(this.winSCPToolStripMenuItem_Click);
+            // 
+            // fileZillaToolStripMenuItem
+            // 
+            this.fileZillaToolStripMenuItem.Name = "fileZillaToolStripMenuItem";
+            this.fileZillaToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.fileZillaToolStripMenuItem.Text = "FileZilla";
+            this.fileZillaToolStripMenuItem.Click += new System.EventHandler(this.fileZillaToolStripMenuItem_Click);
             // 
             // contextMenuStripFolder
             // 
@@ -300,6 +314,7 @@
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(384, 19);
             this.txtSearch.TabIndex = 0;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
             // 
             // btnSearch
@@ -329,20 +344,6 @@
             this.btnClear.TabIndex = 2;
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
-            // winSCPToolStripMenuItem
-            // 
-            this.winSCPToolStripMenuItem.Name = "winSCPToolStripMenuItem";
-            this.winSCPToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.winSCPToolStripMenuItem.Text = "WinSCP";
-            this.winSCPToolStripMenuItem.Click += new System.EventHandler(this.winSCPToolStripMenuItem_Click);
-            // 
-            // fileZillaToolStripMenuItem
-            // 
-            this.fileZillaToolStripMenuItem.Name = "fileZillaToolStripMenuItem";
-            this.fileZillaToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.fileZillaToolStripMenuItem.Text = "FileZilla";
-            this.fileZillaToolStripMenuItem.Click += new System.EventHandler(this.fileZillaToolStripMenuItem_Click);
             // 
             // SessionTreeview
             // 
