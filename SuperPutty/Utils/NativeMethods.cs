@@ -30,15 +30,18 @@ namespace SuperPutty.Utils
             VK_CONTROL = 0x11,
             VK_SHIFT = 0x10;
 
-        public const int 
+        public const int
             SC_MAXIMIZE = 0xF030,
             SC_RESTORE = 0xF120,
-            SWP_NOZORDER = 0x0004;
+            SWP_NOZORDER = 0x0004,
+            SWP_ASYNCWINDOWPOS = 0x4000,
+            SWP_FRAMECHANGED = 0x0020;
 
         public const int
             ERROR_FILE_NOT_FOUND = 2,
             ERROR_ACCESS_DENIED = 5,
-            GWL_STYLE = -16;
+            GWL_STYLE = -16,
+            GWL_EXSTYLE = -20;
 
         public const uint
             WH_KEYBOARD_LL = 0x000d,
@@ -52,6 +55,9 @@ namespace SuperPutty.Utils
             WS_EX_TOOLWINDOW = 0x00000080,
             WS_EX_NOACTIVATE = 0x08000000;
 
+        public const uint
+            KEYEVENTF_EXTENDEDKEY = 0x0001,
+            KEYEVENTF_KEYUP = 0x0002;
 
         [Flags]
         public enum AnimateWindowFlags
@@ -1328,6 +1334,11 @@ namespace SuperPutty.Utils
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr GetParent(IntPtr hWnd);
 
+        [DllImport("user32.dll")]
+        public static extern uint WaitForInputIdle(IntPtr hProcess, uint dwMilliseconds);
+
+        [DllImport("user32.dll")]
+        public static extern uint MapVirtualKey(uint uCode, uint uMapType);
         #endregion
 
 
