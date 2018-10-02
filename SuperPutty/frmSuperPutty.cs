@@ -1222,6 +1222,8 @@ namespace SuperPutty
             }
         }
 
+        private IntPtr foregroundBeforeWinDown = IntPtr.Zero;
+
         // Intercept keyboard messages for Ctrl-F4 and Ctrl-Tab handling
         private IntPtr KBHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
@@ -1324,24 +1326,38 @@ namespace SuperPutty
 
                 if (IsForegroundWindow(false))
                 {
-                    if (isKeyDown && isWinDown && (keys & Keys.Modifiers) == Keys.Shift && (keys & Keys.KeyCode) == Keys.Left)
+                    if (isKeyDown && isWinDown && (keys & Keys.KeyCode) == Keys.Left)
                     {
-                        ShiftWindow(-1);
+                        if ((keys & Keys.Shift) == Keys.Shift)
+                        {
+                            ShiftWindow(-1);
+                        }
+                        else
+                        {
+                            SnapWindow(Keys.Left);
+                        }
                         return (IntPtr)1;
                     }
-                    if (isKeyDown && isWinDown && (keys & Keys.Modifiers) == Keys.Shift && (keys & Keys.KeyCode) == Keys.Right)
+                    if (isKeyDown && isWinDown && (keys & Keys.KeyCode) == Keys.Right)
                     {
-                        ShiftWindow(1);
+                        if ((keys & Keys.Shift) == Keys.Shift)
+                        {
+                            ShiftWindow(1);
+                        }
+                        else
+                        {
+                            SnapWindow(Keys.Right);
+                        }
                         return (IntPtr)1;
                     }
                     if (isKeyDown && isWinDown && (keys & Keys.KeyCode) == Keys.Up)
                     {
-                        WindowState = FormWindowState.Maximized;
+                        SnapWindow(Keys.Up);
                         return (IntPtr)1;
                     }
                     if (isKeyDown && isWinDown && (keys & Keys.KeyCode) == Keys.Down)
                     {
-                        WindowState = (WindowState == FormWindowState.Maximized) ? FormWindowState.Normal : FormWindowState.Minimized;
+                        SnapWindow(Keys.Down);
                         return (IntPtr)1;
                     }
                     if (isKeyDown && (keys & Keys.Modifiers) == Keys.Alt && (keys & Keys.KeyCode) == Keys.F4)
@@ -1837,8 +1853,26 @@ namespace SuperPutty
             }
         }
 
+        private void SnapWindow(Keys direction)
+        {
+            NativeMethods.SetForegroundWindow(this.Handle);
+
+            NativeMethods.keybd_event((byte)Keys.LWin, 0, 0, 0);
+            NativeMethods.keybd_event((byte)direction, 0, 0, 0);
+            NativeMethods.keybd_event((byte)direction, 0, NativeMethods.KEYEVENTF_KEYUP, 0);
+            NativeMethods.keybd_event((byte)Keys.LWin, 0, NativeMethods.KEYEVENTF_KEYUP, 0);
+        }
+
         private void ShiftWindow(int offset)
         {
+/*            Keys direction = (offset < 0) ? Keys.Left : Keys.Right;
+            NativeMethods.keybd_event((byte)Keys.LWin, 0, 0, 0);
+            NativeMethods.keybd_event((byte)Keys.ShiftKey, 0, 0, 0);
+            NativeMethods.keybd_event((byte)direction, 0, 0, 0);
+            NativeMethods.keybd_event((byte)direction, 0, NativeMethods.KEYEVENTF_KEYUP, 0);
+            NativeMethods.keybd_event((byte)Keys.ShiftKey, 0, NativeMethods.KEYEVENTF_KEYUP, 0);
+            NativeMethods.keybd_event((byte)Keys.LWin, 0, NativeMethods.KEYEVENTF_KEYUP, 0);
+*/
             if (Screen.AllScreens.Length < 2)
                 return;
 
@@ -1853,7 +1887,7 @@ namespace SuperPutty
             {
                 NativeMethods.SetWindowPos(this.Handle, 0,
                     nextScreen.Bounds.X, nextScreen.Bounds.Y, nextScreen.Bounds.Width, nextScreen.Bounds.Height,
-                    NativeMethods.SWP_NOZORDER);
+                    NativeMethods.SWP_NOZORDER | NativeMethods.SWP_ASYNCWINDOWPOS | NativeMethods.SWP_FRAMECHANGED);
             }
             else
             {
