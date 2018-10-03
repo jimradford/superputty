@@ -1,3 +1,5 @@
+1.4.0.9
+ - Fixes several bugs and feature updates since 1.4.0.8 See https://github.com/jimradford/superputty/compare/1.4.0.8...master for all 79 commits
 1.4.0.8
 - Fixes Issue #528 mintty (2.1.4) exiting and throwing exception due to default behavior change in mintty daemonize option.
 - Fixes Issue #546 Option Added to override and allow -pw <password> command line option to be sent. Defaults to not allow the -pw option.
