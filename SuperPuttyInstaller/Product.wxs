@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
-  <Product Id="*" Name="SuperPuTTY" Language="1033" Version="1.4.0.8" Manufacturer="Jim Radford" UpgradeCode="42567f59-2f27-4e5b-a900-9141dc2dd929">    
+  <Product Id="*" Name="SuperPuTTY" Language="1033" Version="1.4.0.9" Manufacturer="Jim Radford" UpgradeCode="42567f59-2f27-4e5b-a900-9141dc2dd929">    
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <Icon Id="ProductIcon" SourceFile="$(var.SuperPutty.ProjectDir)Apps-utilities-terminal.ico"/>
