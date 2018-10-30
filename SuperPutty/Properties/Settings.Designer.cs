@@ -790,5 +790,17 @@ namespace SuperPutty.Properties {
                 this["Action_RenameTab_Shortcut"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FilterSessionsOnChange {
+            get {
+                return ((bool)(this["FilterSessionsOnChange"]));
+            }
+            set {
+                this["FilterSessionsOnChange"] = value;
+            }
+        }
     }
 }

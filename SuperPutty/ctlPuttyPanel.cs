@@ -128,30 +128,38 @@ namespace SuperPutty
             }
         }
 
-        void CreateMenu()
+        private void InitNewSessionToolStripMenuItems()
         {
-            this.newSessionToolStripMenuItem.Enabled = SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu;
-            if (SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu)
+            List<ToolStripMenuItem> tsmi = new List<ToolStripMenuItem>();
+            foreach (SessionData session in SuperPuTTY.GetAllSessions())
             {
-                this.contextMenuStrip1.SuspendLayout();
-
-                // BBB: do i need to dispose each one?
-                newSessionToolStripMenuItem.DropDownItems.Clear();
-                foreach (SessionData session in SuperPuTTY.GetAllSessions())
+                ToolStripMenuItem tsmiParent = null;
+                foreach (string part in SessionData.GetSessionNameParts(session.SessionId))
                 {
-                    ToolStripMenuItem tsmiParent = newSessionToolStripMenuItem;
-                    foreach (string part in SessionData.GetSessionNameParts(session.SessionId))
+                    if (part == session.SessionName)
                     {
-                        if (part == session.SessionName)
+                        ToolStripMenuItem newSessionTSMI = new ToolStripMenuItem
                         {
-                            ToolStripMenuItem newSessionTSMI = new ToolStripMenuItem
-                            {
-                                Tag = session,
-                                Text = session.SessionName
-                            };
-                            newSessionTSMI.Click += new System.EventHandler(newSessionTSMI_Click);
-                            newSessionTSMI.ToolTipText = session.ToString();
+                            Tag = session,
+                            Text = session.SessionName
+                        };
+                        newSessionTSMI.Click += new System.EventHandler(newSessionTSMI_Click);
+                        newSessionTSMI.ToolTipText = session.ToString();
+                        if (tsmiParent == null)
+                            tsmi.Add(newSessionTSMI);
+                        else
                             tsmiParent.DropDownItems.Add(newSessionTSMI);
+                    }
+                    else
+                    {
+                        if (tsmiParent == null)
+                        {
+                            tsmiParent = tsmi.FirstOrDefault((item) => string.Equals(item.Name, part));
+                            if (tsmiParent == null)
+                            {
+                                tsmiParent = new ToolStripMenuItem(part) { Name = part };
+                                tsmi.Add(tsmiParent);
+                            }
                         }
                         else
                         {
@@ -161,14 +169,33 @@ namespace SuperPutty
                             }
                             else
                             {
-                                ToolStripMenuItem newSessionFolder = new ToolStripMenuItem(part) {Name = part};
+                                ToolStripMenuItem newSessionFolder = new ToolStripMenuItem(part) { Name = part };
                                 tsmiParent.DropDownItems.Add(newSessionFolder);
                                 tsmiParent = newSessionFolder;
                             }
                         }
                     }
                 }
-                this.contextMenuStrip1.ResumeLayout();
+            }
+
+            if (InvokeRequired)
+                Invoke(new Action(() => {
+                    if (newSessionToolStripMenuItem.DropDownItems.Count == 0)
+                        newSessionToolStripMenuItem.DropDownItems.AddRange(tsmi.ToArray());
+                }));
+            else
+                if (newSessionToolStripMenuItem.DropDownItems.Count == 0)
+                    newSessionToolStripMenuItem.DropDownItems.AddRange(tsmi.ToArray());
+        }
+
+        void CreateMenu()
+        {
+            this.newSessionToolStripMenuItem.Enabled = SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu;
+            if (SuperPuTTY.Settings.PuttyPanelShowNewSessionMenu)
+            {
+                newSessionToolStripMenuItem.DropDownItems.Clear();
+
+                new Thread(InitNewSessionToolStripMenuItems).Start();
             }
 
             DockPane pane = GetDockPane();
@@ -291,8 +318,8 @@ namespace SuperPutty
         {
             string str = String.Format("{0}?SessionId={1}&TabName={2}", 
                 this.GetType().FullName, 
-                HttpUtility.UrlEncodeUnicode(this.m_Session.SessionId), 
-                HttpUtility.UrlEncodeUnicode(this.TextOverride));
+                HttpUtility.UrlEncode(this.m_Session.SessionId), 
+                HttpUtility.UrlEncode(this.TextOverride));
             return str;
         }
 

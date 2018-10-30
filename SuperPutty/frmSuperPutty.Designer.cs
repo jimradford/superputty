@@ -421,7 +421,7 @@ namespace SuperPutty
             // toggleCommandMaskToolStripMenuItem
             // 
             this.toggleCommandMaskToolStripMenuItem.Name = "toggleCommandMaskToolStripMenuItem";
-            this.toggleCommandMaskToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            this.toggleCommandMaskToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
             | System.Windows.Forms.Keys.D8)));
             this.toggleCommandMaskToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
             this.toggleCommandMaskToolStripMenuItem.Text = "Toggle &Command Mask";
@@ -882,7 +882,7 @@ namespace SuperPutty
             this.ResumeLayout(false);
 
         }
-        
+
 
         #endregion
 
@@ -966,4 +966,3 @@ namespace SuperPutty
         private System.Windows.Forms.ToolStripMenuItem sessionDetailToolStripMenuItem;
     }
 }
-
