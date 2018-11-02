@@ -49,13 +49,11 @@ namespace SuperPutty
         private static int RefocusIntervalMs = Convert.ToInt32(ConfigurationManager.AppSettings["SuperPuTTY.RefocusIntervalMs"] ?? "80");
 
         private PuttyStartInfo m_puttyStartInfo;
-        private ApplicationPanel m_AppPanel;
-        private SessionData m_Session;
         private PuttyClosedCallback m_ApplicationExit;
 
         public ctlPuttyPanel(SessionData session, PuttyClosedCallback callback)
         {
-            m_Session = session;
+            Session = session;
             m_ApplicationExit = callback;
             m_puttyStartInfo = new PuttyStartInfo(session);
 
@@ -96,18 +94,18 @@ namespace SuperPutty
 
         private void CreatePanel()
         {
-            this.m_AppPanel = new ApplicationPanel();
+            this.AppPanel = new ApplicationPanel();
             this.SuspendLayout();            
-            this.m_AppPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.m_AppPanel.ApplicationName = this.m_puttyStartInfo.Executable;
-            this.m_AppPanel.ApplicationParameters = this.m_puttyStartInfo.Args;
-            this.m_AppPanel.ApplicationWorkingDirectory = this.m_puttyStartInfo.WorkingDir;
-            this.m_AppPanel.Location = new System.Drawing.Point(0, 0);
-            this.m_AppPanel.Name = this.m_Session.SessionId; // "applicationControl1";
-            this.m_AppPanel.Size = new System.Drawing.Size(this.Width, this.Height);
-            this.m_AppPanel.TabIndex = 0;            
-            this.m_AppPanel.m_CloseCallback = this.m_ApplicationExit;
-            this.Controls.Add(this.m_AppPanel);
+            this.AppPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.AppPanel.ApplicationName = this.m_puttyStartInfo.Executable;
+            this.AppPanel.ApplicationParameters = this.m_puttyStartInfo.Args;
+            this.AppPanel.ApplicationWorkingDirectory = this.m_puttyStartInfo.WorkingDir;
+            this.AppPanel.Location = new System.Drawing.Point(0, 0);
+            this.AppPanel.Name = this.Session.SessionId; // "applicationControl1";
+            this.AppPanel.Size = new System.Drawing.Size(this.Width, this.Height);
+            this.AppPanel.TabIndex = 0;            
+            this.AppPanel.m_CloseCallback = this.m_ApplicationExit;
+            this.Controls.Add(this.AppPanel);
 
             this.ResumeLayout();
         }
@@ -291,13 +289,13 @@ namespace SuperPutty
         /// </summary>
         internal void SetFocusToChildApplication(string caller)
         {
-            if (!this.m_AppPanel.ExternalProcessCaptured) { return; }
+            if (!this.AppPanel.ExternalProcessCaptured) { return; }
 
             bool success = false;
             for (int i = 0; i < RefocusAttempts; i++)
             {
                 Thread.Sleep(RefocusIntervalMs);
-                if (this.m_AppPanel.ReFocusPuTTY(caller))
+                if (this.AppPanel.ReFocusPuTTY(caller))
                 {
                     if (i > 0)
                     {
@@ -318,7 +316,7 @@ namespace SuperPutty
         {
             string str = String.Format("{0}?SessionId={1}&TabName={2}", 
                 this.GetType().FullName, 
-                HttpUtility.UrlEncode(this.m_Session.SessionId), 
+                HttpUtility.UrlEncode(this.Session.SessionId), 
                 HttpUtility.UrlEncode(this.TextOverride));
             return str;
         }
@@ -390,7 +388,7 @@ namespace SuperPutty
  
         private void duplicateSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SuperPuTTY.OpenPuttySession(this.m_Session);
+            SuperPuTTY.OpenPuttySession(this.Session);
         }
 
         private void renameTabToolStripMenuItem_Click(object sender, EventArgs e)
@@ -398,7 +396,7 @@ namespace SuperPutty
             dlgRenameItem dialog = new dlgRenameItem
             {
                 ItemName = this.Text,
-                DetailName = this.m_Session.SessionId
+                DetailName = this.Session.SessionId
             };
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
@@ -410,14 +408,14 @@ namespace SuperPutty
 
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.m_AppPanel != null)
+            if (this.AppPanel != null)
             {
-                this.m_AppPanel.RefreshAppWindow();
+                this.AppPanel.RefreshAppWindow();
             }
         }
 
-        public SessionData Session { get { return this.m_Session; } }
-        public ApplicationPanel AppPanel { get { return this.m_AppPanel; } }
+        public SessionData Session { get; }
+        public ApplicationPanel AppPanel { get; private set; }
         public ctlPuttyPanel previousPanel { get; set; }
         public ctlPuttyPanel nextPanel { get; set; }
 
@@ -454,7 +452,7 @@ namespace SuperPutty
                     this.SetFocusToChildApplication("MenuHandler");
                     for (int i = 0; i < commands.Length; ++i)
                     {
-                        NativeMethods.SendMessage(m_AppPanel.AppWindowHandle, (uint)NativeMethods.WM.SYSCOMMAND, commands[i], 0);
+                        NativeMethods.SendMessage(AppPanel.AppWindowHandle, (uint)NativeMethods.WM.SYSCOMMAND, commands[i], 0);
                     }
                 }
                 catch (Exception ex)

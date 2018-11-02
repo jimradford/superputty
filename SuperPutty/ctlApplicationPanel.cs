@@ -316,7 +316,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 {
                     if(!File.Exists(ApplicationName))
                     {
-                        MessageBox.Show("putty.exe not found in configured path, please go into tools->settings and set the correct path", "Application Not Found");
+                        MessageBox.Show(ApplicationName + " not found in configured path, please go into tools->settings and set the correct path", "Application Not Found");
                         return;
                     }
                     m_Process = new Process
@@ -328,7 +328,6 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                             Arguments = ApplicationParameters
                         }
                     };
-                    //m_Process.Exited += new EventHandler(p_Exited);
 
                     if (!string.IsNullOrEmpty(this.ApplicationWorkingDirectory) &&
                         Directory.Exists(this.ApplicationWorkingDirectory))
@@ -405,7 +404,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 }
                 
                 if(this.m_AppWin != IntPtr.Zero)
-                {                    
+                {
                     // Set the application as a child of the parent form
                     NativeMethods.SetParent(m_AppWin, this.Handle);
 
