@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperPutty", "SuperPutty\SuperPutty.csproj", "{E03FA8D9-555B-4AD6-A310-6A72B20024D1}"
 EndProject
@@ -11,6 +11,7 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "SuperPuttyInstaller", "Supe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{10996DCD-BC12-4C5F-9319-F608004C403B}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		License.rtf = License.rtf
 		License.txt = License.txt
 		README.txt = README.txt
@@ -60,5 +61,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {688536C0-91C1-4A94-850A-6D57B299E342}
 	EndGlobalSection
 EndGlobal

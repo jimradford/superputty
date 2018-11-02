@@ -8,3 +8,4 @@ SuperPuttyUnitTests/obj/*
 SuperPuttyInstaller/bin/
 SuperPuttyInstaller/obj/
 SuperPutty.v12.suo
+packages/*
