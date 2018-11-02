@@ -1,5 +1,17 @@
+TRUNK (current / unreleased) 
+ - New Features from Sebastian Gemeiner
+   * Win+Shift Handling (Multi Monitor Setup) 
+   * Supports docking (Aero snap) by simulating key events to main form
+   * Lazy loading for new session entries in context menu
+ - Updated Docking Library to v3.0.6, Updated log4net library to v2.0.8, Switched to using Nuget Packages for third party libraries. [Maintenance]
+ - Grammar correction in warning dialog when saving new sessions with a '-pw' parameter.
+
 1.4.0.9
  - Fixes several bugs and feature updates since 1.4.0.8 See https://github.com/jimradford/superputty/compare/1.4.0.8...master for all 79 commits
+ - New Features from @anishsane
+   * Add VNC viewer support for SuperPuTTY. (depends on external TightVNC Viewer)
+
+
 1.4.0.8
 - Fixes Issue #528 mintty (2.1.4) exiting and throwing exception due to default behavior change in mintty daemonize option.
 - Fixes Issue #546 Option Added to override and allow -pw <password> command line option to be sent. Defaults to not allow the -pw option.
