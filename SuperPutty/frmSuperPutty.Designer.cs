@@ -110,13 +110,17 @@ namespace SuperPutty
             this.tsConnect = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.tbComboProtocol = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabelSerialPort = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripComboBoxSerialPort = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripLabelSerialSpeed = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripComboBoxSerialSpeed = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripLabelHost = new System.Windows.Forms.ToolStripLabel();
             this.tbTxtBoxHost = new System.Windows.Forms.ToolStripTextBox();
-            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabelLogin = new System.Windows.Forms.ToolStripLabel();
             this.tbTxtBoxLogin = new System.Windows.Forms.ToolStripTextBox();
-            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabelPassword = new System.Windows.Forms.ToolStripLabel();
             this.tbTxtBoxPassword = new System.Windows.Forms.ToolStripTextBox();
-            this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabelSession = new System.Windows.Forms.ToolStripLabel();
             this.tbComboSession = new System.Windows.Forms.ToolStripComboBox();
             this.tbBtnConnect = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonClearFields = new System.Windows.Forms.ToolStripButton();
@@ -305,6 +309,14 @@ namespace SuperPutty
             this.sessionsToolStripMenuItem.Text = "&Sessions";
             this.sessionsToolStripMenuItem.Click += new System.EventHandler(this.sessionsToolStripMenuItem_Click);
             // 
+            // sessionDetailToolStripMenuItem
+            // 
+            this.sessionDetailToolStripMenuItem.Name = "sessionDetailToolStripMenuItem";
+            this.sessionDetailToolStripMenuItem.ShortcutKeyDisplayString = "";
+            this.sessionDetailToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.sessionDetailToolStripMenuItem.Text = "Session &Detail";
+            this.sessionDetailToolStripMenuItem.Click += new System.EventHandler(this.sessionDetailMenuItem_Click);
+            // 
             // layoutsToolStripMenuItem
             // 
             this.layoutsToolStripMenuItem.Name = "layoutsToolStripMenuItem";
@@ -421,7 +433,7 @@ namespace SuperPutty
             // toggleCommandMaskToolStripMenuItem
             // 
             this.toggleCommandMaskToolStripMenuItem.Name = "toggleCommandMaskToolStripMenuItem";
-            this.toggleCommandMaskToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.toggleCommandMaskToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.D8)));
             this.toggleCommandMaskToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
             this.toggleCommandMaskToolStripMenuItem.Text = "Toggle &Command Mask";
@@ -500,7 +512,7 @@ namespace SuperPutty
             this.aboutSuperPuTTYToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.aboutSuperPuTTYToolStripMenuItem.Text = "&About SuperPuTTY";
             this.aboutSuperPuTTYToolStripMenuItem.Click += new System.EventHandler(this.aboutSuperPuttyToolStripMenuItem_Click);
-            // 
+            //
             // dockPanel1
             // 
             this.DockPanel.DefaultFloatWindowSize = new System.Drawing.Size(800, 600);
@@ -705,13 +717,17 @@ namespace SuperPutty
             this.tsConnect.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel1,
             this.tbComboProtocol,
-            this.toolStripLabel2,
+            this.toolStripLabelHost,
             this.tbTxtBoxHost,
-            this.toolStripLabel3,
+            this.toolStripLabelSerialPort,
+            this.toolStripComboBoxSerialPort,
+            this.toolStripLabelSerialSpeed,
+            this.toolStripComboBoxSerialSpeed,
+            this.toolStripLabelLogin,
             this.tbTxtBoxLogin,
-            this.toolStripLabel4,
+            this.toolStripLabelPassword,
             this.tbTxtBoxPassword,
-            this.toolStripLabel5,
+            this.toolStripLabelSession,
             this.tbComboSession,
             this.tbBtnConnect,
             this.toolStripButtonClearFields});
@@ -739,11 +755,39 @@ namespace SuperPutty
             this.tbComboProtocol.Size = new System.Drawing.Size(70, 23);
             this.tbComboProtocol.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbItemConnect_KeyPress);
             // 
-            // toolStripLabel2
+            // toolStripLabelSerialPort
             // 
-            this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(32, 22);
-            this.toolStripLabel2.Text = "Host";
+            this.toolStripLabelSerialPort.Name = "toolStripLabelSerialPort";
+            this.toolStripLabelSerialPort.Size = new System.Drawing.Size(60, 24);
+            this.toolStripLabelSerialPort.Text = "Serial Port";
+            // 
+            // toolStripComboBoxSerialPort
+            // 
+            this.toolStripComboBoxSerialPort.AutoSize = false;
+            this.toolStripComboBoxSerialPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxSerialPort.DropDownWidth = 75;
+            this.toolStripComboBoxSerialPort.Name = "toolStripComboBoxSerialPort";
+            this.toolStripComboBoxSerialPort.Size = new System.Drawing.Size(70, 23);
+            // 
+            // toolStripLabelSerialSpeed
+            // 
+            this.toolStripLabelSerialSpeed.Name = "toolStripLabelSerialSpeed";
+            this.toolStripLabelSerialSpeed.Size = new System.Drawing.Size(60, 24);
+            this.toolStripLabelSerialSpeed.Text = "Speed";
+            // 
+            // toolStripComboBoxSerialSpeed
+            // 
+            this.toolStripComboBoxSerialSpeed.AutoSize = false;
+            this.toolStripComboBoxSerialSpeed.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxSerialSpeed.DropDownWidth = 75;
+            this.toolStripComboBoxSerialSpeed.Name = "toolStripComboBoxSerialSpeed";
+            this.toolStripComboBoxSerialSpeed.Size = new System.Drawing.Size(70, 23);
+            // 
+            // toolStripLabelHost
+            // 
+            this.toolStripLabelHost.Name = "toolStripLabelHost";
+            this.toolStripLabelHost.Size = new System.Drawing.Size(32, 24);
+            this.toolStripLabelHost.Text = "Host";
             // 
             // tbTxtBoxHost
             // 
@@ -751,11 +795,11 @@ namespace SuperPutty
             this.tbTxtBoxHost.Size = new System.Drawing.Size(180, 25);
             this.tbTxtBoxHost.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbItemConnect_KeyPress);
             // 
-            // toolStripLabel3
+            // toolStripLabelLogin
             // 
-            this.toolStripLabel3.Name = "toolStripLabel3";
-            this.toolStripLabel3.Size = new System.Drawing.Size(37, 22);
-            this.toolStripLabel3.Text = "Login";
+            this.toolStripLabelLogin.Name = "toolStripLabelLogin";
+            this.toolStripLabelLogin.Size = new System.Drawing.Size(37, 22);
+            this.toolStripLabelLogin.Text = "Login";
             // 
             // tbTxtBoxLogin
             // 
@@ -763,11 +807,11 @@ namespace SuperPutty
             this.tbTxtBoxLogin.Size = new System.Drawing.Size(100, 25);
             this.tbTxtBoxLogin.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbItemConnect_KeyPress);
             // 
-            // toolStripLabel4
+            // toolStripLabelPassword
             // 
-            this.toolStripLabel4.Name = "toolStripLabel4";
-            this.toolStripLabel4.Size = new System.Drawing.Size(57, 22);
-            this.toolStripLabel4.Text = "Password";
+            this.toolStripLabelPassword.Name = "toolStripLabelPassword";
+            this.toolStripLabelPassword.Size = new System.Drawing.Size(57, 22);
+            this.toolStripLabelPassword.Text = "Password";
             // 
             // tbTxtBoxPassword
             // 
@@ -775,11 +819,11 @@ namespace SuperPutty
             this.tbTxtBoxPassword.Size = new System.Drawing.Size(100, 25);
             this.tbTxtBoxPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbItemConnect_KeyPress);
             // 
-            // toolStripLabel5
+            // toolStripLabelSession
             // 
-            this.toolStripLabel5.Name = "toolStripLabel5";
-            this.toolStripLabel5.Size = new System.Drawing.Size(46, 22);
-            this.toolStripLabel5.Text = "Session";
+            this.toolStripLabelSession.Name = "toolStripLabelSession";
+            this.toolStripLabelSession.Size = new System.Drawing.Size(46, 22);
+            this.toolStripLabelSession.Text = "Session";
             // 
             // tbComboSession
             // 
@@ -840,7 +884,7 @@ namespace SuperPutty
             this.exitSuperPuTTYToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.exitSuperPuTTYToolStripMenuItem.Text = "Exit SuperPuTTY";
             this.exitSuperPuTTYToolStripMenuItem.Click += new System.EventHandler(this.exitSuperPuTTYToolStripMenuItem_Click);
-            // 
+            //
             // sessionDetailToolStripMenuItem
             // 
             this.sessionDetailToolStripMenuItem.Name = "sessionDetailToolStripMenuItem";
@@ -913,13 +957,13 @@ namespace SuperPutty
         private System.Windows.Forms.ToolStrip tsConnect;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripComboBox tbComboProtocol;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+        private System.Windows.Forms.ToolStripLabel toolStripLabelHost;
         private System.Windows.Forms.ToolStripTextBox tbTxtBoxHost;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel3;
+        private System.Windows.Forms.ToolStripLabel toolStripLabelLogin;
         private System.Windows.Forms.ToolStripTextBox tbTxtBoxLogin;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel4;
+        private System.Windows.Forms.ToolStripLabel toolStripLabelPassword;
         private System.Windows.Forms.ToolStripTextBox tbTxtBoxPassword;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel5;
+        private System.Windows.Forms.ToolStripLabel toolStripLabelSession;
         private System.Windows.Forms.ToolStripComboBox tbComboSession;
         private System.Windows.Forms.ToolStripButton tbBtnConnect;
         private System.Windows.Forms.ToolStrip tsCommands;
@@ -964,5 +1008,9 @@ namespace SuperPutty
         private System.Windows.Forms.ToolStripMenuItem checkForUpdatesToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButtonRunScript;
         private System.Windows.Forms.ToolStripMenuItem sessionDetailToolStripMenuItem;
+        private System.Windows.Forms.ToolStripLabel toolStripLabelSerialPort;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBoxSerialPort;
+        private System.Windows.Forms.ToolStripLabel toolStripLabelSerialSpeed;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBoxSerialSpeed;
     }
 }

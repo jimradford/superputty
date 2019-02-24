@@ -185,6 +185,31 @@ namespace SuperPutty
 
             this.DockPanel.ContentAdded += DockPanel_ContentAdded;
             this.DockPanel.ContentRemoved += DockPanel_ContentRemoved;
+
+            this.tbComboProtocol.SelectedIndexChanged += TbComboProtocol_SelectedIndexChanged;
+            this.toolStripComboBoxSerialPort.Items.Clear();
+            this.toolStripComboBoxSerialPort.Items.AddRange(System.IO.Ports.SerialPort.GetPortNames());
+            if (this.toolStripComboBoxSerialPort.Items.Count > 0)
+                this.toolStripComboBoxSerialPort.SelectedIndex = 0;
+            this.toolStripComboBoxSerialSpeed.Items.Clear();
+            this.toolStripComboBoxSerialSpeed.Items.AddRange(Utils.SerialConnectionOptions.BaudRates);
+            this.toolStripComboBoxSerialSpeed.SelectedItem = Utils.SerialConnectionOptions.DefaultBaudRate;
+            TbComboProtocol_SelectedIndexChanged();
+        }
+
+        private void TbComboProtocol_SelectedIndexChanged(object sender=null, EventArgs e=null)
+        {
+            // Whenever the protocol is updated, we need to update the edit controls on the
+            // toolbar.
+            bool SerialSelected = (tbComboProtocol.SelectedItem.ToString() == "Serial");
+            toolStripLabelSerialPort.Visible = SerialSelected;
+            toolStripLabelSerialSpeed.Visible = SerialSelected;
+            toolStripComboBoxSerialPort.Visible = SerialSelected;
+            toolStripComboBoxSerialSpeed.Visible = SerialSelected;
+            toolStripLabelLogin.Visible = !SerialSelected;
+            toolStripLabelPassword.Visible = !SerialSelected;
+            tbTxtBoxLogin.Visible = !SerialSelected;
+            tbTxtBoxPassword.Visible = !SerialSelected;
         }
 
         private void TsCommandHistory_ListChanged(object sender, ListChangedEventArgs e)
@@ -1907,5 +1932,6 @@ namespace SuperPutty
                 this.Bounds = newBounds;
             }
         }
+
     }
 }

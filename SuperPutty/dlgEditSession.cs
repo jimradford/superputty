@@ -122,6 +122,29 @@ namespace SuperPutty
                 : Session.ImageKey;
             this.toolTip.SetToolTip(this.buttonImageSelect, buttonImageSelect.ImageKey);
 
+            this.comboBoxSerialLine.Items.Clear();
+            this.comboBoxSerialLine.Items.AddRange(System.IO.Ports.SerialPort.GetPortNames());
+            if(this.comboBoxSerialLine.Items.Count > 0)
+                this.comboBoxSerialLine.SelectedIndex = 0;
+            this.comboBoxSerialSpeed.Items.Clear();
+            this.comboBoxSerialSpeed.Items.AddRange(Utils.SerialConnectionOptions.BaudRates);
+            this.comboBoxSerialSpeed.SelectedItem = Utils.SerialConnectionOptions.DefaultBaudRate;
+            this.comboBoxSerialDataBits.Items.Clear();
+            this.comboBoxSerialDataBits.Items.AddRange(Utils.SerialConnectionOptions.DataBits);
+            this.comboBoxSerialDataBits.SelectedItem = Utils.SerialConnectionOptions.DefaultDataBits;
+            this.comboBoxSerialStopBits.Items.Clear();
+            this.comboBoxSerialStopBits.Items.AddRange(Utils.SerialConnectionOptions.StopBits);
+            this.comboBoxSerialStopBits.SelectedItem = Utils.SerialConnectionOptions.DefaultStopBits;
+            this.comboBoxSerialParity.Items.Clear();
+            this.comboBoxSerialParity.Items.AddRange(Utils.SerialConnectionOptions.Parity);
+            this.comboBoxSerialParity.SelectedItem = Utils.SerialConnectionOptions.DefaultParity;
+            this.comboBoxSerialFlowCtrl.Items.Clear();
+            this.comboBoxSerialFlowCtrl.Items.AddRange(Utils.SerialConnectionOptions.FlowControl);
+            this.comboBoxSerialFlowCtrl.SelectedItem = Utils.SerialConnectionOptions.DefaultFlowControl;
+
+            // Update the selection options to show IP port or serial port options:
+            radioButtonSerial_CheckedChanged();
+
             this.isInitialized = true;
         }
 
@@ -458,5 +481,14 @@ namespace SuperPutty
            //if extra Args contains a password, change the backgroudn
            textBoxExtraArgs.BackColor = String.IsNullOrEmpty(CommandLineOptions.getcommand(textBoxExtraArgs.Text, "-pw")) ? Color.White : Color.LightCoral;
        }
+
+        private void radioButtonSerial_CheckedChanged(object sender=null, EventArgs e=null)
+        {
+            // Whenever the Serial option is selected/deselected, we will re-configure the GUI to show
+            // the appropriate options.
+            this.panelIpConnection.Visible = !radioButtonSerial.Checked;
+            this.panelSerialConnSettings.Visible = radioButtonSerial.Checked;
+
+        }
     }
 }

@@ -30,11 +30,11 @@ namespace SuperPutty
         {
             this.components = new System.ComponentModel.Container();
             this.textBoxSessionName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.labelSessionname = new System.Windows.Forms.Label();
+            this.labelHostName = new System.Windows.Forms.Label();
             this.textBoxHostname = new System.Windows.Forms.TextBox();
             this.textBoxPort = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.labelPort = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.radioButtonVNC = new System.Windows.Forms.RadioButton();
             this.radioButtonMintty = new System.Windows.Forms.RadioButton();
@@ -51,6 +51,20 @@ namespace SuperPutty
             this.label4 = new System.Windows.Forms.Label();
             this.comboBoxPuttyProfile = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.panelSerialConnSettings = new System.Windows.Forms.Panel();
+            this.labelSerialLine = new System.Windows.Forms.Label();
+            this.comboBoxSerialLine = new System.Windows.Forms.ComboBox();
+            this.labelSerialSpeed = new System.Windows.Forms.Label();
+            this.comboBoxSerialSpeed = new System.Windows.Forms.ComboBox();
+            this.labelSerialDataBits = new System.Windows.Forms.Label();
+            this.comboBoxSerialDataBits = new System.Windows.Forms.ComboBox();
+            this.labelSerialStopBits = new System.Windows.Forms.Label();
+            this.comboBoxSerialStopBits = new System.Windows.Forms.ComboBox();
+            this.labelSerialParity = new System.Windows.Forms.Label();
+            this.comboBoxSerialParity = new System.Windows.Forms.ComboBox();
+            this.labelSerialFlowControl = new System.Windows.Forms.Label();
+            this.comboBoxSerialFlowCtrl = new System.Windows.Forms.ComboBox();
+            this.panelIpConnection = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxUsername = new System.Windows.Forms.TextBox();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
@@ -70,6 +84,8 @@ namespace SuperPutty
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.panelSerialConnSettings.SuspendLayout();
+            this.panelIpConnection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.groupBoxFileTransferOptions.SuspendLayout();
             this.SuspendLayout();
@@ -85,40 +101,40 @@ namespace SuperPutty
             this.textBoxSessionName.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxSessionName_Validating);
             this.textBoxSessionName.Validated += new System.EventHandler(this.textBoxSessionName_Validated);
             // 
-            // label1
+            // labelSessionname
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(6, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(81, 15);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Session Name";
+            this.labelSessionname.AutoSize = true;
+            this.labelSessionname.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSessionname.Location = new System.Drawing.Point(6, 16);
+            this.labelSessionname.Name = "labelSessionname";
+            this.labelSessionname.Size = new System.Drawing.Size(81, 15);
+            this.labelSessionname.TabIndex = 1;
+            this.labelSessionname.Text = "Session Name";
             // 
-            // label2
+            // labelHostName
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(6, 56);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(147, 15);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Host Name (or IP Address)";
+            this.labelHostName.AutoSize = true;
+            this.labelHostName.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelHostName.Location = new System.Drawing.Point(6, 3);
+            this.labelHostName.Name = "labelHostName";
+            this.labelHostName.Size = new System.Drawing.Size(147, 15);
+            this.labelHostName.TabIndex = 2;
+            this.labelHostName.Text = "Host Name (or IP Address)";
             // 
             // textBoxHostname
             // 
             this.textBoxHostname.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxHostname.Location = new System.Drawing.Point(6, 74);
+            this.textBoxHostname.Location = new System.Drawing.Point(6, 24);
             this.textBoxHostname.Name = "textBoxHostname";
-            this.textBoxHostname.Size = new System.Drawing.Size(361, 20);
+            this.textBoxHostname.Size = new System.Drawing.Size(352, 20);
             this.textBoxHostname.TabIndex = 1;
             this.textBoxHostname.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxHostname_Validating);
             // 
             // textBoxPort
             // 
             this.textBoxPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPort.Location = new System.Drawing.Point(390, 74);
+            this.textBoxPort.Location = new System.Drawing.Point(381, 24);
             this.textBoxPort.Name = "textBoxPort";
             this.textBoxPort.Size = new System.Drawing.Size(80, 20);
             this.textBoxPort.TabIndex = 2;
@@ -126,16 +142,16 @@ namespace SuperPutty
             this.textBoxPort.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxPort_Validating);
             this.textBoxPort.Validated += new System.EventHandler(this.textBoxPort_Validated);
             // 
-            // label3
+            // labelPort
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(387, 56);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(53, 15);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "TCP Port";
+            this.labelPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelPort.AutoSize = true;
+            this.labelPort.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPort.Location = new System.Drawing.Point(378, 3);
+            this.labelPort.Name = "labelPort";
+            this.labelPort.Size = new System.Drawing.Size(53, 15);
+            this.labelPort.TabIndex = 5;
+            this.labelPort.Text = "TCP Port";
             // 
             // groupBox1
             // 
@@ -207,6 +223,7 @@ namespace SuperPutty
             this.radioButtonSerial.Tag = SuperPutty.Data.ConnectionProtocol.Serial;
             this.radioButtonSerial.Text = "Serial";
             this.radioButtonSerial.UseVisualStyleBackColor = true;
+            this.radioButtonSerial.CheckedChanged += new System.EventHandler(this.radioButtonSerial_CheckedChanged);
             // 
             // radioButtonSSH
             // 
@@ -332,17 +349,162 @@ namespace SuperPutty
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.panelSerialConnSettings);
+            this.groupBox2.Controls.Add(this.panelIpConnection);
+            this.groupBox2.Controls.Add(this.labelSessionname);
             this.groupBox2.Controls.Add(this.textBoxSessionName);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.textBoxHostname);
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.textBoxPort);
             this.groupBox2.Location = new System.Drawing.Point(14, 5);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(485, 109);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
+            // 
+            // panelSerialConnSettings
+            // 
+            this.panelSerialConnSettings.Controls.Add(this.labelSerialLine);
+            this.panelSerialConnSettings.Controls.Add(this.comboBoxSerialLine);
+            this.panelSerialConnSettings.Controls.Add(this.labelSerialSpeed);
+            this.panelSerialConnSettings.Controls.Add(this.comboBoxSerialSpeed);
+            this.panelSerialConnSettings.Controls.Add(this.labelSerialDataBits);
+            this.panelSerialConnSettings.Controls.Add(this.comboBoxSerialDataBits);
+            this.panelSerialConnSettings.Controls.Add(this.labelSerialStopBits);
+            this.panelSerialConnSettings.Controls.Add(this.comboBoxSerialStopBits);
+            this.panelSerialConnSettings.Controls.Add(this.labelSerialParity);
+            this.panelSerialConnSettings.Controls.Add(this.comboBoxSerialParity);
+            this.panelSerialConnSettings.Controls.Add(this.labelSerialFlowControl);
+            this.panelSerialConnSettings.Controls.Add(this.comboBoxSerialFlowCtrl);
+            this.panelSerialConnSettings.Location = new System.Drawing.Point(3, 56);
+            this.panelSerialConnSettings.Name = "panelSerialConnSettings";
+            this.panelSerialConnSettings.Size = new System.Drawing.Size(479, 53);
+            this.panelSerialConnSettings.TabIndex = 7;
+            // 
+            // labelSerialLine
+            // 
+            this.labelSerialLine.AutoSize = true;
+            this.labelSerialLine.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSerialLine.Location = new System.Drawing.Point(6, 3);
+            this.labelSerialLine.Name = "labelSerialLine";
+            this.labelSerialLine.Size = new System.Drawing.Size(60, 15);
+            this.labelSerialLine.TabIndex = 2;
+            this.labelSerialLine.Text = "Serial Line";
+            // 
+            // comboBoxSerialLine
+            // 
+            this.comboBoxSerialLine.FormattingEnabled = true;
+            this.comboBoxSerialLine.Location = new System.Drawing.Point(6, 24);
+            this.comboBoxSerialLine.Name = "comboBoxSerialLine";
+            this.comboBoxSerialLine.Size = new System.Drawing.Size(90, 21);
+            this.comboBoxSerialLine.TabIndex = 6;
+            // 
+            // labelSerialSpeed
+            // 
+            this.labelSerialSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelSerialSpeed.AutoSize = true;
+            this.labelSerialSpeed.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSerialSpeed.Location = new System.Drawing.Point(100, 6);
+            this.labelSerialSpeed.Name = "labelSerialSpeed";
+            this.labelSerialSpeed.Size = new System.Drawing.Size(39, 15);
+            this.labelSerialSpeed.TabIndex = 5;
+            this.labelSerialSpeed.Text = "Speed";
+            // 
+            // comboBoxSerialSpeed
+            // 
+            this.comboBoxSerialSpeed.FormattingEnabled = true;
+            this.comboBoxSerialSpeed.Location = new System.Drawing.Point(100, 24);
+            this.comboBoxSerialSpeed.Name = "comboBoxSerialSpeed";
+            this.comboBoxSerialSpeed.Size = new System.Drawing.Size(65, 21);
+            this.comboBoxSerialSpeed.TabIndex = 17;
+            // 
+            // labelSerialDataBits
+            // 
+            this.labelSerialDataBits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelSerialDataBits.AutoSize = true;
+            this.labelSerialDataBits.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSerialDataBits.Location = new System.Drawing.Point(170, 6);
+            this.labelSerialDataBits.Name = "labelSerialDataBits";
+            this.labelSerialDataBits.Size = new System.Drawing.Size(53, 15);
+            this.labelSerialDataBits.TabIndex = 7;
+            this.labelSerialDataBits.Text = "Data Bits";
+            // 
+            // comboBoxSerialDataBits
+            // 
+            this.comboBoxSerialDataBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSerialDataBits.FormattingEnabled = true;
+            this.comboBoxSerialDataBits.Location = new System.Drawing.Point(170, 24);
+            this.comboBoxSerialDataBits.Name = "comboBoxSerialDataBits";
+            this.comboBoxSerialDataBits.Size = new System.Drawing.Size(65, 21);
+            this.comboBoxSerialDataBits.TabIndex = 15;
+            // 
+            // labelSerialStopBits
+            // 
+            this.labelSerialStopBits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelSerialStopBits.AutoSize = true;
+            this.labelSerialStopBits.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSerialStopBits.Location = new System.Drawing.Point(240, 6);
+            this.labelSerialStopBits.Name = "labelSerialStopBits";
+            this.labelSerialStopBits.Size = new System.Drawing.Size(53, 15);
+            this.labelSerialStopBits.TabIndex = 8;
+            this.labelSerialStopBits.Text = "Stop Bits";
+            // 
+            // comboBoxSerialStopBits
+            // 
+            this.comboBoxSerialStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSerialStopBits.FormattingEnabled = true;
+            this.comboBoxSerialStopBits.Location = new System.Drawing.Point(240, 24);
+            this.comboBoxSerialStopBits.Name = "comboBoxSerialStopBits";
+            this.comboBoxSerialStopBits.Size = new System.Drawing.Size(65, 21);
+            this.comboBoxSerialStopBits.TabIndex = 16;
+            // 
+            // labelSerialParity
+            // 
+            this.labelSerialParity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelSerialParity.AutoSize = true;
+            this.labelSerialParity.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSerialParity.Location = new System.Drawing.Point(310, 6);
+            this.labelSerialParity.Name = "labelSerialParity";
+            this.labelSerialParity.Size = new System.Drawing.Size(37, 15);
+            this.labelSerialParity.TabIndex = 9;
+            this.labelSerialParity.Text = "Parity";
+            // 
+            // comboBoxSerialParity
+            // 
+            this.comboBoxSerialParity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSerialParity.FormattingEnabled = true;
+            this.comboBoxSerialParity.Location = new System.Drawing.Point(310, 24);
+            this.comboBoxSerialParity.Name = "comboBoxSerialParity";
+            this.comboBoxSerialParity.Size = new System.Drawing.Size(65, 21);
+            this.comboBoxSerialParity.TabIndex = 13;
+            // 
+            // labelSerialFlowControl
+            // 
+            this.labelSerialFlowControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelSerialFlowControl.AutoSize = true;
+            this.labelSerialFlowControl.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSerialFlowControl.Location = new System.Drawing.Point(380, 6);
+            this.labelSerialFlowControl.Name = "labelSerialFlowControl";
+            this.labelSerialFlowControl.Size = new System.Drawing.Size(75, 15);
+            this.labelSerialFlowControl.TabIndex = 10;
+            this.labelSerialFlowControl.Text = "Flow Control";
+            // 
+            // comboBoxSerialFlowCtrl
+            // 
+            this.comboBoxSerialFlowCtrl.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSerialFlowCtrl.FormattingEnabled = true;
+            this.comboBoxSerialFlowCtrl.Location = new System.Drawing.Point(380, 24);
+            this.comboBoxSerialFlowCtrl.Name = "comboBoxSerialFlowCtrl";
+            this.comboBoxSerialFlowCtrl.Size = new System.Drawing.Size(85, 21);
+            this.comboBoxSerialFlowCtrl.TabIndex = 14;
+            // 
+            // panelIpConnection
+            // 
+            this.panelIpConnection.Controls.Add(this.labelHostName);
+            this.panelIpConnection.Controls.Add(this.textBoxHostname);
+            this.panelIpConnection.Controls.Add(this.labelPort);
+            this.panelIpConnection.Controls.Add(this.textBoxPort);
+            this.panelIpConnection.Location = new System.Drawing.Point(6, 56);
+            this.panelIpConnection.Name = "panelIpConnection";
+            this.panelIpConnection.Size = new System.Drawing.Size(476, 53);
+            this.panelIpConnection.TabIndex = 6;
             // 
             // label5
             // 
@@ -523,6 +685,10 @@ namespace SuperPutty
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.panelSerialConnSettings.ResumeLayout(false);
+            this.panelSerialConnSettings.PerformLayout();
+            this.panelIpConnection.ResumeLayout(false);
+            this.panelIpConnection.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.groupBoxFileTransferOptions.ResumeLayout(false);
             this.groupBoxFileTransferOptions.PerformLayout();
@@ -534,11 +700,11 @@ namespace SuperPutty
         #endregion
 
         private System.Windows.Forms.TextBox textBoxSessionName;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label labelSessionname;
+        private System.Windows.Forms.Label labelHostName;
         private System.Windows.Forms.TextBox textBoxHostname;
         private System.Windows.Forms.TextBox textBoxPort;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label labelPort;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton radioButtonSerial;
         private System.Windows.Forms.RadioButton radioButtonSSH;
@@ -572,5 +738,19 @@ namespace SuperPutty
         private System.Windows.Forms.TextBox textBoxLocalPathSesion;
         private System.Windows.Forms.Label lbLocalPath;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.Panel panelIpConnection;
+        private System.Windows.Forms.Panel panelSerialConnSettings;
+        private System.Windows.Forms.Label labelSerialLine;
+        private System.Windows.Forms.Label labelSerialSpeed;
+        private System.Windows.Forms.ComboBox comboBoxSerialLine;
+        private System.Windows.Forms.Label labelSerialDataBits;
+        private System.Windows.Forms.Label labelSerialStopBits;
+        private System.Windows.Forms.Label labelSerialParity;
+        private System.Windows.Forms.Label labelSerialFlowControl;
+        private System.Windows.Forms.ComboBox comboBoxSerialSpeed;
+        private System.Windows.Forms.ComboBox comboBoxSerialDataBits;
+        private System.Windows.Forms.ComboBox comboBoxSerialStopBits;
+        private System.Windows.Forms.ComboBox comboBoxSerialParity;
+        private System.Windows.Forms.ComboBox comboBoxSerialFlowCtrl;
     }
 }

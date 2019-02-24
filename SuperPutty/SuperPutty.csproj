@@ -273,6 +273,7 @@
     <Compile Include="Utils\GlobalWindowEvents.cs" />
     <Compile Include="Utils\HostConnectionString.cs" />
     <Compile Include="Utils\MinttyStartInfo.cs" />
+    <Compile Include="Utils\SerialConnectionOptions.cs" />
     <Compile Include="Utils\VNCStartInfo.cs" />
     <Compile Include="Utils\NativeMethods.cs" />
     <Compile Include="Utils\PortableSettingsProvider.cs" />
