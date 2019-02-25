@@ -53,6 +53,11 @@ namespace SuperPutty.Utils
                 this.Args = vnc.Args;
                 this.WorkingDir = vnc.StartingDir;
             }
+            else if(session.Proto == ConnectionProtocol.Serial)
+            {
+                this.Args = MakeArgsSerial(session);
+                argsToLog = MakeArgsSerial(session);
+            }
             else
             {
                 this.Args = MakeArgs(session, true);
@@ -87,6 +92,36 @@ namespace SuperPutty.Utils
 
             return args;
         }
+
+
+        static string MakeArgsSerial(SessionData session)
+        {
+            string args = "-" + session.Proto.ToString().ToLower() + " ";
+
+            string sercfg = "-sercfg " + session.SerialSpeed.Trim();
+            if (!String.IsNullOrEmpty(session.SerialDataBits))
+                sercfg += "," + SerialConnectionOptions.DataBitsToPuttyCode(session.SerialDataBits);
+            if (!String.IsNullOrEmpty(session.SerialParity))
+                sercfg += "," + SerialConnectionOptions.ParityStrToPuttyCode(session.SerialParity);
+            if (!String.IsNullOrEmpty(session.SerialStopBits))
+                sercfg += "," + SerialConnectionOptions.StopBitsToPuttyCode(session.SerialStopBits);
+            if (!String.IsNullOrEmpty(session.SerialFlowControl))
+                sercfg += "," + SerialConnectionOptions.FlowControlToPuttyCode(session.SerialFlowControl);
+            args += sercfg;
+            args += " ";
+
+            args += !String.IsNullOrEmpty(session.PuttySession) ? "-load \"" + session.PuttySession + "\" " : "";
+            args += !String.IsNullOrEmpty(SuperPuTTY.Settings.PuttyDefaultParameters) ? SuperPuTTY.Settings.PuttyDefaultParameters + " " : "";
+
+            //If extra args contains the password, delete it (it's in session.password)
+            string extraArgs = CommandLineOptions.replacePassword(session.ExtraArgs, "");
+            args += !String.IsNullOrEmpty(extraArgs) ? extraArgs + " " : "";
+
+            args += session.SerialLine;
+
+            return args;
+        }
+
 
         static string TryParseEnvVars(string args)
         {

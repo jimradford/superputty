@@ -1026,6 +1026,8 @@ namespace SuperPutty
                     Password = this.tbTxtBoxPassword.Text,
                     PuttySession = (string)this.tbComboSession.SelectedItem
                 };
+                session.SerialLine = toolStripComboBoxSerialPort.SelectedItem.ToString();
+                session.SerialSpeed = toolStripComboBoxSerialSpeed.SelectedItem.ToString();
                 SuperPuTTY.OpenSession(new SessionDataStartInfo { Session = session, UseScp = isScp });
                 oldHostName = this.tbTxtBoxHost.Text;
                 RefreshConnectionToolbarData();

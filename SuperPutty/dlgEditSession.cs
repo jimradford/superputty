@@ -62,7 +62,6 @@ namespace SuperPutty
                 this.textBoxSPSLScriptFile.Text = Session.SPSLFileName;
                 this.textBoxRemotePathSesion.Text = Session.RemotePath;
                 this.textBoxLocalPathSesion.Text = Session.LocalPath;
-                InitializeSerialComboBoxes();
 
                 switch (Session.Proto)
                 {
@@ -115,6 +114,7 @@ namespace SuperPutty
                 this.buttonSave.Enabled = false;
             }
 
+            InitializeSerialComboBoxes();
 
             // Setup icon chooser
             this.buttonImageSelect.ImageList = iconList;
