@@ -186,14 +186,10 @@ namespace SuperPutty
             this.DockPanel.ContentAdded += DockPanel_ContentAdded;
             this.DockPanel.ContentRemoved += DockPanel_ContentRemoved;
 
+            SerialConnectionOptions.InitializeSerialPortCombo(toolStripComboBoxSerialPort);
+            SerialConnectionOptions.InitializeSerialSpeedCombo(toolStripComboBoxSerialSpeed);
+
             this.tbComboProtocol.SelectedIndexChanged += TbComboProtocol_SelectedIndexChanged;
-            this.toolStripComboBoxSerialPort.Items.Clear();
-            this.toolStripComboBoxSerialPort.Items.AddRange(System.IO.Ports.SerialPort.GetPortNames());
-            if (this.toolStripComboBoxSerialPort.Items.Count > 0)
-                this.toolStripComboBoxSerialPort.SelectedIndex = 0;
-            this.toolStripComboBoxSerialSpeed.Items.Clear();
-            this.toolStripComboBoxSerialSpeed.Items.AddRange(Utils.SerialConnectionOptions.BaudRates);
-            this.toolStripComboBoxSerialSpeed.SelectedItem = Utils.SerialConnectionOptions.DefaultBaudRate;
             TbComboProtocol_SelectedIndexChanged();
         }
 

@@ -227,6 +227,92 @@ namespace SuperPutty.Data
             }
         }
 
+        #region Serial Port Settings
+        private string _SerialLine;
+        [XmlAttribute]
+        [DisplayName("Serial Line")]
+        [Description("Serial port to use for the connection. Ex: COM3")]
+        public string SerialLine
+        {
+            get { return _SerialLine; }
+            set
+            {
+                UpdateField(ref _SerialLine, value, "SerialLine");
+            }
+        }
+
+
+        private string _SerialSpeed;
+        [XmlAttribute]
+        [DisplayName("Serial Port Speed")]
+        [Description("Baud rate of the serial port")]
+        public string SerialSpeed
+        {
+            get { return _SerialSpeed; }
+            set
+            {
+                UpdateField(ref _SerialSpeed, value, "SerialSpeed");
+            }
+
+        }
+
+        private string _SerialDataBits;
+        [XmlAttribute]
+        [DisplayName("Data bits")]
+        [Description("Number of data bits following the stop bit in the serial data stream")]
+        public string SerialDataBits
+        {
+            get { return _SerialDataBits; }
+            set
+            {
+                UpdateField(ref _SerialDataBits, value, "SerialDataBits");
+            }
+
+        }
+
+        private string _SerialStopBits;
+        [XmlAttribute]
+        [DisplayName("Serial Stop Bits")]
+        [Description("Period of time before the next start bit can begin transmission.")]
+        public string SerialStopBits
+        {
+            get { return _SerialStopBits; }
+            set
+            {
+                UpdateField(ref _SerialStopBits, value, "SerialStopBits");
+            }
+
+        }
+
+        private string _SerialParity;
+        [XmlAttribute]
+        [DisplayName("Serial Parity")]
+        [Description("Parity method used for error detection.")]
+        public string SerialParity
+        {
+            get { return _SerialParity; }
+            set
+            {
+                UpdateField(ref _SerialParity, value, "SerialParity");
+            }
+
+        }
+
+        private string _SerialFlowControl;
+        [XmlAttribute]
+        [DisplayName("Serial Flow Control")]
+        [Description("Software or Hardware flow control mechanism for the slow down the flow of bytes on a wire.")]
+        public string SerialFlowControl
+        {
+            get { return _SerialFlowControl; }
+            set
+            {
+                UpdateField(ref _SerialFlowControl, value, "SerialFlowControl");
+            }
+
+        }
+        #endregion
+
         private DockState m_LastDockstate = DockState.Document;
         [XmlIgnore]
         [Browsable(false)]
@@ -282,7 +368,7 @@ namespace SuperPutty.Data
         /// <param name="port">The port on the remote host</param>
         /// <param name="protocol">The protocol to use when connecting to the remote host</param>
         /// <param name="sessionConfig">the name of the saved configuration settings from putty to use</param>
-        public SessionData(string sessionName, string hostName, int port, ConnectionProtocol protocol, string sessionConfig)
+        public SessionData(string sessionName, string hostName, int port, ConnectionProtocol protocol, string sessionConfig) : this()
         {
             SessionName = sessionName;
             Host = hostName;
@@ -290,11 +376,16 @@ namespace SuperPutty.Data
             Proto = protocol;
             PuttySession = sessionConfig;
         }
-        
+
         /// <summary>Default constructor, instantiate a new <seealso cref="SessionData"/> object</summary>
         public SessionData()
         {
-
+            _SerialLine = "";
+            _SerialSpeed = "";
+            _SerialDataBits = "";
+            _SerialStopBits = "";
+            _SerialParity = "";
+            _SerialFlowControl = "";
         }
 
         private void UpdateField<T>(ref T Field, T NewValue, string PropertyName)

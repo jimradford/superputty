@@ -62,6 +62,7 @@ namespace SuperPutty
                 this.textBoxSPSLScriptFile.Text = Session.SPSLFileName;
                 this.textBoxRemotePathSesion.Text = Session.RemotePath;
                 this.textBoxLocalPathSesion.Text = Session.LocalPath;
+                InitializeSerialComboBoxes();
 
                 switch (Session.Proto)
                 {
@@ -122,25 +123,7 @@ namespace SuperPutty
                 : Session.ImageKey;
             this.toolTip.SetToolTip(this.buttonImageSelect, buttonImageSelect.ImageKey);
 
-            this.comboBoxSerialLine.Items.Clear();
-            this.comboBoxSerialLine.Items.AddRange(System.IO.Ports.SerialPort.GetPortNames());
-            if(this.comboBoxSerialLine.Items.Count > 0)
-                this.comboBoxSerialLine.SelectedIndex = 0;
-            this.comboBoxSerialSpeed.Items.Clear();
-            this.comboBoxSerialSpeed.Items.AddRange(Utils.SerialConnectionOptions.BaudRates);
-            this.comboBoxSerialSpeed.SelectedItem = Utils.SerialConnectionOptions.DefaultBaudRate;
-            this.comboBoxSerialDataBits.Items.Clear();
-            this.comboBoxSerialDataBits.Items.AddRange(Utils.SerialConnectionOptions.DataBits);
-            this.comboBoxSerialDataBits.SelectedItem = Utils.SerialConnectionOptions.DefaultDataBits;
-            this.comboBoxSerialStopBits.Items.Clear();
-            this.comboBoxSerialStopBits.Items.AddRange(Utils.SerialConnectionOptions.StopBits);
-            this.comboBoxSerialStopBits.SelectedItem = Utils.SerialConnectionOptions.DefaultStopBits;
-            this.comboBoxSerialParity.Items.Clear();
-            this.comboBoxSerialParity.Items.AddRange(Utils.SerialConnectionOptions.Parity);
-            this.comboBoxSerialParity.SelectedItem = Utils.SerialConnectionOptions.DefaultParity;
-            this.comboBoxSerialFlowCtrl.Items.Clear();
-            this.comboBoxSerialFlowCtrl.Items.AddRange(Utils.SerialConnectionOptions.FlowControl);
-            this.comboBoxSerialFlowCtrl.SelectedItem = Utils.SerialConnectionOptions.DefaultFlowControl;
+
 
             // Update the selection options to show IP port or serial port options:
             radioButtonSerial_CheckedChanged();
@@ -194,8 +177,14 @@ namespace SuperPutty
             Session.SessionId    = SessionData.CombineSessionIds(SessionData.GetSessionParentId(Session.SessionId), Session.SessionName);
             Session.ImageKey     = buttonImageSelect.ImageKey;
             Session.SPSLFileName = textBoxSPSLScriptFile.Text.Trim();
-            Session.RemotePath = textBoxRemotePathSesion.Text.Trim();
-            Session.LocalPath = textBoxLocalPathSesion.Text.Trim();
+            Session.RemotePath   = textBoxRemotePathSesion.Text.Trim();
+            Session.LocalPath    = textBoxLocalPathSesion.Text.Trim();
+            Session.SerialLine   = comboBoxSerialLine.Text.ToString();
+            Session.SerialSpeed  = comboBoxSerialSpeed.Text.ToString();
+            Session.SerialDataBits = comboBoxSerialDataBits.Text.ToString();
+            Session.SerialStopBits = comboBoxSerialStopBits.Text.ToString();
+            Session.SerialParity = comboBoxSerialParity.Text.ToString();
+            Session.SerialFlowControl = comboBoxSerialFlowCtrl.Text.ToString();
 
             for (int i = 0; i < groupBox1.Controls.Count; i++)
             {
@@ -489,6 +478,16 @@ namespace SuperPutty
             this.panelIpConnection.Visible = !radioButtonSerial.Checked;
             this.panelSerialConnSettings.Visible = radioButtonSerial.Checked;
 
+        }
+
+        private void InitializeSerialComboBoxes()
+        {
+            SerialConnectionOptions.InitializeSerialPortCombo(comboBoxSerialLine, Session.SerialLine);
+            SerialConnectionOptions.InitializeSerialSpeedCombo(comboBoxSerialSpeed, Session.SerialSpeed);
+            SerialConnectionOptions.InitializeSerialStopBitsCombo(comboBoxSerialStopBits, Session.SerialStopBits);
+            SerialConnectionOptions.InitializeSerialDataBitsCombo(comboBoxSerialDataBits, Session.SerialDataBits);
+            SerialConnectionOptions.InitializeSerialParityCombo(comboBoxSerialParity, Session.SerialParity);
+            SerialConnectionOptions.InitializeSerialFlowCtrlCombo(comboBoxSerialFlowCtrl, Session.SerialFlowControl);
         }
     }
 }
