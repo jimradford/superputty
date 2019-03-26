@@ -106,9 +106,7 @@ namespace SuperPutty.Utils
             set
             {
                 //Log.Info("Setting current doc: " + value);
-                this.currentDocument = value;
                 this.TabSwitchStrategy.SetCurrentTab(value);
-                this.IsSwitchingTabs = false;
             }
         }
 
@@ -144,13 +142,11 @@ namespace SuperPutty.Utils
 
         public bool MoveToNextDocument()
         {
-            this.IsSwitchingTabs = true;
             return this.TabSwitchStrategy.MoveToNextTab();
         }
 
         public bool MoveToPrevDocument()
         {
-            this.IsSwitchingTabs = true;
             return this.TabSwitchStrategy.MoveToPrevTab();
         }
 
@@ -171,7 +167,6 @@ namespace SuperPutty.Utils
 
         public ToolWindow ActiveDocument { get { return (ToolWindow)this.DockPanel.ActiveDocument; } }
         public DockPanel DockPanel { get; private set; }
-        public bool IsSwitchingTabs { get; set; }
 
         ITabSwitchStrategy tabSwitchStrategy;
         ToolWindow currentDocument;
@@ -308,6 +303,7 @@ namespace SuperPutty.Utils
         private static readonly ILog Log = LogManager.GetLogger(typeof(MRUTabSwitchStrategy));
 
         public string Description { get { return "MRU: Similar to Windows Alt-Tab"; } }
+        private bool IsSwitchingTabs = false;
 
         public void Initialize(DockPanel panel)
         {
@@ -325,14 +321,21 @@ namespace SuperPutty.Utils
             this.docs.Remove(oldTab);
         }
 
+        private void switchToTab(ToolWindow window)
+        {
+            IsSwitchingTabs = true;
+            window.Activate();
+            IsSwitchingTabs = false;
+        }
+
         public bool MoveToNextTab()
         {
             bool res = false;
             int idx = docs.IndexOf(this.DockPanel.ActiveDocument);
             if (idx != -1)
             {
-                ToolWindow winNext = (ToolWindow)docs[idx == docs.Count - 1 ? 0 : idx + 1];
-                winNext.Activate();
+                ToolWindow winNext = (ToolWindow)docs[idx == 0 ? docs.Count - 1 : idx - 1];
+                switchToTab(winNext);
                 res = true;
             }
             return res;
@@ -345,7 +348,7 @@ namespace SuperPutty.Utils
             if (idx != -1)
             {
                 ToolWindow winNext = (ToolWindow)docs[idx == docs.Count - 1 ? 0 : idx + 1];
-                winNext.Activate();
+                switchToTab(winNext);
                 res = true;
             }
             return res;
@@ -353,7 +356,10 @@ namespace SuperPutty.Utils
 
         public void SetCurrentTab(ToolWindow window)
         {
-            if (window != null)
+            // If we aren't using Ctrl-Tab to move between panels,
+            // i.e. we got here because the operator clicked on the
+            // panel directly, then record it as the current panel.           
+            if (!IsSwitchingTabs && window != null)
             {
                 if (this.docs.Contains(window))
                 {

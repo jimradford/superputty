@@ -319,13 +319,7 @@ namespace SuperPutty
                 ToolWindowDocument window = this.DockPanel.ActiveDocument as ToolWindowDocument;
                 if (window != null)
                 {
-                    // If we aren't using Ctrl-Tab to move between panels,
-                    // i.e. we got here because the operator clicked on the
-                    // panel directly, then record it as the current panel.
-                    if (!this.tabSwitcher.IsSwitchingTabs)
-                    {
-                        this.tabSwitcher.CurrentDocument = window;
-                    }
+                    this.tabSwitcher.CurrentDocument = window;
 
                     ctlPuttyPanel p = window as ctlPuttyPanel;
                     if (p != null)
