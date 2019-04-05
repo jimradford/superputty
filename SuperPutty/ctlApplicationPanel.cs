@@ -68,6 +68,9 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string ApplicationWorkingDirectory { get; set; }
 
         public IntPtr AppWindowHandle { get { return this.m_AppWin; } } 
+        
+        // Some windows need closed with WM_DESTROY others need closed with WM_CLOSE or they leave zombies
+        public bool ApplicationCloseWithDestroy { get; set; }
 
         #endregion
 
@@ -461,7 +464,11 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 // Send WM_DESTROY instead of WM_CLOSE, so that the Client doesn't
                 // ask in the Background whether the session shall be closed.
                 // Otherwise an annoying beep is generated everytime a terminal session is closed.
-                NativeMethods.PostMessage(m_AppWin, NativeMethods.WM_DESTROY, 0, 0);
+                if (this.ApplicationCloseWithDestroy) {
+                    NativeMethods.PostMessage(m_AppWin, NativeMethods.WM_DESTROY, 0, 0);
+                } else {
+                    NativeMethods.PostMessage(m_AppWin, NativeMethods.WM_CLOSE, 0, 0);
+                }
 
                 System.Threading.Thread.Sleep(ClosePuttyWaitTimeMs);
 
