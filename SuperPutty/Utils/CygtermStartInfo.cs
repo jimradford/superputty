@@ -39,8 +39,9 @@ namespace SuperPutty.Utils
             {
                 // login shell
                 // http://code.google.com/p/puttycyg/wiki/FAQ
-                this.Args = "-load \"" + session.PuttySession + "\" -cygterm -";
+                this.Args = "-load \"" + session.PuttySession + "\" -cygterm - ";
             }
+            this.Args += session.ExtraArgs;
         }
 
         public string Args { get; set; }

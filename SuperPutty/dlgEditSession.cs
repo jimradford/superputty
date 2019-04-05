@@ -196,7 +196,6 @@ namespace SuperPutty
             string host = this.textBoxHostname.Text;
             bool isLocalShell = this.radioButtonCygterm.Checked || this.radioButtonMintty.Checked;
             this.textBoxPort.Enabled = !isLocalShell;
-            this.textBoxExtraArgs.Enabled = !isLocalShell;
             this.textBoxUsername.Enabled = !isLocalShell;
 
             if (isLocalShell)

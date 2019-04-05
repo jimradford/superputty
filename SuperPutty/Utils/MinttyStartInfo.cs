@@ -41,6 +41,7 @@ namespace SuperPutty.Utils
         public MinttyStartInfo(SessionData session)
         {
             this.session = session;
+            this.Args = "--nodaemon ";
 
             // parse host args and starting dir
             Match m = Regex.Match(session.Host, LocalHost + ":(.*)");
@@ -55,15 +56,10 @@ namespace SuperPutty.Utils
             {
                 // start bash...will start in process start dir
                 // >mintty.exe /bin/env CHERE_INVOKING=1 /bin/bash -l
-                this.Args = "-o daemonize=false /bin/env CHERE_INVOKING=1 /bin/bash -l";
                 this.StartingDir = dir;
             }
-            else
-            {
-                // login shell
-                // http://code.google.com/p/puttycyg/wiki/FAQ
-                this.Args = "-o daemonize=false -";
-            }
+            // Handle any extra args
+            this.Args += session.ExtraArgs;
         }
 
         public string Args { get; set; }
