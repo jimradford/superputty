@@ -1,4 +1,6 @@
-﻿namespace SuperPutty
+﻿using System.Windows.Forms;
+
+namespace SuperPutty
 {
     partial class AboutBox1
     {
@@ -17,6 +19,17 @@
                 components.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        // Close "AboutBox1" when ESC is pressed.
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         #region Windows Form Designer generated code
@@ -51,6 +64,7 @@
             this.tabControl1.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.SuspendLayout();
+
             // 
             // logoPictureBox
             // 
