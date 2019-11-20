@@ -1115,7 +1115,7 @@ namespace SuperPutty
 
         private void tbBtnSendCommand_Click(object sender, EventArgs e)
         {
-            TrySendCommandsFromToolbar(!this.tbBtnMaskText.Checked);
+            TrySendCommandsFromToolbar(new CommandData(this.tsSendCommandCombo.Text, new KeyEventArgs(Keys.Enter)), !this.tbBtnMaskText.Checked);
         }
 
         private void toggleCommandMaskToolStripMenuItem_Click(object sender, EventArgs e)
