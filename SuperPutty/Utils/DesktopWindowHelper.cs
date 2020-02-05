@@ -30,41 +30,41 @@ namespace SuperPutty.Utils
         public static List<DesktopWindow> GetDesktopWindows()
         {
             var windows = new List<DesktopWindow>();
-            NativeMethods.EnumDelegate filter = delegate(IntPtr hWnd, int lParam)
-            {
-                StringBuilder strbTitle = new StringBuilder(255);
-                int nLength = NativeMethods.GetWindowText(hWnd, strbTitle, strbTitle.Capacity + 1);
-                string strTitle = strbTitle.ToString();
-
-                if (NativeMethods.IsWindowVisible(hWnd) && string.IsNullOrEmpty(strTitle) == false)
-                {
-                    uint pid;
-                    NativeMethods.GetWindowThreadProcessId(hWnd, out pid);
-
-                    try
-                    {
-                        Process process = Process.GetProcessById(Convert.ToInt32(pid));
-                        windows.Add(
-                            new DesktopWindow
-                            {
-                                Handle = hWnd,
-                                Title = strTitle,
-                                ProcessId = Convert.ToInt32(pid),
-                                Exe = GetProcessExe(process)
-                            });
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Log.WarnFormat("Process not found, ignoring. pid={0}, ex={0}", pid, ex.Message);                        
-                    }
-                }
-                return true;
-            };
-
-            if (!NativeMethods.EnumDesktopWindows(IntPtr.Zero, filter, IntPtr.Zero))
-            {
-                Log.Warn("Unable to enum desktop windows");
-            }
+            //NativeMethods.EnumDelegate filter = delegate(IntPtr hWnd, int lParam)
+            //{
+            //    StringBuilder strbTitle = new StringBuilder(255);
+            //    int nLength = NativeMethods.GetWindowText(hWnd, strbTitle, strbTitle.Capacity + 1);
+            //    string strTitle = strbTitle.ToString();
+            //
+            //    if (NativeMethods.IsWindowVisible(hWnd) && string.IsNullOrEmpty(strTitle) == false)
+            //    {
+            //        uint pid;
+            //        NativeMethods.GetWindowThreadProcessId(hWnd, out pid);
+            //
+            //        try
+            //        {
+            //            Process process = Process.GetProcessById(Convert.ToInt32(pid));
+            //            windows.Add(
+            //                new DesktopWindow
+            //                {
+            //                    Handle = hWnd,
+            //                    Title = strTitle,
+            //                    ProcessId = Convert.ToInt32(pid),
+            //                    Exe = GetProcessExe(process)
+            //                });
+            //        }
+            //        catch (ArgumentException ex)
+            //        {
+            //            Log.WarnFormat("Process not found, ignoring. pid={0}, ex={0}", pid, ex.Message);                        
+            //        }
+            //    }
+            //    return true;
+            //};
+            //
+            //if (!NativeMethods.EnumDesktopWindows(IntPtr.Zero, filter, IntPtr.Zero))
+            //{
+            //    Log.Warn("Unable to enum desktop windows");
+            //}
 
             return windows;
         }
