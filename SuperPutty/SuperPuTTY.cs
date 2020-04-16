@@ -602,6 +602,19 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>Import sessions from the specified folder into the in-application database</summary>
+        /// <param name="folderName">A string containing the path of the folder that holds session configuration files</param>
+        public static void ImportSessionsFromFolder(string folderName)
+        {
+            if (folderName == null) { return; }
+            if (Directory.Exists(folderName))
+            {
+                Log.InfoFormat("Importing sessions from folder, path={0}", folderName);
+                List<SessionData> sessions = SessionData.LoadSessionsFromFolder(folderName);
+                ImportSessions(sessions, "ImportedFromPortablePuTTY");
+            }
+        }
+
         /// <summary>Import sessions from Windows Registry which were set by PuTTY or KiTTY and load them into the in-application sessions database</summary>
         public static void ImportSessionsFromPuTTY()
         {

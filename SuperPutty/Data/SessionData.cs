@@ -32,6 +32,7 @@ using System.Reflection;
 using System.Drawing.Design;
 using System.Drawing;
 using SuperPutty.Utils;
+using System.Web;
 
 namespace SuperPutty.Data
 {
@@ -367,6 +368,56 @@ namespace SuperPutty.Data
             else
             {
                 Log.WarnFormat("Could not load sessions, file doesn't exist.  file={0}", fileName);
+            }
+            return sessions;
+        }
+
+        /// <summary>Load session configuration data from files located in a specified folder</summary>
+        /// <param name="folderName">The folder containing the settings files</param>
+        public static List<SessionData> LoadSessionsFromFolder(string folderName)
+        {
+            List<SessionData> sessions = new List<SessionData>();
+            if (Directory.Exists(folderName))
+            {
+				var sessionFiles = Directory.EnumerateFiles(folderName, "*");
+                foreach (string sessionFile in sessionFiles)
+                {
+                    string sessionName = HttpUtility.UrlDecode(Path.GetFileName(sessionFile));
+                    SessionData sessionData = new SessionData();
+                    Hashtable sessionInfoKv = new Hashtable();
+                    foreach (string cfgLine in File.ReadLines(sessionFile))
+                    {
+                        char[] sep = new char[] {'\\'};
+                        string[] cfgData = cfgLine.Split(sep, 2);
+                        if (cfgData.Length == 2)
+                            sessionInfoKv[cfgData[0]] = cfgData[1].TrimEnd(sep);
+                    }
+
+                    try
+                    {
+                        sessionData.Host = sessionInfoKv.ContainsKey("HostName") ? (string)sessionInfoKv["HostName"] : "";
+                        sessionData.Port = sessionInfoKv.ContainsKey("PortNumber") ? Int32.Parse((string)sessionInfoKv["PortNumber"]) : 22;
+                        sessionData.Proto = (ConnectionProtocol)Enum.Parse(typeof(ConnectionProtocol), sessionInfoKv.ContainsKey("Protocol") ? ((string)sessionInfoKv["Protocol"]).ToUpper() : "SSH");
+                        sessionData.PuttySession = sessionName;
+                        sessionData.SessionName = sessionName;
+                        sessionData.SessionId = sessionName;
+                        sessionData.Username = sessionInfoKv.ContainsKey("UserName") ? (string)sessionInfoKv["UserName"] : "";
+                        sessionData.LastDockstate = DockState.Document;
+                        sessionData.AutoStartSession = false;
+                        sessionData.RemotePath = "";
+                        sessionData.LocalPath = "";
+                        sessions.Add(sessionData);
+                    }
+                    catch (Exception exp)
+                    {
+                        Log.WarnFormat("Could not load session {0}", sessionName);
+                    }
+                }
+                Log.InfoFormat("Loaded {0} sessions from {1}", sessions.Count, folderName);
+            }
+            else
+            {
+                Log.WarnFormat("Could not load sessions, folder doesn't exist.  folder={0}", folderName);
             }
             return sessions;
         }

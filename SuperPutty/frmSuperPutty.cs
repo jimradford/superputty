@@ -405,6 +405,20 @@ namespace SuperPutty
             }
         }
 
+        private void fromPuTTYPortableSettingsToolStripMenuItem_Click(object sender, EventArgs e) /// //
+        {
+            FolderBrowserDialog openDialog = new FolderBrowserDialog
+            {
+                Description = "Select the portable 'Sessions' folder location",
+                ShowNewFolderButton = false,
+                RootFolder = Environment.SpecialFolder.MyComputer
+            };
+            if (openDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                SuperPuTTY.ImportSessionsFromFolder(openDialog.SelectedPath);
+            }
+        }
+
         private void openSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             QuickSelector q = new QuickSelector();
