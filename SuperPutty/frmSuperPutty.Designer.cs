@@ -52,6 +52,7 @@ namespace SuperPutty
             this.importSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fromPuTTYSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fromPuTTYPortableSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fromPuTTYCMExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
@@ -176,6 +177,7 @@ namespace SuperPutty
             this.importSettingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fromFileToolStripMenuItem,
             this.fromPuTTYSettingsToolStripMenuItem,
+            this.fromPuTTYPortableSettingsToolStripMenuItem,
             this.fromPuTTYCMExportToolStripMenuItem});
             this.importSettingsToolStripMenuItem.Name = "importSettingsToolStripMenuItem";
             this.importSettingsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
@@ -194,6 +196,13 @@ namespace SuperPutty
             this.fromPuTTYSettingsToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
             this.fromPuTTYSettingsToolStripMenuItem.Text = "From PuTTY &Settings";
             this.fromPuTTYSettingsToolStripMenuItem.Click += new System.EventHandler(this.fromPuTTYSettingsToolStripMenuItem_Click);
+            // 
+            // fromPuTTYPortableSettingsToolStripMenuItem
+            // 
+            this.fromPuTTYPortableSettingsToolStripMenuItem.Name = "fromPuTTYPortableSettingsToolStripMenuItem";
+            this.fromPuTTYPortableSettingsToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.fromPuTTYPortableSettingsToolStripMenuItem.Text = "From PuTTY &Portable Settings";
+            this.fromPuTTYPortableSettingsToolStripMenuItem.Click += new System.EventHandler(this.fromPuTTYPortableSettingsToolStripMenuItem_Click);
             // 
             // fromPuTTYCMExportToolStripMenuItem
             // 
@@ -937,6 +946,7 @@ namespace SuperPutty
         private System.Windows.Forms.ToolStripMenuItem reloadSessionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fromFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fromPuTTYSettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fromPuTTYPortableSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fromPuTTYCMExportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sessionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem layoutsToolStripMenuItem;
