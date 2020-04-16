@@ -416,7 +416,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
                     // set window parameters (how it's displayed)
                     long lStyle = NativeMethods.GetWindowLong(m_AppWin, NativeMethods.GWL_STYLE);
-                    lStyle &= ~(NativeMethods.WS_BORDER | NativeMethods.WS_THICKFRAME);
+                    lStyle &= ~NativeMethods.WS_BORDER;
                     NativeMethods.SetWindowLong(m_AppWin, NativeMethods.GWL_STYLE, lStyle);
                     NativeMethods.WinEventDelegate lpfnWinEventProc = new NativeMethods.WinEventDelegate(WinEventProc);
                     this.lpfnWinEventProcs.Add(lpfnWinEventProc);
