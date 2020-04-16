@@ -419,7 +419,7 @@ namespace SuperPutty
 
         private void buttonBrowsePscp_Click(object sender, EventArgs e)
         {
-            dialogBrowseExe("PScp|pscp.exe", "pscp.exe", textBoxPscpLocation);
+            dialogBrowseExe("PScp|pscp.exe;kscp.exe", "pscp.exe", textBoxPscpLocation);
         }
 
         private void btnBrowseMintty_Click(object sender, EventArgs e)
@@ -439,7 +439,7 @@ namespace SuperPutty
 
         private void btnBrowseVNC_Click(object sender, EventArgs e)
         {
-            dialogBrowseExe("tvnviewer|tvnviewer.exe", "tvnviewer.exe", textBoxVNCLocation);
+            dialogBrowseExe("tvnviewer|tvnviewer.exe;vncviewer.exe;vncviewer64.exe", "tvnviewer.exe", textBoxVNCLocation);
         }
 
         private void dialogBrowseExe(String filter, string filename, TextBox textbox)
