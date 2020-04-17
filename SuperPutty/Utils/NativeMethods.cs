@@ -34,8 +34,12 @@ namespace SuperPutty.Utils
             SC_MAXIMIZE = 0xF030,
             SC_RESTORE = 0xF120,
             SWP_NOZORDER = 0x0004,
+            SWP_NOOWNERZORDER = 0x0200,
             SWP_ASYNCWINDOWPOS = 0x4000,
-            SWP_FRAMECHANGED = 0x0020;
+            SWP_FRAMECHANGED = 0x0020,
+            SWP_NOMOVE = 0x0002,
+            SWP_NOSIZE = 0x0001,
+            SWP_NOACTIVATE = 0x0010;
 
         public const int
             ERROR_FILE_NOT_FOUND = 2,
@@ -48,12 +52,16 @@ namespace SuperPutty.Utils
             WH_MOUSE_LL = 0x000e,
             WS_CAPTION = 0x00C00000,
             WS_BORDER = 0x00800000,
+            WS_HSCROLL = 0x00100000,
             WS_VSCROLL = 0x00200000,
             WS_THICKFRAME = 0x00040000,
             WS_MAXIMIZE = 0x01000000,
+            WS_DLGFRAME = 0x00400000,
             WS_EX_APPWINDOW = 0x00040000,
             WS_EX_TOOLWINDOW = 0x00000080,
-            WS_EX_NOACTIVATE = 0x08000000;
+            WS_EX_NOACTIVATE = 0x08000000,
+            WS_CHILD = 0x40000000,
+            WS_VISIBLE = 0x10000000;
 
         public const uint
             KEYEVENTF_EXTENDEDKEY = 0x0001,
@@ -1329,7 +1337,7 @@ namespace SuperPutty.Utils
         public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
 
         [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
-        public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
+        public static extern IntPtr SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr GetParent(IntPtr hWnd);

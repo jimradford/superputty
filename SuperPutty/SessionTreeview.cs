@@ -296,7 +296,7 @@ namespace SuperPutty
             if (IsSessionNode(node) && node == treeView1.SelectedNode)
             {
                 SessionData sessionData = (SessionData)node.Tag;
-                SuperPuTTY.OpenPuttySession(sessionData);
+                SuperPuTTY.OpenProtoSession(sessionData);
             }
         }
 
@@ -612,7 +612,7 @@ namespace SuperPutty
                 }
                 foreach (SessionData session in sessions)
                 {
-                        SuperPuTTY.OpenPuttySession(session);
+                    SuperPuTTY.OpenProtoSession(session);
                 }
             }
         }

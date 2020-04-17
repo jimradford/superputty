@@ -422,14 +422,14 @@ namespace SuperPutty
 
         /// <summary>Retrieve a <seealso cref="SessionData"/> object and open a new putty window</summary>
         /// <param name="sessionId">A string containing the <seealso cref="SessionData.SessionId"/> of the session</param>
-        public static void OpenPuttySession(string sessionId)
+        public static void OpenProtoSession(string sessionId)
         {
-            OpenPuttySession(GetSessionById(sessionId));
+            OpenProtoSession(GetSessionById(sessionId));
         }
 
         /// <summary>Open a new putty window with its settings being passed in a <seealso cref="SessionData"/> object</summary>
         /// <param name="session">The <seealso cref="SessionData"/> object containing the settings</param>
-        public static ctlPuttyPanel OpenPuttySession(SessionData session)
+        public static ctlPuttyPanel OpenProtoSession(SessionData session)
         {
             Log.InfoFormat("Opening putty session, id={0}", session == null ? "" : session.SessionId);
             ctlPuttyPanel panel = null;
@@ -584,7 +584,7 @@ namespace SuperPutty
                 }
                 else
                 {
-                    SuperPuTTY.OpenPuttySession(ssi.Session);
+                    SuperPuTTY.OpenProtoSession(ssi.Session);
                 }
             }
         }
@@ -629,6 +629,14 @@ namespace SuperPutty
             Log.InfoFormat("Importing sessions from PuttyCM");
             List<SessionData> sessions = PuttyDataHelper.GetAllSessionsFromPuTTYCM(fileExport);
             ImportSessions(sessions, "ImportedFromPuTTYCM");
+        }
+
+        /// <summary>Import sessions from Windows Registry which were set by PuTTY or KiTTY and load them into the in-application sessions database</summary>
+        public static void ImportRDPSessionsFromWinReg()
+        {
+            Log.InfoFormat("Importing RDP sessions from Windows registry");
+            List<SessionData> sessions = RDPDataHelper.GetAllSessionsFromRegistry();
+            ImportSessions(sessions, "ImportRDPSessionsFromWinReg");
         }
 
         /// <summary>Import sessions from a from a List object into the specified folder</summary>

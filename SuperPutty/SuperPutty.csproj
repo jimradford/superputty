@@ -190,6 +190,7 @@
     </Compile>
     <Compile Include="Data\LayoutData.cs" />
     <Compile Include="Data\PuttyDataHelper.cs" />
+    <Compile Include="Data\RDPDataHelper.cs" />
     <Compile Include="Data\SessionData.cs" />
     <Compile Include="Data\SessionDataStartInfo.cs" />
     <Compile Include="DebugLogViewer.cs">
@@ -274,6 +275,8 @@
     <Compile Include="Utils\HostConnectionString.cs" />
     <Compile Include="Utils\MinttyStartInfo.cs" />
     <Compile Include="Utils\VNCStartInfo.cs" />
+    <Compile Include="Utils\RDPStartInfo.cs" />
+    <Compile Include="Utils\WCMDStartInfo.cs" />
     <Compile Include="Utils\NativeMethods.cs" />
     <Compile Include="Utils\PortableSettingsProvider.cs" />
     <Compile Include="Utils\PropertyNotifiableObject.cs" />
