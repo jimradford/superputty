@@ -266,7 +266,7 @@ namespace SuperPutty
             }
 
             // save layout for auto-restore
-            if (SuperPuTTY.Settings.DefaultLayoutName == LayoutData.AutoRestore)
+            if (SuperPuTTY.Settings.DefaultLayoutName == LayoutData.AutoRestore && e.CloseReason != CloseReason.TaskManagerClosing && e.CloseReason != CloseReason.WindowsShutDown)
             {
                 SaveLayout(SuperPuTTY.AutoRestoreLayoutPath, "Saving auto-restore layout");
             }
