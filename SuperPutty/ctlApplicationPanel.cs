@@ -159,6 +159,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 //Log.InfoFormat("[{0}] ReFocusPuTTY - puttyTab={1}, caller={2}", this.m_AppWin, this.Parent.Text, caller);
                 settingForeground = true;
                 result = NativeMethods.SetForegroundWindow(this.m_AppWin);
+                if (result)
+                    NativeMethods.InvalidateRect(this.m_AppWin, IntPtr.Zero, false);
                 Log.InfoFormat("[{0}] ReFocusPuTTY - puttyTab={1}, caller={2}, result={3}", this.m_AppWin, this.Parent.Text, caller, result);
             }
             //return (this.m_AppWin != null
