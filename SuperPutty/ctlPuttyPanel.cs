@@ -415,7 +415,7 @@ namespace SuperPutty
             }
         }
 
-        public SessionData Session { get; }
+        public SessionData Session { get; set; }
         public ApplicationPanel AppPanel { get; private set; }
         public ctlPuttyPanel previousPanel { get; set; }
         public ctlPuttyPanel nextPanel { get; set; }
