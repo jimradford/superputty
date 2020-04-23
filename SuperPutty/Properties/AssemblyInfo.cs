@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SuperPuTTY")]
 [assembly: AssemblyDescription("PuTTY Window Manager")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("http://www.jimradford.com/")]
+[assembly: AssemblyCompany("https://www.jimradford.com/")]
 [assembly: AssemblyProduct("SuperPuTTY")]
-[assembly: AssemblyCopyright("Copyright © 2009 - 2018 Jim Radford")]
+[assembly: AssemblyCopyright("Copyright © 2009 - 2020 Jim Radford")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.4.0.9")]
-[assembly: AssemblyFileVersion("1.4.0.9")]
+[assembly: AssemblyVersion("1.4.0.10")]
+[assembly: AssemblyFileVersion("1.4.0.10")]
