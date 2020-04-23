@@ -144,6 +144,7 @@
         <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\tux.png" />
         <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\webcam.png" />
         <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\world.png" />
+        <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\puffy.png" />
       </Component>
     </ComponentGroup>
   </Fragment>

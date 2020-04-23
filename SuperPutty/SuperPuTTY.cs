@@ -62,7 +62,8 @@ namespace SuperPutty
                 "Initializing.  Version={0}, UserSettings={1}, SettingsFolder={2}", 
                 Version, Settings.SettingsFilePath, Settings.SettingsFolder);
 
-            Images = LoadImageList("default");
+            Images = LoadImageList("default", false);
+            ImagesWithStop = LoadImageList("default", true);
 
             if (!SuperPuTTY.IsFirstRun)
             {
@@ -706,10 +707,13 @@ namespace SuperPutty
 
         /// <summary>Load Images from themes folder</summary>
         /// <param name="theme">the name of the theme folder</param>
-        public static ImageList LoadImageList(string theme)
+        /// <param name="isEnableStopImage">enable special stop image</param>
+        public static ImageList LoadImageList(string theme, bool isEnableStopImage)
         {
             ImageList imgIcons = new ImageList();
-
+            
+            if (isEnableStopImage)
+                imgIcons.Images.Add("stop", SuperPutty.Properties.Resources.stop);
             // Load the 2 standard icons in case no icons exist in icons directory, these will be used.
             imgIcons.Images.Add(SessionTreeview.ImageKeyFolder, SuperPutty.Properties.Resources.folder);
             imgIcons.Images.Add(SessionTreeview.ImageKeySession, SuperPutty.Properties.Resources.computer);
@@ -816,6 +820,7 @@ namespace SuperPutty
         public static BindingList<SessionData> Sessions { get { return sessionsList; } }
         public static CommandLineOptions CommandLine { get; private set; }
         public static ImageList Images { get; private set; }
+        public static ImageList ImagesWithStop { get; private set; }
         public static GlobalWindowEvents WindowEvents { get; private set; }
 
         /// <summary>true of KiTTY is being used instead of putty</summary>

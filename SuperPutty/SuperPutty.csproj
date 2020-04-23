@@ -476,6 +476,7 @@
     <None Include="Resources\computer.png" />
     <None Include="Resources\tick.png" />
     <None Include="Resources\server_go.png" />
+    <None Include="Resources\stop.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

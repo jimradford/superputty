@@ -82,6 +82,8 @@ namespace SuperPutty
 
         private Dictionary<Keys, SuperPuttyAction> shortcuts = new Dictionary<Keys, SuperPuttyAction>();
 
+        private ImageListPopup imgPopup = null;
+
         /// <summary>A collection containing send command history</summary>
         private SortableBindingList<HistoryEntry> tsCommandHistory = new SortableBindingList<HistoryEntry>();
 
@@ -185,6 +187,9 @@ namespace SuperPutty
 
             this.DockPanel.ContentAdded += DockPanel_ContentAdded;
             this.DockPanel.ContentRemoved += DockPanel_ContentRemoved;
+
+            this.tsCommands.ImageList = SuperPuTTY.ImagesWithStop;
+            this.toolStripButtonChooseIconGroup.ImageKey = "stop";
         }
 
         private void TsCommandHistory_ListChanged(object sender, ListChangedEventArgs e)
@@ -1186,6 +1191,10 @@ namespace SuperPutty
                     if (doc is ctlPuttyPanel)
                     {
                         ctlPuttyPanel panel = doc as ctlPuttyPanel;
+                        if (this.toolStripButtonChooseIconGroup.ImageKey != "" && this.toolStripButtonChooseIconGroup.ImageKey != "stop" && (panel.Session.ImageKey == "" || panel.Session.ImageKey != this.toolStripButtonChooseIconGroup.ImageKey))
+                        {
+                            continue;
+                        }
                         if (this.sendCommandsDocumentSelector.IsDocumentSelected(panel))
                         {
                             System.IntPtr hPtr = panel.AppPanel.AppWindowHandle;
@@ -1874,6 +1883,46 @@ namespace SuperPutty
                 }
             }
         }
+
+        #region Icon
+
+        /// <summary>Open an icon selector which allows to force sending only to connections using the same icon.</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripButtonChooseIconGroup_Click(object sender, EventArgs e)
+        {            
+            if (this.imgPopup == null)
+            {
+                // TODO: ImageList is null on initial installation and will throw a nullreference exception when creating a new session and trying to select an image.
+
+                int n = tsCommands.ImageList.Images.Count;
+                int x = (int) Math.Floor(Math.Sqrt(n)) + 1;
+                int cols = x;
+                int rows = x;
+
+                imgPopup = new ImageListPopup
+                {
+                    BackgroundColor = Color.FromArgb(241, 241, 241),
+                    BackgroundOverColor = Color.FromArgb(102, 154, 204)
+                };
+                imgPopup.Init(this.tsCommands.ImageList, 8, 8, cols, rows);
+                imgPopup.ItemClick += new ImageListPopupEventHandler(this.OnIconFilterClicked);
+            }
+
+            Point pt = PointToScreen(new Point(this.toolStripButtonChooseIconGroup.Bounds.Left, this.toolStripButtonChooseIconGroup.Bounds.Bottom));
+            imgPopup.Show(pt.X + 2, pt.Y);       
+        }
+
+        private void OnIconFilterClicked(object sender, ImageListPopupEventArgs e)
+        {
+            if (imgPopup == sender)
+            {
+                toolStripButtonChooseIconGroup.ImageKey = e.SelectedItem;
+                Log.Info("Changed icon filter to: " + this.toolStripButtonChooseIconGroup.ImageKey);
+            }
+        } 
+
+        #endregion
 
         private void SnapWindow(Keys direction)
         {

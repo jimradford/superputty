@@ -109,6 +109,7 @@ namespace SuperPutty
             this.toolStripButtonRunScript = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparatorSendCommands = new System.Windows.Forms.ToolStripSeparator();
             this.tbBtnSelectDocs = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonChooseIconGroup = new System.Windows.Forms.ToolStripButton();
             this.tsConnect = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.tbComboProtocol = new System.Windows.Forms.ToolStripComboBox();
@@ -647,7 +648,8 @@ namespace SuperPutty
             this.tbBtnMaskText,
             this.toolStripButtonRunScript,
             this.toolStripSeparatorSendCommands,
-            this.tbBtnSelectDocs});
+            this.tbBtnSelectDocs,
+            this.toolStripButtonChooseIconGroup});
             this.tsCommands.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.tsCommands.Location = new System.Drawing.Point(0, 24);
             this.tsCommands.Name = "tsCommands";
@@ -716,6 +718,17 @@ namespace SuperPutty
             this.tbBtnSelectDocs.Size = new System.Drawing.Size(23, 22);
             this.tbBtnSelectDocs.Text = "Select Documents";
             this.tbBtnSelectDocs.Click += new System.EventHandler(this.tsBtnSelectDocs_Click);
+            // 
+            // toolStripButtonChooseIconGroup
+            // 
+            this.toolStripButtonChooseIconGroup.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonChooseIconGroup.Image = global::SuperPutty.Properties.Resources.stop;
+            this.toolStripButtonChooseIconGroup.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonChooseIconGroup.Name = "toolStripButtonRunScript";
+            this.toolStripButtonChooseIconGroup.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonChooseIconGroup.Text = "toolStripButtonScript";
+            this.toolStripButtonChooseIconGroup.ToolTipText = "Select target icon-group";
+            this.toolStripButtonChooseIconGroup.Click += new System.EventHandler(this.toolStripButtonChooseIconGroup_Click);
             // 
             // tsConnect
             // 
@@ -969,6 +982,7 @@ namespace SuperPutty
         private System.Windows.Forms.ToolStripButton tbBtnMaskText;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparatorSendCommands;
         private System.Windows.Forms.ToolStripButton tbBtnSelectDocs;
+        private System.Windows.Forms.ToolStripButton toolStripButtonChooseIconGroup;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem9;
         private System.Windows.Forms.ToolStripMenuItem fullScreenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem diagnosticsToolStripMenuItem;
