@@ -410,7 +410,7 @@ namespace SuperPutty
             }
         }
 
-        private void fromPuTTYPortableSettingsToolStripMenuItem_Click(object sender, EventArgs e) /// //
+        private void fromPuTTYPortableSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog openDialog = new FolderBrowserDialog
             {
@@ -421,6 +421,18 @@ namespace SuperPutty
             if (openDialog.ShowDialog(this) == DialogResult.OK)
             {
                 SuperPuTTY.ImportSessionsFromFolder(openDialog.SelectedPath);
+            }
+        }
+
+        private void fromWinRDPRegToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult res = MessageBox.Show(
+                "Do you want to copy all RDP sessions from registry cache?  Duplicates may be created.",
+                "SuperPuTTY",
+                MessageBoxButtons.YesNo);
+            if (res == DialogResult.Yes)
+            {
+                SuperPuTTY.ImportRDPSessionsFromWinReg();
             }
         }
 
@@ -450,7 +462,7 @@ namespace SuperPutty
             QuickSelector d = new QuickSelector();
             if (d.ShowDialog(this, data, opt) == DialogResult.OK)
             {
-                SuperPuTTY.OpenPuttySession(d.SelectedItem.Detail);
+                SuperPuTTY.OpenProtoSession(d.SelectedItem.Detail);
             }
         }
 
@@ -1551,7 +1563,7 @@ namespace SuperPutty
                     break;
                 case SuperPuttyAction.DuplicateSession:
                     if (activePanel != null && activePanel.Session != null)
-                        SuperPuTTY.OpenPuttySession(activePanel.Session);
+                        SuperPuTTY.OpenProtoSession(activePanel.Session);
                     break;
                 case SuperPuttyAction.GotoCommandBar:
                     if (!this.fullscreenViewState.IsFullScreen)
@@ -1944,7 +1956,7 @@ namespace SuperPutty
 
             if (this.WindowState == FormWindowState.Maximized)
             {
-                NativeMethods.SetWindowPos(this.Handle, 0,
+                NativeMethods.SetWindowPos(this.Handle, IntPtr.Zero,
                     nextScreen.Bounds.X, nextScreen.Bounds.Y, nextScreen.Bounds.Width, nextScreen.Bounds.Height,
                     NativeMethods.SWP_NOZORDER | NativeMethods.SWP_ASYNCWINDOWPOS | NativeMethods.SWP_FRAMECHANGED);
             }

@@ -46,7 +46,10 @@ namespace SuperPutty.Data
         Serial,
         Cygterm,
         Mintty,
-        VNC
+        VNC,
+        RDP,
+        WINCMD,
+        PS
     }
 
     /// <summary>The main class containing configuration settings for a session</summary>
@@ -588,7 +591,7 @@ namespace SuperPutty.Data
                 return string.Format("{0}://{1}", this.Proto.ToString().ToLower(), this.Host);
             }
 
-            if (this.Proto == ConnectionProtocol.VNC)
+            if (this.Proto == ConnectionProtocol.VNC || this.Proto == ConnectionProtocol.RDP)
             {
                 if (this.Port == 0)
                     return string.Format("{0}://{1}", this.Proto.ToString().ToLower(), this.Host);

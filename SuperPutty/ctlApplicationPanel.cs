@@ -49,9 +49,11 @@ namespace SuperPutty
         private Process m_Process;
         private bool m_Created = false;
         private IntPtr m_AppWin;
+        private bool b_AppWinFinal = false;
         private List<IntPtr> m_hWinEventHooks = new List<IntPtr>();
         private List<NativeMethods.WinEventDelegate> lpfnWinEventProcs = new List<NativeMethods.WinEventDelegate>();
         private WindowActivator m_windowActivator = null;
+        private SuperPutty.Data.ConnectionProtocol proto;
 
         internal PuttyClosedCallback m_CloseCallback;
 
@@ -74,11 +76,12 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
         #endregion
 
-        public ApplicationPanel()
+        public ApplicationPanel(SuperPutty.Data.ConnectionProtocol proto)
         {
             this.ApplicationName = "";
             this.ApplicationParameters = "";
             this.ApplicationWorkingDirectory = "";
+            this.proto = proto;
 
             this.Disposed += new EventHandler(ApplicationPanel_Disposed);
             SuperPuTTY.LayoutChanged += new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
@@ -168,6 +171,156 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             //    && !NativeMethods.SetForegroundWindow(this.m_AppWin));
 
             return result;
+        }
+
+        /// <summary>
+        /// Wait for child process tree to reach final window state.
+        /// Process can spawn children and end itself, so try to track it if needed
+        ///  and return new process if needed
+        /// </summary>
+        /// <param name="prc">The first child process to start tracing on</param>
+        private Process WaitForTargetProcess(Process prc)
+        {
+            // Wait for application to start and become idle
+            if (this.proto != SuperPutty.Data.ConnectionProtocol.WINCMD) /* Console applications don't respond to some GUI specific calls */
+                prc.WaitForInputIdle();
+
+            return prc;
+        }
+
+        private void AttachToWindow()
+        {
+            if (this.m_AppWin != IntPtr.Zero)
+            {
+                // Set the application as a child of the parent form
+                NativeMethods.SetParent(m_AppWin, this.Handle);
+
+                // Show it! (must be done before we set the windows visibility parameters below
+                NativeMethods.ShowWindow(m_AppWin, NativeMethods.WindowShowStyle.Maximize);
+
+                // set window parameters (how it's displayed)
+                long lStyle = NativeMethods.GetWindowLong(m_AppWin, NativeMethods.GWL_STYLE);
+                lStyle &= ~NativeMethods.WS_BORDER;
+                if (this.proto == SuperPutty.Data.ConnectionProtocol.RDP || this.proto == SuperPutty.Data.ConnectionProtocol.VNC)
+                    lStyle |= NativeMethods.WS_HSCROLL | NativeMethods.WS_VSCROLL;
+                NativeMethods.SetWindowLong(m_AppWin, NativeMethods.GWL_STYLE, lStyle);
+                NativeMethods.WinEventDelegate lpfnWinEventProc = new NativeMethods.WinEventDelegate(WinEventProc);
+                this.lpfnWinEventProcs.Add(lpfnWinEventProc);
+                uint eventType = (uint)NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE;
+                this.m_hWinEventHooks.Add(NativeMethods.SetWinEventHook(eventType, eventType, IntPtr.Zero, lpfnWinEventProc, (uint)m_Process.Id, 0, NativeMethods.WINEVENT_OUTOFCONTEXT));
+                if ((lStyle & NativeMethods.WS_DLGFRAME) == 0)
+                {
+                    eventType = (uint)NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND;
+                    this.m_hWinEventHooks.Add(NativeMethods.SetWinEventHook(eventType, eventType, IntPtr.Zero, lpfnWinEventProc, (uint)m_Process.Id, 0, NativeMethods.WINEVENT_OUTOFCONTEXT));
+                }
+            }
+            else
+            {
+                MessageBox.Show("Process window not found.", "Process Window Not Found");
+                try {
+                    m_Process.Kill();
+                } 
+                catch (InvalidOperationException ex)
+                {
+                    Log.WarnFormat("no process window found to kill: {0}", ex.Message);
+                }
+                return;
+            }
+        }
+
+        private int GetMaxWindowPoolingTime()
+        {
+            return this.proto == SuperPutty.Data.ConnectionProtocol.RDP ? 30 : 10;
+        }
+
+        private bool IsWindowAppliesForInherit(IntPtr hWnd)
+        {
+            switch (this.proto)
+            {
+                case SuperPutty.Data.ConnectionProtocol.RDP:
+                    StringBuilder winTitleBuf = new StringBuilder(256);
+                    int winTitleLen = NativeMethods.GetWindowText(hWnd, winTitleBuf, winTitleBuf.Capacity - 1);
+                    if (winTitleLen > 0 && winTitleBuf.ToString().Contains(" - Remote Desktop Connection"))
+                        return true;
+                    return false;
+                default:
+                    return true;
+            }
+        }
+
+        private void __UNUSED_REFONLY_UpdateTrackedWindowHandle()
+        {
+            bool bNeedsUpdate = true;
+            if (this.b_AppWinFinal)
+                return;
+            switch (this.proto)
+            {
+                case SuperPutty.Data.ConnectionProtocol.RDP:
+                    Log.Info("Update track is called.");
+                    this.m_Process.Refresh();
+                    IntPtr winCandidate = this.m_Process.MainWindowHandle;
+                    Log.Info("Update, WinCnd="+((int)winCandidate));
+                    if (winCandidate == IntPtr.Zero || winCandidate == this.m_AppWin)
+                        break;
+                    NativeMethods.RECT rect = new NativeMethods.RECT();
+                    if (!NativeMethods.GetWindowRect(winCandidate, ref rect))
+                        break;
+                    int w = rect.Right - rect.Left;
+                    int h = rect.Bottom - rect.Top;
+                    Log.Info("Checking window handle [PID="+ this.m_Process.Id +"] to " + ((int)winCandidate) + ". Win size is " + w + "x" + h + ". Title is: " + this.m_Process.MainWindowTitle);
+                    if ((this.m_Process.MainWindowTitle.Contains(":") && this.m_Process.MainWindowTitle.Contains(" - Remote Desktop Connection")) /*|| (w >= 400 && h >= 120)*/) /* WIP - Heuristic using caption(Non-localized OS) or size for other cases, quite hacky till find better way */
+                    {
+                        //this.b_AppWinFinal = true;
+                        Log.Info("Updated window handle to " + ((int)winCandidate) + ". Win size is " + w + "x" + h + ". Title is: " + this.m_Process.MainWindowTitle);
+                        this.m_AppWin = winCandidate;
+                    }
+                    else if (this.m_Process.MainWindowTitle.Equals("Remote Desktop Connection") /*|| w < 400*/) /* RDP master process or auth dialog */
+                    {
+                        System.Threading.Thread.Sleep(5000);
+                        IntPtr childWin = NativeMethods.GetWindow(winCandidate, NativeMethods.GetWindowCmd.GW_CHILD);
+                        Log.Info("Got child win: " + ((int)childWin));
+                        StringBuilder childWinTitleBuf = new StringBuilder(256);
+                        int childWinTitleLen = NativeMethods.GetWindowText(childWin, childWinTitleBuf, childWinTitleBuf.Capacity - 1);
+                        if (childWinTitleLen > 0 && childWinTitleBuf.ToString().Contains(" - Remote Desktop Connection"))
+                        {
+                            this.b_AppWinFinal = true;
+                            Log.Info("Updated transitional child window handle to " + ((int)childWin) + ". Win size is " + w + "x" + h + ". Title is: " + this.m_Process.MainWindowTitle);
+                            this.m_AppWin = childWin;
+                        }
+                        else
+                        {
+                            //this.b_AppWinFinal = true;
+                            Log.Info("Updated transitional window handle to " + ((int)winCandidate) + ". Win size is " + w + "x" + h + ". Title is: " + this.m_Process.MainWindowTitle);
+                            this.m_AppWin = winCandidate;
+                        }
+                    }
+                    else
+                    {
+                        Log.Info("Updated transitional window handle 2 to " + ((int)winCandidate) + ". Win size is " + w + "x" + h + ". Title is: " + this.m_Process.MainWindowTitle);
+                        this.m_AppWin = winCandidate;
+                    }
+                    break;
+                default:
+                    this.b_AppWinFinal = true;
+                    bNeedsUpdate = false;
+                    break;
+            }
+
+            if (this.b_AppWinFinal && bNeedsUpdate)
+            {
+                this.AttachToWindow(); /* Must attach to the window */
+
+                if (this.Visible && this.m_Created && this.ExternalProcessCaptured)
+                {
+                    // Move the child so it's located over the parent
+                    this.MoveWindow("UpdateWindow");
+                    
+                    if (RefocusOnVisChanged && NativeMethods.GetForegroundWindow() != this.m_AppWin)
+                    {
+                        this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY("UpdateWindow"); }));
+                    }
+                }
+            }
         }
 
         #region Focus Change Handling
@@ -346,22 +499,25 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
                     m_Process.Start();
 
-                    // Wait for application to start and become idle
-                    m_Process.WaitForInputIdle();
-                    m_AppWin = m_Process.MainWindowHandle;
+                    m_Process = this.WaitForTargetProcess(m_Process);
+                    if (this.IsWindowAppliesForInherit(m_Process.MainWindowHandle))
+                        m_AppWin = m_Process.MainWindowHandle;
 
                     if (IntPtr.Zero == m_AppWin)
                     {
-                        Log.WarnFormat("Unable to get handle for process on first try.{0}", LoopWaitForHandle ? "  Polling 10 s for handle." : "");
+                        int poolInterval = this.GetMaxWindowPoolingTime();
+                        Log.WarnFormat("Unable to get handle for process on first try.{0}", LoopWaitForHandle ? "  Polling " + poolInterval + " s for handle." : "");
                         if (LoopWaitForHandle)
                         {
                             DateTime startTime = DateTime.Now;
-                            while ((DateTime.Now - startTime).TotalSeconds < 10)
+                            while ((DateTime.Now - startTime).TotalSeconds < poolInterval)
                             {
                                 System.Threading.Thread.Sleep(50);
 
                                 // Refresh Process object's view of real process
                                 m_Process.Refresh();
+                                if (!this.IsWindowAppliesForInherit(m_Process.MainWindowHandle))
+                                    continue;
                                 m_AppWin = m_Process.MainWindowHandle;
                                 if (IntPtr.Zero != m_AppWin)
                                 {
@@ -408,38 +564,9 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     this.m_AppWin = IntPtr.Zero;
                 }
                 
-                if(this.m_AppWin != IntPtr.Zero)
-                {
-                    // Set the application as a child of the parent form
-                    NativeMethods.SetParent(m_AppWin, this.Handle);
-
-                    // Show it! (must be done before we set the windows visibility parameters below                
-                    NativeMethods.ShowWindow(m_AppWin, NativeMethods.WindowShowStyle.Maximize);
-
-                    // set window parameters (how it's displayed)
-                    long lStyle = NativeMethods.GetWindowLong(m_AppWin, NativeMethods.GWL_STYLE);
-                    lStyle &= ~NativeMethods.WS_BORDER;
-                    NativeMethods.SetWindowLong(m_AppWin, NativeMethods.GWL_STYLE, lStyle);
-                    NativeMethods.WinEventDelegate lpfnWinEventProc = new NativeMethods.WinEventDelegate(WinEventProc);
-                    this.lpfnWinEventProcs.Add(lpfnWinEventProc);
-                    uint eventType = (uint)NativeMethods.WinEvents.EVENT_OBJECT_NAMECHANGE;
-                    this.m_hWinEventHooks.Add(NativeMethods.SetWinEventHook(eventType, eventType, IntPtr.Zero, lpfnWinEventProc, (uint)m_Process.Id, 0, NativeMethods.WINEVENT_OUTOFCONTEXT));
-                    eventType = (uint)NativeMethods.WinEvents.EVENT_SYSTEM_FOREGROUND;
-                    this.m_hWinEventHooks.Add(NativeMethods.SetWinEventHook(eventType, eventType, IntPtr.Zero, lpfnWinEventProc, (uint)m_Process.Id, 0, NativeMethods.WINEVENT_OUTOFCONTEXT));
-                }
-                else
-                {
-                    MessageBox.Show("Process window not found.", "Process Window Not Found");
-                    try {
-                        m_Process.Kill();
-                    } 
-                    catch (InvalidOperationException ex)
-                    {
-                        Log.WarnFormat("no process window found to kill: {0}", ex.Message);
-                    }
-                    return;
-                }
+                this.AttachToWindow();
             }
+
             if (this.Visible && this.m_Created && this.ExternalProcessCaptured)
             {
                 // Move the child so it's located over the parent
@@ -450,7 +577,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY("OnVisChanged"); }));
                 }
             }
-                  
+
             base.OnVisibleChanged(e);
         }
 

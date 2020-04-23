@@ -41,6 +41,7 @@ namespace SuperPutty
         private String OldHostname;
         private bool isInitialized = false;
         private ImageListPopup imgPopup = null;
+        private System.Collections.Hashtable protoTypesMap;
 
         public dlgEditSession(SessionData session, ImageList iconList)
         {
@@ -50,6 +51,7 @@ namespace SuperPutty
             // get putty saved settings from the registry to populate
             // the dropdown
             PopulatePuttySettings();
+            PopulateProtoList();
 
             if (!String.IsNullOrEmpty(Session.SessionName))
             {
@@ -63,37 +65,10 @@ namespace SuperPutty
                 this.textBoxRemotePathSesion.Text = Session.RemotePath;
                 this.textBoxLocalPathSesion.Text = Session.LocalPath;
 
-                switch (Session.Proto)
+                foreach (System.Collections.DictionaryEntry protoEntry in this.protoTypesMap)
                 {
-                    case ConnectionProtocol.Raw:
-                        radioButtonRaw.Checked = true;
-                        break;
-                    case ConnectionProtocol.Rlogin:
-                        radioButtonRlogin.Checked = true;
-                        break;
-                    case ConnectionProtocol.Serial:
-                        radioButtonSerial.Checked = true;
-                        break;
-                    case ConnectionProtocol.SSH:
-                        radioButtonSSH.Checked = true;
-                        break;
-                    case ConnectionProtocol.Telnet:
-                        radioButtonTelnet.Checked = true;
-                        break;
-                    case ConnectionProtocol.Cygterm:
-                        radioButtonCygterm.Checked = true;
-                        break;
-                    case ConnectionProtocol.Mintty:
-                        radioButtonMintty.Checked = true;
-                        break;
-                    case ConnectionProtocol.VNC:
-                        radioButtonVNC.Checked = true;
-                        if (Session.Port == 0)
-                            this.textBoxPort.Text = "";
-                        break;
-                    default:
-                        radioButtonSSH.Checked = true;
-                        break;
+                    if ((int)protoEntry.Value == (int)Session.Proto)
+                        comboBoxProto.SelectedItem = (string)protoEntry.Key;
                 }
 
                 comboBoxPuttyProfile.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -110,7 +85,7 @@ namespace SuperPutty
             else
             {
                 this.Text = "Create new session";
-                radioButtonSSH.Checked = true;
+                comboBoxProto.SelectedItem = "SSH";
                 this.buttonSave.Enabled = false;
             }
 
@@ -139,6 +114,25 @@ namespace SuperPutty
                 comboBoxPuttyProfile.Items.Add(sessionName);
             }
             comboBoxPuttyProfile.SelectedItem = PuttyDataHelper.SessionDefaultSettings;
+        }
+
+        private void PopulateProtoList()
+        {
+            this.protoTypesMap = new System.Collections.Hashtable();
+            this.protoTypesMap["Raw"] = ConnectionProtocol.Raw;
+            this.protoTypesMap["Telnet"] = ConnectionProtocol.Telnet;  
+            this.protoTypesMap["Rlogin"] = ConnectionProtocol.Rlogin;
+            this.protoTypesMap["SSH"] = ConnectionProtocol.SSH;
+            this.protoTypesMap["Serial"] = ConnectionProtocol.Serial;
+            this.protoTypesMap["CygTerm"] = ConnectionProtocol.Cygterm;
+            this.protoTypesMap["MinTTY"] = ConnectionProtocol.Mintty;
+            this.protoTypesMap["VNC"] = ConnectionProtocol.VNC;
+            this.protoTypesMap["RDP"] = ConnectionProtocol.RDP;
+            this.protoTypesMap["Win CMD"] = ConnectionProtocol.WINCMD;
+            foreach (System.Collections.DictionaryEntry protoEntry in this.protoTypesMap)
+                comboBoxProto.Items.Add(protoEntry.Key);
+            comboBoxProto.SelectedItem = "SSH";
+            comboBoxProto.DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -174,14 +168,8 @@ namespace SuperPutty
             Session.RemotePath = textBoxRemotePathSesion.Text.Trim();
             Session.LocalPath = textBoxLocalPathSesion.Text.Trim();
 
-            for (int i = 0; i < groupBox1.Controls.Count; i++)
-            {
-                RadioButton rb = (RadioButton)groupBox1.Controls[i];
-                if (rb.Checked)
-                {
-                    Session.Proto = (ConnectionProtocol)rb.Tag;
-                }
-            }
+            if (this.protoTypesMap.ContainsKey(comboBoxProto.SelectedItem))
+                Session.Proto = (ConnectionProtocol)this.protoTypesMap[comboBoxProto.SelectedItem];
             
             DialogResult = DialogResult.OK;
         }
@@ -191,87 +179,35 @@ namespace SuperPutty
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void radioButtonCygterm_CheckedChanged(object sender, EventArgs e)
+        private void comboBoxProto_SelectedIndexChanged(object sender, EventArgs e)
         {
             string host = this.textBoxHostname.Text;
-            bool isLocalShell = this.radioButtonCygterm.Checked || this.radioButtonMintty.Checked;
-            this.textBoxPort.Enabled = !isLocalShell;
-            this.textBoxUsername.Enabled = !isLocalShell;
+            if (!this.isInitialized)
+                return;
 
-            if (isLocalShell)
+            ConnectionProtocol proto = this.protoTypesMap.ContainsKey(comboBoxProto.SelectedItem) ? (ConnectionProtocol)this.protoTypesMap[comboBoxProto.SelectedItem] : ConnectionProtocol.SSH;
+            if (proto == ConnectionProtocol.Cygterm || proto == ConnectionProtocol.Mintty || proto == ConnectionProtocol.WINCMD)
             {
+                this.textBoxPort.Enabled = false;
+                this.textBoxUsername.Enabled = false;
                 if (String.IsNullOrEmpty(host) || !host.StartsWith(CygtermStartInfo.LocalHost))
                 {
                     OldHostname = this.textBoxHostname.Text;
                     this.textBoxHostname.Text = CygtermStartInfo.LocalHost;
                 }
             }
-
-        }
-
-        private void radioButtonRaw_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.radioButtonRaw.Checked && this.isInitialized)
+            else
             {
+                this.textBoxPort.Enabled = true;
+                this.textBoxUsername.Enabled = true;
                 if (!string.IsNullOrEmpty(OldHostname))
                 {
                     this.textBoxHostname.Text = OldHostname;
                     OldHostname = null;
                 }
+                if (proto != ConnectionProtocol.Raw)
+                    this.textBoxPort.Text = dlgEditSession.GetDefaultPort(proto).ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
-        }
-
-        private void radioButtonTelnet_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.radioButtonTelnet.Checked && this.isInitialized)
-            {
-                if (!string.IsNullOrEmpty(OldHostname))
-                {
-                    this.textBoxHostname.Text = OldHostname;
-                    OldHostname = null;
-                }
-                this.textBoxPort.Text = "23";
-            }
-        }
-
-        private void radioButtonRlogin_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.radioButtonRlogin.Checked && this.isInitialized)
-            {
-                if (!string.IsNullOrEmpty(OldHostname))
-                {
-                    this.textBoxHostname.Text = OldHostname;
-                    OldHostname = null;
-                }
-                this.textBoxPort.Text = "513";
-            }
-        }
-
-        private void radioButtonSSH_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.radioButtonSSH.Checked && this.isInitialized)
-            {
-                if (!string.IsNullOrEmpty(OldHostname))
-                {
-                    this.textBoxHostname.Text = OldHostname;
-                    OldHostname = null;
-                }
-                this.textBoxPort.Text = "22";
-            }
-        }
-
-        private void radioButtonVNC_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.radioButtonVNC.Checked && this.isInitialized)
-            {
-                if (!string.IsNullOrEmpty(OldHostname))
-                {
-                    this.textBoxHostname.Text = OldHostname;
-                    OldHostname = null;
-                }
-                this.textBoxPort.Text = "";
-            }
-            this.comboBoxPuttyProfile.Enabled = !this.radioButtonVNC.Checked;
         }
 
         public static int GetDefaultPort(ConnectionProtocol protocol)
@@ -290,6 +226,12 @@ namespace SuperPutty
                     port = 23;
                     break;
                 case ConnectionProtocol.VNC:
+                    port = 5900;
+                    break;
+                case ConnectionProtocol.RDP:
+                    port = 3389;
+                    break;
+                case ConnectionProtocol.WINCMD:
                     port = 0;
                     break;
             }
@@ -357,10 +299,11 @@ namespace SuperPutty
         private void textBoxPort_Validating(object sender, CancelEventArgs e)
         {
             int val;
+            ConnectionProtocol proto = this.protoTypesMap.ContainsKey(comboBoxProto.SelectedItem) ? (ConnectionProtocol)this.protoTypesMap[comboBoxProto.SelectedItem] : ConnectionProtocol.SSH;
             if (!Int32.TryParse(this.textBoxPort.Text, out val))
             {
                 if (this.textBoxPort.Text == "")
-                    if (this.radioButtonVNC.Checked || this.radioButtonMintty.Checked || this.radioButtonCygterm.Checked)
+                    if (proto == ConnectionProtocol.Mintty || proto == ConnectionProtocol.Cygterm || proto == ConnectionProtocol.RDP || proto == ConnectionProtocol.WINCMD)
                         return;
 
                 e.Cancel = true;
@@ -415,7 +358,8 @@ namespace SuperPutty
             this.buttonSave.Enabled = this.errorProvider.GetError(this.textBoxSessionName) == String.Empty &&
                                       this.errorProvider.GetError(this.textBoxHostname) == String.Empty &&
                                       this.errorProvider.GetError(this.textBoxPort) == String.Empty &&
-                                      this.errorProvider.GetError(this.comboBoxPuttyProfile) == String.Empty;
+                                      this.errorProvider.GetError(this.comboBoxPuttyProfile) == String.Empty &&
+                                      this.errorProvider.GetError(this.comboBoxProto) == String.Empty;
         }
 
         #endregion

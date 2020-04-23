@@ -94,7 +94,7 @@ namespace SuperPutty
 
         private void CreatePanel()
         {
-            this.AppPanel = new ApplicationPanel();
+            this.AppPanel = new ApplicationPanel(this.Session.Proto);
             this.SuspendLayout();            
             this.AppPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AppPanel.ApplicationName = this.m_puttyStartInfo.Executable;
@@ -342,7 +342,7 @@ namespace SuperPutty
                     SessionData session = SuperPuTTY.GetSessionById(sessionId);
                     if (session != null)
                     {
-                        panel = SuperPuTTY.OpenPuttySession(session);
+                        panel = SuperPuTTY.OpenProtoSession(session);
                         if (panel == null)
                         {
                             Log.WarnFormat("Could not restore putty session, sessionId={0}", sessionId);
@@ -369,7 +369,7 @@ namespace SuperPutty
                         SessionData session = SuperPuTTY.GetSessionById(sessionId);
                         if (session != null)
                         {
-                            panel = SuperPuTTY.OpenPuttySession(session);
+                            panel = SuperPuTTY.OpenProtoSession(session);
                         }
                         else
                         {
@@ -389,7 +389,7 @@ namespace SuperPutty
  
         private void duplicateSessionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SuperPuTTY.OpenPuttySession(this.Session);
+            SuperPuTTY.OpenProtoSession(this.Session);
         }
 
         private void renameTabToolStripMenuItem_Click(object sender, EventArgs e)
@@ -431,7 +431,7 @@ namespace SuperPutty
             SessionData session = menuItem.Tag as SessionData;
             if (session != null)
             {
-                SuperPuTTY.OpenPuttySession(session);
+                SuperPuTTY.OpenProtoSession(session);
             }
         }
 
