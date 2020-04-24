@@ -49,7 +49,7 @@ namespace SuperPutty
         private Process m_Process;
         private bool m_Created = false;
         private IntPtr m_AppWin;
-        private bool b_AppWinFinal = false;
+        private bool b_AppWinFinal = true;
         private List<IntPtr> m_hWinEventHooks = new List<IntPtr>();
         private List<NativeMethods.WinEventDelegate> lpfnWinEventProcs = new List<NativeMethods.WinEventDelegate>();
         private WindowActivator m_windowActivator = null;
@@ -157,6 +157,27 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool ReFocusPuTTY(string caller)
         {
             bool result = false;
+            if (!b_AppWinFinal) /* Check windows progress on multi-window target */
+            {
+                m_Process.Refresh();
+                if (this.IsWindowAppliesForInherit(m_Process.MainWindowHandle))
+                {
+                    m_AppWin = m_Process.MainWindowHandle;
+                    Log.Info("Catched delayed window from caller " + caller);
+                    b_AppWinFinal = true;
+
+                    this.AttachToWindow();
+                    // Move the child so it's located over the parent
+                    this.MoveWindow("OnVisChanged");
+                    
+                    if (RefocusOnVisChanged && NativeMethods.GetForegroundWindow() != this.m_AppWin)
+                    {
+                        this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY("OnVisChanged"); }));
+                    }
+                }
+            }
+            if (this.proto == SuperPutty.Data.ConnectionProtocol.RDP) /* Otherwise window will be hidden and require SuperPutTTY minimize-restore cycle */
+                this.MoveWindow("RestoreTabSwitch");
             if (this.ExternalProcessCaptured && NativeMethods.GetForegroundWindow() != this.m_AppWin)
             {
                 //Log.InfoFormat("[{0}] ReFocusPuTTY - puttyTab={1}, caller={2}", this.m_AppWin, this.Parent.Text, caller);
@@ -240,12 +261,23 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 case SuperPutty.Data.ConnectionProtocol.RDP:
                     StringBuilder winTitleBuf = new StringBuilder(256);
                     int winTitleLen = NativeMethods.GetWindowText(hWnd, winTitleBuf, winTitleBuf.Capacity - 1);
+                    Log.Info("IsWindowAppliesForInherit: Evaluating window " + winTitleBuf.ToString());
                     if (winTitleLen > 0 && winTitleBuf.ToString().Contains(" - Remote Desktop Connection"))
                         return true;
                     return false;
                 default:
                     return true;
             }
+        }
+
+        private void CreateVirtWindow()
+        {
+            Log.Info("Creating virtual window");
+            IntPtr hWnd = NativeMethods.CreateWindowEx(NativeMethods.WS_EX_TRANSPARENT ,new StringBuilder("STATIC"), new StringBuilder(""), 0, 1, 1,
+                        1, 1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+            m_AppWin = hWnd;
+            if (hWnd == IntPtr.Zero)
+                Log.Info("Failed to create virtual window");
         }
 
         private void __UNUSED_REFONLY_UpdateTrackedWindowHandle()
@@ -501,31 +533,38 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 
                     m_Process = this.WaitForTargetProcess(m_Process);
                     if (this.IsWindowAppliesForInherit(m_Process.MainWindowHandle))
+                    {
                         m_AppWin = m_Process.MainWindowHandle;
 
-                    if (IntPtr.Zero == m_AppWin)
-                    {
-                        int poolInterval = this.GetMaxWindowPoolingTime();
-                        Log.WarnFormat("Unable to get handle for process on first try.{0}", LoopWaitForHandle ? "  Polling " + poolInterval + " s for handle." : "");
-                        if (LoopWaitForHandle)
+                        if (IntPtr.Zero == m_AppWin)
                         {
-                            DateTime startTime = DateTime.Now;
-                            while ((DateTime.Now - startTime).TotalSeconds < poolInterval)
+                            int poolInterval = this.GetMaxWindowPoolingTime();
+                            Log.WarnFormat("Unable to get handle for process on first try.{0}", LoopWaitForHandle ? "  Polling " + poolInterval + " s for handle." : "");
+                            if (LoopWaitForHandle)
                             {
-                                System.Threading.Thread.Sleep(50);
-
-                                // Refresh Process object's view of real process
-                                m_Process.Refresh();
-                                if (!this.IsWindowAppliesForInherit(m_Process.MainWindowHandle))
-                                    continue;
-                                m_AppWin = m_Process.MainWindowHandle;
-                                if (IntPtr.Zero != m_AppWin)
+                                DateTime startTime = DateTime.Now;
+                                while ((DateTime.Now - startTime).TotalSeconds < poolInterval)
                                 {
-                                    Log.Info("Successfully found handle via polling " + (DateTime.Now - startTime).TotalMilliseconds + " ms");
-                                    break;
+                                    System.Threading.Thread.Sleep(50);
+
+                                    // Refresh Process object's view of real process
+                                    m_Process.Refresh();
+                                    if (!this.IsWindowAppliesForInherit(m_Process.MainWindowHandle))
+                                        continue;
+                                    m_AppWin = m_Process.MainWindowHandle;
+                                    if (IntPtr.Zero != m_AppWin)
+                                    {
+                                        Log.Info("Successfully found handle via polling " + (DateTime.Now - startTime).TotalMilliseconds + " ms");
+                                        break;
+                                    }
                                 }
                             }
                         }
+                    }
+                    else
+                    {
+                        b_AppWinFinal = false;
+                        this.CreateVirtWindow();
                     }
                 }
                 catch (InvalidOperationException ex)
@@ -567,7 +606,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 this.AttachToWindow();
             }
 
-            if (this.Visible && this.m_Created && this.ExternalProcessCaptured)
+            if (this.Visible && this.m_Created && this.b_AppWinFinal && this.ExternalProcessCaptured)
             {
                 // Move the child so it's located over the parent
                 this.MoveWindow("OnVisChanged");
