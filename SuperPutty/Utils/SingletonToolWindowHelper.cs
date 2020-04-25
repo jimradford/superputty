@@ -16,12 +16,13 @@ namespace SuperPutty.Utils
 
         public SingletonToolWindowHelper(string name, DockPanel dockPanel) : this(name, dockPanel, null, null) {}
 
-        public SingletonToolWindowHelper(string name, DockPanel dockPanel, Object InitializerResource, WindowInitializer initializer)
+        public SingletonToolWindowHelper(string name, DockPanel dockPanel, Object InitializerResource, WindowInitializer initializer, System.Windows.Forms.ToolStripMenuItem optToolStrip = null)
         {
             this.Name = name;
             this.DockPanel = dockPanel;
             this.Initializer = initializer;
             this.InitializerResource = InitializerResource;
+            this.toolStrip = optToolStrip;
         }
 
         public void ShowWindow(DockState dockState)
@@ -83,6 +84,8 @@ namespace SuperPutty.Utils
         {
             this.Instance = null;
             SuperPuTTY.ReportStatus("Closed {0}", this.Name);
+            if (this.toolStrip != null && !SuperPuTTY.IsLayoutChanging && e.CloseReason == CloseReason.UserClosing)
+                this.toolStrip.Checked = false;
         }
 
         public void Hide()
@@ -108,6 +111,7 @@ namespace SuperPutty.Utils
         public DockPanel DockPanel { get; private set; }
         public WindowInitializer Initializer { get; private set; }
         public Object InitializerResource { get; private set; }
+        public System.Windows.Forms.ToolStripMenuItem toolStrip { get; set; }
         public T Instance { get; private set; }
     }
 }

@@ -234,7 +234,6 @@ namespace SuperPutty
         public static void LoadLayout(LayoutData layout)
         {
             LoadLayout(layout, false);
-
         }
 
         public static void LoadLayout(LayoutData layout, bool isNewLayoutAlreadyActive)

@@ -70,7 +70,7 @@ namespace SuperPutty
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sessionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.layoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.logViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showLogViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolbarsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quickConnectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -304,7 +304,7 @@ namespace SuperPutty
             this.sessionsToolStripMenuItem,
             this.sessionDetailToolStripMenuItem,
             this.layoutsToolStripMenuItem,
-            this.logViewerToolStripMenuItem,
+            this.showLogViewerToolStripMenuItem,
             this.toolStripMenuItem8,
             this.toolbarsToolStripMenuItem,
             this.toolStripMenuItem6,
@@ -331,12 +331,14 @@ namespace SuperPutty
             this.layoutsToolStripMenuItem.Text = "&Layouts";
             this.layoutsToolStripMenuItem.Click += new System.EventHandler(this.layoutsToolStripMenuItem_Click);
             // 
-            // logViewerToolStripMenuItem
-            // 
-            this.logViewerToolStripMenuItem.Name = "logViewerToolStripMenuItem";
-            this.logViewerToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.logViewerToolStripMenuItem.Text = "L&og Viewer";
-            this.logViewerToolStripMenuItem.Click += new System.EventHandler(this.logViewerToolStripMenuItem_Click);
+            // showLogViewerToolStripMenuItem
+            //
+            this.showLogViewerToolStripMenuItem.Checked = global::SuperPutty.Properties.Settings.Default.ShowLogViewerTool;
+            this.showLogViewerToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Unchecked;
+            this.showLogViewerToolStripMenuItem.Name = "showLogViewerToolStripMenuItem";
+            this.showLogViewerToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.showLogViewerToolStripMenuItem.Text = "L&og Viewer";
+            this.showLogViewerToolStripMenuItem.Click += new System.EventHandler(this.toggleCheckedState);
             // 
             // toolStripMenuItem8
             // 
@@ -973,7 +975,7 @@ namespace SuperPutty
         private System.Windows.Forms.ToolStripMenuItem fromWinRDPRegToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sessionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem layoutsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem logViewerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showLogViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem8;
         private System.Windows.Forms.NotifyIcon notifyicon;
         private System.Windows.Forms.ContextMenuStrip notifyIconContextMenuStrip;

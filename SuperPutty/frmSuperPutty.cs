@@ -112,7 +112,7 @@ namespace SuperPutty
             // tool windows
             this.sessions = new SingletonToolWindowHelper<SessionTreeview>("Sessions", this.DockPanel, null, x => new SessionTreeview(x.DockPanel));
             this.layouts = new SingletonToolWindowHelper<LayoutsList>("Layouts", this.DockPanel);
-            this.logViewer = new SingletonToolWindowHelper<Log4netLogViewer>("Log Viewer", this.DockPanel);
+            this.logViewer = new SingletonToolWindowHelper<Log4netLogViewer>("Log Viewer", this.DockPanel, null, null, this.showLogViewerToolStripMenuItem);
             this.sessionDetail = new SingletonToolWindowHelper<SessionDetail>("Session Detail", this.DockPanel, this.sessions,
                                                                               x => {
                                                                                   return new SessionDetail(x.InitializerResource as SingletonToolWindowHelper<SessionTreeview>);
@@ -533,6 +533,7 @@ namespace SuperPutty
             SuperPuTTY.Settings.ShowToolBarCommands = this.sendCommandsToolStripMenuItem.Checked;
             SuperPuTTY.Settings.AlwaysOnTop = this.alwaysOnTopToolStripMenuItem.Checked;
             SuperPuTTY.Settings.ShowMenuBar = this.showMenuBarToolStripMenuItem.Checked;
+            SuperPuTTY.Settings.ShowLogViewerTool = this.showLogViewerToolStripMenuItem.Checked;
 
             SuperPuTTY.Settings.Save();
 
@@ -556,6 +557,12 @@ namespace SuperPutty
 
             this.menuStrip1.Visible = SuperPuTTY.Settings.ShowMenuBar;
             this.showMenuBarToolStripMenuItem.Checked = SuperPuTTY.Settings.ShowMenuBar;
+
+            if (SuperPuTTY.Settings.ShowLogViewerTool)
+                this.ShowLogViewer();
+            else
+                this.logViewer.Hide();
+            this.showLogViewerToolStripMenuItem.Checked = SuperPuTTY.Settings.ShowLogViewerTool;
         }
 
         private void sessionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -571,7 +578,7 @@ namespace SuperPutty
             }
         }
 
-        private void logViewerToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ShowLogViewer()
         {
             this.logViewer.ShowWindow(DockState.DockBottom);
         }
@@ -667,8 +674,9 @@ namespace SuperPutty
                 this.ConnectionBar = this.MainForm.quickConnectionToolStripMenuItem.Checked;
                 this.CommandBar = this.MainForm.sendCommandsToolStripMenuItem.Checked;
 
+                this.LogWindow = this.MainForm.showLogViewerToolStripMenuItem.Checked;
+
                 this.SessionsWindow = this.MainForm.sessions.IsVisible;
-                this.LogWindow = this.MainForm.logViewer.IsVisible;
                 this.LayoutWindow = this.MainForm.layouts.IsVisible;
                 this.SessionDetail = this.MainForm.sessionDetail.IsVisible;
 
@@ -688,6 +696,9 @@ namespace SuperPutty
                     this.MainForm.layouts.Hide();
                     this.MainForm.logViewer.Hide();
                     this.MainForm.sessionDetail.Hide();
+
+                    // log window
+                    this.MainForm.logViewer.Hide();
 
                     // status bar
                     this.MainForm.statusStrip1.Hide();
@@ -726,8 +737,10 @@ namespace SuperPutty
                     // windows
                     if (this.SessionsWindow) { this.MainForm.sessions.Restore(); }
                     if (this.LayoutWindow) { this.MainForm.layouts.Restore(); }
-                    if (this.LogWindow) { this.MainForm.logViewer.Restore(); }
                     if (this.SessionDetail) { this.MainForm.sessionDetail.Restore(); }
+
+                    // log window
+                    if (this.LogWindow) { this.MainForm.ShowLogViewer(); }
 
                     // status bar
                     if (this.StatusBar) { this.MainForm.statusStrip1.Show(); }
