@@ -61,7 +61,8 @@ namespace SuperPutty.Utils
             WS_EX_TOOLWINDOW = 0x00000080,
             WS_EX_NOACTIVATE = 0x08000000,
             WS_CHILD = 0x40000000,
-            WS_VISIBLE = 0x10000000;
+            WS_VISIBLE = 0x10000000,
+            WS_EX_TRANSPARENT = 0x00000020;
 
         public const uint
             KEYEVENTF_EXTENDEDKEY = 0x0001,
@@ -1350,6 +1351,10 @@ namespace SuperPutty.Utils
 
         [DllImport("user32.dll")]
         public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr CreateWindowEx(uint dwExStyle, StringBuilder lpClassName, StringBuilder lpWindowName, uint dwStyle, int x, int y,
+                        int nWidth, int nHeight, IntPtr hWndParent, IntPtr hMenu, IntPtr hInstance, IntPtr lpParam);
         #endregion
 
 
