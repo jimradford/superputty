@@ -50,6 +50,7 @@ namespace SuperPutty
         private bool m_Created = false;
         private IntPtr m_AppWin;
         private bool b_AppWinFinal = true;
+        private System.ComponentModel.BackgroundWorker bgWinTracker;
         private List<IntPtr> m_hWinEventHooks = new List<IntPtr>();
         private List<NativeMethods.WinEventDelegate> lpfnWinEventProcs = new List<NativeMethods.WinEventDelegate>();
         private WindowActivator m_windowActivator = null;
@@ -82,6 +83,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             this.ApplicationParameters = "";
             this.ApplicationWorkingDirectory = "";
             this.proto = proto;
+            this.bgWinTracker = new System.ComponentModel.BackgroundWorker();
+            this.bgWinTracker.WorkerSupportsCancellation = true;
 
             this.Disposed += new EventHandler(ApplicationPanel_Disposed);
             SuperPuTTY.LayoutChanged += new EventHandler<Data.LayoutChangedEventArgs>(SuperPuTTY_LayoutChanged);
@@ -157,25 +160,6 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool ReFocusPuTTY(string caller)
         {
             bool result = false;
-            if (!b_AppWinFinal) /* Check windows progress on multi-window target */
-            {
-                m_Process.Refresh();
-                if (this.IsWindowAppliesForInherit(m_Process.MainWindowHandle))
-                {
-                    m_AppWin = m_Process.MainWindowHandle;
-                    Log.Info("Catched delayed window from caller " + caller);
-                    b_AppWinFinal = true;
-
-                    this.AttachToWindow();
-                    // Move the child so it's located over the parent
-                    this.MoveWindow("OnVisChanged");
-                    
-                    if (RefocusOnVisChanged && NativeMethods.GetForegroundWindow() != this.m_AppWin)
-                    {
-                        this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY("OnVisChanged"); }));
-                    }
-                }
-            }
             if (this.proto == SuperPutty.Data.ConnectionProtocol.RDP) /* Otherwise window will be hidden and require SuperPutTTY minimize-restore cycle */
                 this.MoveWindow("RestoreTabSwitch");
             if (this.ExternalProcessCaptured && NativeMethods.GetForegroundWindow() != this.m_AppWin)
@@ -278,6 +262,40 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             m_AppWin = hWnd;
             if (hWnd == IntPtr.Zero)
                 Log.Info("Failed to create virtual window");
+        }
+
+        private void bgWinTracker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            while (true)
+            {
+                System.Threading.Thread.Sleep(1000);
+                m_Process.Refresh();
+                if (this.IsWindowAppliesForInherit(m_Process.MainWindowHandle))
+                {
+                    e.Result = m_Process.MainWindowHandle;
+                    break;
+                }
+            }
+        }
+
+        private void bgWinTracker_Done(
+            object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null || e.Cancelled)
+                return;
+
+            m_AppWin = (IntPtr)e.Result;
+            Log.Info("Catched delayed window from caller bgWinTracker_Done");
+            b_AppWinFinal = true;
+
+            this.AttachToWindow();
+            // Move the child so it's located over the parent
+            this.MoveWindow("OnVisChanged");
+            
+            if (RefocusOnVisChanged && NativeMethods.GetForegroundWindow() != this.m_AppWin)
+            {
+                this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY("OnVisChanged"); }));
+            }
         }
 
         private void __UNUSED_REFONLY_UpdateTrackedWindowHandle()
@@ -565,6 +583,9 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     {
                         b_AppWinFinal = false;
                         this.CreateVirtWindow();
+                        bgWinTracker.DoWork += new DoWorkEventHandler(bgWinTracker_DoWork);
+                        bgWinTracker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWinTracker_Done);
+                        bgWinTracker.RunWorkerAsync();
                     }
                 }
                 catch (InvalidOperationException ex)
@@ -641,6 +662,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 System.Threading.Thread.Sleep(ClosePuttyWaitTimeMs);
 
                 m_AppWin = IntPtr.Zero;
+                if (this.bgWinTracker.IsBusy == true)
+                    this.bgWinTracker.CancelAsync();
             }
 
             base.OnHandleDestroyed(e);
