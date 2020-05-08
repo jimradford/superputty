@@ -29,6 +29,8 @@ namespace SuperPutty.Utils
 
                 case ConnectionProtocol.WINCMD:
                     return Environment.ExpandEnvironmentVariables("%systemroot%\\system32\\cmd.exe");
+                case ConnectionProtocol.PS:
+                    return Environment.ExpandEnvironmentVariables("%systemroot%\\system32\\windowspowershell\\v1.0\\powershell.exe");
 
                 default:
                     return TryParseEnvVars(SuperPuTTY.Settings.PuttyExe);
@@ -70,6 +72,12 @@ namespace SuperPutty.Utils
                 WCMDStartInfo wcmd = new WCMDStartInfo(session);
                 this.Args = wcmd.Args;
                 this.WorkingDir = wcmd.StartingDir;
+            }
+            else if (session.Proto == ConnectionProtocol.PS)
+            {
+                PSStartInfo ps = new PSStartInfo(session);
+                this.Args = ps.Args;
+                this.WorkingDir = ps.StartingDir;
             }
             else
             {
