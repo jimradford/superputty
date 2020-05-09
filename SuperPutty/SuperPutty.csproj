@@ -277,6 +277,7 @@
     <Compile Include="Utils\VNCStartInfo.cs" />
     <Compile Include="Utils\RDPStartInfo.cs" />
     <Compile Include="Utils\WCMDStartInfo.cs" />
+    <Compile Include="Utils\PSStartInfo.cs" />
     <Compile Include="Utils\NativeMethods.cs" />
     <Compile Include="Utils\PortableSettingsProvider.cs" />
     <Compile Include="Utils\PropertyNotifiableObject.cs" />

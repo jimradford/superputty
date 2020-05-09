@@ -187,7 +187,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         private Process WaitForTargetProcess(Process prc)
         {
             // Wait for application to start and become idle
-            if (this.proto != SuperPutty.Data.ConnectionProtocol.WINCMD) /* Console applications don't respond to some GUI specific calls */
+            if (this.proto != SuperPutty.Data.ConnectionProtocol.WINCMD && this.proto != SuperPutty.Data.ConnectionProtocol.PS) /* Console applications don't respond to some GUI specific calls */
                 prc.WaitForInputIdle();
 
             return prc;
