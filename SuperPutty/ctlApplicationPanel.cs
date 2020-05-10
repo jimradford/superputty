@@ -206,7 +206,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 // set window parameters (how it's displayed)
                 long lStyle = NativeMethods.GetWindowLong(m_AppWin, NativeMethods.GWL_STYLE);
                 lStyle &= ~NativeMethods.WS_BORDER;
-                if (this.proto == SuperPutty.Data.ConnectionProtocol.RDP || this.proto == SuperPutty.Data.ConnectionProtocol.VNC)
+                if (this.proto == SuperPutty.Data.ConnectionProtocol.VNC)
                     lStyle |= NativeMethods.WS_HSCROLL | NativeMethods.WS_VSCROLL;
                 NativeMethods.SetWindowLong(m_AppWin, NativeMethods.GWL_STYLE, lStyle);
                 NativeMethods.WinEventDelegate lpfnWinEventProc = new NativeMethods.WinEventDelegate(WinEventProc);
@@ -246,7 +246,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                     StringBuilder winTitleBuf = new StringBuilder(256);
                     int winTitleLen = NativeMethods.GetWindowText(hWnd, winTitleBuf, winTitleBuf.Capacity - 1);
                     Log.Info("IsWindowAppliesForInherit: Evaluating window " + winTitleBuf.ToString());
-                    if (winTitleLen > 0 && winTitleBuf.ToString().Contains(" - Remote Desktop Connection"))
+                    if (winTitleLen > 0 && (winTitleBuf.ToString().Contains(" - Remote Desktop Connection") || winTitleBuf.ToString().Contains("FreeRDP: ")))
                         return true;
                     return false;
                 default:

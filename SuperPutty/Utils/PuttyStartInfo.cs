@@ -25,7 +25,7 @@ namespace SuperPutty.Utils
                     return TryParseEnvVars(SuperPuTTY.Settings.VNCExe);
 
                 case ConnectionProtocol.RDP:
-                    return Environment.ExpandEnvironmentVariables("%systemroot%\\system32\\mstsc.exe");
+                    return TryParseEnvVars(SuperPuTTY.Settings.RDPExe);
 
                 case ConnectionProtocol.WINCMD:
                     return Environment.ExpandEnvironmentVariables("%systemroot%\\system32\\cmd.exe");
@@ -63,7 +63,7 @@ namespace SuperPutty.Utils
             }
             else if (session.Proto == ConnectionProtocol.RDP)
             {
-                RDPStartInfo rdp = new RDPStartInfo(session);
+                RDPStartInfo rdp = new RDPStartInfo(session, this.Executable);
                 this.Args = rdp.Args;
                 this.WorkingDir = rdp.StartingDir;
             }
