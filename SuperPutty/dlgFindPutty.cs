@@ -54,6 +54,7 @@ namespace SuperPutty
             textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe, firstExecution);
             textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe, firstExecution);
             textBoxVNCLocation.Text = getPathExe(@"\TightVNC\tvnviewer.exe", SuperPuTTY.Settings.VNCExe, firstExecution);
+            textBoxRDPLocation.Text = getPathExe(Environment.ExpandEnvironmentVariables("%systemroot%\\system32\\mstsc.exe"), SuperPuTTY.Settings.RDPExe, firstExecution);
 
             // check for location of putty/pscp
             if (!String.IsNullOrEmpty(puttyExe) && File.Exists(puttyExe))
@@ -225,21 +226,28 @@ namespace SuperPutty
             {
                 return settingValue;
             }
-
-            if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("ProgramFiles(x86)")))
+            
+            if (pathInProgramFile.StartsWith("\\", StringComparison.CurrentCulture))
             {
-                if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles(x86)") + pathInProgramFile))
+                if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("ProgramFiles(x86)")))
                 {
-                    return Environment.GetEnvironmentVariable("ProgramFiles(x86)") + pathInProgramFile;
+                    if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles(x86)") + pathInProgramFile))
+                    {
+                        return Environment.GetEnvironmentVariable("ProgramFiles(x86)") + pathInProgramFile;
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("ProgramFiles")))
+                {
+                    if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles") + pathInProgramFile))
+                    {
+                        return Environment.GetEnvironmentVariable("ProgramFiles") + pathInProgramFile;
+                    }
                 }
             }
-
-            if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("ProgramFiles")))
+            else if (File.Exists(pathInProgramFile)) /* Absolute path */
             {
-                if (File.Exists(Environment.GetEnvironmentVariable("ProgramFiles") + pathInProgramFile))
-                {
-                    return Environment.GetEnvironmentVariable("ProgramFiles") + pathInProgramFile;
-                }
+                return pathInProgramFile;
             }
 
             return "";
@@ -301,6 +309,11 @@ namespace SuperPutty
             if (String.IsNullOrEmpty(textBoxVNCLocation.Text) || File.Exists(textBoxVNCLocation.Text))
             {
                 SuperPuTTY.Settings.VNCExe = textBoxVNCLocation.Text;
+            }
+
+            if (String.IsNullOrEmpty(textBoxRDPLocation.Text) || File.Exists(textBoxRDPLocation.Text))
+            {
+                SuperPuTTY.Settings.RDPExe = textBoxRDPLocation.Text;
             }
 
             string settingsDir = textBoxSettingsFolder.Text;
@@ -442,6 +455,11 @@ namespace SuperPutty
             dialogBrowseExe("tvnviewer|tvnviewer.exe;vncviewer.exe;vncviewer64.exe", "tvnviewer.exe", textBoxVNCLocation);
         }
 
+        private void btnBrowseRDP_Click(object sender, EventArgs e)
+        {
+            dialogBrowseExe("RDP Client|mstsc.exe;wfreerdp.exe", "mstsc.exe", textBoxRDPLocation);
+        }
+
         private void dialogBrowseExe(String filter, string filename, TextBox textbox)
         {
             openFileDialog1.Filter = filter;
@@ -459,22 +477,28 @@ namespace SuperPutty
 
         }
 
-        //Search automaticaly the path of FileZilla when doubleClick when it is empty
+        //Search automatically the path of FileZilla when doubleClick when it is empty
         private void textBoxFilezillaLocation_DoubleClick(object sender, EventArgs e)
         {
             textBoxFilezillaLocation.Text = getPathExe(@"\FileZilla FTP Client\filezilla.exe", SuperPuTTY.Settings.FileZillaExe, true);
         }
 
-        //Search automaticaly the path of WinSCP when doubleClick when it is empty
+        //Search automatically the path of WinSCP when doubleClick when it is empty
         private void textBoxWinSCPLocation_DoubleClick(object sender, EventArgs e)
         {
             textBoxWinSCPLocation.Text = getPathExe(@"\WinSCP\WinSCP.exe", SuperPuTTY.Settings.WinSCPExe, true);
         }
 
-        //Search automaticaly the path of WinSCP when doubleClick when it is empty
+        //Search automatically the path of VNC when doubleClick when it is empty
         private void textBoxVNCLocation_DoubleClick(object sender, EventArgs e)
         {
             textBoxVNCLocation.Text = getPathExe(@"\TightVNC\tvnviewer.exe", SuperPuTTY.Settings.VNCExe, true);
+        }
+
+        //Search automatically the path of RDP when doubleClick when it is empty
+        private void textBoxRDPLocation_DoubleClick(object sender, EventArgs e)
+        {
+            textBoxRDPLocation.Text = getPathExe(Environment.ExpandEnvironmentVariables("%systemroot%\\system32\\mstsc.exe"), SuperPuTTY.Settings.RDPExe, true);
         }
 
 
