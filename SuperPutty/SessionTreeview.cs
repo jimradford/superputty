@@ -77,6 +77,7 @@ namespace SuperPutty
         public SessionTreeview(DockPanel dockPanel)
         {
             m_DockPanel = dockPanel;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             InitializeComponent();
             this.treeView1.TreeViewNodeSorter = this;
             this.treeView1.HideSelection = false;
