@@ -45,7 +45,11 @@ namespace SuperPutty
 
         public dlgFindPutty()
         {
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+
             InitializeComponent();
+
+            FixDpiScalingIssues();
 
             string puttyExe = SuperPuTTY.Settings.PuttyExe;
             string pscpExe = SuperPuTTY.Settings.PscpExe;
@@ -209,6 +213,12 @@ namespace SuperPutty
                 this.Shortcuts.Add(ks);
             }
             this.dataGridViewShortcuts.DataSource = this.Shortcuts;
+        }
+
+        private void FixDpiScalingIssues()
+        {
+            this.colEdit.Width = DpiUtils.ScaleWidth(this.colEdit.Width);
+            this.colClear.Width = DpiUtils.ScaleWidth(this.colClear.Width);
         }
 
 

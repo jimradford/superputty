@@ -96,6 +96,8 @@ namespace SuperPutty
 
             InitializeComponent();
 
+            FixDpiScalingIssues();
+
             // force toolbar locations...designer likes to flip them around
             this.tsConnect.Location = new System.Drawing.Point(0, 24);
             this.tsCommands.Location = new System.Drawing.Point(0, 49);
@@ -190,6 +192,19 @@ namespace SuperPutty
 
             this.tsCommands.ImageList = SuperPuTTY.ImagesWithStop;
             this.toolStripButtonChooseIconGroup.ImageKey = "stop";
+        }
+
+        private void FixDpiScalingIssues()
+        {
+            this.tbComboProtocol.Size = DpiUtils.ScaleSize(this.tbComboProtocol.Size);
+            this.tbComboProtocol.DropDownWidth = DpiUtils.ScaleWidth(this.tbComboProtocol.DropDownWidth);
+            this.tbTxtBoxHost.Size = DpiUtils.ScaleSize(this.tbTxtBoxHost.Size);
+            this.tbTxtBoxLogin.Size = DpiUtils.ScaleSize(this.tbTxtBoxLogin.Size);
+            this.tbTxtBoxPassword.Size = DpiUtils.ScaleSize(this.tbTxtBoxPassword.Size);
+            this.tbComboSession.Size = DpiUtils.ScaleSize(this.tbComboSession.Size);
+
+            this.tsSendCommandCombo.Size = DpiUtils.ScaleSize(this.tsSendCommandCombo.Size);
+            this.tsSendCommandCombo.DropDownWidth = DpiUtils.ScaleWidth(this.tsSendCommandCombo.DropDownWidth);
         }
 
         private void TsCommandHistory_ListChanged(object sender, ListChangedEventArgs e)
