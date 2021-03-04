@@ -1162,7 +1162,7 @@ namespace SuperPutty
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
-            else if (e.Control && e.KeyCode != Keys.ControlKey)
+            else if (e.Control && e.KeyCode != Keys.ControlKey && !e.Alt)
             {
                 // special keys
                 TrySendCommandsFromToolbar(new CommandData(e), !this.tbBtnMaskText.Checked);
