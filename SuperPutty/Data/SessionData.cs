@@ -33,6 +33,8 @@ using System.Drawing.Design;
 using System.Drawing;
 using SuperPutty.Utils;
 using System.Web;
+using System.Text.RegularExpressions;
+using System.Net;
 
 namespace SuperPutty.Data
 {
@@ -268,6 +270,41 @@ namespace SuperPutty.Data
             }
         }
 
+        private string m_CollectionID = string.Empty;
+
+        /// <summary>
+        /// The ID of the collection. Includes path for session tree. e.g. FolderName/{{CollectionItemID}}/SessionName
+        /// </summary>
+        [XmlAttribute]
+        [DisplayName("Collection ID")]
+        [Description("The id of the collection to import")]
+        public string CollectionID
+        {
+            get { return m_CollectionID; }
+            set
+            {
+                UpdateField(ref m_CollectionID, value, "CollectionID");
+            }
+        }
+
+        private string m_CollectionLocation = string.Empty;
+
+        /// <summary>
+        /// The URL or FilePath of the collection. Will read in the file at this location, and insert the
+        /// SessionData included in that file.
+        /// </summary>
+        [XmlAttribute]
+        [DisplayName("Collection Location")]
+        [Description("The URL or File Path of the session XML file to import")]
+        public string CollectionLocation
+        {
+            get { return m_CollectionLocation; }
+            set
+            {
+                UpdateField(ref m_CollectionLocation, value, "CollectionLocation");
+            }
+        }
+
 
         [XmlAttribute]
         [DisplayName("Remote Path")]
@@ -353,25 +390,101 @@ namespace SuperPutty.Data
         }
 
         /// <summary>Load session configuration data from the specified XML file</summary>
-        /// <param name="fileName">The filename containing the settings</param>
-        public static List<SessionData> LoadSessionsFromFile(string fileName)
+        /// <param name="location">The filename or URL containing the settings</param>
+        public static List<SessionData> LoadSessionsFromFile(string location)
         {
             List<SessionData> sessions = new List<SessionData>();
-            if (File.Exists(fileName))
-            {
-                WorkaroundCygwinBug();
 
-                XmlSerializer s = new XmlSerializer(sessions.GetType());
-                using (TextReader r = new StreamReader(fileName))
+            WorkaroundCygwinBug();
+            XmlSerializer s = new XmlSerializer(sessions.GetType());
+
+            if (Regex.IsMatch(location, @"^https?:\/\/", RegexOptions.IgnoreCase))
+            {
+                try
                 {
-                    sessions = (List<SessionData>)s.Deserialize(r);
+                    var uri = new Uri(location);
+                    HttpWebRequest req = WebRequest.CreateHttp(uri);
+                    var response = req.GetResponse();
+                    using (StreamReader r = new StreamReader(response.GetResponseStream()))
+                    {
+                        sessions = (List<SessionData>)s.Deserialize(r);
+                    }
+                    Log.InfoFormat("Loaded {0} sessions from {1}", sessions.Count, location);
+
+                    //convert any relative paths to absolute paths based on the URL of the parent file
+                    foreach(var session in sessions)
+                    {
+                        if(!string.IsNullOrEmpty(session.SPSLFileName))
+                        {
+                            session.SPSLFileName = new Uri(uri, session.SPSLFileName).ToString();
+                        }
+                        
+                        if(!string.IsNullOrEmpty(session.CollectionLocation))
+                        {
+                            session.SPSLFileName = new Uri(uri, session.CollectionLocation).ToString();
+                        }
+                    }
                 }
-                Log.InfoFormat("Loaded {0} sessions from {1}", sessions.Count, fileName);
+                catch (Exception ex)
+                {
+                    Log.WarnFormat("Could not load sessions, URL did not return a success status code. file={0}", location);
+                }
             }
             else
             {
-                Log.WarnFormat("Could not load sessions, file doesn't exist.  file={0}", fileName);
+                if (location.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
+                {
+                    location = location.Substring("file://".Length);
+                }
+
+                if (File.Exists(location))
+                {
+                    using (StreamReader r = new StreamReader(location))
+                    {
+                        sessions = (List<SessionData>)s.Deserialize(r);
+                    }
+                    Log.InfoFormat("Loaded {0} sessions from {1}", sessions.Count, location);
+                }
+                else
+                {
+                    Log.WarnFormat("Could not load sessions, file doesn't exist.  file={0}", location);
+                }
             }
+
+            //If there are any collections specified, then load those in now
+            for(var i = 0; i < sessions.Count; i++)
+            {
+                if(!string.IsNullOrEmpty(sessions[i].CollectionLocation))
+                {
+                    var collectionLocation = sessions[i].CollectionLocation;
+                    var collectionName = sessions[i].CollectionID;
+
+                    if(!string.IsNullOrEmpty(collectionName))
+                    {
+                        collectionName = collectionName.Trim('/');
+                    }
+
+                    var sessionsToAdd = LoadSessionsFromFile(collectionLocation);
+
+                    sessions.RemoveAt(i);
+
+                    if(sessions.Count > 0)
+                    {
+                        foreach (var session in sessionsToAdd)
+                        {
+                            if(!string.IsNullOrEmpty(collectionName))
+                            {
+                                session.SessionId = collectionName + "/" + session.SessionId.TrimStart('/');
+                            }
+
+                            sessions.Insert(i++, session);
+                        }
+                    }
+
+                    i--;
+                }
+            }
+
             return sessions;
         }
 
