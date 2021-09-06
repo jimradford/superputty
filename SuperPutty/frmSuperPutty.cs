@@ -90,7 +90,6 @@ namespace SuperPutty
         /// <summary>The main SuperPuTTY application form</summary>
         public frmSuperPutty()
         {
-            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             // Verify Putty is set; Prompt user if necessary; exit otherwise
             dlgFindPutty.PuttyCheck();
 
