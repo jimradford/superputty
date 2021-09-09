@@ -19,6 +19,7 @@
  * THE SOFTWARE.
  */
 
+using System;
 using System.Windows.Forms;
 using SuperPutty.Utils;
 
@@ -32,7 +33,7 @@ namespace SuperPuTTY.Scripting
         internal static CommandData SendLineHandler(string arg)
         {
             // TODO: parse the arguments and replace and variables with customized data
-            CommandData data = new CommandData(arg, new KeyEventArgs(Keys.Enter));
+            CommandData data = new CommandData(arg, new KeyEventArgs(Keys.Enter), TimeSpan.FromMilliseconds(50));
             return data;
         }
     }
