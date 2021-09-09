@@ -36,6 +36,8 @@ using System.Text.RegularExpressions;
 using System.Drawing;
 using SuperPutty.Scp;
 using SuperPuTTY.Scripting;
+using System.Web;
+using System.Net;
 
 namespace SuperPutty
 {
@@ -490,12 +492,43 @@ namespace SuperPutty
                     panel.Show(MainForm.DockPanel, session.LastDockstate);
                     ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
 
-                    if (!String.IsNullOrEmpty(session.SPSLFileName)
-                        && File.Exists(session.SPSLFileName))
+                    if (!String.IsNullOrWhiteSpace(session.SPSLFileName))
                     {
-                        ExecuteScriptEventArgs scriptArgs = new ExecuteScriptEventArgs() { Script = File.ReadAllText(session.SPSLFileName), Handle = panel.AppPanel.AppWindowHandle };
-                        if (!String.IsNullOrEmpty(scriptArgs.Script))
+                        String fileName = session.SPSLFileName;
+                        String script = String.Empty;
+
+                        if(Regex.IsMatch(fileName, @"^https?:\/\/", RegexOptions.IgnoreCase))
                         {
+                            try
+                            {
+                                HttpWebRequest req = WebRequest.CreateHttp(fileName);
+                                var response = req.GetResponse();
+                                using (var stream = new StreamReader(response.GetResponseStream()))
+                                {
+                                    script = stream.ReadToEnd();
+                                }
+                            }
+                            catch(Exception)
+                            {
+                                script = String.Empty;
+                            }
+                        }
+                        else
+                        {
+                            if (fileName.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
+                            {
+                                fileName = fileName.Substring("file://".Length);
+                            }
+
+                            if (File.Exists(fileName))
+                            {
+                                script = File.ReadAllText(fileName);
+                            }
+                        }
+
+                        if (!String.IsNullOrEmpty(script))
+                        {
+                            ExecuteScriptEventArgs scriptArgs = new ExecuteScriptEventArgs() { Script = script, Handle = panel.AppPanel.AppWindowHandle };
                             SPSL.BeginExecuteScript(scriptArgs);
                         }
                     }

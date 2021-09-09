@@ -187,12 +187,14 @@ namespace SuperPutty.Utils
                 if (UseRoamingSettings(setting))
                 {
                     XmlNode node = SettingsXML.SelectSingleNode(SettingsRoot + "/" + setting.Name);
+                    
                     if (node == null)
                     {
                         // try go by host...backwards compatibility
                         node = SettingsXML.SelectSingleNode(SettingsRoot + "/" + GetHostName() + "/" + setting.Name);
                     }
-                    value = node.InnerText;
+
+                    value = node?.InnerText ?? String.Empty;
                 }
                 else
                 {

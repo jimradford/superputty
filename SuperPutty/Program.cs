@@ -49,6 +49,8 @@ namespace SuperPutty
         [STAThread]
         static void Main(string[] args)
         {
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+
             // send log to console
             log4net.Config.BasicConfigurator.Configure();
 
