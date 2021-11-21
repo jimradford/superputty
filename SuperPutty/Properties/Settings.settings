@@ -38,7 +38,7 @@
     <Setting Name="ShowStatusBar" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-     <Setting Name="ShowLogViewerTool" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
+    <Setting Name="ShowLogViewerTool" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ShowToolBarConnections" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
@@ -149,46 +149,46 @@
     <Setting Name="ShowMenuBar" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="PscpHomePrefix" Type="System.String" Scope="User">
+    <Setting Name="PscpHomePrefix" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)">/home/</Value>
     </Setting>
-    <Setting Name="AutoUpdateCheck" Type="System.Boolean" Scope="User">
+    <Setting Name="AutoUpdateCheck" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="PscpRootHomePrefix" Type="System.String" Scope="User">
+    <Setting Name="PscpRootHomePrefix" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)">/</Value>
     </Setting>
-    <Setting Name="Action_OpenScriptEditor_Shortcut" Type="System.Windows.Forms.Keys" Scope="User">
+    <Setting Name="Action_OpenScriptEditor_Shortcut" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Windows.Forms.Keys" Scope="User">
       <Value Profile="(Default)">None</Value>
     </Setting>
-    <Setting Name="SessiontreeShowFoldersFirst" Type="System.Boolean" Scope="User">
+    <Setting Name="SessiontreeShowFoldersFirst" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="FileZillaExe" Type="System.String" Scope="User">
+    <Setting Name="FileZillaExe" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="WinSCPExe" Type="System.String" Scope="User">
+    <Setting Name="WinSCPExe" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="PersistCommandBarHistory" Type="System.Boolean" Scope="User">
+    <Setting Name="PersistCommandBarHistory" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="AllowPlainTextPuttyPasswordArg" Type="System.Boolean" Scope="User">
+    <Setting Name="AllowPlainTextPuttyPasswordArg" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="PuttyDefaultParameters" Type="System.String" Scope="User">
+    <Setting Name="PuttyDefaultParameters" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="SaveCommandHistoryDays" Type="System.Int32" Scope="User">
+    <Setting Name="SaveCommandHistoryDays" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="CommandBarHistory" Type="System.String" Scope="User">
+    <Setting Name="CommandBarHistory" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Action_RenameTab_Shortcut" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Windows.Forms.Keys" Scope="User">
       <Value Profile="(Default)">None</Value>
     </Setting>
-    <Setting Name="FilterSessionsOnChange" Type="System.Boolean" Scope="User">
+    <Setting Name="FilterSessionsOnChange" Provider="SuperPutty.Utils.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
