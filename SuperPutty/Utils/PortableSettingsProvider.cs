@@ -180,7 +180,7 @@ namespace SuperPutty.Utils
 
         private string GetValue(SettingsProperty setting)
         {
-            string value = String.Empty;
+            string value = setting.DefaultValue.ToString();
 
             try
             {
@@ -194,7 +194,7 @@ namespace SuperPutty.Utils
                         node = SettingsXML.SelectSingleNode(SettingsRoot + "/" + GetHostName() + "/" + setting.Name);
                     }
 
-                    value = node != null ? (node.InnerText ?? String.Empty) : String.Empty;
+                    value = node != null ? (node.InnerText ?? String.Empty) : setting.DefaultValue.ToString();
                 }
                 else
                 {
