@@ -425,7 +425,7 @@ namespace SuperPutty.Data
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Log.WarnFormat("Could not load sessions, URL did not return a success status code. file={0}", location);
                 }
@@ -524,7 +524,7 @@ namespace SuperPutty.Data
                         sessionData.LocalPath = "";
                         sessions.Add(sessionData);
                     }
-                    catch (Exception exp)
+                    catch (Exception)
                     {
                         Log.WarnFormat("Could not load session {0}", sessionName);
                     }

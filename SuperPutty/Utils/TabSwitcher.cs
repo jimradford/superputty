@@ -168,8 +168,7 @@ namespace SuperPutty.Utils
         public ToolWindow ActiveDocument { get { return (ToolWindow)this.DockPanel.ActiveDocument; } }
         public DockPanel DockPanel { get; private set; }
 
-        ITabSwitchStrategy tabSwitchStrategy;
-        ToolWindow currentDocument;
+        ITabSwitchStrategy tabSwitchStrategy;        
     }
     #endregion
 
