@@ -64,7 +64,6 @@ namespace SuperPutty
             this.tabControl1.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.SuspendLayout();
-
             // 
             // logoPictureBox
             // 
