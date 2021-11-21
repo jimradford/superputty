@@ -194,7 +194,7 @@ namespace SuperPutty.Utils
                         node = SettingsXML.SelectSingleNode(SettingsRoot + "/" + GetHostName() + "/" + setting.Name);
                     }
 
-                    value = node?.InnerText ?? String.Empty;
+                    value = node != null ? (node.InnerText ?? String.Empty) : String.Empty;
                 }
                 else
                 {
