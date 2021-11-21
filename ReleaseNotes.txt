@@ -1,10 +1,14 @@
-TRUNK (current / unreleased) 
+1.4.10
  - New Features from Sebastian Gemeiner
    * Win+Shift Handling (Multi Monitor Setup) 
    * Supports docking (Aero snap) by simulating key events to main form
    * Lazy loading for new session entries in context menu
  - Updated Docking Library to v3.0.6, Updated log4net library to v2.0.8, Switched to using Nuget Packages for third party libraries. [Maintenance]
  - Grammar correction in warning dialog when saving new sessions with a '-pw' parameter.
+ - Fix issue where multiple logfiles were being created Issue #830
+ - Log4Net dll updated due to security issue with previous version CVE-2018-1285 Issue #840
+ - Various fixes to Settings provider Issue #806
+ - Dozens of various fixes submitted by others: https://github.com/jimradford/superputty/pulls?q=is%3Apr+is%3Aclosed
 
 1.4.0.9
  - Fixes several bugs and feature updates since 1.4.0.8 See https://github.com/jimradford/superputty/compare/1.4.0.8...master for all 79 commits
