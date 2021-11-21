@@ -21,6 +21,7 @@
 
 using System;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using log4net;
 
@@ -35,6 +36,8 @@ namespace SuperPutty.Utils
         public string Command { get; private set; }
         /// <summary>Get the keystrokes to send</summary>
         public KeyEventArgs KeyData { get; private set; }
+
+        public TimeSpan Delay { get; private set; }
 
         /// <summary>Construct a new <seealso cref="CommandData"/> object, specifying a command to send</summary>
         /// <param name="command">A string containing the command to send</param>
@@ -58,7 +61,18 @@ namespace SuperPutty.Utils
             this.Command = command;
             this.KeyData = keys;
         }
-        
+
+        /// <summary>Construct a new <seealso cref="CommandData"/> object, specifying both a command and keyboard keystrokes to send</summary>
+        /// /// <param name="command">A string containing the command to send</param>
+        /// <param name="keys">A <seealso cref="KeyEventArgs"/> object containing the keyboard keystrokes</param>
+        /// <param name="delay">How long we should wait before executing next command</param>
+        public CommandData(string command, KeyEventArgs keys, TimeSpan delay)
+        {
+            this.Command = command;
+            this.KeyData = keys;
+            this.Delay = delay;
+        }
+
         /// <summary>Send commands and keystrokes to the specified session</summary>
         /// <param name="handle">The Windows Handle to send to</param>
         public void SendToTerminal(int handle)
@@ -70,7 +84,7 @@ namespace SuperPutty.Utils
                 foreach (Char c in this.Command)
                 {
                     NativeMethods.SendMessage(handle, NativeMethods.WM_CHAR, (int)c, 0);
-                }                
+                }
             }
 
             if (this.KeyData != null)
@@ -84,7 +98,12 @@ namespace SuperPutty.Utils
 
                 if (this.KeyData.Shift) { NativeMethods.PostMessage(handle, NativeMethods.WM_KEYUP, NativeMethods.VK_SHIFT, 0); }
                 if (this.KeyData.Control) { NativeMethods.PostMessage(handle, NativeMethods.WM_KEYUP, NativeMethods.VK_CONTROL, 0); }
-            }            
+            }
+
+            if (this.Delay > TimeSpan.Zero)
+            {
+                Thread.Sleep(this.Delay);
+            }
         }
         
         public override string ToString()

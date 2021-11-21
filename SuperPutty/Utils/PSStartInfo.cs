@@ -1,7 +1,7 @@
-﻿/*
- * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
+/*
+ * Copyright (c) 2017 Anish Sane https://stackoverflow.com/users/793796/anishsane
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"}, to deal
+ * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -20,21 +20,33 @@
  */
 
 using System;
-using System.Windows.Forms;
-using SuperPutty.Utils;
+using log4net;
+using SuperPutty.Data;
+using System.Text.RegularExpressions;
+using System.IO;
 
-namespace SuperPuTTY.Scripting
+namespace SuperPutty.Utils
 {
-    public static partial class Commands
+
+    /// <summary>
+    /// Helper class for PS support
+    /// </summary>
+    public class PSStartInfo
     {
-        /// <summary>Send a string to a terminal containing commands</summary>
-        /// <param name="arg">The pre-parsed string to send</param>
-        /// <returns>A string containing commands to send with variables replaced with a carriage return sent at the end</returns>
-        internal static CommandData SendLineHandler(string arg)
+        private static readonly ILog Log = LogManager.GetLogger(typeof(PSStartInfo));
+
+        private SessionData session;
+
+        public PSStartInfo(SessionData session)
         {
-            // TODO: parse the arguments and replace and variables with customized data
-            CommandData data = new CommandData(arg, new KeyEventArgs(Keys.Enter), TimeSpan.FromMilliseconds(50));
-            return data;
+            this.session = session;
+            this.Args = "";
+
+            this.StartingDir = "%userprofile%";
         }
+
+        public string Args { get; set; }
+        public string StartingDir { get; set; }
+
     }
 }

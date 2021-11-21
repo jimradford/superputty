@@ -37,18 +37,34 @@ namespace SuperPutty.Utils
 
         private SessionData session;
 
-        public RDPStartInfo(SessionData session)
+        public RDPStartInfo(SessionData session, String binName)
         {
             this.session = session;
-            this.Args = "-v:" + session.Host;
+            if (binName.EndsWith("\\wfreerdp.exe"))
+            {
+                this.Args = "/cert-ignore /size:1920x1080 +window-drag /disp /workarea /network:wan +auto-reconnect /auto-reconnect-max-retries:0 +bitmap-cache /v:" + session.Host;
 
-            if (session.Port != 0)
-                this.Args += ":" + session.Port.ToString() + " ";
+                if (session.Port != 0)
+                    this.Args += ":" + session.Port.ToString() + " ";
+                
+                if (session.Username != "")
+                    this.Args += "/u:"+session.Username;
 
-            if (!String.IsNullOrEmpty(session.ExtraArgs))
-                this.Args += session.ExtraArgs + " ";
+                if (!String.IsNullOrEmpty(session.ExtraArgs))
+                    this.Args += session.ExtraArgs + " ";
+            }
+            else
+            {
+                this.Args = "-v:" + session.Host;
 
-            this.Args += "/span";
+                if (session.Port != 0)
+                    this.Args += ":" + session.Port.ToString() + " ";
+
+                if (!String.IsNullOrEmpty(session.ExtraArgs))
+                    this.Args += session.ExtraArgs + " ";
+
+                this.Args += "/span";
+            }
 
             this.StartingDir = "%userprofile%\\Desktop";
         }

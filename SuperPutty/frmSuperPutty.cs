@@ -90,11 +90,12 @@ namespace SuperPutty
         /// <summary>The main SuperPuTTY application form</summary>
         public frmSuperPutty()
         {
-            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             // Verify Putty is set; Prompt user if necessary; exit otherwise
             dlgFindPutty.PuttyCheck();
 
             InitializeComponent();
+
+            FixDpiScalingIssues();
 
             // force toolbar locations...designer likes to flip them around
             this.tsConnect.Location = new System.Drawing.Point(0, 24);
@@ -112,7 +113,7 @@ namespace SuperPutty
             // tool windows
             this.sessions = new SingletonToolWindowHelper<SessionTreeview>("Sessions", this.DockPanel, null, x => new SessionTreeview(x.DockPanel));
             this.layouts = new SingletonToolWindowHelper<LayoutsList>("Layouts", this.DockPanel);
-            this.logViewer = new SingletonToolWindowHelper<Log4netLogViewer>("Log Viewer", this.DockPanel);
+            this.logViewer = new SingletonToolWindowHelper<Log4netLogViewer>("Log Viewer", this.DockPanel, null, null, this.showLogViewerToolStripMenuItem);
             this.sessionDetail = new SingletonToolWindowHelper<SessionDetail>("Session Detail", this.DockPanel, this.sessions,
                                                                               x => {
                                                                                   return new SessionDetail(x.InitializerResource as SingletonToolWindowHelper<SessionTreeview>);
@@ -190,6 +191,19 @@ namespace SuperPutty
 
             this.tsCommands.ImageList = SuperPuTTY.ImagesWithStop;
             this.toolStripButtonChooseIconGroup.ImageKey = "stop";
+        }
+
+        private void FixDpiScalingIssues()
+        {
+            this.tbComboProtocol.Size = DpiUtils.ScaleSize(this.tbComboProtocol.Size);
+            this.tbComboProtocol.DropDownWidth = DpiUtils.ScaleWidth(this.tbComboProtocol.DropDownWidth);
+            this.tbTxtBoxHost.Size = DpiUtils.ScaleSize(this.tbTxtBoxHost.Size);
+            this.tbTxtBoxLogin.Size = DpiUtils.ScaleSize(this.tbTxtBoxLogin.Size);
+            this.tbTxtBoxPassword.Size = DpiUtils.ScaleSize(this.tbTxtBoxPassword.Size);
+            this.tbComboSession.Size = DpiUtils.ScaleSize(this.tbComboSession.Size);
+
+            this.tsSendCommandCombo.Size = DpiUtils.ScaleSize(this.tsSendCommandCombo.Size);
+            this.tsSendCommandCombo.DropDownWidth = DpiUtils.ScaleWidth(this.tsSendCommandCombo.DropDownWidth);
         }
 
         private void TsCommandHistory_ListChanged(object sender, ListChangedEventArgs e)
@@ -533,6 +547,7 @@ namespace SuperPutty
             SuperPuTTY.Settings.ShowToolBarCommands = this.sendCommandsToolStripMenuItem.Checked;
             SuperPuTTY.Settings.AlwaysOnTop = this.alwaysOnTopToolStripMenuItem.Checked;
             SuperPuTTY.Settings.ShowMenuBar = this.showMenuBarToolStripMenuItem.Checked;
+            SuperPuTTY.Settings.ShowLogViewerTool = this.showLogViewerToolStripMenuItem.Checked;
 
             SuperPuTTY.Settings.Save();
 
@@ -556,6 +571,12 @@ namespace SuperPutty
 
             this.menuStrip1.Visible = SuperPuTTY.Settings.ShowMenuBar;
             this.showMenuBarToolStripMenuItem.Checked = SuperPuTTY.Settings.ShowMenuBar;
+
+            if (SuperPuTTY.Settings.ShowLogViewerTool)
+                this.ShowLogViewer();
+            else
+                this.logViewer.Hide();
+            this.showLogViewerToolStripMenuItem.Checked = SuperPuTTY.Settings.ShowLogViewerTool;
         }
 
         private void sessionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -571,7 +592,7 @@ namespace SuperPutty
             }
         }
 
-        private void logViewerToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ShowLogViewer()
         {
             this.logViewer.ShowWindow(DockState.DockBottom);
         }
@@ -667,8 +688,9 @@ namespace SuperPutty
                 this.ConnectionBar = this.MainForm.quickConnectionToolStripMenuItem.Checked;
                 this.CommandBar = this.MainForm.sendCommandsToolStripMenuItem.Checked;
 
+                this.LogWindow = this.MainForm.showLogViewerToolStripMenuItem.Checked;
+
                 this.SessionsWindow = this.MainForm.sessions.IsVisible;
-                this.LogWindow = this.MainForm.logViewer.IsVisible;
                 this.LayoutWindow = this.MainForm.layouts.IsVisible;
                 this.SessionDetail = this.MainForm.sessionDetail.IsVisible;
 
@@ -688,6 +710,9 @@ namespace SuperPutty
                     this.MainForm.layouts.Hide();
                     this.MainForm.logViewer.Hide();
                     this.MainForm.sessionDetail.Hide();
+
+                    // log window
+                    this.MainForm.logViewer.Hide();
 
                     // status bar
                     this.MainForm.statusStrip1.Hide();
@@ -726,8 +751,10 @@ namespace SuperPutty
                     // windows
                     if (this.SessionsWindow) { this.MainForm.sessions.Restore(); }
                     if (this.LayoutWindow) { this.MainForm.layouts.Restore(); }
-                    if (this.LogWindow) { this.MainForm.logViewer.Restore(); }
                     if (this.SessionDetail) { this.MainForm.sessionDetail.Restore(); }
+
+                    // log window
+                    if (this.LogWindow) { this.MainForm.ShowLogViewer(); }
 
                     // status bar
                     if (this.StatusBar) { this.MainForm.statusStrip1.Show(); }
@@ -1134,7 +1161,7 @@ namespace SuperPutty
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
-            else if (e.Control && e.KeyCode != Keys.ControlKey)
+            else if (e.Control && e.KeyCode != Keys.ControlKey && !e.Alt)
             {
                 // special keys
                 TrySendCommandsFromToolbar(new CommandData(e), !this.tbBtnMaskText.Checked);

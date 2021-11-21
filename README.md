@@ -1,4 +1,5 @@
 # SuperPuTTY Application
+SuperPuTTY is a windows based application which manages putty ssh terminals. Additionally it has a simple scripting language for basic tasks. It additionally support RDP sessions.
 
 ### License
 MIT

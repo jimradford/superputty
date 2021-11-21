@@ -178,6 +178,19 @@ namespace SuperPutty.Properties {
                 this["ShowStatusBar"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowLogViewerTool {
+            get {
+                return ((bool)(this["ShowLogViewerTool"]));
+            }
+            set {
+                this["ShowLogViewerTool"] = value;
+            }
+        }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
@@ -254,6 +267,19 @@ namespace SuperPutty.Properties {
             }
             set {
                 this["VNCExe"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(SuperPutty.Utils.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RDPExe {
+            get {
+                return ((string)(this["RDPExe"]));
+            }
+            set {
+                this["RDPExe"] = value;
             }
         }
         

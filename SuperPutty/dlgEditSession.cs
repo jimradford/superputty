@@ -129,6 +129,7 @@ namespace SuperPutty
             this.protoTypesMap["VNC"] = ConnectionProtocol.VNC;
             this.protoTypesMap["RDP"] = ConnectionProtocol.RDP;
             this.protoTypesMap["Win CMD"] = ConnectionProtocol.WINCMD;
+            this.protoTypesMap["PowerShell"] = ConnectionProtocol.PS;
             foreach (System.Collections.DictionaryEntry protoEntry in this.protoTypesMap)
                 comboBoxProto.Items.Add(protoEntry.Key);
             comboBoxProto.SelectedItem = "SSH";
@@ -186,7 +187,7 @@ namespace SuperPutty
                 return;
 
             ConnectionProtocol proto = this.protoTypesMap.ContainsKey(comboBoxProto.SelectedItem) ? (ConnectionProtocol)this.protoTypesMap[comboBoxProto.SelectedItem] : ConnectionProtocol.SSH;
-            if (proto == ConnectionProtocol.Cygterm || proto == ConnectionProtocol.Mintty || proto == ConnectionProtocol.WINCMD)
+            if (proto == ConnectionProtocol.Cygterm || proto == ConnectionProtocol.Mintty || proto == ConnectionProtocol.WINCMD || proto == ConnectionProtocol.PS)
             {
                 this.textBoxPort.Enabled = false;
                 this.textBoxUsername.Enabled = false;
@@ -232,6 +233,7 @@ namespace SuperPutty
                     port = 3389;
                     break;
                 case ConnectionProtocol.WINCMD:
+                case ConnectionProtocol.PS:
                     port = 0;
                     break;
             }
@@ -303,7 +305,7 @@ namespace SuperPutty
             if (!Int32.TryParse(this.textBoxPort.Text, out val))
             {
                 if (this.textBoxPort.Text == "")
-                    if (proto == ConnectionProtocol.Mintty || proto == ConnectionProtocol.Cygterm || proto == ConnectionProtocol.RDP || proto == ConnectionProtocol.WINCMD)
+                    if (proto == ConnectionProtocol.Mintty || proto == ConnectionProtocol.Cygterm || proto == ConnectionProtocol.RDP || proto == ConnectionProtocol.WINCMD || proto == ConnectionProtocol.PS)
                         return;
 
                 e.Cancel = true;
