@@ -97,9 +97,6 @@ namespace SuperPutty
 
             FixDpiScalingIssues();
 
-            var theme = new VS2005Theme(); 
-            this.DockPanel.Theme = theme;
-
             // force toolbar locations...designer likes to flip them around
             this.tsConnect.Location = new System.Drawing.Point(0, 24);
             this.tsCommands.Location = new System.Drawing.Point(0, 49);
