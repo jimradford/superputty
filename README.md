@@ -10,7 +10,7 @@ For additional License information please read the License.txt included with the
 For issue tracking, documentation and downloads please visit the SuperPuTTY Project on Github
 https://github.com/jimradford/superputty
 
-### Latest Releases [![Downloads (Latest Release)](https://img.shields.io/github/downloads/jimradford/superputty/latest/total)](https://github.com/jimradford/superputty/releases/latest) ![GitHub all releases](https://img.shields.io/github/downloads/jimradford/superputty/total?label=total%20downloads)
+### Latest Releases [![Downloads (Latest Release)](https://img.shields.io/github/downloads/jimradford/superputty/latest/total?label=latest%20release%20downloads)](https://github.com/jimradford/superputty/releases/latest) ![GitHub all releases](https://img.shields.io/github/downloads/jimradford/superputty/total?label=total%20downloads)
   The latest release is available for download at https://github.com/jimradford/superputty/releases/latest 
 
   Previous releases can be found at https://github.com/jimradford/superputty/releases
