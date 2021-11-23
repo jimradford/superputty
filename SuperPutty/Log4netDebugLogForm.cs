@@ -26,7 +26,7 @@ namespace SuperPutty
             // start pulling log messages
             this.timerLogPull.Start();
 
-            Log.Info("Viewer Ready (" + log4net.AssemblyInfo.Version + ")");
+            Log.Info("Viewer Ready");
         }
 
         /// <summary>
