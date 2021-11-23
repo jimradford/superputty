@@ -95,6 +95,9 @@ namespace SuperPutty
 
             InitializeComponent();
 
+            var theme = new VS2005Theme();
+            this.DockPanel.Theme = theme;
+
             FixDpiScalingIssues();
 
             // force toolbar locations...designer likes to flip them around
