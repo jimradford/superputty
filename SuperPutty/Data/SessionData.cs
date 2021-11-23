@@ -51,7 +51,8 @@ namespace SuperPutty.Data
         VNC,
         RDP,
         WINCMD,
-        PS
+        PS,
+        SSHNet
     }
 
     /// <summary>The main class containing configuration settings for a session</summary>

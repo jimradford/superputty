@@ -68,6 +68,10 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Renci.SshNet, Version=2020.0.1.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\packages\SSH.NET.2020.0.1\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -92,6 +96,12 @@
     </Compile>
     <Compile Include="AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ctlSshNetPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ctlSshNetPanel.Designer.cs">
+      <DependentUpon>ctlSshNetPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\HistoryEntry.cs" />
     <Compile Include="Data\KeyboardShortcut.cs" />
@@ -169,6 +179,7 @@
     <Compile Include="Scp\RemoteBrowserModel.cs" />
     <Compile Include="Scripting\CloseSessionCommand.cs" />
     <Compile Include="Scripting\OpenSessionCommand.cs" />
+    <Compile Include="Scripting\PromptCommand.cs" />
     <Compile Include="Scripting\SendCharCommand.cs" />
     <Compile Include="Scripting\SendKeyCommand.cs" />
     <Compile Include="Scripting\SendLineCommand.cs" />
