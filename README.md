@@ -11,7 +11,7 @@ For issue tracking, documentation and downloads please visit the SuperPuTTY Proj
 https://github.com/jimradford/superputty
 
 ### Latest Releases
-The latest release is available for download at https://github.com/jimradford/superputty/releases/latest
+The latest release is available for download at https://github.com/jimradford/superputty/releases/latest [![Github All Releases](https://img.shields.io/github/downloads/jimradford/superputty/total.svg)]()
 
 Previous releases can be found at https://github.com/jimradford/superputty/releases
 
