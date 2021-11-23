@@ -105,7 +105,13 @@
       <Component Id="ProductLibUI">
         <File Source="$(var.SuperPutty.TargetDir)\WeifenLuo.WinFormsUI.Docking.dll" />
       </Component>
-    </ComponentGroup>
+      <Component Id="ProductLibSSH">
+        <File Source="$(var.SuperPutty.TargetDir)\Renci.SshNet.dll" />
+      </Component>
+      <Component Id="ProductLibUITheme">
+        <File Source="$(var.SuperPutty.TargetDir)\WeifenLuo.WinFormsUI.Docking.ThemeVS2005.dll" />
+      </Component>
+    </ComponentGroup>    
     <ComponentGroup Id="DefaultTheme" Directory="INSTALLTHEMEICONSFOLDER">
       <Component Id="ThemeIconFiles" Guid="C834A688-708A-4DE1-8B64-7582CFF47F7C">
         <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\application_osx_terminal.png" />
