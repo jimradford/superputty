@@ -152,7 +152,7 @@ namespace SuperPutty
             this.comboBoxProto.Name = "comboBoxProto";
             this.comboBoxProto.Size = new System.Drawing.Size(349, 21);
             this.comboBoxProto.TabIndex = 1;
-            this.comboBoxProto.SelectedIndexChanged += new System.EventHandler(this.comboBoxPuttyProfile_SelectedIndexChanged);
+            this.comboBoxProto.SelectedIndexChanged += new System.EventHandler(this.comboBoxProto_SelectedIndexChanged);
             this.comboBoxProto.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxPuttyProfile_Validating);
             // 
             // textBoxExtraArgs
