@@ -164,16 +164,12 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 this.MoveWindow("RestoreTabSwitch");
             if (this.ExternalProcessCaptured && NativeMethods.GetForegroundWindow() != this.m_AppWin)
             {
-                //Log.InfoFormat("[{0}] ReFocusPuTTY - puttyTab={1}, caller={2}", this.m_AppWin, this.Parent.Text, caller);
                 settingForeground = true;
                 result = NativeMethods.SetForegroundWindow(this.m_AppWin);
                 if (result)
                     NativeMethods.InvalidateRect(this.m_AppWin, IntPtr.Zero, false);
                 Log.InfoFormat("[{0}] ReFocusPuTTY - puttyTab={1}, caller={2}, result={3}", this.m_AppWin, this.Parent.Text, caller, result);
             }
-            //return (this.m_AppWin != null
-            //    && NativeMethods.GetForegroundWindow() != this.m_AppWin
-            //    && !NativeMethods.SetForegroundWindow(this.m_AppWin));
 
             return result;
         }
@@ -295,81 +291,6 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
             if (RefocusOnVisChanged && NativeMethods.GetForegroundWindow() != this.m_AppWin)
             {
                 this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY("OnVisChanged"); }));
-            }
-        }
-
-        private void __UNUSED_REFONLY_UpdateTrackedWindowHandle()
-        {
-            bool bNeedsUpdate = true;
-            if (this.b_AppWinFinal)
-                return;
-            switch (this.proto)
-            {
-                case SuperPutty.Data.ConnectionProtocol.RDP:
-                    Log.Info("Update track is called.");
-                    this.m_Process.Refresh();
-                    IntPtr winCandidate = this.m_Process.MainWindowHandle;
-                    Log.Info("Update, WinCnd="+((int)winCandidate));
-                    if (winCandidate == IntPtr.Zero || winCandidate == this.m_AppWin)
-                        break;
-                    NativeMethods.RECT rect = new NativeMethods.RECT();
-                    if (!NativeMethods.GetWindowRect(winCandidate, ref rect))
-                        break;
-                    int w = rect.Right - rect.Left;
-                    int h = rect.Bottom - rect.Top;
-                    Log.Info("Checking window handle [PID="+ this.m_Process.Id +"] to " + ((int)winCandidate) + ". Win size is " + w + "x" + h + ". Title is: " + this.m_Process.MainWindowTitle);
-                    if ((this.m_Process.MainWindowTitle.Contains(":") && this.m_Process.MainWindowTitle.Contains(" - Remote Desktop Connection")) /*|| (w >= 400 && h >= 120)*/) /* WIP - Heuristic using caption(Non-localized OS) or size for other cases, quite hacky till find better way */
-                    {
-                        //this.b_AppWinFinal = true;
-                        Log.Info("Updated window handle to " + ((int)winCandidate) + ". Win size is " + w + "x" + h + ". Title is: " + this.m_Process.MainWindowTitle);
-                        this.m_AppWin = winCandidate;
-                    }
-                    else if (this.m_Process.MainWindowTitle.Equals("Remote Desktop Connection") /*|| w < 400*/) /* RDP master process or auth dialog */
-                    {
-                        System.Threading.Thread.Sleep(5000);
-                        IntPtr childWin = NativeMethods.GetWindow(winCandidate, NativeMethods.GetWindowCmd.GW_CHILD);
-                        Log.Info("Got child win: " + ((int)childWin));
-                        StringBuilder childWinTitleBuf = new StringBuilder(256);
-                        int childWinTitleLen = NativeMethods.GetWindowText(childWin, childWinTitleBuf, childWinTitleBuf.Capacity - 1);
-                        if (childWinTitleLen > 0 && childWinTitleBuf.ToString().Contains(" - Remote Desktop Connection"))
-                        {
-                            this.b_AppWinFinal = true;
-                            Log.Info("Updated transitional child window handle to " + ((int)childWin) + ". Win size is " + w + "x" + h + ". Title is: " + this.m_Process.MainWindowTitle);
-                            this.m_AppWin = childWin;
-                        }
-                        else
-                        {
-                            //this.b_AppWinFinal = true;
-                            Log.Info("Updated transitional window handle to " + ((int)winCandidate) + ". Win size is " + w + "x" + h + ". Title is: " + this.m_Process.MainWindowTitle);
-                            this.m_AppWin = winCandidate;
-                        }
-                    }
-                    else
-                    {
-                        Log.Info("Updated transitional window handle 2 to " + ((int)winCandidate) + ". Win size is " + w + "x" + h + ". Title is: " + this.m_Process.MainWindowTitle);
-                        this.m_AppWin = winCandidate;
-                    }
-                    break;
-                default:
-                    this.b_AppWinFinal = true;
-                    bNeedsUpdate = false;
-                    break;
-            }
-
-            if (this.b_AppWinFinal && bNeedsUpdate)
-            {
-                this.AttachToWindow(); /* Must attach to the window */
-
-                if (this.Visible && this.m_Created && this.ExternalProcessCaptured)
-                {
-                    // Move the child so it's located over the parent
-                    this.MoveWindow("UpdateWindow");
-                    
-                    if (RefocusOnVisChanged && NativeMethods.GetForegroundWindow() != this.m_AppWin)
-                    {
-                        this.BeginInvoke(new MethodInvoker(delegate { this.ReFocusPuTTY("UpdateWindow"); }));
-                    }
-                }
             }
         }
 
