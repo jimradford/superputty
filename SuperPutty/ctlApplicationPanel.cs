@@ -152,7 +152,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 bool success = NativeMethods.MoveWindow(m_AppWin, x, y, this.Width, this.Height, this.Visible);
                 if (Log.IsInfoEnabled)
                 {
-                    Log.InfoFormat("MoveWindow [{3,-15}{4,20}] w={0,4}, h={1,4}, visible={2}, success={5}", this.Width, this.Height, this.Visible, src, this.Name, success);
+                    Log.InfoFormat("MoveWindow [{3,-15}{4,20}] w={0,4}, h={1,4}, visible={2}, success={5}, hnd={6}", this.Width, this.Height, this.Visible, src, this.Name, success, m_AppWin);
                 }
             }
         }
@@ -443,7 +443,7 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                 m_AppWin = IntPtr.Zero;
                 try
                 {
-                    if(!File.Exists(ApplicationName))
+                    if (!File.Exists(ApplicationName))
                     {
                         MessageBox.Show(ApplicationName + " not found in configured path, please go into tools->settings and set the correct path", "Application Not Found");
                         return;
@@ -454,7 +454,8 @@ DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
                         StartInfo =
                         {
                             FileName = ApplicationName,
-                            Arguments = ApplicationParameters
+                            Arguments = ApplicationParameters,
+                            WindowStyle = ProcessWindowStyle.Maximized
                         }
                     };
 
