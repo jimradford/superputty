@@ -102,6 +102,9 @@ namespace SuperPutty.Utils
                     case "-vnc":
                         this.Protocol = ConnectionProtocol.VNC;
                         break;
+                    case "-rdp":
+                        this.Protocol = ConnectionProtocol.RDP;     
+                        break; 
                     case "-scp":
                         this.UseScp = true;
                         break;
