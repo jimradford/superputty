@@ -1209,8 +1209,9 @@ namespace SuperPutty
         /// <summary>Send commands to open sessions</summary>
         /// <param name="command">The <seealso cref="CommandData"/> object containing text and or keyboard commands</param>
         /// <param name="saveHistory">If True, save the history in the command toolbar combobox</param>
+        /// <param name="isPythonScript">If True, send the command to the Python scripting engine</param>
         /// <returns>The number terminals commands have been sent to</returns>
-        private int TrySendCommandsFromToolbar(CommandData command, bool saveHistory)
+        private int TrySendCommandsFromToolbar(CommandData command, bool saveHistory, bool isPythonScript = false)
         {
             int sent = 0;
 
@@ -1231,8 +1232,17 @@ namespace SuperPutty
                             int handle = hPtr.ToInt32();
                             //Log.InfoFormat("SendCommand: session={0}, command=[{1}], handle={2}", panel.Session.SessionId, command, handle);
 
-                            command.SendToTerminal(handle);
-
+                            if (isPythonScript)
+                            {
+                                SPSL.BeginExecutePythonScript(
+                                    new ExecuteScriptEventArgs() { Script = command.Command, Handle = hPtr },
+                                    panel.Session);
+                            }
+                            else
+                            {
+                                command.SendToTerminal(handle);
+                            }
+                            
                             sent++;                 
                         }
                     }
@@ -1904,7 +1914,11 @@ namespace SuperPutty
                         }
                     }).Start();
                 }
-                else // Not a spsl script
+                else if (e.IsPython)
+                {
+                    TrySendCommandsFromToolbar(new CommandData(e.Script), false, true);
+                }
+                else // Not a spsl or Python script
                 {
                     foreach (string line in scriptlines)
                     {

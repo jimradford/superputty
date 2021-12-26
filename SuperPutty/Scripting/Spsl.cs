@@ -7,6 +7,9 @@ using System.Linq;
 using log4net;
 using SuperPutty;
 using SuperPutty.Utils;
+using SuperPutty.Data;
+using IronPython.Hosting;
+using Microsoft.Scripting.Hosting;
 
 namespace SuperPuTTY.Scripting
 {
@@ -105,6 +108,55 @@ namespace SuperPuTTY.Scripting
             }
         }
 
+        /// <summary>Create an Action for a given command (keyword) executed in the Python script</summary>
+        /// <param name="keyword">The keyword for the command (i.e. SENDLINE)</param>
+        /// <param name="scriptArgs">A <seealso cref="ExecuteScriptEventArgs"/> object containing the script to execute
+        /// and parameters</param>
+        public static Action<object> CreatePythonCommandAction(string keyword, ExecuteScriptEventArgs scriptArgs)
+        {
+            void CommandAction(object line)
+            {
+                CommandData command;
+                TryParseScriptLine(keyword + " " + line, out command);
+
+                if (command != null)
+                {
+                    command.SendToTerminal(scriptArgs.Handle.ToInt32());
+                }
+            }
+
+            return (CommandAction);
+        }
+        
+        /// <summary>Execute a SPSL script Async</summary>
+        /// <param name="scriptArgs">A <seealso cref="ExecuteScriptEventArgs"/> object containing the script to execute
+        /// and parameters</param>
+        /// <param name="session">The SessionData in which to execute in Python script</param>
+        public static void BeginExecutePythonScript(ExecuteScriptEventArgs scriptArgs, SessionData session)
+        {
+            new System.Threading.Thread(delegate()
+            {
+                ScriptEngine engine = Python.CreateEngine();
+
+                // Create a ScriptSource to encapsulate our program and a scope in which it runs
+                ScriptSource source = engine.CreateScriptSourceFromString(scriptArgs.Script);
+                ScriptScope scope = engine.CreateScope();
+                foreach (SPSLFunction spslFunction in keywords)
+                {
+                    scope.SetVariable(spslFunction.command, 
+                        CreatePythonCommandAction(spslFunction.command, scriptArgs));
+                }
+
+                if (session != null)
+                {
+                    scope.SetVariable("Session", session);
+                }
+
+                // Execute the script in 'scope'
+                source.Execute(scope);
+            }).Start();
+        }
+        
         /// <summary>Find Valid spsl script commands from lookup table and retrieve the Function to execute</summary>
         /// <param name="command">the SPSL command to lookup</param>
         /// <returns>The Function associated with the command or null of the command is invalid</returns>
