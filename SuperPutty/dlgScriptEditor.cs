@@ -80,7 +80,7 @@ namespace SuperPutty
     {
         /// <summary>A string containing a list of commands to be sent to open terminal sessions</summary>
         public string Script { get; set; }
-        /// <summary>True if the script should be handled by script parser</summary>
+        /// <summary>True if the script should be handled by SPSL script parser</summary>
         public bool IsSPSL {
             get
             {
@@ -92,6 +92,18 @@ namespace SuperPutty
             }
         }
 
+        /// <summary>True if the script should be handled by Python script parser</summary>
+        public bool IsPython {
+            get
+            {
+                if (!string.IsNullOrEmpty(this.Script)
+                    && this.Script.StartsWith("#!/bin/python"))
+                    return true;
+                else
+                    return false;
+            }
+        }
+        
         /// <summary>If set to the handle of a window, script will be restricted to the specified session only.</summary>
         public IntPtr Handle { get; set; }
     }

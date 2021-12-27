@@ -529,8 +529,15 @@ namespace SuperPutty
                         if (!String.IsNullOrEmpty(script))
                         {
                             ExecuteScriptEventArgs scriptArgs = new ExecuteScriptEventArgs() { Script = script, Handle = panel.AppPanel.AppWindowHandle };
-                            SPSL.BeginExecuteScript(scriptArgs);
-                        }
+                            
+                            if (scriptArgs.IsPython)
+                            {
+                                SPSL.BeginExecutePythonScript(scriptArgs, session);
+                            }
+                            else
+                            {
+                                SPSL.BeginExecuteScript(scriptArgs);
+                            }                        }
                     }
                 } catch (InvalidOperationException ex)
                 {
