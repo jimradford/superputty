@@ -6,6 +6,8 @@ using log4net;
 using System.Xml;
 using System.IO;
 using System.Linq;
+using IniParser;
+using IniParser.Model;
 
 namespace SuperPutty.Data
 {
@@ -27,7 +29,40 @@ namespace SuperPutty.Data
                 return key;
             }
         }
+
+        private static IniData GetIniDataIfEnabled()
+        {
+            // Ini suppoted Putty uses ini file (IniFile is Enabled) only when
+            // 1. "putty.ini" exists on the exe folder
+            string puttyIni = Path.ChangeExtension(SuperPuTTY.Settings.PuttyExe, ".ini");
+
+            if (File.Exists(puttyIni))
+            {
+                FileIniDataParser parser = new IniParser.FileIniDataParser();
+                IniData data = parser.ReadFile(puttyIni);
+
+                //  2. following Entry exists in putty.ini
+                //     [Generic]
+                //     UseIniFile=1
+                if (data["Generic"]["UseIniFile"] == "1")
+                {
+                    return data;
+                }
+            }
+            return null;
+        }
+
         public static List<string> GetSessionNames()
+        {
+            IniData data = GetIniDataIfEnabled();
+            if (data == null) {
+                return GetSessionNamesFromRegistry();
+            } else {
+                return GetSessionNamesFromIni(data);
+            }
+        }
+
+        private static List<string> GetSessionNamesFromRegistry()
         {
             List<string> names = new List<string> {SessionEmptySettings};
             RegistryKey key = RootAppKey;
@@ -45,7 +80,62 @@ namespace SuperPutty.Data
             return names;
         }
 
+        private static ConnectionProtocol? ParseIniProtocol(string proto_str)
+        {
+            proto_str = proto_str.ToLower().Replace("\"", "");
+            switch (proto_str) {
+                case "ssh":
+                    return ConnectionProtocol.SSH;
+                case "serial":
+                    return ConnectionProtocol.Serial;
+                case "telnet":
+                    return ConnectionProtocol.Telnet;
+                case "rlogin":
+                    return ConnectionProtocol.Rlogin;
+                case "raw":
+                    return ConnectionProtocol.Raw;            
+                default: // "supdup", "bare-ssh"
+                    return null; // not supported
+            }
+        }
+
+        public static List<string> GetSessionNamesFromIni(IniData data)
+        {
+            List<string> names = new List<string> {SessionEmptySettings};
+
+            SectionDataCollection sections = data.Sections;
+            foreach (SectionData section in sections)
+            {
+                string sectionName = section.SectionName;
+                if (sectionName.StartsWith("Session:"))
+                {
+                    string session_name = HttpUtility.UrlDecode(sectionName.Substring(8)/*"Len("Session:")*/);
+                    
+                    if (ParseIniProtocol(data[sectionName]["Protocol"]) == null)
+                        continue; // skip unsupported protocol session
+                    names.Add(session_name);
+                };
+            }
+
+            if (!names.Contains(SessionDefaultSettings))
+            {
+                names.Insert(1, SessionDefaultSettings);
+            }
+
+            return names;
+        }
+
         public static List<SessionData> GetAllSessionsFromPuTTY()
+        {
+            IniData data = GetIniDataIfEnabled();
+            if (data == null) {
+                return GetAllSessionsFromPuTTYRegistry();
+            } else {
+                return GetAllSessionsFromPuTTYIni(data);
+            }
+        }
+
+        private static List<SessionData> GetAllSessionsFromPuTTYRegistry()
         {
             List<SessionData> sessions = new List<SessionData>();
 
@@ -72,6 +162,37 @@ namespace SuperPutty.Data
                         };
                         sessions.Add(session);
                     }
+                }
+            }
+
+            return sessions;
+        }
+        private static List<SessionData> GetAllSessionsFromPuTTYIni(IniData data)
+        {
+            List<SessionData> sessions = new List<SessionData>();
+
+            SectionDataCollection sections = data.Sections;
+            foreach (SectionData section in sections)
+            {
+                string sectionName = section.SectionName;                
+                // parse "[Session:UrlEncodedSessionName]" sections only
+                if (sectionName.StartsWith("Session:"))
+                {
+                    string session_name = HttpUtility.UrlDecode(sectionName.Substring(8)/*Remove "Session:"*/);
+                    ConnectionProtocol? proto = ParseIniProtocol(section.Keys["Protocol"]);
+                    if (proto == null)
+                        continue; // skip unsupported protocol
+
+                    SessionData session = new SessionData
+                    {
+                        Host = section.Keys["HostName"],
+                        Port = Convert.ToInt32(section.Keys["PortNumber"]),
+                        Proto = (ConnectionProtocol)proto,
+                        PuttySession = session_name,
+                        SessionName = session_name,
+                        Username = section.Keys["UserName"]
+                    };
+                    sessions.Add(session);
                 }
             }
 
