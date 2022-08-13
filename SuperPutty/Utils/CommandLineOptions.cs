@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using SuperPutty.Data;
@@ -117,6 +117,9 @@ namespace SuperPutty.Utils
                     case "-pw":
                         this.Password = queue.Dequeue();
                         break;
+                    case "-t":
+                        this.SessionName = queue.Dequeue();
+                        break;
                     case "-load":
                         this.PuttySession = queue.Dequeue();
                         break;
@@ -207,7 +210,6 @@ namespace SuperPutty.Utils
             else if (this.Host != null ||  this.PuttySession != null)
             {
                 // Host or puttySession provided
-                string sessionName;
                 if (this.Host != null)
                 {
                     // Decode URL type host spec, if provided (e.g. ssh://localhost:2020)
@@ -215,12 +217,16 @@ namespace SuperPutty.Utils
                     this.Host = connStr.Host;
                     this.Protocol = connStr.Protocol.GetValueOrDefault(this.Protocol.GetValueOrDefault(ConnectionProtocol.SSH));
                     this.Port = connStr.Port.GetValueOrDefault(this.Port.GetValueOrDefault(dlgEditSession.GetDefaultPort(this.Protocol.GetValueOrDefault())));
-                    sessionName = this.Host;
+
+                    if (this.SessionName == null)
+                    {
+                        this.SessionName = this.Host;
+                    }
                 }
                 else
                 {
                     // no host provided so assume sss
-                    sessionName = this.PuttySession;
+                    this.SessionName = this.PuttySession;
                 }
 
                 ssi = new SessionDataStartInfo
@@ -228,7 +234,7 @@ namespace SuperPutty.Utils
                     Session = new SessionData
                     {
                         Host = this.Host,
-                        SessionName = sessionName,
+                        SessionName = this.SessionName,
                         SessionId = SuperPuTTY.MakeUniqueSessionId(SessionData.CombineSessionIds("CLI", this.Host)),
                         Port = this.Port.GetValueOrDefault(22),
                         Proto = this.Protocol.GetValueOrDefault(ConnectionProtocol.SSH),
@@ -262,6 +268,7 @@ namespace SuperPutty.Utils
             sb.AppendLine("  SuperPutty.exe -load SETTINGS");
             sb.AppendLine("  SuperPutty.exe -PROTO -P PORT -l USER -pw PASSWORD -load SETTINGS HOST");
             sb.AppendLine("  SuperPutty.exe -l USER -pw PASSWORD -load SETTINGS PROTO://HOST:PORT");
+            sb.AppendLine("  SuperPutty.exe -l USER -pw PASSWORD -t TABTEXT PROTO://HOST:PORT");
             sb.AppendLine();
             sb.AppendLine("Options:");
             sb.AppendLine();
@@ -271,6 +278,7 @@ namespace SuperPutty.Utils
             sb.AppendLine("  PROTO\t\t - Protocol - (ssh|ssh2|telnet|serial|raw|scp|cygterm|rlogin|mintty|vnc)");
             sb.AppendLine("  USER\t\t - User name");
             sb.AppendLine("  PASSWORD\t - Login Password");
+            sb.AppendLine("  TABTEXT\t - Tab Text");
             sb.AppendLine("  HOST\t\t - Hostname");
             sb.AppendLine();
             sb.AppendLine("Examples:");
@@ -295,6 +303,7 @@ namespace SuperPutty.Utils
         public int? Port { get; private set; }
         public string UserName { get; private set; }
         public string Password { get; private set; }
+        public string SessionName { get; private set; }
         public string PuttySession { get; private set; }
 
         public string Host { get; private set; }
