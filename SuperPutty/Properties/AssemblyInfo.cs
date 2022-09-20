@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("https://www.jimradford.com/")]
 [assembly: AssemblyProduct("SuperPuTTY")]
-[assembly: AssemblyCopyright("Copyright © 2009 - 2021 Jim Radford")]
+[assembly: AssemblyCopyright("Copyright © 2009 - 2022 Jim Radford")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
