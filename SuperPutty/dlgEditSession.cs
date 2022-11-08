@@ -64,6 +64,7 @@ namespace SuperPutty
                 this.textBoxSPSLScriptFile.Text = Session.SPSLFileName;
                 this.textBoxRemotePathSesion.Text = Session.RemotePath;
                 this.textBoxLocalPathSesion.Text = Session.LocalPath;
+                this.textBoxNote.Text = Session.Note;
 
                 foreach (System.Collections.DictionaryEntry protoEntry in this.protoTypesMap)
                 {
@@ -170,6 +171,7 @@ namespace SuperPutty
             Session.SPSLFileName = textBoxSPSLScriptFile.Text.Trim();
             Session.RemotePath = textBoxRemotePathSesion.Text.Trim();
             Session.LocalPath = textBoxLocalPathSesion.Text.Trim();
+            Session.Note = textBoxNote.Text.Trim();
 
             if (this.protoTypesMap.ContainsKey(comboBoxProto.SelectedItem))
                 Session.Proto = (ConnectionProtocol)this.protoTypesMap[comboBoxProto.SelectedItem];
@@ -405,5 +407,65 @@ namespace SuperPutty
            //if extra Args contains a password, change the backgroudn
            textBoxExtraArgs.BackColor = String.IsNullOrEmpty(CommandLineOptions.getcommand(textBoxExtraArgs.Text, "-pw")) ? Color.White : Color.LightCoral;
        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxSPSLScriptFile_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxUsername_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lbRemotePath_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxFileTransferOptions_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxRemotePathSesion_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lbLocalPath_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxLocalPathSesion_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

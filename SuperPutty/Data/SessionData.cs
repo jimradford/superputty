@@ -35,6 +35,7 @@ using SuperPutty.Utils;
 using System.Web;
 using System.Text.RegularExpressions;
 using System.Net;
+using System.Text;
 
 namespace SuperPutty.Data
 {
@@ -73,7 +74,10 @@ namespace SuperPutty.Data
         [Browsable(false)]
         public string SessionId
         {
-            get { return this._SessionId; }
+            get
+            {
+                return this._SessionId;
+            }
             set
             {
                 if (_SessionId != value)
@@ -91,7 +95,10 @@ namespace SuperPutty.Data
         [Browsable(false)]
         public string OldName
         {
-            get { return _OldName; }
+            get
+            {
+                return _OldName;
+            }
             set 
             {
                 UpdateField(ref _OldName, value, "OldName");
@@ -104,7 +111,10 @@ namespace SuperPutty.Data
         [Description("This is the name of the session.")]
         public string SessionName
         {
-            get { return _SessionName; }
+            get
+            {
+                return _SessionName;
+            }
             set 
             { 
                 if (_SessionName != value)
@@ -129,7 +139,10 @@ namespace SuperPutty.Data
         [TypeConverter(typeof(ImageKeyConverter))]
         public string ImageKey
         {
-            get { return _ImageKey; }
+            get
+            {
+                return _ImageKey;
+            }
             set 
             {
                 UpdateField(ref _ImageKey, value, "ImageKey");
@@ -142,10 +155,29 @@ namespace SuperPutty.Data
         [Description("This is the host name or the IP address of the destination.")]
         public string Host
         {
-            get { return _Host; }
+            get
+            {
+                return _Host;
+            }
             set 
             {
                 UpdateField(ref _Host, value, "Host");
+            }
+        }
+
+        private string _Note;
+        [XmlAttribute]
+        [DisplayName("Note")]
+        [Description("This is a note.")]
+        public string Note
+        {
+            get
+            {
+                return _Note;
+            }
+            set 
+            {
+                UpdateField(ref _Note, value, "Note");
             }
         }
 
@@ -155,7 +187,10 @@ namespace SuperPutty.Data
         [Description("This is the port that will be used to connect to the destination.")]
         public int Port
         {
-            get { return _Port; }
+            get
+            {
+                return _Port;
+            }
             set 
             {
                 UpdateField(ref _Port, value, "Port");
@@ -168,7 +203,10 @@ namespace SuperPutty.Data
         [Description("This is the login protocol.")]
         public ConnectionProtocol Proto
         {
-            get { return _Proto; }
+            get
+            {
+                return _Proto;
+            }
             set 
             {
                 UpdateField(ref _Proto, value, "Proto");
@@ -182,7 +220,10 @@ namespace SuperPutty.Data
         [Description("This is the PuTTY session profile associated to this session.")]
         public string PuttySession
         {
-            get { return _PuttySession; }
+            get
+            {
+                return _PuttySession;
+            }
             set 
             {
                 UpdateField(ref _PuttySession, value, "PuttySession");
@@ -195,7 +236,10 @@ namespace SuperPutty.Data
         [Description("This is the username that will be used to login.")]
         public string Username
         {
-            get { return _Username; }
+            get
+            {
+                return _Username;
+            }
             set 
             {
                 UpdateField(ref _Username, value, "Username");
@@ -207,9 +251,11 @@ namespace SuperPutty.Data
         [Browsable(false)]
         public string Password
         {
-            get {
+            get 
+            {
                 
-                 if (String.IsNullOrEmpty(_Password)){
+                if (String.IsNullOrEmpty(_Password))
+                {
                     // search if ExtraArgs contains the password
                     UpdateField(ref _Password, CommandLineOptions.getcommand(this.ExtraArgs, "-pw"), "Password");
                 }
@@ -383,6 +429,7 @@ namespace SuperPutty.Data
                         sessionData.AutoStartSession = bool.Parse((string)itemKey.GetValue("Auto Start", "False"));
                         sessionData.RemotePath = (string)itemKey.GetValue("RemotePath", "");
                         sessionData.LocalPath = (string)itemKey.GetValue("LocalPath", "");
+                        sessionData.Note = (string)itemKey.GetValue("Note", "");
                         sessionList.Add(sessionData);
                     }
                 }
@@ -413,14 +460,14 @@ namespace SuperPutty.Data
                     Log.InfoFormat("Loaded {0} sessions from {1}", sessions.Count, location);
 
                     //convert any relative paths to absolute paths based on the URL of the parent file
-                    foreach(var session in sessions)
+                    foreach (var session in sessions)
                     {
-                        if(!string.IsNullOrEmpty(session.SPSLFileName))
+                        if (!string.IsNullOrEmpty(session.SPSLFileName))
                         {
                             session.SPSLFileName = new Uri(uri, session.SPSLFileName).ToString();
                         }
                         
-                        if(!string.IsNullOrEmpty(session.CollectionLocation))
+                        if (!string.IsNullOrEmpty(session.CollectionLocation))
                         {
                             session.SPSLFileName = new Uri(uri, session.CollectionLocation).ToString();
                         }
@@ -453,14 +500,14 @@ namespace SuperPutty.Data
             }
 
             //If there are any collections specified, then load those in now
-            for(var i = 0; i < sessions.Count; i++)
+            for (var i = 0; i < sessions.Count; i++)
             {
-                if(!string.IsNullOrEmpty(sessions[i].CollectionLocation))
+                if (!string.IsNullOrEmpty(sessions[i].CollectionLocation))
                 {
                     var collectionLocation = sessions[i].CollectionLocation;
                     var collectionName = sessions[i].CollectionID;
 
-                    if(!string.IsNullOrEmpty(collectionName))
+                    if (!string.IsNullOrEmpty(collectionName))
                     {
                         collectionName = collectionName.Trim('/');
                     }
@@ -523,6 +570,7 @@ namespace SuperPutty.Data
                         sessionData.AutoStartSession = false;
                         sessionData.RemotePath = "";
                         sessionData.LocalPath = "";
+                        sessionData.Note = "";
                         sessions.Add(sessionData);
                     }
                     catch (Exception)
@@ -713,7 +761,21 @@ namespace SuperPutty.Data
                     return string.Format("{0}://{1}::{2}", this.Proto.ToString().ToLower(), this.Host, this.Port);
             }
 
-            return string.Format("{0}://{1}:{2}", this.Proto.ToString().ToLower(), this.Host, this.Port);
+            StringBuilder builder = new StringBuilder();
+            builder.Append(this.Proto.ToString().ToLower());
+            builder.Append("://");
+            builder.Append(this.Username.Length > 0 ? this.Username + "@": "");
+            builder.Append(this.Host);
+            builder.Append(":");
+            builder.Append(this.Port);
+
+            if (this.Note != null && this.Note.Length > 0)
+            {
+                builder.Append(Environment.NewLine);
+                builder.Append(this.Note);
+            }
+
+            return builder.ToString();
         }
 
         class PuttySessionConverter : StringConverter

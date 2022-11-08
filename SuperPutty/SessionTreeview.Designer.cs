@@ -363,7 +363,6 @@
             this.panelSearch.ResumeLayout(false);
             this.panelSearch.PerformLayout();
             this.ResumeLayout(false);
-
         }
 
         #endregion
