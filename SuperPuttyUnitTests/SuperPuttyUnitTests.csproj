@@ -55,8 +55,8 @@
     <StartupObject>SuperPuttyUnitTests.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=2.0.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.13\lib\net45\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.15\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="nunit-console-runner">
       <HintPath>NUnit\nunit-console-runner.dll</HintPath>
