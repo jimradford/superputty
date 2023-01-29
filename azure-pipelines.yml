@@ -21,6 +21,18 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
+# Run Microsoft Security Utility on Source Repository
+- task: MicrosoftSecurityDevOps@1
+  displayName: 'Run Microsoft Security DevOps'
+
+# Run Gitleaks on Source Repository
+- task: Gitleaks@2
+  inputs:
+    scanlocation: '$(Build.SourcesDirectory)'
+    configtype: 'predefined'
+    predefinedconfigfile: 'GitleaksUdmCombo.toml'
+    reportformat: 'sarif'
+
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
