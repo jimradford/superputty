@@ -1,5 +1,5 @@
 1.5.0
- - Minor changes Fixes version issue with SuperPuTTY Update Checker
+ - Minor changes Fixes version issue with SuperPuTTY Update Checker Fixes Issues #887, #888, #889
  - Children attach improvement by @vityank in https://github.com/jimradford/superputty/pull/851
  - Added RDP Support to Command line by @TzachiSh in https://github.com/jimradford/superputty/pull/852
 1.4.10
