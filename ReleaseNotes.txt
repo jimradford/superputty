@@ -1,3 +1,5 @@
+1.5.0
+ - Minor changes Fixes version issue with SuperPuTTY auto updater
 1.4.10
  - New Features from Sebastian Gemeiner
    * Win+Shift Handling (Multi Monitor Setup) 
@@ -18,7 +20,7 @@
 
 1.4.0.8
 - Fixes Issue #528 mintty (2.1.4) exiting and throwing exception due to default behavior change in mintty daemonize option.
-- Fixes Issue #546 Option Added to override and allow -pw <password> command line option to be sent. Defaults to not allow the -pw option.
+- Fixes Issue #546 Option Added to override and allow -pw <yourpassword> command line option to be sent. Defaults to not allow the -pw option.
 - Updated Readme file to promote our Facebook page
 - Resolves Issue #423 Support added to define shortcut key that will allow rename tab.
 - Issue #530 Adds support to persist Command Bar History between sessions 
