@@ -26,10 +26,10 @@ namespace SuperPutty.Utils
 
                 Log.InfoFormat("Registered IpcChannel and Service: [ipc://{0}/{1}]", ChannelName, SingleInstanceServiceName);
             }
-            catch (Exception ex)
+            catch (RemotingException ex)
             {
-                Log.Warn("Unable to register ipcchannel for single instance support...feature unavailable", ex);
-            }
+                Log.Warn("Unable to register ipcchannel for single instance support, feature will be unavailable (or another instance of SuperPuTTY is already running)", ex);
+            }            
         }
 
         public static void LaunchInExistingInstance(string[] args)
