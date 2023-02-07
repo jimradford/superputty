@@ -151,6 +151,16 @@
         <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\webcam.png" />
         <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\world.png" />
         <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\puffy.png" />
+        <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\arch_linux.png" />
+        <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\centos.png" />
+        <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\debian.png" />
+        <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\fedora.png" />
+        <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\freebsd.png" />
+        <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\linux_mint.png" />
+        <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\redhat.png" />
+        <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\suse_linux.png" />
+        <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\ubuntu.png" />
+        <File Source="$(var.SuperPutty.TargetDir)themes\default\icons\windows.png" />
       </Component>
     </ComponentGroup>
   </Fragment>
