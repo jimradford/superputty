@@ -1,25 +1,4 @@
-﻿/*
- * Copyright (c) 2009 - 2015 Jim Radford http://www.jimradford.com
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions: 
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -36,7 +15,6 @@ using System.Text.RegularExpressions;
 using System.Drawing;
 using SuperPutty.Scp;
 using SuperPuTTY.Scripting;
-using System.Web;
 using System.Net;
 
 namespace SuperPutty
@@ -51,7 +29,7 @@ namespace SuperPutty
         public static event EventHandler<LayoutChangedEventArgs> LayoutChanging;
         public static event EventHandler<LayoutChangedEventArgs> LayoutChanged;
 
-        public static event Action<String> StatusEvent;
+        public static event Action<string> StatusEvent;
 
         static BindingList<LayoutData> layouts = new BindingList<LayoutData>();
         static SortedList<string, SessionData> sessionsMap = new SortedList<string, SessionData>();
@@ -60,14 +38,12 @@ namespace SuperPutty
 
         public static void Initialize(string[] args)
         {
-            Log.InfoFormat(
-                "Initializing.  Version={0}, UserSettings={1}, SettingsFolder={2}", 
-                Version, Settings.SettingsFilePath, Settings.SettingsFolder);
+            Log.InfoFormat($"Initializing.  Version={Version}, UserSettings={Settings.SettingsFilePath}, SettingsFolder={Settings.SettingsFolder}");
 
             Images = LoadImageList("default", false);
             ImagesWithStop = LoadImageList("default", true);
 
-            if (!SuperPuTTY.IsFirstRun)
+            if (!IsFirstRun)
             {
                 // parse command line args
                 CommandLine = new CommandLineOptions(args);
@@ -93,7 +69,7 @@ namespace SuperPutty
                         StartingLayout = FindLayout(CommandLine.Layout);
                         if (StartingLayout != null)
                         {
-                            Log.InfoFormat("Starting with layout from command line, {0}", CommandLine.Layout);
+                            Log.InfoFormat($"Starting with layout from command line, {CommandLine.Layout}");
                         }
                     }
                     else
@@ -103,7 +79,7 @@ namespace SuperPutty
                         if (sessionStartInfo != null)
                         {
                             StartingSession = sessionStartInfo;
-                            Log.InfoFormat("Starting adhoc Session from command line, {0}", StartingSession.Session.SessionId);
+                            Log.InfoFormat($"Starting adhoc Session from command line, {StartingSession.Session.SessionId}");
                         }
                     }
 
@@ -115,7 +91,7 @@ namespace SuperPutty
                     StartingLayout = FindLayout(Settings.DefaultLayoutName);
                     if (StartingLayout != null)
                     {
-                        Log.InfoFormat("Starting with default layout, {0}", Settings.DefaultLayoutName);
+                        Log.InfoFormat($"Starting with default layout, {Settings.DefaultLayoutName}");
                     }
                 }
             }
@@ -139,10 +115,10 @@ namespace SuperPutty
         ///         <cref>String.Format</cref>
         ///     </seealso>
         /// </param>
-        public static void ReportStatus(String status, params Object[] args)
+        public static void ReportStatus(string status, params object[] args)
         {
-            String msg = args.Length > 0 ? String.Format(status, args) : status;
-            Log.DebugFormat("STATUS: {0}", msg);
+            string msg = args.Length > 0 ? string.Format(status, args) : status;
+            Log.DebugFormat($"STATUS: {msg}");
 
             if (StatusEvent != null)
             {
@@ -154,7 +130,7 @@ namespace SuperPutty
 
         public static bool IsLayoutChanging { get; private set; }
 
-        public static void AddLayout(String file)
+        public static void AddLayout(string file)
         {
             LayoutData layout = new LayoutData(file);
             if (FindLayout(layout.Name) == null)
@@ -164,7 +140,7 @@ namespace SuperPutty
             }
         }
 
-        public static void RemoveLayout(String name, bool deleteFile)
+        public static void RemoveLayout(string name, bool deleteFile)
         {
             LayoutData layout = FindLayout(name);
             if (layout != null)
@@ -184,7 +160,7 @@ namespace SuperPutty
                 LayoutData existing = FindLayout(newName);
                 if (existing == null)
                 {
-                    Log.InfoFormat("Renaming layout: {0} -> {1}", layout.Name, newName);
+                    Log.InfoFormat($"Renaming layout: {layout.Name} -> {newName}");
                     // rename layout and file
                     string fileOld = layout.FilePath;
                     string fileNew = Path.Combine(Path.GetDirectoryName(layout.FilePath), newName) + ".xml";
@@ -197,12 +173,12 @@ namespace SuperPutty
                 }
                 else
                 {
-                    throw new ArgumentException("Layout with the same name exists: " + newName);
+                    throw new ArgumentException($"Layout with the same name exists: {newName}");
                 }
             }
         }
 
-        public static LayoutData FindLayout(String name)
+        public static LayoutData FindLayout(string name)
         {
             return layouts.FirstOrDefault(layout => name == layout.Name);
         }
@@ -222,12 +198,12 @@ namespace SuperPutty
                     {
                         layouts.Add(layout);
                     }
-                    Log.InfoFormat("Loaded {0} layouts", newLayouts.Count);
+                    Log.InfoFormat($"Loaded {newLayouts.Count} layouts");
                 }
                 else
                 {
-                    Log.InfoFormat("Creating layouts dir: " + SuperPuTTY.LayoutsDir);
-                    Directory.CreateDirectory(SuperPuTTY.LayoutsDir);
+                    Log.InfoFormat($"Creating layouts directory: {LayoutsDir}");
+                    Directory.CreateDirectory(LayoutsDir);
                     layouts.Add(autoRestore);
                 }
             }            
@@ -273,13 +249,13 @@ namespace SuperPutty
 
         public static void LoadLayoutInNewInstance(LayoutData layout)
         {
-            ReportStatus("Starting new instance with layout, {0}", layout.Name);
+            ReportStatus($"Starting new instance with layout, {layout.Name}");
             Process.Start(Assembly.GetExecutingAssembly().Location, "-layout \"" + layout.Name + "\"");
         }
 
         public static void LoadSessionInNewInstance(string sessionId)
         {
-            ReportStatus("Starting session in new instance, {0}", sessionId);
+            ReportStatus($"Starting session in new instance, {sessionId}");
             Process.Start(Assembly.GetExecutingAssembly().Location, "-session \"" + sessionId + "\"");
         }
 
@@ -290,7 +266,7 @@ namespace SuperPutty
                 LayoutData layout = FindLayout(layoutName);
                 if (layout != null)
                 {
-                    ReportStatus("Setting {0} as default layout", layoutName);
+                    ReportStatus($"Setting {layoutName} as default layout");
                     SuperPuTTY.Settings.DefaultLayoutName = layoutName;
                     SuperPuTTY.Settings.Save();
 
@@ -311,7 +287,7 @@ namespace SuperPutty
         public static void LoadSessions()
         {
             string fileName = SessionsFileName;
-            Log.InfoFormat("Loading all sessions.  file={0}", fileName);
+            Log.InfoFormat($"Loading all sessions.  file={fileName}");
 
             try
             {
@@ -329,13 +305,13 @@ namespace SuperPutty
                 }
                 else
                 {
-                    Log.WarnFormat("Sessions file does not exist, nothing loaded.  file={0}", fileName);
+                    Log.WarnFormat($"Sessions file does not exist, nothing loaded.  file={fileName}");
                 }
 
             }
             catch (Exception ex)
             {
-                Log.Error("Error while loading sessions from " + fileName, ex);
+                Log.Error($"Error while loading sessions from {fileName}", ex);
             }
         }
 
@@ -358,7 +334,7 @@ namespace SuperPutty
             {
                 sessionsMap.Remove(sessionId);
                 sessionsList.Remove(session);
-                Log.InfoFormat("Removed Session, id={0}, success={1}", sessionId, true);
+                Log.InfoFormat($"Removed Session, id={session}, success=true");
                 return true;
             }            
             return false;
@@ -403,14 +379,14 @@ namespace SuperPutty
             bool success = false;
             if (GetSessionById(session.SessionId) == null)
             {
-                Log.InfoFormat("Added Session, id={0}", session.SessionId);
+                Log.InfoFormat($"Added Session, id={session.SessionId}");
                 sessionsMap.Add(session.SessionId, session);
                 sessionsList.Add(session);
                 success = true;
             }
             else
             {
-                Log.InfoFormat("Failed to Add Session, id={0}.  Session already exists", session.SessionId);
+                Log.InfoFormat($"Failed to Add Session, id={session.SessionId}.  Session already exists");
             }
             return success;
         }
@@ -437,8 +413,8 @@ namespace SuperPutty
             ctlPuttyPanel panel = null;
             if (session != null)
             {
-                String Executable = PuttyStartInfo.GetExecutable(session);
-                if (String.IsNullOrEmpty(Executable))
+                string Executable = PuttyStartInfo.GetExecutable(session);
+                if (string.IsNullOrEmpty(Executable))
                 {
                     MessageBox.Show("Error trying to create session: " + session.ToString() +
                         "\nExecutable not set for " + session.Proto.ToString() + " protocol." +
@@ -468,7 +444,7 @@ namespace SuperPutty
                             && panel.DockState != DockState.Hidden)
                         {
                             session.LastDockstate = panel.DockState;
-                            SuperPuTTY.SaveSessions();
+                            SaveSessions();
                         }
 
                         if (panel.InvokeRequired)
@@ -490,12 +466,12 @@ namespace SuperPutty
                     ApplyDockRestrictions(panel);
                     ApplyIconForWindow(panel, session);
                     panel.Show(MainForm.DockPanel, session.LastDockstate);
-                    ReportStatus("Opened session: {0} [{1}]", session.SessionId, session.Proto);
+                    ReportStatus($"Opened session: {session.SessionId} [{session.Proto}]");
 
-                    if (!String.IsNullOrWhiteSpace(session.SPSLFileName))
+                    if (!string.IsNullOrWhiteSpace(session.SPSLFileName))
                     {
-                        String fileName = session.SPSLFileName;
-                        String script = String.Empty;
+                        string fileName = session.SPSLFileName;
+                        string script = string.Empty;
 
                         if(Regex.IsMatch(fileName, @"^https?:\/\/", RegexOptions.IgnoreCase))
                         {
@@ -554,7 +530,7 @@ namespace SuperPutty
             Log.InfoFormat("Opening scp session, id={0}", session == null ? "" : session.SessionId);
             if (!IsScpEnabled)
             {
-                SuperPuTTY.ReportStatus("Could not open session, pscp not found: {0} [SCP]", session.SessionId);
+                ReportStatus($"Could not open session, pscp not found: {session.SessionId} [SCP]");
             }
             else if (session != null)
             {
@@ -565,7 +541,7 @@ namespace SuperPutty
                 ApplyIconForWindow(panel, session);
                 panel.Show(MainForm.DockPanel, session.LastDockstate);
 
-                SuperPuTTY.ReportStatus("Opened session: {0} [SCP]", session.SessionId);
+                ReportStatus($"Opened session: {session.SessionId} [SCP]");
             }
             else
             {
@@ -590,12 +566,12 @@ namespace SuperPutty
         /// <param name="panel">The <seealso cref="DockContent"/> panel to apply the restrictions to</param>
         public static void ApplyDockRestrictions(DockContent panel)
         {
-            if (SuperPuTTY.Settings.RestrictContentToDocumentTabs)
+            if (Settings.RestrictContentToDocumentTabs)
             {
                 panel.DockAreas = DockAreas.Document | DockAreas.Float;
             }
 
-            if (SuperPuTTY.Settings.DockingRestrictFloatingWindows)
+            if (Settings.DockingRestrictFloatingWindows)
             {
                 panel.DockAreas = panel.DockAreas ^ DockAreas.Float;
             }
@@ -613,11 +589,11 @@ namespace SuperPutty
             {
                 if (ssi.UseScp)
                 {
-                    SuperPuTTY.OpenScpSession(ssi.Session);
+                    OpenScpSession(ssi.Session);
                 }
                 else
                 {
-                    SuperPuTTY.OpenProtoSession(ssi.Session);
+                    OpenProtoSession(ssi.Session);
                 }
             }
         }
@@ -629,7 +605,7 @@ namespace SuperPutty
             if (fileName == null) { return; }
             if (File.Exists(fileName))
             {
-                Log.InfoFormat("Importing sessions from file, path={0}", fileName);
+                Log.InfoFormat($"Importing sessions from file, path={fileName}");
                 List<SessionData> sessions = SessionData.LoadSessionsFromFile(fileName);
                 ImportSessions(sessions, "Imported");
             }
@@ -642,7 +618,7 @@ namespace SuperPutty
             if (folderName == null) { return; }
             if (Directory.Exists(folderName))
             {
-                Log.InfoFormat("Importing sessions from folder, path={0}", folderName);
+                Log.InfoFormat($"Importing sessions from folder, path={folderName}");
                 List<SessionData> sessions = SessionData.LoadSessionsFromFolder(folderName);
                 ImportSessions(sessions, "ImportedFromPortablePuTTY");
             }
@@ -684,7 +660,7 @@ namespace SuperPutty
                 session.SessionName = SessionData.GetSessionNameFromId(session.SessionId);
                 AddSession(session);
             }
-            Log.InfoFormat("Imported {0} sessions into {1}", sessions.Count, folder);
+            Log.InfoFormat($"Imported {sessions.Count} sessions into {folder}");
 
             SaveSessions();
         }
@@ -703,12 +679,12 @@ namespace SuperPutty
                     }
                     SaveSessions();
 
-                    Log.InfoFormat("Imported {0} old sessions from registry.", sessions.Count);
+                    Log.InfoFormat($"Imported {sessions.Count} old sessions from registry.");
                 }
             }
             catch (Exception ex)
             {
-                Log.WarnFormat("Could not import old sessions, msg={0}", ex.Message);
+                Log.WarnFormat($"Could not import old sessions, msg={ex.Message}");
             }
         }
 
@@ -718,7 +694,7 @@ namespace SuperPutty
         /// <returns>A string containing a unique sessionID</returns>
         public static string MakeUniqueSessionId(string sessionId)
         {
-            String newSessionId = sessionId;
+            string newSessionId = sessionId;
 
             for (int i = 1; i < 1000; i++)
             {
@@ -727,7 +703,7 @@ namespace SuperPutty
                 {
                     break;
                 }                
-                newSessionId = String.Format("{0}-{1}", sessionId, i);
+                newSessionId = string.Format("{0}-{1}", sessionId, i);
             }
 
             return newSessionId;
@@ -745,10 +721,10 @@ namespace SuperPutty
             ImageList imgIcons = new ImageList();
             
             if (isEnableStopImage)
-                imgIcons.Images.Add("stop", SuperPutty.Properties.Resources.stop);
+                imgIcons.Images.Add("stop", Resources.stop);
             // Load the 2 standard icons in case no icons exist in icons directory, these will be used.
-            imgIcons.Images.Add(SessionTreeview.ImageKeyFolder, SuperPutty.Properties.Resources.folder);
-            imgIcons.Images.Add(SessionTreeview.ImageKeySession, SuperPutty.Properties.Resources.computer);
+            imgIcons.Images.Add(SessionTreeview.ImageKeyFolder, Resources.folder);
+            imgIcons.Images.Add(SessionTreeview.ImageKeySession, Resources.computer);
 
             try
             {
@@ -767,11 +743,11 @@ namespace SuperPutty
                             imgIcons.Images.Add(Path.GetFileNameWithoutExtension(fi.Name), img);
                         }
                     }
-                    Log.InfoFormat("Loaded {0} icons from theme directory.  dir={1}", imgIcons.Images.Count, themeFolder);
+                    Log.InfoFormat($"Loaded {imgIcons.Images.Count} icons from theme directory.  dir={themeFolder}");
                 }
                 else
                 {
-                    Log.WarnFormat("theme directory not found, no images loaded. dir={0}", themeFolder);
+                    Log.WarnFormat($"theme directory not found, no images loaded. dir={theme}");
                 }
             }
             catch (Exception ex)
