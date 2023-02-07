@@ -121,7 +121,7 @@
   <data name="logoPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGUAAABgCAYAAAAEsbx8AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EgAACxIB0t1+/AAAAAd0SU1FB9wHChcHL4lMVOsAACAXSURBVHhe7Z0HmFXVtccjiM/37IoKoqjkvfdp
+        EQAACxEBf2RfkQAAAAd0SU1FB9wHChcHL4lMVOsAACAXSURBVHhe7Z0HmFXVtccjiM/37IoKoqjkvfdp
         3qcQBQtIkd5mYGCGNhRBxBKxJSaxgy0RaxLQIGIHawQBQQWVFo0lxsRYEitihcGCmmjafuu39ln77nvm
         3OEyMw6T72O+78+93HLO2et3/mvtvc+553wr428bURNRU9G2W/WNifgSZ+Jd4x8faibaXrSDaEfRzltV
         79pJRHz/U7SdiLhn/vHGf4j4QnPRPqL9RAckOnCr6iyLZWsR8d1TBCTiXg0MFoLYLqJWTZo0OUgeDxUd
@@ -275,7 +275,9 @@ DockPanel Suite is the control we use for Visual Studio like docking of tabs and
 http://sourceforge.net/projects/dockpanelsuite/
 
 Inspired by PuTTY Connection Manager
-http://puttycm.free.fr/</value>
+http://puttycm.free.fr/
+
+Additional Icons provided courtesy of https://icons8.com/</value>
   </data>
   <data name="textBox2.Text" xml:space="preserve">
     <value>MIT License
