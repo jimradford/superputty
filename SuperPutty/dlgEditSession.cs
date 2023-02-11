@@ -64,6 +64,7 @@ namespace SuperPutty
                 this.textBoxSPSLScriptFile.Text = Session.SPSLFileName;
                 this.textBoxRemotePathSesion.Text = Session.RemotePath;
                 this.textBoxLocalPathSesion.Text = Session.LocalPath;
+                this.textBoxNote.Text = Session.Note;
 
                 foreach (System.Collections.DictionaryEntry protoEntry in this.protoTypesMap)
                 {
@@ -170,6 +171,7 @@ namespace SuperPutty
             Session.SPSLFileName = textBoxSPSLScriptFile.Text.Trim();
             Session.RemotePath = textBoxRemotePathSesion.Text.Trim();
             Session.LocalPath = textBoxLocalPathSesion.Text.Trim();
+            Session.Note = textBoxNote.Text.Trim();
 
             if (this.protoTypesMap.ContainsKey(comboBoxProto.SelectedItem))
                 Session.Proto = (ConnectionProtocol)this.protoTypesMap[comboBoxProto.SelectedItem];

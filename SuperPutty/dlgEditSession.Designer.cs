@@ -44,6 +44,8 @@ namespace SuperPutty
             this.label4 = new System.Windows.Forms.Label();
             this.comboBoxPuttyProfile = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.textBoxNote = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxUsername = new System.Windows.Forms.TextBox();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
@@ -73,7 +75,7 @@ namespace SuperPutty
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSessionName.Location = new System.Drawing.Point(6, 33);
             this.textBoxSessionName.Name = "textBoxSessionName";
-            this.textBoxSessionName.Size = new System.Drawing.Size(464, 20);
+            this.textBoxSessionName.Size = new System.Drawing.Size(420, 20);
             this.textBoxSessionName.TabIndex = 0;
             this.textBoxSessionName.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxSessionName_Validating);
             this.textBoxSessionName.Validated += new System.EventHandler(this.textBoxSessionName_Validated);
@@ -104,14 +106,14 @@ namespace SuperPutty
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxHostname.Location = new System.Drawing.Point(6, 74);
             this.textBoxHostname.Name = "textBoxHostname";
-            this.textBoxHostname.Size = new System.Drawing.Size(361, 20);
+            this.textBoxHostname.Size = new System.Drawing.Size(317, 20);
             this.textBoxHostname.TabIndex = 1;
             this.textBoxHostname.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxHostname_Validating);
             // 
             // textBoxPort
             // 
             this.textBoxPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPort.Location = new System.Drawing.Point(390, 74);
+            this.textBoxPort.Location = new System.Drawing.Point(346, 74);
             this.textBoxPort.Name = "textBoxPort";
             this.textBoxPort.Size = new System.Drawing.Size(80, 20);
             this.textBoxPort.TabIndex = 2;
@@ -124,7 +126,7 @@ namespace SuperPutty
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(387, 56);
+            this.label3.Location = new System.Drawing.Point(343, 56);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(52, 15);
             this.label3.TabIndex = 5;
@@ -136,12 +138,12 @@ namespace SuperPutty
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.comboBoxProto);
             this.groupBox1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(14, 117);
+            this.groupBox1.Location = new System.Drawing.Point(14, 181);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(485, 49);
+            this.groupBox1.Size = new System.Drawing.Size(460, 49);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Connection type:";
+            this.groupBox1.Text = "Connection Type";
             // 
             // comboBoxProto
             // 
@@ -150,8 +152,8 @@ namespace SuperPutty
             this.comboBoxProto.FormattingEnabled = true;
             this.comboBoxProto.Location = new System.Drawing.Point(136, 19);
             this.comboBoxProto.Name = "comboBoxProto";
-            this.comboBoxProto.Size = new System.Drawing.Size(349, 23);
-            this.comboBoxProto.TabIndex = 0;
+            this.comboBoxProto.Size = new System.Drawing.Size(305, 23);
+            this.comboBoxProto.TabIndex = 1;
             this.comboBoxProto.SelectedIndexChanged += new System.EventHandler(this.comboBoxProto_SelectedIndexChanged);
             this.comboBoxProto.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxPuttyProfile_Validating);
             // 
@@ -159,17 +161,17 @@ namespace SuperPutty
             // 
             this.textBoxExtraArgs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxExtraArgs.Location = new System.Drawing.Point(150, 229);
+            this.textBoxExtraArgs.Location = new System.Drawing.Point(150, 293);
             this.textBoxExtraArgs.Name = "textBoxExtraArgs";
-            this.textBoxExtraArgs.Size = new System.Drawing.Size(349, 20);
-            this.textBoxExtraArgs.TabIndex = 2;
+            this.textBoxExtraArgs.Size = new System.Drawing.Size(324, 20);
+            this.textBoxExtraArgs.TabIndex = 6;
             this.textBoxExtraArgs.TextChanged += new System.EventHandler(this.textBoxExtraArgs_TextChanged);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(14, 232);
+            this.label6.Location = new System.Drawing.Point(14, 296);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(95, 15);
             this.label6.TabIndex = 14;
@@ -178,10 +180,10 @@ namespace SuperPutty
             // buttonSave
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSave.Location = new System.Drawing.Point(343, 401);
+            this.buttonSave.Location = new System.Drawing.Point(318, 472);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(75, 23);
-            this.buttonSave.TabIndex = 7;
+            this.buttonSave.TabIndex = 8;
             this.buttonSave.Text = "Save";
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
@@ -191,10 +193,10 @@ namespace SuperPutty
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.CausesValidation = false;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(424, 401);
+            this.buttonCancel.Location = new System.Drawing.Point(399, 472);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 8;
+            this.buttonCancel.TabIndex = 9;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
@@ -203,7 +205,7 @@ namespace SuperPutty
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(14, 178);
+            this.label4.Location = new System.Drawing.Point(14, 242);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(119, 15);
             this.label4.TabIndex = 9;
@@ -214,10 +216,10 @@ namespace SuperPutty
             this.comboBoxPuttyProfile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxPuttyProfile.FormattingEnabled = true;
-            this.comboBoxPuttyProfile.Location = new System.Drawing.Point(150, 176);
+            this.comboBoxPuttyProfile.Location = new System.Drawing.Point(150, 240);
             this.comboBoxPuttyProfile.Name = "comboBoxPuttyProfile";
-            this.comboBoxPuttyProfile.Size = new System.Drawing.Size(349, 21);
-            this.comboBoxPuttyProfile.TabIndex = 0;
+            this.comboBoxPuttyProfile.Size = new System.Drawing.Size(324, 21);
+            this.comboBoxPuttyProfile.TabIndex = 4;
             this.comboBoxPuttyProfile.SelectedIndexChanged += new System.EventHandler(this.comboBoxPuttyProfile_SelectedIndexChanged);
             this.comboBoxPuttyProfile.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxPuttyProfile_Validating);
             // 
@@ -225,6 +227,8 @@ namespace SuperPutty
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.textBoxNote);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.textBoxSessionName);
             this.groupBox2.Controls.Add(this.label2);
@@ -233,15 +237,37 @@ namespace SuperPutty
             this.groupBox2.Controls.Add(this.textBoxPort);
             this.groupBox2.Location = new System.Drawing.Point(14, 5);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(485, 109);
+            this.groupBox2.Size = new System.Drawing.Size(460, 170);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(6, 97);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(33, 15);
+            this.label8.TabIndex = 7;
+            this.label8.Text = "Note";
+            // 
+            // textBoxNote
+            // 
+            this.textBoxNote.AcceptsReturn = true;
+            this.textBoxNote.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxNote.Location = new System.Drawing.Point(6, 114);
+            this.textBoxNote.Multiline = true;
+            this.textBoxNote.Name = "textBoxNote";
+            this.textBoxNote.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxNote.Size = new System.Drawing.Size(420, 50);
+            this.textBoxNote.TabIndex = 6;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(14, 205);
+            this.label5.Location = new System.Drawing.Point(14, 269);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(93, 15);
             this.label5.TabIndex = 12;
@@ -251,10 +277,10 @@ namespace SuperPutty
             // 
             this.textBoxUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxUsername.Location = new System.Drawing.Point(150, 203);
+            this.textBoxUsername.Location = new System.Drawing.Point(150, 267);
             this.textBoxUsername.Name = "textBoxUsername";
-            this.textBoxUsername.Size = new System.Drawing.Size(349, 20);
-            this.textBoxUsername.TabIndex = 1;
+            this.textBoxUsername.Size = new System.Drawing.Size(324, 20);
+            this.textBoxUsername.TabIndex = 5;
             // 
             // errorProvider
             // 
@@ -263,20 +289,20 @@ namespace SuperPutty
             // 
             // buttonImageSelect
             // 
-            this.buttonImageSelect.Location = new System.Drawing.Point(14, 395);
+            this.buttonImageSelect.Location = new System.Drawing.Point(14, 459);
             this.buttonImageSelect.Name = "buttonImageSelect";
             this.buttonImageSelect.Size = new System.Drawing.Size(29, 29);
-            this.buttonImageSelect.TabIndex = 6;
+            this.buttonImageSelect.TabIndex = 7;
             this.buttonImageSelect.UseVisualStyleBackColor = true;
             this.buttonImageSelect.Click += new System.EventHandler(this.buttonImageSelect_Click);
             // 
             // buttonBrowse
             // 
             this.buttonBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowse.Location = new System.Drawing.Point(424, 253);
+            this.buttonBrowse.Location = new System.Drawing.Point(399, 317);
             this.buttonBrowse.Name = "buttonBrowse";
             this.buttonBrowse.Size = new System.Drawing.Size(75, 23);
-            this.buttonBrowse.TabIndex = 5;
+            this.buttonBrowse.TabIndex = 15;
             this.buttonBrowse.Text = "Browse";
             this.buttonBrowse.UseVisualStyleBackColor = true;
             this.buttonBrowse.Click += new System.EventHandler(this.buttonBrowse_Click);
@@ -285,15 +311,15 @@ namespace SuperPutty
             // 
             this.textBoxSPSLScriptFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSPSLScriptFile.Location = new System.Drawing.Point(150, 255);
+            this.textBoxSPSLScriptFile.Location = new System.Drawing.Point(150, 319);
             this.textBoxSPSLScriptFile.Name = "textBoxSPSLScriptFile";
-            this.textBoxSPSLScriptFile.Size = new System.Drawing.Size(187, 20);
-            this.textBoxSPSLScriptFile.TabIndex = 3;
+            this.textBoxSPSLScriptFile.Size = new System.Drawing.Size(162, 20);
+            this.textBoxSPSLScriptFile.TabIndex = 16;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(14, 259);
+            this.label7.Location = new System.Drawing.Point(14, 323);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(64, 13);
             this.label7.TabIndex = 17;
@@ -308,10 +334,10 @@ namespace SuperPutty
             // buttonClearSPSLFile
             // 
             this.buttonClearSPSLFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClearSPSLFile.Location = new System.Drawing.Point(343, 253);
+            this.buttonClearSPSLFile.Location = new System.Drawing.Point(318, 317);
             this.buttonClearSPSLFile.Name = "buttonClearSPSLFile";
             this.buttonClearSPSLFile.Size = new System.Drawing.Size(75, 23);
-            this.buttonClearSPSLFile.TabIndex = 4;
+            this.buttonClearSPSLFile.TabIndex = 18;
             this.buttonClearSPSLFile.Text = "Clear";
             this.buttonClearSPSLFile.UseVisualStyleBackColor = true;
             this.buttonClearSPSLFile.Click += new System.EventHandler(this.buttonClearSPSLFile_Click);
@@ -326,9 +352,9 @@ namespace SuperPutty
             this.groupBoxFileTransferOptions.Controls.Add(this.textBoxLocalPathSesion);
             this.groupBoxFileTransferOptions.Controls.Add(this.lbLocalPath);
             this.groupBoxFileTransferOptions.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.groupBoxFileTransferOptions.Location = new System.Drawing.Point(14, 289);
+            this.groupBoxFileTransferOptions.Location = new System.Drawing.Point(14, 353);
             this.groupBoxFileTransferOptions.Name = "groupBoxFileTransferOptions";
-            this.groupBoxFileTransferOptions.Size = new System.Drawing.Size(485, 100);
+            this.groupBoxFileTransferOptions.Size = new System.Drawing.Size(460, 100);
             this.groupBoxFileTransferOptions.TabIndex = 19;
             this.groupBoxFileTransferOptions.TabStop = false;
             this.groupBoxFileTransferOptions.Text = "File Transfer Options";
@@ -339,8 +365,8 @@ namespace SuperPutty
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxRemotePathSesion.Location = new System.Drawing.Point(91, 61);
             this.textBoxRemotePathSesion.Name = "textBoxRemotePathSesion";
-            this.textBoxRemotePathSesion.Size = new System.Drawing.Size(379, 23);
-            this.textBoxRemotePathSesion.TabIndex = 2;
+            this.textBoxRemotePathSesion.Size = new System.Drawing.Size(335, 23);
+            this.textBoxRemotePathSesion.TabIndex = 18;
             // 
             // lbRemotePath
             // 
@@ -354,10 +380,10 @@ namespace SuperPutty
             // buttonBrowseLocalPath
             // 
             this.buttonBrowseLocalPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowseLocalPath.Location = new System.Drawing.Point(395, 28);
+            this.buttonBrowseLocalPath.Location = new System.Drawing.Point(351, 28);
             this.buttonBrowseLocalPath.Name = "buttonBrowseLocalPath";
             this.buttonBrowseLocalPath.Size = new System.Drawing.Size(75, 23);
-            this.buttonBrowseLocalPath.TabIndex = 1;
+            this.buttonBrowseLocalPath.TabIndex = 16;
             this.buttonBrowseLocalPath.Text = "Browse";
             this.buttonBrowseLocalPath.UseVisualStyleBackColor = true;
             this.buttonBrowseLocalPath.Click += new System.EventHandler(this.buttonBrowseLocalPath_Click);
@@ -368,8 +394,8 @@ namespace SuperPutty
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxLocalPathSesion.Location = new System.Drawing.Point(90, 29);
             this.textBoxLocalPathSesion.Name = "textBoxLocalPathSesion";
-            this.textBoxLocalPathSesion.Size = new System.Drawing.Size(294, 23);
-            this.textBoxLocalPathSesion.TabIndex = 0;
+            this.textBoxLocalPathSesion.Size = new System.Drawing.Size(250, 23);
+            this.textBoxLocalPathSesion.TabIndex = 1;
             // 
             // lbLocalPath
             // 
@@ -386,23 +412,23 @@ namespace SuperPutty
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(515, 431);
+            this.ClientSize = new System.Drawing.Size(490, 502);
             this.Controls.Add(this.groupBoxFileTransferOptions);
-            this.Controls.Add(this.buttonClearSPSLFile);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.textBoxSPSLScriptFile);
-            this.Controls.Add(this.buttonBrowse);
-            this.Controls.Add(this.buttonImageSelect);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.textBoxExtraArgs);
-            this.Controls.Add(this.textBoxUsername);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.buttonCancel);
+            this.Controls.Add(this.buttonClearSPSLFile);
+            this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBoxPuttyProfile);
-            this.Controls.Add(this.buttonCancel);
-            this.Controls.Add(this.buttonSave);
+            this.Controls.Add(this.textBoxSPSLScriptFile);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.textBoxUsername);
+            this.Controls.Add(this.buttonBrowse);
+            this.Controls.Add(this.textBoxExtraArgs);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.buttonImageSelect);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -457,5 +483,7 @@ namespace SuperPutty
         private System.Windows.Forms.TextBox textBoxLocalPathSesion;
         private System.Windows.Forms.Label lbLocalPath;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox textBoxNote;
     }
 }

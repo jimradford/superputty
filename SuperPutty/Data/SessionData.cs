@@ -35,6 +35,7 @@ using SuperPutty.Utils;
 using System.Web;
 using System.Text.RegularExpressions;
 using System.Net;
+using System.Text;
 
 namespace SuperPutty.Data
 {
@@ -143,9 +144,25 @@ namespace SuperPutty.Data
         public string Host
         {
             get { return _Host; }
-            set 
+            set
             {
                 UpdateField(ref _Host, value, "Host");
+            }
+        }
+
+        private string _Note;
+        [XmlAttribute]
+        [DisplayName("Note")]
+        [Description("This is a note.")]
+        public string Note
+        {
+            get
+            {
+                return _Note;
+            }
+            set 
+            {
+                UpdateField(ref _Note, value, "Note");
             }
         }
 
@@ -383,6 +400,7 @@ namespace SuperPutty.Data
                         sessionData.AutoStartSession = bool.Parse((string)itemKey.GetValue("Auto Start", "False"));
                         sessionData.RemotePath = (string)itemKey.GetValue("RemotePath", "");
                         sessionData.LocalPath = (string)itemKey.GetValue("LocalPath", "");
+                        sessionData.Note = (string)itemKey.GetValue("Note", "");
                         sessionList.Add(sessionData);
                     }
                 }
@@ -523,6 +541,7 @@ namespace SuperPutty.Data
                         sessionData.AutoStartSession = false;
                         sessionData.RemotePath = "";
                         sessionData.LocalPath = "";
+                        sessionData.Note = "";
                         sessions.Add(sessionData);
                     }
                     catch (Exception)
@@ -713,7 +732,21 @@ namespace SuperPutty.Data
                     return string.Format("{0}://{1}::{2}", this.Proto.ToString().ToLower(), this.Host, this.Port);
             }
 
-            return string.Format("{0}://{1}:{2}", this.Proto.ToString().ToLower(), this.Host, this.Port);
+            StringBuilder builder = new StringBuilder();
+            builder.Append(this.Proto.ToString().ToLower());
+            builder.Append("://");
+            builder.Append(this.Username.Length > 0 ? this.Username + "@": "");
+            builder.Append(this.Host);
+            builder.Append(":");
+            builder.Append(this.Port);
+
+            if (this.Note != null && this.Note.Length > 0)
+            {
+                builder.Append(Environment.NewLine);
+                builder.Append(this.Note);
+            }
+
+            return builder.ToString();
         }
 
         class PuttySessionConverter : StringConverter
