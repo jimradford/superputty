@@ -244,6 +244,10 @@ namespace SuperPutty.Scp
             {
                 sb.Append("-pw ").Append(password).Append(" ");
             }
+            if (!string.IsNullOrEmpty(session.ExtraArgs.ToString()))
+            {
+                sb.AppendFormat(" {0} ", session.ExtraArgs.ToString());
+            }
             sb.AppendFormat("-P {0} ", session.Port);
 
             if (target.Source == SourceType.Remote)
