@@ -22,7 +22,7 @@
 
 1.4.0.8
 - Fixes Issue #528 mintty (2.1.4) exiting and throwing exception due to default behavior change in mintty daemonize option.
-- Fixes Issue #546 Option Added to override and allow -pw command line option to be sent. Defaults to not allow the -pw option.
+- Fixes Issue #546 Option Added to override and allow  a password to be sent on the command line [less secure] defaults to disabled.
 - Updated Readme file to promote our Facebook page
 - Resolves Issue #423 Support added to define shortcut key that will allow rename tab.
 - Issue #530 Adds support to persist Command Bar History between sessions 
