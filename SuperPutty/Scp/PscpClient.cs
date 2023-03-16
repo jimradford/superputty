@@ -172,6 +172,11 @@ namespace SuperPutty.Scp
             {
                 sb.AppendFormat("-pw {0} ", password);
             }
+            
+            if (!string.IsNullOrEmpty(session.ExtraArgs.ToString()))
+            {
+                sb.AppendFormat(" {0} ", session.ExtraArgs.ToString());
+            }
 
             sb.AppendFormat("-P {0} ", session.Port);
             sb.AppendFormat("{0}@{1}:\"{2}\"", session.Username, session.Host, path);
