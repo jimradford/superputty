@@ -71,10 +71,6 @@ namespace SuperPutty
         private FormWindowState lastNonMinimizedWindowState = FormWindowState.Normal;
         private Rectangle lastNormalDesktopBounds;
         private ChildWindowFocusHelper focusHelper;
-        bool isControlDown = false;
-        bool isShiftDown = false;
-        bool isAltDown = false;
-        bool isWinDown = false;
         int commandMRUIndex = -1;
 
         private readonly TabSwitcher tabSwitcher;
@@ -1285,6 +1281,11 @@ namespace SuperPutty
 
         private IntPtr foregroundBeforeWinDown = IntPtr.Zero;
 
+        private static bool GetKeyDown(Keys keyCode)
+        {
+            return NativeMethods.GetKeyState((int)keyCode) < 0;
+        }
+
         // Intercept keyboard messages for Ctrl-F4 and Ctrl-Tab handling
         private IntPtr KBHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
@@ -1293,12 +1294,12 @@ namespace SuperPutty
                 int vkCode = Marshal.ReadInt32(lParam);
                 Keys keys = (Keys)vkCode;
 
-                // track key state globally for control/alt/shift is up/down
+                // get key state of control/alt/shift is up/down
                 bool isKeyDown = wParam == (IntPtr)NativeMethods.WM_KEYDOWN || wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN;
-                if (keys == Keys.LControlKey || keys == Keys.RControlKey) { isControlDown = isKeyDown; }
-                if (keys == Keys.LShiftKey || keys == Keys.RShiftKey) { isShiftDown = isKeyDown; }
-                if (keys == Keys.LMenu || keys == Keys.RMenu) { isAltDown = isKeyDown; }
-                if (keys == Keys.LWin || keys == Keys.RWin) { isWinDown = isKeyDown; }
+                bool isControlDown = GetKeyDown(Keys.LControlKey) || GetKeyDown(Keys.RControlKey);
+                bool isShiftDown = GetKeyDown(Keys.LShiftKey) || GetKeyDown(Keys.RShiftKey);
+                bool isAltDown = GetKeyDown(Keys.LMenu) || GetKeyDown(Keys.RMenu);
+                bool isWinDown = GetKeyDown(Keys.LWin) || GetKeyDown(Keys.RWin);
 
                 if (Log.Logger.IsEnabledFor(Level.Trace))
                 {
