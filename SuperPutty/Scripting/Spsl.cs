@@ -37,7 +37,8 @@ namespace SuperPuTTY.Scripting
             new SPSLFunction("SENDCHAR", Commands.SendCharHandler),
             new SPSLFunction("SENDLINE", Commands.SendLineHandler),
             new SPSLFunction("SLEEP", Commands.SleepHandler),
-            new SPSLFunction("PROMPT", Commands.PromptHandler)
+            new SPSLFunction("PROMPT", Commands.PromptHandler),
+            new SPSLFunction("PWDPROMPT", Commands.PrivatePromptHandler)
         };
 
         /// <summary>Try to parse a script line into commands and arguments</summary>
