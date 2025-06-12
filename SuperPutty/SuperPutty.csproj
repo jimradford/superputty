@@ -169,8 +169,10 @@
     <Compile Include="Scp\PscpClient.cs" />
     <Compile Include="Scp\RemoteBrowserModel.cs" />
     <Compile Include="Scripting\CloseSessionCommand.cs" />
+    <Compile Include="Scripting\frmPrivatePrompt.cs" />
     <Compile Include="Scripting\OpenSessionCommand.cs" />
     <Compile Include="Scripting\PromptCommand.cs" />
+    <Compile Include="Scripting\PwdpromptCommand.cs" />
     <Compile Include="Scripting\SendCharCommand.cs" />
     <Compile Include="Scripting\SendKeyCommand.cs" />
     <Compile Include="Scripting\SendLineCommand.cs" />
