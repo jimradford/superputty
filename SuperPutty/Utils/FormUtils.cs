@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -17,9 +17,15 @@ namespace SuperPutty.Utils
 
         public static void RestoreFormPositionAndState(Form form, Rectangle winPos, FormWindowState winState)
         {
+            // check if the window state is Maximized 
+            if (winState == FormWindowState.Maximized)
+            {
+                form.WindowState = winState;
 
+                Log.InfoFormat("Restoring form state. state={0}", winState);
+            }
             // check if the saved bounds are nonzero and visible on any screen
-            if (!winPos.IsEmpty && IsVisibleOnAnyScreen(winPos))
+            else if(!winPos.IsEmpty && IsVisibleOnAnyScreen(winPos))
             {
                 // first set the bounds
                 form.StartPosition = FormStartPosition.Manual;
@@ -27,7 +33,7 @@ namespace SuperPutty.Utils
 
                 // afterwards set the window state to the saved value (which could be Maximized)
                 form.WindowState = winState;
-                
+
                 Log.InfoFormat("Restoring form position and state.  position={0}, state={1}", winPos, winState);
             }
             else if (!winPos.Size.IsEmpty)
@@ -53,14 +59,14 @@ namespace SuperPutty.Utils
             return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
         }
 
-        public static T SafeParseEnum<T>(string val, bool ignoreCase, T defaultVal) 
+        public static T SafeParseEnum<T>(string val, bool ignoreCase, T defaultVal)
         {
             T enumVal = defaultVal;
             try
             {
-                enumVal = (T) Enum.Parse(typeof(T), val, ignoreCase);
+                enumVal = (T)Enum.Parse(typeof(T), val, ignoreCase);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(string.Format("Could not parse ({0}) of type ({1})", val, typeof(T).Name), ex);
             }
